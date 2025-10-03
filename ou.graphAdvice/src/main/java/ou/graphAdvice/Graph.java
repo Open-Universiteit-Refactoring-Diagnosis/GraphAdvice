@@ -138,7 +138,7 @@ public final class Graph {
 	 */
 	public Set<GraphEdge> getEdgesFrom(GraphNode sourceNode) {
 		if (sourceNode == null) {
-			return Set.of();
+			return Collections.unmodifiableSet(Set.of());
 		}
 		return
 				Collections.unmodifiableSet(
@@ -161,7 +161,7 @@ public final class Graph {
 	 */
 	public Set<GraphEdge> getEdgesWith(GraphNode sourceNode, GraphNode destinationNode) {
 		if (sourceNode == null || destinationNode == null) {
-			return Set.of();
+			return Collections.unmodifiableSet(Set.of());
 		}
 		return
 				Collections.unmodifiableSet(
@@ -180,7 +180,7 @@ public final class Graph {
 	 */
 	public Set<GraphEdge> getEdgesTo(GraphNode destinationNode) {
 		if (destinationNode == null) {
-			return Set.of();
+			return Collections.unmodifiableSet(Set.of());
 		}
 		return
 				Collections.unmodifiableSet(
