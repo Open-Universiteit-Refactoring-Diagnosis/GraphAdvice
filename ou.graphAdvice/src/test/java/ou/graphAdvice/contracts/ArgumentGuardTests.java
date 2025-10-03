@@ -2,9 +2,11 @@ package ou.graphAdvice.contracts;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 
 public class ArgumentGuardTests {
 	@Test
+	@DisplayName("Should throw an exception if a value is null (cannot be null)")
 	public void requireNotNullWithNullTest() {
 		Object valueNull = null;
 		ArgumentNullException exception =
@@ -15,6 +17,7 @@ public class ArgumentGuardTests {
 	}
 	
 	@Test
+	@DisplayName("Should not throw an exception if a value is not null (cannot be null)")
 	public void requireNotNullWithNotNullTest() {
 		Object valueNotNull = "test";
 		Assertions.assertDoesNotThrow(() -> {
@@ -23,6 +26,7 @@ public class ArgumentGuardTests {
 	}
 	
 	@Test
+	@DisplayName("Should throw an exception if a value is null (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithNullTest() {
 		String valueNull = null;
 		ArgumentNullException exception =
@@ -33,6 +37,7 @@ public class ArgumentGuardTests {
 	}
 	
 	@Test
+	@DisplayName("Should throw an exception if a value is empty (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithEmptyTest() {
 		String valueEmpty = "";
 		ArgumentEmptyException exception =
@@ -43,6 +48,7 @@ public class ArgumentGuardTests {
 	}
 	
 	@Test
+	@DisplayName("Should throw an exception if a value contains only white spaces (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithWhiteSpaceTest() {
 		String valueWhiteSpace = " ";
 		ArgumentEmptyException exception =
@@ -53,6 +59,7 @@ public class ArgumentGuardTests {
 	}
 	
 	@Test
+	@DisplayName("Should not throw an exception if a value is not null, not empty and does not contain only white space (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithValidTest() {
 		String valueValid = "valid";
 		Assertions.assertDoesNotThrow(() -> {

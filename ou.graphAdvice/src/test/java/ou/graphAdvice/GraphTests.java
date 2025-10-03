@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ou.graphAdvice.contracts.ArgumentNullException;
@@ -20,12 +21,14 @@ import ou.graphAdvice.nodes.refactoring.remedies.GraphNodeRemedyChooseDifferentN
 
 public class GraphTests {
 	@Test
+	@DisplayName("Should construct a graph")
 	public void constructorTest() {
 		Graph graph = new Graph();
 		Assertions.assertNotNull(graph);
 	}
 	
 	@Test
+	@DisplayName("Shoud retrieve all nodes")
 	public void getNodesHappyTest() {
 		// Arrange
 		Graph graph = new Graph();
@@ -39,6 +42,7 @@ public class GraphTests {
 	}
 	
 	@Test
+	@DisplayName("Should retrieve nodes that are assignable to a particular node type")
 	public void getNodesOfTypeHappyTest() {
 		// Arrange
 		Graph graph = new Graph();
@@ -54,6 +58,7 @@ public class GraphTests {
 	}
 	
 	@Test
+	@DisplayName("Should correctly determine whether the graph contains a particular node")
 	public void containsNodeHappyTest() {
 		// Arrange
 		Graph graph = new Graph();
@@ -69,6 +74,7 @@ public class GraphTests {
 	}
 	
 	@Test
+	@DisplayName("Should add a new edge that is not already present in the graph")
 	public void addEdgeNewTest() {
 		// Arrange
 		Graph graph = new Graph();
@@ -106,6 +112,7 @@ public class GraphTests {
 	}
 	
 	@Test
+	@DisplayName("Should not add the same edge a second time")
 	public void addEdgeExistingTest() {
 		// Arrange
 		Graph graph = new Graph();
