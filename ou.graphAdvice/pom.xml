@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ou.graphAdvice</groupId>
+	<artifactId>ou.graphAdvice</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>RefactoringGraphAdvice</name>
+	<description>A software component for generating refactoring advices by
+		assembling and converting a refactoring in a graph.</description>
+	<dependencies>
+		<dependency>
+			<groupId>ai.djl</groupId>
+			<artifactId>api</artifactId>
+			<version>0.34.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore</artifactId>
+			<version>2.21.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>uml2</artifactId>
+			<version>2.1.0-v200706251652</version>
+			<licenses>
+				<license>
+					<name>Eclipse Public License - v 1.0</name>
+					<url>http://www.eclipse.org/org/documents/epl-v10.html</url>
+				</license>
+			</licenses>
+		</dependency>
+	</dependencies>
+</project>
