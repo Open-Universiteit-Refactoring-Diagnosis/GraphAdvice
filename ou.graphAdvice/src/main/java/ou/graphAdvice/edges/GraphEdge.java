@@ -52,4 +52,22 @@ public abstract class GraphEdge {
 	public GraphNode getDestination() {
 		return this.destination;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (this.getClass() != other.getClass()) {
+			return false;
+		}
+		return this.equals((GraphEdge)other);
+	}
+	
+	public boolean equals(GraphEdge other) {
+		if (other == null) {
+			return false;
+		}
+		return this.source.equals(other.getSource()) && this.destination.equals(other.getDestination());
+	}
 }

@@ -1,7 +1,9 @@
 package ou.graphAdvice;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,16 +21,14 @@ import ou.graphAdvice.nodes.refactoring.RefactoringMayContainOnlyOneStartNodeExc
  */
 public final class Graph {
 	private final UUID id;
-	private final Set<GraphNode> nodes;
-	private final Set<GraphEdge> edges;
+	private final Map<GraphNode, Map<GraphNode, Set<GraphEdge>>> matrix;
 	
 	/**
 	 * Initialises a new instance of {@link Graph}.
 	 */
 	public Graph() {
 		this.id = UUID.randomUUID();
-		this.nodes = new HashSet<GraphNode>();
-		this.edges = new HashSet<GraphEdge>();
+		this.matrix = new HashMap<>();
 	}
 	
 	/**
@@ -45,33 +45,60 @@ public final class Graph {
 	 * @apiNote The returned {@link Set Set&lt;GraphNode&gt;} is not modifiable.
 	 */
 	public Set<GraphNode> getNodes() {
-		return Collections.unmodifiableSet(this.nodes);
+		return Collections.unmodifiableSet(this.matrix.keySet());
 	}
 	
 	/**
-	 * Gets the nodes in this graph of a particular type.
+	 * Gets the nodes in this graph that are assignable to a particular type.
 	 * @param <TNode> The type of node to retrieve.
 	 * @param nodeType The type of node to retrieve.
-	 * @return A read-only set of nodes of the requested type in this graph.
+	 * @return A read-only set of nodes that are assignable to the requested type in this graph.
+	 * @throws ArgumentNullException Thrown if nodeType is null.
 	 * @apiNote The returned {@link Set Set&lt;TNode&gt;} is not modifiable.
 	 */
-	public <TNode extends GraphNode> Set<TNode> getNodes(Class<TNode> nodeType) {
-		return Collections.unmodifiableSet(
-				this.nodes.stream()
-					.filter(nodeType::isInstance)
-					.map(nodeType::cast)
-					.collect(Collectors.toSet())
+	public <TNode extends GraphNode> Set<TNode> getNodes(Class<TNode> nodeType)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(nodeType, "nodeType");
+		return
+				Collections.unmodifiableSet(
+					this
+						.getNodes()
+						.stream()
+						.filter(nodeType::isInstance)
+						.map(nodeType::cast)
+						.collect(Collectors.toSet())
 				);
 	}
 	
 	/**
-	 * Adds a node to the Refactoring Advice Graph.
+	 * Gets the nodes in this graph that are exactly of a particular type.
+	 * @param <TNode> The type of node to retrieve.
+	 * @param nodeType The type of node to retrieve.
+	 * @return A read-only set of nodes of the requested type in this graph.
+	 * @throws ArgumentNullException Thrown if nodeType is null.
+	 * @apiNote The returned {@link Set Set&lt;TNode&gt;} is not modifiable.
+	 */
+	public <TNode extends GraphNode> Set<TNode> getNodesExact(Class<TNode> nodeType) {
+		ArgumentGuard.requireNotNull(nodeType, "nodeType");
+		return
+				Collections.unmodifiableSet(
+					this
+						.getNodes()
+						.stream()
+						.filter(node -> node.getClass() == nodeType)
+						.map(nodeType::cast)
+						.collect(Collectors.toSet())
+				);
+	}
+	
+	/**
+	 * Adds a node to the Refactoring Advice Graph. If the node is already present, nothing happens.
 	 * @param node The node to add to the Refactoring Advice Graph.
 	 * @throws ArgumentNullException Thrown if node is null.
 	 */
 	public void addNode(GraphNode node) {
 		ArgumentGuard.requireNotNull(node, "node");
-		this.nodes.add(node);
+		this.matrix.putIfAbsent(node, new HashMap<>());
 	}
 	
 	/**
@@ -83,7 +110,7 @@ public final class Graph {
 		if (node == null) {
 			return false;
 		}
-		return this.nodes.contains(node);
+		return this.matrix.containsKey(node);
 	}
 	
 	/**
@@ -92,7 +119,15 @@ public final class Graph {
 	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 */
 	public Set<GraphEdge> getEdges() {
-		return Collections.unmodifiableSet(this.edges);
+		return
+				Collections.unmodifiableSet(
+					this
+						.matrix
+						.values()
+						.stream()
+						.flatMap(row -> row.values().stream())
+						.reduce(new HashSet<>(), (aggregate, next) -> { aggregate.addAll(next); return aggregate; })
+				);
 	}
 	
 	/**
@@ -105,12 +140,16 @@ public final class Graph {
 		if (sourceNode == null) {
 			return Set.of();
 		}
-		return Collections.unmodifiableSet(
-				this
-					.edges
-					.stream()
-					.filter(edge -> edge.getSource().equals(sourceNode))
-					.collect(Collectors.toSet()));
+		return
+				Collections.unmodifiableSet(
+					this
+						.matrix
+						.getOrDefault(sourceNode, new HashMap<>())
+						.values()
+						.stream()
+						.flatMap(columns -> columns.stream())
+						.collect(Collectors.toSet())
+				);
 	}
 	
 	/**
@@ -124,12 +163,13 @@ public final class Graph {
 		if (sourceNode == null || destinationNode == null) {
 			return Set.of();
 		}
-		return Collections.unmodifiableSet(
-				this
-					.edges
-					.stream()
-					.filter(edge -> edge.getSource().equals(sourceNode) && edge.getDestination().equals(destinationNode))
-					.collect(Collectors.toSet()));
+		return
+				Collections.unmodifiableSet(
+					this
+						.matrix
+						.getOrDefault(sourceNode, new HashMap<>())
+						.getOrDefault(destinationNode, new HashSet<>())
+				);
 	}
 	
 	/**
@@ -142,12 +182,15 @@ public final class Graph {
 		if (destinationNode == null) {
 			return Set.of();
 		}
-		return Collections.unmodifiableSet(
-				this
-					.edges
-					.stream()
-					.filter(edge -> edge.getDestination().equals(destinationNode))
-					.collect(Collectors.toSet()));
+		return
+				Collections.unmodifiableSet(
+					this
+						.matrix
+						.values()
+						.stream()
+						.flatMap(rows -> rows.getOrDefault(destinationNode, new HashSet<>()).stream())
+						.collect(Collectors.toSet())
+				);
 	}
 	
 	/**
@@ -174,19 +217,22 @@ public final class Graph {
 		ArgumentGuard.requireNotNull(edgeFactory, "edgeFactory");
 		ArgumentGuard.requireNotNull(edgeClass, "edgeClass");
 		
-		Set<TEdge> edges =
+		Set<GraphEdge> edges =
 				this
-					.getEdgesWith(sourceNode, destinationNode)
+					.matrix
+					.computeIfAbsent(sourceNode, _ -> new HashMap<>())
+					.computeIfAbsent(destinationNode, _ -> new HashSet<>());
+		TEdge edge =
+				edges
 					.stream()
-					.filter(edgeClass::isInstance)
+					.filter(knownEdge -> knownEdge.getClass() == edgeClass)
 					.map(edgeClass::cast)
-					.collect(Collectors.toSet());
-		if (edges.size() > 0) {
-			return (TEdge)edges.stream().findFirst().get();
+					.findFirst()
+					.orElse(null);
+		if (edge == null) {
+			edge = edgeFactory.create(sourceNode, destinationNode);
+			edges.add(edge);
 		}
-		
-		TEdge edge = edgeFactory.create(sourceNode, destinationNode);
-		this.edges.add(edge);
 		return edge;
 	}
 	
@@ -205,13 +251,15 @@ public final class Graph {
 	 * @return The start node of the refactoring, if present, otherwise null.
 	 */
 	public GraphNodeRefactoringStart getStart() {
-		return this
-				.nodes
-				.stream()
-				.filter(GraphNodeRefactoringStart.class::isInstance)
-				.map(GraphNodeRefactoringStart.class::cast)
-				.findFirst()
-				.orElse(null);
+		return
+				this
+					.matrix
+					.keySet()
+					.stream()
+					.filter(GraphNodeRefactoringStart.class::isInstance)
+					.map(GraphNodeRefactoringStart.class::cast)
+					.findFirst()
+					.orElse(null);
 	}
 	
 	/**

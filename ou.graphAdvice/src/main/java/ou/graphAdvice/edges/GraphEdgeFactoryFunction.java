@@ -2,6 +2,12 @@ package ou.graphAdvice.edges;
 
 import ou.graphAdvice.nodes.GraphNode;
 
+/**
+ * A functional interface that enables passing lambda functions for creating new Edges to a parameter in a method.
+ * @param <TEdge> The type of Edge that is created.
+ * @param <TNodeSource> The type of Node that is at the source of the Edge.
+ * @param <TNodeDestination> The type of Node that is the destination of the Edge.
+ */
 @FunctionalInterface
 public interface GraphEdgeFactoryFunction
 	<TEdge extends GraphEdge,

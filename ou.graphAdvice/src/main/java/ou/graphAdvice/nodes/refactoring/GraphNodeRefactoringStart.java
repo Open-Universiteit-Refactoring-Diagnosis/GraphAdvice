@@ -18,7 +18,7 @@ public final class GraphNodeRefactoringStart extends GraphNodeRefactoring {
 	public GraphNodeRefactoringStart(Graph graph)
 			throws ArgumentNullException, RefactoringMayContainOnlyOneStartNodeException {
 		super(graph);
-		if (graph.getStart() != null) {
+		if (graph.getNodes(GraphNodeRefactoringStart.class).size() > 1) {
 			throw new RefactoringMayContainOnlyOneStartNodeException();
 		}
 	}

@@ -1,6 +1,7 @@
 package ou.graphAdvice;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,16 +10,62 @@ import ou.graphAdvice.contracts.ArgumentNullException;
 import ou.graphAdvice.edges.GraphEdge;
 import ou.graphAdvice.edges.refactoring.GraphEdgeInitiates;
 import ou.graphAdvice.edges.refactoring.GraphEdgePrecedes;
+import ou.graphAdvice.nodes.GraphNode;
 import ou.graphAdvice.nodes.refactoring.GraphNodeRefactoringStart;
 import ou.graphAdvice.nodes.refactoring.RefactoringMayContainOnlyOneStartNodeException;
+import ou.graphAdvice.nodes.refactoring.microsteps.GraphNodeMicrostep;
 import ou.graphAdvice.nodes.refactoring.microsteps.GraphNodeMicrostepAddMethod;
 import ou.graphAdvice.nodes.refactoring.microsteps.GraphNodeMicrostepRemoveMethod;
+import ou.graphAdvice.nodes.refactoring.remedies.GraphNodeRemedyChooseDifferentName;
 
 public class GraphTests {
 	@Test
 	public void constructorTest() {
 		Graph graph = new Graph();
 		Assertions.assertNotNull(graph);
+	}
+	
+	@Test
+	public void getNodesHappyTest() {
+		// Arrange
+		Graph graph = new Graph();
+		GraphNodeMicrostepAddMethod addMethod = new GraphNodeMicrostepAddMethod(graph);
+		
+		// Act
+		Set<GraphNode> nodes = graph.getNodes();
+		
+		// Assert
+		Assertions.assertNotEquals(0, nodes.size());
+	}
+	
+	@Test
+	public void getNodesOfTypeHappyTest() {
+		// Arrange
+		Graph graph = new Graph();
+		GraphNodeMicrostepAddMethod addMethod = new GraphNodeMicrostepAddMethod(graph);
+		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		GraphNodeRemedyChooseDifferentName chooseDifferentName = new GraphNodeRemedyChooseDifferentName(graph);
+		
+		// Act
+		Set<GraphNodeMicrostep> nodes = graph.getNodes(GraphNodeMicrostep.class);
+		
+		// Assert
+		Assertions.assertEquals(2, nodes.size());
+	}
+	
+	@Test
+	public void containsNodeHappyTest() {
+		// Arrange
+		Graph graph = new Graph();
+		GraphNodeMicrostepAddMethod addMethod = new GraphNodeMicrostepAddMethod(graph);
+		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		GraphNodeRemedyChooseDifferentName chooseDifferentName = new GraphNodeRemedyChooseDifferentName(graph);
+		
+		// Act
+		boolean containsNodeRemoveMethod = graph.containsNode(removeMethod);
+		
+		// Assert
+		Assertions.assertTrue(containsNodeRemoveMethod);
 	}
 	
 	@Test
@@ -30,7 +77,7 @@ public class GraphTests {
 			start = new GraphNodeRefactoringStart(graph);
 		} catch (ArgumentNullException e) {
 			e.printStackTrace();
-			Assertions.fail("This should not happen.");
+			Assertions.fail("This should not happen: graph should not be null, failed test.");
 			return;
 		} catch (RefactoringMayContainOnlyOneStartNodeException e) {
 			e.printStackTrace();
