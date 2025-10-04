@@ -1,8 +1,12 @@
 package ou.graphAdvice.nodes.refactoring.risks;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import ou.graphAdvice.Graph;
 import ou.graphAdvice.contracts.ArgumentNullException;
 import ou.graphAdvice.edges.refactoring.GraphEdgeAffects;
+import ou.graphAdvice.nodes.GraphNode;
 import ou.graphAdvice.nodes.code.GraphNodeAttribute;
 import ou.graphAdvice.nodes.code.GraphNodeClass;
 import ou.graphAdvice.nodes.code.GraphNodeOperation;
@@ -22,9 +26,9 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 	}
 	
 	/**
-	 * Indicates that the Double Definition risk affects an Attribute.
+	 * Indicates that the "Double Definition" risk affects an Attribute.
 	 * @param attributeNode The affected Attribute.
-	 * @return The edge that connects the Double Definition risk and the affected Attribute.
+	 * @return The edge that connects the "Double Definition" risk and the affected Attribute.
 	 * @throws ArgumentNullException Thrown if attributeNode is null.
 	 */
 	public GraphEdgeAffects affects(GraphNodeAttribute attributeNode)
@@ -38,9 +42,9 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 	}
 	
 	/**
-	 * Indicates that the Double Definition risk affects a Class.
+	 * Indicates that the "Double Definition" risk affects a Class.
 	 * @param classNode The affected Class.
-	 * @return The edge that connects the Double Definition risk and the affected Class.
+	 * @return The edge that connects the "Double Definition" risk and the affected Class.
 	 * @throws ArgumentNullException Thrown if attributeNode is null.
 	 */
 	public GraphEdgeAffects affects(GraphNodeClass classNode)
@@ -54,9 +58,9 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 	}
 	
 	/**
-	 * Indicates that the Double Definition risk affects an Operation.
+	 * Indicates that the "Double Definition" risk affects an Operation.
 	 * @param operationNode The affected Operation.
-	 * @return The edge that connects the Double Definition risk and the affected Operation.
+	 * @return The edge that connects the "Double Definition" risk and the affected Operation.
 	 * @throws ArgumentNullException Thrown if attributeNode is null.
 	 */
 	public GraphEdgeAffects affects(GraphNodeOperation operationNode)

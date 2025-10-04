@@ -153,6 +153,35 @@ public final class Graph {
 	}
 	
 	/**
+	 * Gets the edges of which its source is the specified node and the edge is the specified type.
+	 * @param <TEdge> The requested type of edge.
+	 * @param sourceNode The source node.
+	 * @param edgeType The requested type of edge.
+	 * @return The edges of which its source is the specified node and the edge is of the specified type.
+	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
+	 */
+	public <TEdge extends GraphEdge> Set<TEdge> getEdgesFrom(GraphNode sourceNode, Class<TEdge> edgeType) {
+		if (sourceNode == null) {
+			return Collections.unmodifiableSet(Set.of());
+		}
+		return
+				Collections.unmodifiableSet(
+					this
+						.matrix
+						.getOrDefault(sourceNode, new HashMap<>())
+						.values()
+						.stream()
+						.flatMap(
+								columns ->
+								columns
+									.stream()
+									.filter(edgeType::isInstance)
+									.map(edgeType::cast))
+						.collect(Collectors.toSet())
+				);
+	}
+	
+	/**
 	 * Gets the edges that are connected to a specified source node and a specified destination node.
 	 * @param sourceNode The source node.
 	 * @param destinationNode The destination node.

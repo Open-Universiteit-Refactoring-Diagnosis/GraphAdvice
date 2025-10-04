@@ -2,6 +2,8 @@ package ou.graphAdvice.nodes.refactoring.risks;
 
 import ou.graphAdvice.Graph;
 import ou.graphAdvice.contracts.ArgumentNullException;
+import ou.graphAdvice.edges.refactoring.GraphEdgeAffects;
+import ou.graphAdvice.nodes.code.GraphNodeOperation;
 
 /**
  * Represents a "Remove Concrete Override" risk in a Refactoring Advice Graph.
@@ -16,5 +18,20 @@ public final class GraphNodeRiskRemoveConcreteOverride extends GraphNodeRisk {
 	public GraphNodeRiskRemoveConcreteOverride(Graph graph)
 			throws ArgumentNullException {
 		super(graph);
+	}
+	
+	/**
+	 * Indicates that the "Remove Concrete Override" affects an Operation.
+	 * @param operationNode The affected Operation.
+	 * @return The edge that connects the "Remove Concrete Override" risk and the affected Operation.
+	 * @throws ArgumentNullException Thrown if operationNode is null.
+	 */
+	public GraphEdgeAffects affects(GraphNodeOperation operationNode)
+			throws ArgumentNullException {
+		return this.graph.addEdge(
+				this,
+				operationNode,
+				(source, destination) -> new GraphEdgeAffects(source, destination),
+				GraphEdgeAffects.class);
 	}
 }
