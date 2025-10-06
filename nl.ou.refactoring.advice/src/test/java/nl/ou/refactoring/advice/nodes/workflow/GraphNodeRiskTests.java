@@ -1,13 +1,11 @@
 package nl.ou.refactoring.advice.nodes.workflow;
 
-import java.util.Set;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
@@ -19,19 +17,19 @@ public final class GraphNodeRiskTests {
 	public void getNeutralisersTest() {
 		// Arrange
 		Graph graph = new Graph();
-		GraphNodeMicrostepAddMethod addMethod = new GraphNodeMicrostepAddMethod(graph);
-		GraphNodeMicrostepUpdateReferences updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
-		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		GraphNodeRiskMissingDefinition missingDefinition = new GraphNodeRiskMissingDefinition(graph);
+		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
+		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		final var missingDefinition = new GraphNodeRiskMissingDefinition(graph);
 		removeMethod.causes(missingDefinition);
 		addMethod.obsolesces(missingDefinition);
 		updateReferences.obsolesces(missingDefinition);
 		
 		// Act
-		Set<GraphNode> neutralisers = missingDefinition.getNeutralisers();
+		final var neutralisers = missingDefinition.getNeutralisers();
 		
 		// Assert
-		Assertions.assertTrue(neutralisers.contains(addMethod));
-		Assertions.assertTrue(neutralisers.contains(updateReferences));
+		assertTrue(neutralisers.contains(addMethod));
+		assertTrue(neutralisers.contains(updateReferences));
 	}
 }

@@ -277,12 +277,12 @@ public final class Graph {
 		ArgumentGuard.requireNotNull(edgeFactory, "edgeFactory");
 		ArgumentGuard.requireNotNull(edgeClass, "edgeClass");
 		
-		Set<GraphEdge> edges =
+		final var edges =
 				this
 					.matrix
 					.computeIfAbsent(sourceNode, _ -> new HashMap<>())
 					.computeIfAbsent(destinationNode, _ -> new HashSet<>());
-		TEdge edge =
+		var edge =
 				edges
 					.stream()
 					.filter(knownEdge -> knownEdge.getClass() == edgeClass)

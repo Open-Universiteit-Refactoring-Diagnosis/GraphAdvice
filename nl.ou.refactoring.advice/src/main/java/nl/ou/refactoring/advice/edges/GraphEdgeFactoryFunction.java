@@ -15,10 +15,10 @@ public interface GraphEdgeFactoryFunction
 	TNodeDestination extends GraphNode> {
 	/**
 	 * Creates a new edge.
-	 * @param source The source node on the edge.
-	 * @param destination The destination node on the edge.
+	 * @param sourceNode The source node on the edge.
+	 * @param destinationNode The destination node on the edge.
 	 * @param edgeLabels The labels of the edge.
 	 * @return The newly created edge.
 	 */
-	TEdge create(TNodeSource source, TNodeDestination destination);
+	TEdge create(TNodeSource sourceNode, TNodeDestination destinationNode);
 }

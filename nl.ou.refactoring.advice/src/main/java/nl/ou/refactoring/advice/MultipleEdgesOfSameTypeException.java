@@ -23,8 +23,8 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 	
 	@Override
 	public String getLocalizedMessage() {
-		GraphNode sourceNode = this.edge.getSourceNode();
-		GraphNode destinationNode = this.edge.getDestinationNode();
+		final var sourceNode = this.edge.getSourceNode();
+		final var destinationNode = this.edge.getDestinationNode();
 		return
 				MessageFormat.format(
 						"Multiple Edges of the same type '{0}' are not allowed. Source node identifier: {1}, destination node identifier: {2}",

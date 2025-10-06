@@ -8,7 +8,7 @@ public class ArgumentGuardTests {
 	@Test
 	@DisplayName("Should throw an exception if a value is null (cannot be null)")
 	public void requireNotNullWithNullTest() {
-		Object valueNull = null;
+		final Object valueNull = null;
 		ArgumentNullException exception =
 				Assertions.assertThrowsExactly(ArgumentNullException.class, () -> {
 					ArgumentGuard.requireNotNull(valueNull, "valueNull");
@@ -19,7 +19,7 @@ public class ArgumentGuardTests {
 	@Test
 	@DisplayName("Should not throw an exception if a value is not null (cannot be null)")
 	public void requireNotNullWithNotNullTest() {
-		Object valueNotNull = "test";
+		final Object valueNotNull = "test";
 		Assertions.assertDoesNotThrow(() -> {
 			ArgumentGuard.requireNotNull(valueNotNull, "valueNotNull");
 		});
@@ -28,7 +28,7 @@ public class ArgumentGuardTests {
 	@Test
 	@DisplayName("Should throw an exception if a value is null (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithNullTest() {
-		String valueNull = null;
+		final String valueNull = null;
 		ArgumentNullException exception =
 				Assertions.assertThrowsExactly(ArgumentNullException.class, () -> {
 					ArgumentGuard.requireNotNullEmptyOrWhiteSpace(valueNull, "valueNull");
@@ -39,7 +39,7 @@ public class ArgumentGuardTests {
 	@Test
 	@DisplayName("Should throw an exception if a value is empty (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithEmptyTest() {
-		String valueEmpty = "";
+		final String valueEmpty = "";
 		ArgumentEmptyException exception =
 				Assertions.assertThrowsExactly(ArgumentEmptyException.class, () -> {
 					ArgumentGuard.requireNotNullEmptyOrWhiteSpace(valueEmpty, "valueEmpty");
@@ -50,7 +50,7 @@ public class ArgumentGuardTests {
 	@Test
 	@DisplayName("Should throw an exception if a value contains only white spaces (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithWhiteSpaceTest() {
-		String valueWhiteSpace = " ";
+		final String valueWhiteSpace = " ";
 		ArgumentEmptyException exception =
 				Assertions.assertThrowsExactly(ArgumentEmptyException.class, () -> {
 					ArgumentGuard.requireNotNullEmptyOrWhiteSpace(valueWhiteSpace, "valueWhiteSpace");
@@ -61,7 +61,7 @@ public class ArgumentGuardTests {
 	@Test
 	@DisplayName("Should not throw an exception if a value is not null, not empty and does not contain only white space (cannot be null, empty or contain only white spaces)")
 	public void requireNotNullEmptyOrWhiteSpaceWithValidTest() {
-		String valueValid = "valid";
+		final String valueValid = "valid";
 		Assertions.assertDoesNotThrow(() -> {
 			ArgumentGuard.requireNotNullEmptyOrWhiteSpace(valueValid, "valueValid");
 		});

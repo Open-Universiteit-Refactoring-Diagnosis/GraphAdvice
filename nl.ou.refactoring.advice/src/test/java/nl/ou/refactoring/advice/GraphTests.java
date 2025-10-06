@@ -1,5 +1,11 @@
 package nl.ou.refactoring.advice;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.Set;
 
@@ -23,7 +29,7 @@ public final class GraphTests {
 	@Test
 	@DisplayName("Should construct a graph")
 	public void constructorTest() {
-		Graph graph = new Graph();
+		final var graph = new Graph();
 		Assertions.assertNotNull(graph);
 	}
 	
@@ -31,21 +37,21 @@ public final class GraphTests {
 	@DisplayName("Shoud retrieve all nodes")
 	public void getNodesHappyTest() {
 		// Arrange
-		Graph graph = new Graph();
+		final var graph = new Graph();
 		new GraphNodeMicrostepAddMethod(graph);
 		
 		// Act
 		Set<GraphNode> nodes = graph.getNodes();
 		
 		// Assert
-		Assertions.assertNotEquals(0, nodes.size());
+		assertNotEquals(0, nodes.size());
 	}
 	
 	@Test
 	@DisplayName("Should retrieve nodes that are assignable to a particular node type")
 	public void getNodesOfTypeHappyTest() {
 		// Arrange
-		Graph graph = new Graph();
+		final var graph = new Graph();
 		new GraphNodeMicrostepAddMethod(graph);
 		new GraphNodeMicrostepRemoveMethod(graph);
 		new GraphNodeRemedyChooseDifferentName(graph);
@@ -54,30 +60,30 @@ public final class GraphTests {
 		Set<GraphNodeMicrostep> nodes = graph.getNodes(GraphNodeMicrostep.class);
 		
 		// Assert
-		Assertions.assertEquals(2, nodes.size());
+		assertEquals(2, nodes.size());
 	}
 	
 	@Test
 	@DisplayName("Should correctly determine whether the graph contains a particular node")
 	public void containsNodeHappyTest() {
 		// Arrange
-		Graph graph = new Graph();
+		final var graph = new Graph();
 		new GraphNodeMicrostepAddMethod(graph);
-		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		new GraphNodeRemedyChooseDifferentName(graph);
 		
 		// Act
-		boolean containsNodeRemoveMethod = graph.containsNode(removeMethod);
+		final var containsNodeRemoveMethod = graph.containsNode(removeMethod);
 		
 		// Assert
-		Assertions.assertTrue(containsNodeRemoveMethod);
+		assertTrue(containsNodeRemoveMethod);
 	}
 	
 	@Test
 	@DisplayName("Should add a new edge that is not already present in the graph")
 	public void addEdgeNewTest() {
 		// Arrange
-		Graph graph = new Graph();
+		final var graph = new Graph();
 		GraphNodeRefactoringStart start;
 		try {
 			start = new GraphNodeRefactoringStart(graph);
@@ -90,34 +96,34 @@ public final class GraphTests {
 			Assertions.fail("Graph already contains a start node.");
 			return;
 		}
-		GraphNodeMicrostepAddMethod createMethod = new GraphNodeMicrostepAddMethod(graph);
+		final var createMethod = new GraphNodeMicrostepAddMethod(graph);
 		
 		// Act
-		GraphEdge[] edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
+		final var edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
 		graph.getOrAddEdge(
 				start,
 				createMethod,
 				(source, destination) -> new GraphEdgeInitiates(source, destination),
 				GraphEdgeInitiates.class);
-		GraphEdge[] edgesAfter = graph.getEdges().toArray(new GraphEdge[0]);
+		final var edgesAfter = graph.getEdges().toArray(new GraphEdge[0]);
 		
 		// Assert
-		Assertions.assertFalse(Arrays.equals(edgesBefore, edgesAfter));
-		Assertions.assertEquals(0, edgesBefore.length);
-		Assertions.assertEquals(1, edgesAfter.length);
-		Assertions.assertTrue(GraphEdgeInitiates.class.isInstance(edgesAfter[0]));
-		GraphEdgeInitiates initiates = (GraphEdgeInitiates)edgesAfter[0];
-		Assertions.assertTrue(initiates.getSourceNode().equals(start));
-		Assertions.assertTrue(initiates.getDestinationNode().equals(createMethod));
+		assertFalse(Arrays.equals(edgesBefore, edgesAfter));
+		assertEquals(0, edgesBefore.length);
+		assertEquals(1, edgesAfter.length);
+		assertTrue(GraphEdgeInitiates.class.isInstance(edgesAfter[0]));
+		final var initiates = (GraphEdgeInitiates)edgesAfter[0];
+		assertTrue(initiates.getSourceNode().equals(start));
+		assertTrue(initiates.getDestinationNode().equals(createMethod));
 	}
 	
 	@Test
 	@DisplayName("Should not add the same edge a second time")
 	public void addEdgeExistingTest() {
 		// Arrange
-		Graph graph = new Graph();
-		GraphNodeMicrostepAddMethod createMethod = new GraphNodeMicrostepAddMethod(graph);
-		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		final var graph = new Graph();
+		final var createMethod = new GraphNodeMicrostepAddMethod(graph);
+		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		
 		// Act
 		graph.getOrAddEdge(
@@ -125,15 +131,15 @@ public final class GraphTests {
 				removeMethod,
 				(source, destination) -> new GraphEdgePrecedes(source, destination),
 				GraphEdgePrecedes.class);
-		GraphEdge[] edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
+		final var edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
 		graph.getOrAddEdge(
 				createMethod,
 				removeMethod,
 				(source, destination) -> new GraphEdgePrecedes(source, destination),
 				GraphEdgePrecedes.class);
-		GraphEdge[] edgesAfter = graph.getEdges().toArray(new GraphEdge[0]);
+		final var edgesAfter = graph.getEdges().toArray(new GraphEdge[0]);
 		
 		// Assert
-		Assertions.assertArrayEquals(edgesBefore, edgesAfter);
+		assertArrayEquals(edgesBefore, edgesAfter);
 	}
 }
