@@ -2,9 +2,9 @@ package nl.ou.refactoring.advice.nodes.workflow;
 
 import java.util.Set;
 
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.GraphNode;
