@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoring;
 
@@ -34,6 +35,20 @@ public abstract class GraphNodeRisk extends GraphNodeRefactoring {
 					.getEdgesFrom(this, GraphEdgeAffects.class)
 					.stream()
 					.map(edge -> edge.getDestinationNode())
+					.collect(Collectors.toSet());
+	}
+	
+	/**
+	 * Gets the nodes that neutralise the risk.
+	 * @return The nodes that neutralise the risk.
+	 */
+	public Set<GraphNode> getNeutralisers() {
+		return
+				this
+					.graph
+					.getEdgesTo(this, GraphEdgeObsolesces.class)
+					.stream()
+					.map(edge -> edge.getSourceNode())
 					.collect(Collectors.toSet());
 	}
 }

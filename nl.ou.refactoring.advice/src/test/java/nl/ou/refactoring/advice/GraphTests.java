@@ -3,11 +3,10 @@ package nl.ou.refactoring.advice;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
@@ -20,7 +19,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddM
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
 
-public class GraphTests {
+public final class GraphTests {
 	@Test
 	@DisplayName("Should construct a graph")
 	public void constructorTest() {
@@ -33,7 +32,7 @@ public class GraphTests {
 	public void getNodesHappyTest() {
 		// Arrange
 		Graph graph = new Graph();
-		GraphNodeMicrostepAddMethod addMethod = new GraphNodeMicrostepAddMethod(graph);
+		new GraphNodeMicrostepAddMethod(graph);
 		
 		// Act
 		Set<GraphNode> nodes = graph.getNodes();
@@ -47,9 +46,9 @@ public class GraphTests {
 	public void getNodesOfTypeHappyTest() {
 		// Arrange
 		Graph graph = new Graph();
-		GraphNodeMicrostepAddMethod addMethod = new GraphNodeMicrostepAddMethod(graph);
-		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		GraphNodeRemedyChooseDifferentName chooseDifferentName = new GraphNodeRemedyChooseDifferentName(graph);
+		new GraphNodeMicrostepAddMethod(graph);
+		new GraphNodeMicrostepRemoveMethod(graph);
+		new GraphNodeRemedyChooseDifferentName(graph);
 		
 		// Act
 		Set<GraphNodeMicrostep> nodes = graph.getNodes(GraphNodeMicrostep.class);
@@ -63,9 +62,9 @@ public class GraphTests {
 	public void containsNodeHappyTest() {
 		// Arrange
 		Graph graph = new Graph();
-		GraphNodeMicrostepAddMethod addMethod = new GraphNodeMicrostepAddMethod(graph);
+		new GraphNodeMicrostepAddMethod(graph);
 		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		GraphNodeRemedyChooseDifferentName chooseDifferentName = new GraphNodeRemedyChooseDifferentName(graph);
+		new GraphNodeRemedyChooseDifferentName(graph);
 		
 		// Act
 		boolean containsNodeRemoveMethod = graph.containsNode(removeMethod);

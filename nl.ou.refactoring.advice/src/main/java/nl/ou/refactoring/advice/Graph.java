@@ -217,7 +217,38 @@ public final class Graph {
 						.matrix
 						.values()
 						.stream()
-						.flatMap(rows -> rows.getOrDefault(destinationNode, new HashSet<>()).stream())
+						.flatMap(
+								columns ->
+								columns.getOrDefault(destinationNode, new HashSet<>()).stream())
+						.collect(Collectors.toSet())
+				);
+	}
+	
+	/**
+	 * Gets the edges of which its source is the specified node and the edge is the specified type.
+	 * @param <TEdge> The requested type of edge.
+	 * @param destinationNode The destination node.
+	 * @param edgeType The requested type of edge.
+	 * @return The edges of which its source is the specified node and the edge is of the specified type.
+	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
+	 */
+	public <TEdge extends GraphEdge> Set<TEdge> getEdgesTo(GraphNode destinationNode, Class<TEdge> edgeType) {
+		if (destinationNode == null) {
+			return Collections.unmodifiableSet(Set.of());
+		}
+		return
+				Collections.unmodifiableSet(
+					this
+						.matrix
+						.values()
+						.stream()
+						.flatMap(
+								columns ->
+								columns
+									.getOrDefault(destinationNode, new HashSet<>())
+									.stream()
+									.filter(edgeType::isInstance)
+									.map(edgeType::cast))
 						.collect(Collectors.toSet())
 				);
 	}

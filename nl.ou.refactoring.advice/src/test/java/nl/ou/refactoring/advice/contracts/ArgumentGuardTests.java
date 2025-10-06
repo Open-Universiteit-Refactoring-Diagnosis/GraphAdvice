@@ -4,10 +4,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 
-import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
-import nl.ou.refactoring.advice.contracts.ArgumentGuard;
-import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-
 public class ArgumentGuardTests {
 	@Test
 	@DisplayName("Should throw an exception if a value is null (cannot be null)")
