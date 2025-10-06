@@ -13,8 +13,8 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.refactoring.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.refactoring.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 /**
  * Represents a Refactoring Advice Graph.

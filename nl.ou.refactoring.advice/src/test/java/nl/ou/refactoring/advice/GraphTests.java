@@ -10,15 +10,15 @@ import org.junit.jupiter.api.Test;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.edges.refactoring.GraphEdgeInitiates;
-import nl.ou.refactoring.advice.edges.refactoring.GraphEdgePrecedes;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.refactoring.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.refactoring.RefactoringMayContainOnlyOneStartNodeException;
-import nl.ou.refactoring.advice.nodes.refactoring.microsteps.GraphNodeMicrostep;
-import nl.ou.refactoring.advice.nodes.refactoring.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.refactoring.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.refactoring.remedies.GraphNodeRemedyChooseDifferentName;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
 
 public class GraphTests {
 	@Test
