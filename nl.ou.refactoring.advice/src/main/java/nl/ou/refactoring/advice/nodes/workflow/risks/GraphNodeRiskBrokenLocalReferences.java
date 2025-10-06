@@ -28,7 +28,7 @@ public class GraphNodeRiskBrokenLocalReferences extends GraphNodeRisk {
 	 */
 	public GraphEdgeAffects affects(GraphNodeOperation operationNode)
 			throws ArgumentNullException {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),

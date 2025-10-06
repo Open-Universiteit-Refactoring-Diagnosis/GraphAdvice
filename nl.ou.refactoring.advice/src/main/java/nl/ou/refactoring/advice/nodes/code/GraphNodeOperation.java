@@ -73,7 +73,7 @@ public final class GraphNodeOperation extends GraphNodeCode {
 	 */
 	public GraphEdgeIs hasReturnType(GraphNodeType typeNode)
 			throws ArgumentNullException {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				typeNode,
 				(source, destination) -> new GraphEdgeIs(source, destination),

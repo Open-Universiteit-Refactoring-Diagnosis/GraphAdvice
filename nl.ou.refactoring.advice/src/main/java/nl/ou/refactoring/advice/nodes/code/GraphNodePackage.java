@@ -42,7 +42,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 */
 	public GraphEdgeHas has(GraphNodeClass classNode)
 			throws ArgumentNullException {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				classNode,
 				(source, destination) -> new GraphEdgeHas(source, destination),

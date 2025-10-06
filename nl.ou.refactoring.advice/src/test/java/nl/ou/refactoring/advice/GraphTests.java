@@ -95,7 +95,7 @@ public class GraphTests {
 		
 		// Act
 		GraphEdge[] edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
-		graph.addEdge(
+		graph.getOrAddEdge(
 				start,
 				createMethod,
 				(source, destination) -> new GraphEdgeInitiates(source, destination),
@@ -121,13 +121,13 @@ public class GraphTests {
 		GraphNodeMicrostepRemoveMethod removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		
 		// Act
-		graph.addEdge(
+		graph.getOrAddEdge(
 				createMethod,
 				removeMethod,
 				(source, destination) -> new GraphEdgePrecedes(source, destination),
 				GraphEdgePrecedes.class);
 		GraphEdge[] edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
-		graph.addEdge(
+		graph.getOrAddEdge(
 				createMethod,
 				removeMethod,
 				(source, destination) -> new GraphEdgePrecedes(source, destination),

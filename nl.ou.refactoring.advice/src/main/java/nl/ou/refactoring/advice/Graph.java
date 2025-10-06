@@ -235,7 +235,7 @@ public final class Graph {
 	 * @throws ArgumentNullException Thrown if sourceNode, destinationNode, edgeFactory or edgeClass is null.
 	 */
 	public <TEdge extends GraphEdge, TNodeSource extends GraphNode, TNodeDestination extends GraphNode>
-		TEdge addEdge(
+		TEdge getOrAddEdge(
 				TNodeSource sourceNode,
 				TNodeDestination destinationNode,
 				GraphEdgeFactoryFunction<TEdge, TNodeSource, TNodeDestination> edgeFactory,

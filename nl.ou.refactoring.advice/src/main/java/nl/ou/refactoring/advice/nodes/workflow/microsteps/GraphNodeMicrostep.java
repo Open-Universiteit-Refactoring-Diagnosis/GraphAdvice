@@ -32,7 +32,7 @@ public abstract class GraphNodeMicrostep extends GraphNodeRefactoring {
 	 */
 	public GraphEdgeCauses causes(GraphNodeRisk risk)
 			throws ArgumentNullException {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				risk,
 				(source, destination) -> new GraphEdgeCauses(source, destination),
@@ -44,7 +44,7 @@ public abstract class GraphNodeMicrostep extends GraphNodeRefactoring {
 	 * @return An edge {@link GraphEdgeFinalises} that finalises the refactoring.
 	 */
 	public GraphEdgeFinalises finalises() {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				this.graph.getStart(),
 				(source, destination) -> new GraphEdgeFinalises(source, destination),
@@ -59,7 +59,7 @@ public abstract class GraphNodeMicrostep extends GraphNodeRefactoring {
 	 */
 	public GraphEdgeObsolesces obsolesces(GraphNodeRisk risk)
 			throws ArgumentNullException {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				risk,
 				(source, destination) -> new GraphEdgeObsolesces(source, destination),
@@ -75,7 +75,7 @@ public abstract class GraphNodeMicrostep extends GraphNodeRefactoring {
 	 */
 	public GraphEdgePrecedes precedes(GraphNodeMicrostep next)
 			throws ArgumentNullException {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				next,
 				(source, destination) -> new GraphEdgePrecedes(source, destination),

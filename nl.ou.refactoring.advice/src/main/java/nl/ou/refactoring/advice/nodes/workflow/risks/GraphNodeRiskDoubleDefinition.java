@@ -34,7 +34,7 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 	public GraphEdgeAffects affects(GraphNodeAttribute attributeNode)
 			throws ArgumentNullException {
 		// TODO assert that this node is only connected to Attributes with Affects.
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				attributeNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
@@ -50,7 +50,7 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 	public GraphEdgeAffects affects(GraphNodeClass classNode)
 			throws ArgumentNullException {
 		// TODO assert that this node is only connected to Classes with Affects.
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				classNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
@@ -66,7 +66,7 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 	public GraphEdgeAffects affects(GraphNodeOperation operationNode)
 			throws ArgumentNullException {
 		// TODO assert that this node is only connected to Operations with Affects.
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),

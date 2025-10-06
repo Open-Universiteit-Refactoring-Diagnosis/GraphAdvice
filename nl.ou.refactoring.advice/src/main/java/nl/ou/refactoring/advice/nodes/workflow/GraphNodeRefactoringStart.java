@@ -32,7 +32,7 @@ public final class GraphNodeRefactoringStart extends GraphNodeRefactoring {
 	 */
 	public GraphEdgeInitiates initiates(GraphNodeMicrostep microstep)
 			throws ArgumentNullException {
-		return this.graph.addEdge(
+		return this.graph.getOrAddEdge(
 				this,
 				microstep,
 				(source, destination) -> new GraphEdgeInitiates(source, destination),
