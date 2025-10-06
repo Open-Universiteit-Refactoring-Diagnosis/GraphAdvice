@@ -4,6 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoring;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
@@ -48,6 +49,21 @@ public abstract class GraphNodeMicrostep extends GraphNodeRefactoring {
 				this.graph.getStart(),
 				(source, destination) -> new GraphEdgeFinalises(source, destination),
 				GraphEdgeFinalises.class);
+	}
+	
+	/**
+	 * Obsolesces a risk caused by another microstep.
+	 * @param risk The risk that is becoming obsolete.
+	 * @return An edge {@link GraphEdgeObsolesces} that is connected to this microstep and the obsolete risk.
+	 * @throws ArgumentNullException Thrown if risk is null.
+	 */
+	public GraphEdgeObsolesces obsolesces(GraphNodeRisk risk)
+			throws ArgumentNullException {
+		return this.graph.addEdge(
+				this,
+				risk,
+				(source, destination) -> new GraphEdgeObsolesces(source, destination),
+				GraphEdgeObsolesces.class);
 	}
 	
 	/**

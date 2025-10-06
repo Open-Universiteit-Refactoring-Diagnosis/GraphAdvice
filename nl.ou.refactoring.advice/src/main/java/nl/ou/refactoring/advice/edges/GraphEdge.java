@@ -11,22 +11,22 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
  */
 public abstract class GraphEdge {
 	private final UUID id;
-	private final GraphNode source;
-	private final GraphNode destination;
+	private final GraphNode sourceNode;
+	private final GraphNode destinationNode;
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdge}.
-	 * @param source The source node.
-	 * @param destination The destination node.
+	 * @param sourceNode The source node.
+	 * @param destinationNode The destination node.
 	 * @throws ArgumentNullException Thrown if source or destination is null.
 	 */
-	protected GraphEdge(GraphNode source, GraphNode destination)
+	protected GraphEdge(GraphNode sourceNode, GraphNode destinationNode)
 			throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(source, "source");
-		ArgumentGuard.requireNotNull(destination, "destination");
+		ArgumentGuard.requireNotNull(sourceNode, "source");
+		ArgumentGuard.requireNotNull(destinationNode, "destination");
 		this.id = UUID.randomUUID();
-		this.source = source;
-		this.destination = destination;
+		this.sourceNode = sourceNode;
+		this.destinationNode = destinationNode;
 	}
 	
 	/**
@@ -41,16 +41,16 @@ public abstract class GraphEdge {
 	 * Gets the source node of this edge.
 	 * @return The source node of this edge.
 	 */
-	public GraphNode getSource() {
-		return this.source;
+	public GraphNode getSourceNode() {
+		return this.sourceNode;
 	}
 	
 	/**
 	 * Gets the destination node of this edge.
 	 * @return The destination node of this edge.
 	 */
-	public GraphNode getDestination() {
-		return this.destination;
+	public GraphNode getDestinationNode() {
+		return this.destinationNode;
 	}
 	
 	@Override
@@ -68,6 +68,6 @@ public abstract class GraphEdge {
 		if (other == null) {
 			return false;
 		}
-		return this.source.equals(other.getSource()) && this.destination.equals(other.getDestination());
+		return this.sourceNode.equals(other.getSourceNode()) && this.destinationNode.equals(other.getDestinationNode());
 	}
 }

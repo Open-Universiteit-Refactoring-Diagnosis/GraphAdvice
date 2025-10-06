@@ -33,7 +33,7 @@ public abstract class GraphNodeRisk extends GraphNodeRefactoring {
 					.graph
 					.getEdgesFrom(this, GraphEdgeAffects.class)
 					.stream()
-					.map(edge -> edge.getDestination())
+					.map(edge -> edge.getDestinationNode())
 					.collect(Collectors.toSet());
 	}
 }

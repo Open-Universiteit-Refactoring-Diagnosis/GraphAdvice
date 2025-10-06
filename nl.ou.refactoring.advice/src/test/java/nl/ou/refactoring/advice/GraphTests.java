@@ -108,8 +108,8 @@ public class GraphTests {
 		Assertions.assertEquals(1, edgesAfter.length);
 		Assertions.assertTrue(GraphEdgeInitiates.class.isInstance(edgesAfter[0]));
 		GraphEdgeInitiates initiates = (GraphEdgeInitiates)edgesAfter[0];
-		Assertions.assertTrue(initiates.getSource().equals(start));
-		Assertions.assertTrue(initiates.getDestination().equals(createMethod));
+		Assertions.assertTrue(initiates.getSourceNode().equals(start));
+		Assertions.assertTrue(initiates.getDestinationNode().equals(createMethod));
 	}
 	
 	@Test
