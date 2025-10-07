@@ -1,9 +1,9 @@
 package nl.ou.refactoring.advice;
 
 import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.nodes.GraphNode;
 
 /**
  * An exception that is thrown if multiple Edges of the same type are being connected to the same source Node and the same destination Node.
@@ -24,6 +24,7 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 	 * @param edge {@link GraphEdge} The Edge of the same type.
 	 */
 	public MultipleEdgesOfSameTypeException(GraphEdge edge) {
+		super();
 		this.edge = edge;
 	}
 	
@@ -31,9 +32,13 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 	public String getLocalizedMessage() {
 		final var sourceNode = this.edge.getSourceNode();
 		final var destinationNode = this.edge.getDestinationNode();
+		final var messageFormat =
+				ResourceBundle
+					.getBundle("ExceptionMessages")
+					.getString("multipleEdgesOfSameType");
 		return
 				MessageFormat.format(
-						"Multiple Edges of the same type '{0}' are not allowed. Source node identifier: {1}, destination node identifier: {2}",
+						messageFormat,
 						this.edge.getClass().getName(),
 						sourceNode.getId().toString(),
 						destinationNode.getId().toString());

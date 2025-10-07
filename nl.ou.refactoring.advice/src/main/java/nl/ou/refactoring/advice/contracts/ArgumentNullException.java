@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.contracts;
 
 import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 /**
  * An exception that is thrown if an argument is null.
@@ -21,7 +22,7 @@ public final class ArgumentNullException extends IllegalArgumentException {
 	 * @param parameterName The name of the parameter that provided a null argument.
 	 */
 	public ArgumentNullException(String parameterName) {
-		super(MessageFormat.format("'{0}' cannot be null", parameterName));
+		super();
 		this.parameterName = parameterName;
 	}
 	
@@ -31,5 +32,11 @@ public final class ArgumentNullException extends IllegalArgumentException {
 	 */
 	public String getParameterName() {
 		return this.parameterName;
+	}
+	
+	@Override
+	public String getLocalizedMessage() {
+		final var messageFormat = ResourceBundle.getBundle("ExceptionMessages").getString("argumentNull");
+		return MessageFormat.format(messageFormat, this.parameterName);
 	}
 }

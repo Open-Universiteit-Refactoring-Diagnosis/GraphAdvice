@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.contracts;
 
 import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 /**
  * An exception that is thrown if an argument is empty.
@@ -21,7 +22,7 @@ public final class ArgumentEmptyException extends IllegalArgumentException {
 	 * @param parameterName The name of the parameter that provided an empty argument.
 	 */
 	public ArgumentEmptyException(String parameterName) {
-		super(MessageFormat.format("'{0}' cannot be empty.", parameterName));
+		super();
 		this.parameterName = parameterName;
 	}
 	
@@ -31,5 +32,11 @@ public final class ArgumentEmptyException extends IllegalArgumentException {
 	 */
 	public String getParameterName() {
 		return this.parameterName;
+	}
+	
+	@Override
+	public String getLocalizedMessage() {
+		final var messageFormat = ResourceBundle.getBundle("ExceptionMessages").getString("argumentEmpty");
+		return MessageFormat.format(messageFormat, this.parameterName);
 	}
 }
