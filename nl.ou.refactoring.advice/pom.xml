@@ -1,13 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ou.graphAdvice</groupId>
-	<artifactId>ou.graphAdvice</artifactId>
+	<groupId>nl.ou.refactoring</groupId>
+	<artifactId>nl.ou.refactoring.advice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>RefactoringGraphAdvice</name>
-	<description>A software component for generating refactoring advices by
-		assembling and converting a refactoring in a graph.</description>
+	<name>Open Universiteit Refactoring Advice through Knowledge Graphs</name>
+	<description>A software component for generating refactoring advices by assembling a refactoring in a graph and converting it to a human-readable advice.</description>
 	<dependencies>
 		<dependency>
 			<groupId>ai.djl</groupId>
@@ -17,18 +17,33 @@
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>org.eclipse.emf.ecore</artifactId>
-			<version>2.21.0</version>
+			<version>2.40.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>uml2</artifactId>
-			<version>2.1.0-v200706251652</version>
-			<licenses>
-				<license>
-					<name>Eclipse Public License - v 1.0</name>
-					<url>http://www.eclipse.org/org/documents/epl-v10.html</url>
-				</license>
-			</licenses>
+		    <groupId>org.eclipse.uml2</groupId>
+		    <artifactId>org.eclipse.uml2.uml</artifactId>
+		    <version>3.1.0.v201006071150</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<release>25</release>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>package</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
