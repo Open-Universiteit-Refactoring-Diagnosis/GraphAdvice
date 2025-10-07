@@ -6,7 +6,7 @@ import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 
 /**
- * An edge that indicates that a refactoring is initiated with a particular microstep.
+ * An edge that indicates that a refactoring is initiated with a particular Microstep.
  */
 public final class GraphEdgeInitiates extends GraphEdge {
 	/**

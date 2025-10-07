@@ -11,7 +11,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 
 /**
  * An edge that represents the type of a code symbol.
- * @implNote Code edges follow Object Constraint Language (OCL) standards.
+ * Code edges follow Object Constraint Language (OCL) standards.
  */
 public final class GraphEdgeIs extends GraphEdge {
 	/**

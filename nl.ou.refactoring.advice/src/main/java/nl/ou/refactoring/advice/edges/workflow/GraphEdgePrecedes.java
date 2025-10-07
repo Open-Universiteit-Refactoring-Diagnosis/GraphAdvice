@@ -5,7 +5,7 @@ import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 
 /**
- * An edge that indicates that a microstep precedes another microstep in a refactoring.
+ * An Edge that indicates that a Microstep precedes another Microstep in a refactoring.
  */
 public final class GraphEdgePrecedes extends GraphEdge {
 	/**

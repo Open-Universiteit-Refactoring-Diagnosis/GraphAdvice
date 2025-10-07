@@ -6,6 +6,9 @@ import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDif
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyRenameConflictingSymbol;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 
+/**
+ * An edge that indicates that a Remedy mitigates a Risk.
+ */
 public final class GraphEdgeMitigates extends GraphEdge {
 	/**
 	 * Initialises a new instance of {@link GraphEdgeMitigates}.

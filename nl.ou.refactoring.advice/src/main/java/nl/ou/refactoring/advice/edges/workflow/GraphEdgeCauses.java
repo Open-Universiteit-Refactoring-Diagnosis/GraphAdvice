@@ -6,7 +6,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
 /**
- * An edge that indicates that a microstep causes a risk in a refactoring.
+ * An edge that indicates that a Microstep causes a risk in a refactoring.
  */
 public final class GraphEdgeCauses extends GraphEdge {
 	/**

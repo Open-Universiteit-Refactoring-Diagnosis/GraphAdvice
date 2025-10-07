@@ -10,6 +10,10 @@ public final class ArgumentNullException extends IllegalArgumentException {
 	 * A generated serial version UID for serialisation purposes.
 	 */
 	private static final long serialVersionUID = 2670122099172288318L;
+	
+	/**
+	 * The name of the parameter that provided a null argument.
+	 */
 	private final String parameterName;
 	
 	/**

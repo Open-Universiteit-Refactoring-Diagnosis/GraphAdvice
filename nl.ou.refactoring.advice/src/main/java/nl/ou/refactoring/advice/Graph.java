@@ -40,21 +40,21 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the nodes in the Refactoring Advice Graph.
+	 * Gets the nodes in the Refactoring Advice Graph.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphNode&gt;} is not modifiable.
 	 * @return The nodes in the Refactoring Advice Graph.
-	 * @apiNote The returned {@link Set Set&lt;GraphNode&gt;} is not modifiable.
 	 */
 	public Set<GraphNode> getNodes() {
 		return Collections.unmodifiableSet(this.matrix.keySet());
 	}
 	
 	/**
-	 * Gets the nodes in this graph that are assignable to a particular type.
+	 * Gets the nodes in this graph that are assignable to a particular type.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;TNode&gt;} is not modifiable.
 	 * @param <TNode> The type of node to retrieve.
 	 * @param nodeType The type of node to retrieve.
 	 * @return A read-only set of nodes that are assignable to the requested type in this graph.
 	 * @throws ArgumentNullException Thrown if nodeType is null.
-	 * @apiNote The returned {@link Set Set&lt;TNode&gt;} is not modifiable.
 	 */
 	public <TNode extends GraphNode> Set<TNode> getNodes(Class<TNode> nodeType)
 			throws ArgumentNullException {
@@ -71,12 +71,12 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the nodes in this graph that are exactly of a particular type.
+	 * Gets the nodes in this graph that are exactly of a particular type.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;TNode&gt;} is not modifiable.
 	 * @param <TNode> The type of node to retrieve.
 	 * @param nodeType The type of node to retrieve.
 	 * @return A read-only set of nodes of the requested type in this graph.
 	 * @throws ArgumentNullException Thrown if nodeType is null.
-	 * @apiNote The returned {@link Set Set&lt;TNode&gt;} is not modifiable.
 	 */
 	public <TNode extends GraphNode> Set<TNode> getNodesExact(Class<TNode> nodeType) {
 		ArgumentGuard.requireNotNull(nodeType, "nodeType");
@@ -114,9 +114,9 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the edges in the Refactoring Advice Graph.
+	 * Gets the edges in the Refactoring Advice Graph.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 * @return The edges in the Refactoring Advice Graph.
-	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 */
 	public Set<GraphEdge> getEdges() {
 		return
@@ -131,10 +131,10 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the edges of which its source is the specified node.
+	 * Gets the edges of which its source is the specified node.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 * @param sourceNode The source node.
 	 * @return The edges of which its source is the specified node.
-	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 */
 	public Set<GraphEdge> getEdgesFrom(GraphNode sourceNode) {
 		if (sourceNode == null) {
@@ -153,12 +153,12 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the edges of which its source is the specified node and the edge is the specified type.
+	 * Gets the edges of which its source is the specified node and the edge is the specified type.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 * @param <TEdge> The requested type of edge.
 	 * @param sourceNode The source node.
 	 * @param edgeType The requested type of edge.
 	 * @return The edges of which its source is the specified node and the edge is of the specified type.
-	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 */
 	public <TEdge extends GraphEdge> Set<TEdge> getEdgesFrom(GraphNode sourceNode, Class<TEdge> edgeType) {
 		if (sourceNode == null) {
@@ -182,11 +182,11 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the edges that are connected to a specified source node and a specified destination node.
+	 * Gets the edges that are connected to a specified source node and a specified destination node.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 * @param sourceNode The source node.
 	 * @param destinationNode The destination node.
 	 * @return The edges that are connected from the source node to the destination node.
-	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 */
 	public Set<GraphEdge> getEdgesWith(GraphNode sourceNode, GraphNode destinationNode) {
 		if (sourceNode == null || destinationNode == null) {
@@ -202,10 +202,10 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the edges of which its destination is the specified node.
+	 * Gets the edges of which its destination is the specified node.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 * @param destinationNode The destination node.
 	 * @return The edges of which its destination is the specified node.
-	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 */
 	public Set<GraphEdge> getEdgesTo(GraphNode destinationNode) {
 		if (destinationNode == null) {
@@ -225,12 +225,12 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets the edges of which its source is the specified node and the edge is the specified type.
+	 * Gets the edges of which its source is the specified node and the edge is the specified type.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 * @param <TEdge> The requested type of edge.
 	 * @param destinationNode The destination node.
 	 * @param edgeType The requested type of edge.
 	 * @return The edges of which its source is the specified node and the edge is of the specified type.
-	 * @apiNote The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 */
 	public <TEdge extends GraphEdge> Set<TEdge> getEdgesTo(GraphNode destinationNode, Class<TEdge> edgeType) {
 		if (destinationNode == null) {
@@ -262,6 +262,7 @@ public final class Graph {
 	 * @param sourceNode The source node of the edge.
 	 * @param destinationNode The destination node of the edge.
 	 * @param edgeFactory The factory method for creating a new instance of the desired edge, if it does not already exist.
+	 * @param edgeClass The type of edge.
 	 * @return If the edge is new, the newly created edge. If the edge already exists, the existing edge.
 	 * @throws ArgumentNullException Thrown if sourceNode, destinationNode, edgeFactory or edgeClass is null.
 	 */

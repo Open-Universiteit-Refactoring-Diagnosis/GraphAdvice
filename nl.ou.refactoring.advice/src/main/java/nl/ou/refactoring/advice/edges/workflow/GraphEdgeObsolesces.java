@@ -11,6 +11,7 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 public final class GraphEdgeObsolesces extends GraphEdge {
 
 	/**
+	 * Initialises a new instance of {@link GraphEdgeObsolesces}.
 	 * @param microstep The Node that obsolesces the destination node.
 	 * @param risk The Node that is obsolete.
 	 * @throws ArgumentNullException Thrown if microstep or risk is null.

@@ -4,7 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
 /**
- * Represents a microstep in a Refactoring Advice Graph that removes a method.
+ * Represents a Microstep in a Refactoring Advice Graph that removes a Method.
  */
 public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
 	/**

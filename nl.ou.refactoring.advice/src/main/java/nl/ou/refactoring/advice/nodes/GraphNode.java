@@ -1,6 +1,5 @@
 package nl.ou.refactoring.advice.nodes;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 

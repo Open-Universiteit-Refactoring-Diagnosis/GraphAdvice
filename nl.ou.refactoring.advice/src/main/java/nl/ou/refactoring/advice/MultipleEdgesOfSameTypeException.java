@@ -9,12 +9,18 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
  * An exception that is thrown if multiple Edges of the same type are being connected to the same source Node and the same destination Node.
  */
 public final class MultipleEdgesOfSameTypeException extends Exception {
+	/**
+	 * A generated serial version UID for serialisation purposes.
+	 */
+	private static final long serialVersionUID = -34632506627229242L;
+	
+	/**
+	 * The edge that is of the same type on the source node and destination node.
+	 */
 	private final GraphEdge edge;
 	
 	/**
 	 * Initialises a new instance of {@link MultipleEdgesOfSameTypeException}.
-	 * @param sourceNode {@link GraphNode} The source Node that already has an Edge of the same type.
-	 * @param destinationNode {@link GraphNode} The destination Node that already has an Edge of the same type.
 	 * @param edge {@link GraphEdge} The Edge of the same type.
 	 */
 	public MultipleEdgesOfSameTypeException(GraphEdge edge) {

@@ -4,7 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
 /**
- * An "Add Field" microstep.
+ * Represents a Microstep in a Refactoring Advice Graph that adds a Field.
  */
 public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
 	/**

@@ -23,7 +23,7 @@ public final class GraphNodeRemedyChooseDifferentName extends GraphNodeRemedy {
 	 * Indicates that the Choose Different Name remedy mitigates the Double Definition risk.
 	 * @param doubleDefinition The Double Definition risk that is mitigated by this remedy.
 	 * @return An edge that connects the remedy and the risk.
-	 * @throws Thrown if doubleDefinition is null.
+	 * @throws ArgumentNullException Thrown if doubleDefinition is null.
 	 */
 	public GraphEdgeMitigates mitigates(GraphNodeRiskDoubleDefinition doubleDefinition)
 			throws ArgumentNullException {

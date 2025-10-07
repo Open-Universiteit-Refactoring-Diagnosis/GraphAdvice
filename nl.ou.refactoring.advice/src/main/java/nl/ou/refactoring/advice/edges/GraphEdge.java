@@ -64,6 +64,11 @@ public abstract class GraphEdge {
 		return this.equals((GraphEdge)other);
 	}
 	
+	/**
+	 * Determines whether this edge and the other edge are equal.
+	 * @param other The other edge to compare.
+	 * @return True if the edges are equal (source and destination nodes are the same), otherwise false.
+	 */
 	public boolean equals(GraphEdge other) {
 		if (other == null) {
 			return false;

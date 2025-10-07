@@ -19,8 +19,8 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskOverloadParame
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskRemoveConcreteOverride;
 
 /**
- * An edge that indicates that a refactoring node affects a code symbol.
- * @implNote This is mainly used to connect refactoring subgraphs with code symbol subgraphs.
+ * An edge that indicates that a refactoring Node affects a code symbol.
+ * This is mainly used to connect refactoring workflow subgraphs with code symbol subgraphs.
  */
 public final class GraphEdgeAffects extends GraphEdge {
 	/**

@@ -4,7 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
 /**
- * An "Add Class" microstep.
+ * Represents a Microstep in a Refactoring Advice Graph that adds a Class.
  */
 public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
 	/**

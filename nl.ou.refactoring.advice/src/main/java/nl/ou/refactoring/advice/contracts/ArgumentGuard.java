@@ -1,6 +1,17 @@
 package nl.ou.refactoring.advice.contracts;
 
+/**
+ * Enforces contracts on parameter arguments in methods.
+ */
 public final class ArgumentGuard {
+	/**
+	 * A private constructor to avoid instantiation.
+	 * This class is only for static methods.
+	 */
+	private ArgumentGuard() {
+		throw new AssertionError("ArgumentGuard should not be instantiated; it only hosts static methods.");
+	}
+	
 	/**
 	 * Requires that an argument is not null.
 	 * @param value The argument value to check.

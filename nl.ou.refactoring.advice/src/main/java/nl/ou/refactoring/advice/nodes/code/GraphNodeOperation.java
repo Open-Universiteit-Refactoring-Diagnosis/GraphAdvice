@@ -57,9 +57,9 @@ public final class GraphNodeOperation extends GraphNodeCode {
 	}
 	
 	/**
-	 * Gets the Operation Paramaters of this Operation.
+	 * Gets the Operation Parameters of this Operation.<br />
+	 * <strong>Note:</strong> The returned {@link List List&lt;GraphNodeOperationParameter&gt;} is not modifiable.
 	 * @return The Operation Parameters of this Operation.
-	 * @apiNote The returned {@link List List&lt;GraphNodeOperationParameter&gt;} is not modifiable.
 	 */
 	public List<GraphNodeOperationParameter> getOperationParameters() {
 		return Collections.unmodifiableList(this.operationParameters);

@@ -10,7 +10,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 
 /**
  * An edge that represents ownership of a code symbol.
- * @implNote Code edges follow Object Constraint Language (OCL) standards.
+ * Code edges follow Object Constraint Language (OCL) standards.
  */
 public final class GraphEdgeHas extends GraphEdge {
 	/**
