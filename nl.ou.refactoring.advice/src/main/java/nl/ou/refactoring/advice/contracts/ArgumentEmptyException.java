@@ -34,6 +34,10 @@ public final class ArgumentEmptyException extends IllegalArgumentException {
 		return this.parameterName;
 	}
 	
+	/**
+	 * Gets a localised exception message that contains relevant details.
+	 * @return A localised exception message that contains relevant details.
+	 */
 	@Override
 	public String getLocalizedMessage() {
 		final var messageFormat = ResourceBundle.getBundle("ExceptionMessages").getString("argumentEmpty");

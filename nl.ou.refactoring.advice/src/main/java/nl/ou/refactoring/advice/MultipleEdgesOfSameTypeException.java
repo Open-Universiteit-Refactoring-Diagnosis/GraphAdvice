@@ -28,6 +28,10 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 		this.edge = edge;
 	}
 	
+	/**
+	 * Gets a localised exception message that contains relevant details.
+	 * @return A localised exception message that contains relevant details.
+	 */
 	@Override
 	public String getLocalizedMessage() {
 		final var sourceNode = this.edge.getSourceNode();
