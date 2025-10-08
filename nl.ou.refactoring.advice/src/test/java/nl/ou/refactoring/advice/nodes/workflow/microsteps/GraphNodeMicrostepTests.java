@@ -22,14 +22,14 @@ public final class GraphNodeMicrostepTests {
 		updateReferences.precedes(removeMethod);
 		
 		// Act
-		final var preceding0 = addMethod.getPreceding();
-		final var preceding1 = updateReferences.getPreceding();
-		final var preceding2 = removeMethod.getPreceding();
+		final var precedingStart = addMethod.getPreceding();
+		final var precedingMiddle = updateReferences.getPreceding();
+		final var precedingEnd = removeMethod.getPreceding();
 		
 		// Assert
-		assertEquals(null, preceding0);
-		assertEquals(addMethod, preceding1);
-		assertEquals(updateReferences, preceding2);
+		assertEquals(null, precedingStart);
+		assertEquals(addMethod, precedingMiddle);
+		assertEquals(updateReferences, precedingEnd);
 	}
 	
 	@Test
@@ -44,14 +44,22 @@ public final class GraphNodeMicrostepTests {
 		updateReferences.precedes(removeMethod);
 		
 		// Act
-		final var length0 = removeMethod.getPrecedingLength(removeMethod);
-		final var length1 = removeMethod.getPrecedingLength(updateReferences);
-		final var length2 = removeMethod.getPrecedingLength(addMethod);
+		final var sameNodeLength = removeMethod.getPrecedingLength(removeMethod);
+		final var directlyPrecedingLength = removeMethod.getPrecedingLength(updateReferences);
+		final var indirectlyPrecedingLength = removeMethod.getPrecedingLength(addMethod);
+		final var middleLength = updateReferences.getPrecedingLength(addMethod);
+		final var next0Length = updateReferences.getPrecedingLength(removeMethod);
+		final var next1Length = addMethod.getPrecedingLength(updateReferences);
+		final var reverseChainLength = addMethod.getPrecedingLength(removeMethod);
 		
 		// Assert
-		assertEquals(-1, length0);
-		assertEquals(1, length1);
-		assertEquals(2, length2);
+		assertEquals(-1, sameNodeLength);
+		assertEquals(1, directlyPrecedingLength);
+		assertEquals(2, indirectlyPrecedingLength);
+		assertEquals(1, middleLength);
+		assertEquals(-1, next0Length);
+		assertEquals(-1, next1Length);
+		assertEquals(-1, reverseChainLength);
 	}
 	
 	@Test
@@ -66,15 +74,15 @@ public final class GraphNodeMicrostepTests {
 		updateReferences.precedes(removeMethod);
 		
 		// Act
-		final var isPreceded0 = addMethod.isPrecededBy(addMethod); // same
-		final var isPreceded1 = addMethod.isPrecededBy(updateReferences); // next, not preceding
-		final var isPreceded2 = updateReferences.isPrecededBy(addMethod); // directly preceding
-		final var isPreceded3 = removeMethod.isPrecededBy(addMethod); // indirectly preceding
+		final var isPrecededSame = addMethod.isPrecededBy(addMethod);
+		final var isPrecededNext = addMethod.isPrecededBy(updateReferences);
+		final var isPrecededDirect = updateReferences.isPrecededBy(addMethod);
+		final var isPrecededIndirect = removeMethod.isPrecededBy(addMethod);
 		
 		// Assert
-		assertFalse(isPreceded0);
-		assertFalse(isPreceded1);
-		assertTrue(isPreceded2);
-		assertTrue(isPreceded3);
+		assertFalse(isPrecededSame);
+		assertFalse(isPrecededNext);
+		assertTrue(isPrecededDirect);
+		assertTrue(isPrecededIndirect);
 	}
 }
