@@ -1,10 +1,7 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
-import java.util.Optional;
-
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
