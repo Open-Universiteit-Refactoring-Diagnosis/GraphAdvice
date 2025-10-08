@@ -1,7 +1,10 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
@@ -49,6 +52,50 @@ public abstract class GraphNodeMicrostep extends GraphNodeRefactoring {
 				this.graph.getStart(),
 				(source, destination) -> new GraphEdgeFinalises(source, destination),
 				GraphEdgeFinalises.class);
+	}
+	
+	/**
+	 * Gets the directly preceding microstep.
+	 * @return The directly preceding microstep or if it's not there, null.
+	 */
+	public GraphNodeMicrostep getPreceding() {
+		final var edge =
+				this
+					.graph
+					.getEdgesTo(this, GraphEdgePrecedes.class)
+					.stream()
+					.findAny()
+					.orElse(null);
+		return (GraphNodeMicrostep)(edge == null ? null : edge.getSourceNode());
+	}
+	
+	/**
+	 * Gets the length of a chain of microsteps.
+	 * @param microstep The preceding microstep.
+	 * @return The length of the chain of microsteps, if there is any. If there is no chain, -1 is returned.
+	 */
+	public int getPrecedingLength(GraphNodeMicrostep microstep) {
+		final var directlyPrecedingMicrostep = this.getPreceding();
+		if (directlyPrecedingMicrostep == null) {
+			return -1;
+		}
+		if (directlyPrecedingMicrostep.equals(microstep)) {
+			return 1;
+		}
+		final var nextLength = directlyPrecedingMicrostep.getPrecedingLength(microstep);
+		if (nextLength < 0) {
+			return nextLength;
+		}
+		return nextLength + 1;
+	}
+	
+	/**
+	 * Indicates whether this microstep is preceded by the specified microstep.
+	 * @param microstep The microstep that may or may not precede the current microstep.
+	 * @return True if the specified microstep precedes the current microstep, false if not.
+	 */
+	public boolean isPrecededBy(GraphNodeMicrostep microstep) {
+		return this.getPrecedingLength(microstep) > 0;
 	}
 	
 	/**
