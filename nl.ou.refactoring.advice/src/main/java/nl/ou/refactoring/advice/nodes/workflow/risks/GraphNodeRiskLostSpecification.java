@@ -34,4 +34,9 @@ public final class GraphNodeRiskLostSpecification extends GraphNodeRisk {
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
 	}
+
+	@Override
+	public String getCaption() {
+		return "Lost Specification";
+	}
 }

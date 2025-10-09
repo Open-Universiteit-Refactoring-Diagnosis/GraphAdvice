@@ -16,7 +16,7 @@ public final class GraphNodeRiskTests {
 	@DisplayName("Should get microsteps that neutralise the risk")
 	public void getNeutralisersTest() {
 		// Arrange
-		Graph graph = new Graph();
+		Graph graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
@@ -39,7 +39,7 @@ public final class GraphNodeRiskTests {
 	@DisplayName("Should get microsteps that neutralise the risk, but omit microsteps that are not in a chain")
 	public void getNeutralisersInvalidChainOfMicrostepsTest() {
 		// Arrange
-		Graph graph = new Graph();
+		Graph graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);

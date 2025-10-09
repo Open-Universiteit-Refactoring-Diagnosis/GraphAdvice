@@ -15,7 +15,7 @@ public final class MultipleEdgesOfSameTypeExceptionTests {
 	@DisplayName("Should return localised message")
 	public void getLocalizedMessageTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		final var doubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
 		final var method = new GraphNodeOperation(graph, "testMethod");
 		final var affects = doubleDefinition.affects(method);

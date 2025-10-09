@@ -32,4 +32,14 @@ public final class GraphNodeType extends GraphNodeCode {
 	public String getTypeName() {
 		return this.typeName;
 	}
+
+	@Override
+	public String getLabel() {
+		return "Type";
+	}
+
+	@Override
+	public String getCaption() {
+		return this.typeName;
+	}
 }

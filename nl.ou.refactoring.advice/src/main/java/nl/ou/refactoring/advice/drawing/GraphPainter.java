@@ -12,10 +12,6 @@ import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 
 /**
@@ -23,8 +19,8 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
  */
 public final class GraphPainter {
 	// Force-directed layout
-	private static final int ITERATIONS = 5000;
-	private static final double REPULSION_CONSTANT = 2000;
+	private static final int ITERATIONS = 500000;
+	private static final double REPULSION_CONSTANT = 1000;
 	private static final double SPRING_LENGTH = 200;
 	private static final double SPRING_STRENGTH = 0.1;
 	private static final double DAMPING = 0.85;
@@ -122,21 +118,11 @@ public final class GraphPainter {
 		final var labelX = (destinationNodePosition.x + sourceNodePosition.x) / 2;
 		final var labelY = (destinationNodePosition.y + sourceNodePosition.y) / 2;
 		final var fontMetrics = graphics.getFontMetrics(FONT_EDGE);
-		final var label = getEdgeLabel(edge);
+		final var label = edge.getLabel();
 		final var labelWidth = fontMetrics.stringWidth(label);
 		final var labelHeight = fontMetrics.getHeight();
 		graphics.setFont(FONT_EDGE);
 		graphics.drawString(label, (int)labelX - (labelWidth / 2), (int)labelY + labelHeight / 2);
-	}
-	
-	private static String getEdgeLabel(GraphEdge edge) {
-		return switch (edge) {
-			case GraphEdgeAffects _ -> "Affects";
-			case GraphEdgeCauses _ -> "Causes";
-			case GraphEdgeObsolesces _ -> "Obsolesces";
-			case GraphEdgePrecedes _ -> "Precedes";
-			default -> "Unknown";
-		};
 	}
 	
 	private static void applyRepulsion(Set<GraphCanvasNode> nodes) {
@@ -158,20 +144,20 @@ public final class GraphPainter {
 	
 	private static void applyAttraction(Map<GraphNode, GraphCanvasNode> nodes, Set<GraphEdge> edges) {
 		for (var edge : edges) {
-			final var canvasNodeSource = nodes.get(edge.getSourceNode());
-			final var canvasNodeDestination = nodes.get(edge.getDestinationNode());
-			final var differenceX = canvasNodeDestination.getPosition().x - canvasNodeSource.getPosition().x;
-			final var differenceY = canvasNodeDestination.getPosition().y - canvasNodeSource.getPosition().y;
+			final var graphicsNodeSource = nodes.get(edge.getSourceNode());
+			final var graphicsNodeDestination = nodes.get(edge.getDestinationNode());
+			final var differenceX = graphicsNodeDestination.getPosition().x - graphicsNodeSource.getPosition().x;
+			final var differenceY = graphicsNodeDestination.getPosition().y - graphicsNodeSource.getPosition().y;
 			final var distance = Math.max(1,  Math.hypot(differenceX, differenceY));
 			final var displacement = distance - SPRING_LENGTH;
 			final var force = SPRING_STRENGTH * displacement;
 			final var forceX = (differenceX / distance) * force;
 			final var forceY = (differenceY / distance) * force;
 			
-			canvasNodeSource.getForce().x += forceX;
-			canvasNodeSource.getForce().y += forceY;
-			canvasNodeDestination.getForce().x -= forceX;
-			canvasNodeDestination.getForce().y -= forceY;
+			graphicsNodeSource.getForce().x += forceX;
+			graphicsNodeSource.getForce().y += forceY;
+			graphicsNodeDestination.getForce().x -= forceX;
+			graphicsNodeDestination.getForce().y -= forceY;
 		}
 	}
 	

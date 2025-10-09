@@ -33,4 +33,9 @@ public final class GraphNodeRemedyChooseDifferentName extends GraphNodeRemedy {
 				(source, destination) -> new GraphEdgeMitigates(source, destination),
 				GraphEdgeMitigates.class);
 	}
+
+	@Override
+	public String getCaption() {
+		return "Choose different name";
+	}
 }

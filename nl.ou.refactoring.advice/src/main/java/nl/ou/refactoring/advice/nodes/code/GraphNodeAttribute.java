@@ -32,4 +32,14 @@ public final class GraphNodeAttribute extends GraphNodeCode {
 	public String getAttributeName() {
 		return this.attributeName;
 	}
+
+	@Override
+	public String getLabel() {
+		return "Attribute";
+	}
+
+	@Override
+	public String getCaption() {
+		return this.attributeName;
+	}
 }

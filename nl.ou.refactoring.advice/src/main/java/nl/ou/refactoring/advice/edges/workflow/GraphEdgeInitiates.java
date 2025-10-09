@@ -19,4 +19,9 @@ public final class GraphEdgeInitiates extends GraphEdge {
 			throws ArgumentNullException {
 		super(start, workflowStep);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Initiates";
+	}
 }

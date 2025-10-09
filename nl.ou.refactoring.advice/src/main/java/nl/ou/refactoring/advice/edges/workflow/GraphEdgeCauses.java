@@ -19,4 +19,9 @@ public final class GraphEdgeCauses extends GraphEdge {
 			throws ArgumentNullException {
 		super(microstep, risk);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Causes";
+	}
 }

@@ -63,4 +63,9 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 				(source, destination) -> new GraphEdgeObsolesces(source, destination),
 				GraphEdgeObsolesces.class);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Microstep";
+	}
 }

@@ -48,4 +48,14 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
 	}
+
+	@Override
+	public String getLabel() {
+		return "Operation parameter";
+	}
+
+	@Override
+	public String getCaption() {
+		return this.parameterName;
+	}
 }

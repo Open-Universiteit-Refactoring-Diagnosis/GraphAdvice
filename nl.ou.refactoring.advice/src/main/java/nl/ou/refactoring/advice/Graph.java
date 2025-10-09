@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
@@ -22,13 +23,20 @@ import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStart
 public final class Graph {
 	private final UUID id;
 	private final Map<GraphNode, Map<GraphNode, Set<GraphEdge>>> matrix;
+	private final String refactoringName;
 	
 	/**
 	 * Initialises a new instance of {@link Graph}.
+	 * @param refactoringName The name of the refactoring.
+	 * @throws ArgumentNullException Thrown if refactoringName is null.
+	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains only white spaces.
 	 */
-	public Graph() {
+	public Graph(String refactoringName)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
 		this.id = UUID.randomUUID();
 		this.matrix = new HashMap<>();
+		this.refactoringName = refactoringName;
 	}
 	
 	/**
@@ -304,7 +312,7 @@ public final class Graph {
 	 */
 	public GraphNodeRefactoringStart start()
 			throws RefactoringMayContainOnlyOneStartNodeException {
-		return new GraphNodeRefactoringStart(this);
+		return new GraphNodeRefactoringStart(this, this.refactoringName);
 	}
 	
 	/**
@@ -321,6 +329,14 @@ public final class Graph {
 					.map(GraphNodeRefactoringStart.class::cast)
 					.findFirst()
 					.orElse(null);
+	}
+	
+	/**
+	 * Gets the name of the refactoring.
+	 * @return The name of the refactoring.
+	 */
+	public String getRefactoringName() {
+		return this.refactoringName;
 	}
 	
 	/**

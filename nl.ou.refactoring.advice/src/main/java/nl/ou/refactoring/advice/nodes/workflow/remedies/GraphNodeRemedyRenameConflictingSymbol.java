@@ -33,4 +33,9 @@ public final class GraphNodeRemedyRenameConflictingSymbol extends GraphNodeRemed
 				(source, destination) -> new GraphEdgeMitigates(source, destination),
 				GraphEdgeMitigates.class);
 	}
+
+	@Override
+	public String getCaption() {
+		return "Rename conflicting symbol";
+	}
 }

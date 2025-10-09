@@ -53,6 +53,12 @@ public abstract class GraphEdge {
 		return this.destinationNode;
 	}
 	
+	/**
+	 * Gets the label for the edge.
+	 * @return The label for the edge.
+	 */
+	public abstract String getLabel();
+	
 	@Override
 	public boolean equals(Object other) {
 		if (other == null) {

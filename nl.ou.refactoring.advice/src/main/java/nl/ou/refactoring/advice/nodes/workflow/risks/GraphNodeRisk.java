@@ -75,4 +75,9 @@ public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 		}
 		return Collections.unmodifiableSet(neutralisers);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Risk";
+	}
 }

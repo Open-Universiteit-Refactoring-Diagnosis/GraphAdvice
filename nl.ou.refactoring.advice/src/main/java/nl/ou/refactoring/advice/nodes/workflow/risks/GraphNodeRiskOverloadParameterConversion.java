@@ -34,4 +34,9 @@ public final class GraphNodeRiskOverloadParameterConversion extends GraphNodeRis
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
 	}
+
+	@Override
+	public String getCaption() {
+		return "Overload Parameter Conversion";
+	}
 }

@@ -28,4 +28,9 @@ public final class GraphEdgePrecedes extends GraphEdge {
 	public GraphNodeWorkflowAction getDestinationNode() {
 		return (GraphNodeWorkflowAction)super.getDestinationNode();
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Precedes";
+	}
 }

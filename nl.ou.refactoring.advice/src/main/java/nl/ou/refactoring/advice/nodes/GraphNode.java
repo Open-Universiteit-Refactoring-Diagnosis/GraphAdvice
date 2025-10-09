@@ -58,6 +58,18 @@ public abstract class GraphNode {
 	}
 	
 	/**
+	 * Gets the label for the node.
+	 * @return A label for the node.
+	 */
+	public abstract String getLabel();
+	
+	/**
+	 * Gets the caption for the node.
+	 * @return A caption for the node.
+	 */
+	public abstract String getCaption();
+	
+	/**
 	 * Determines whether the current node and the other object are equal.
 	 * <br />
 	 * Overrides {@link Object#equals(Object)}.

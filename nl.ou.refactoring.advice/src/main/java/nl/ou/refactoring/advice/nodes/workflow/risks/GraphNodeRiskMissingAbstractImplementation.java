@@ -34,4 +34,9 @@ public final class GraphNodeRiskMissingAbstractImplementation extends GraphNodeR
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
 	}
+
+	@Override
+	public String getCaption() {
+		return "Missing Abstract Implementation";
+	}
 }

@@ -95,4 +95,14 @@ public final class GraphNodeClass extends GraphNodeCode {
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
 	}
+
+	@Override
+	public String getLabel() {
+		return "Class";
+	}
+
+	@Override
+	public String getCaption() {
+		return this.className;
+	}
 }

@@ -256,4 +256,9 @@ public final class GraphEdgeAffects extends GraphEdge {
 					throws ArgumentNullException {
 		super(removeConcreteOverride, operationNode);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Affects";
+	}
 }

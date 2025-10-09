@@ -16,4 +16,9 @@ public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
 			throws ArgumentNullException {
 		super(graph);
 	}
+
+	@Override
+	public String getCaption() {
+		return "Add Class";
+	}
 }

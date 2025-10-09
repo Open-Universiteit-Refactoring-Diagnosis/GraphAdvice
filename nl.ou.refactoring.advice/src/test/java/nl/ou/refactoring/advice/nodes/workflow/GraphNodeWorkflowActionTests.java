@@ -17,7 +17,7 @@ public final class GraphNodeWorkflowActionTests {
 	@DisplayName("Should get the directly preceding microstep")
 	public void getPreceding() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
@@ -39,7 +39,7 @@ public final class GraphNodeWorkflowActionTests {
 	@DisplayName("Should get the length of a chain of microsteps")
 	public void getPrecedingLengthTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
@@ -69,7 +69,7 @@ public final class GraphNodeWorkflowActionTests {
 	@DisplayName("Should correctly determine whether a microstep is preceded by another microstep")
 	public void isPrecededByTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);

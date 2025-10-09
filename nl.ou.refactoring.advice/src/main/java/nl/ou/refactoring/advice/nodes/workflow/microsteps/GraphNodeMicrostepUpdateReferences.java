@@ -17,4 +17,9 @@ public final class GraphNodeMicrostepUpdateReferences extends GraphNodeMicrostep
 			throws ArgumentNullException {
 		super(graph);
 	}
+
+	@Override
+	public String getCaption() {
+		return "Update References";
+	}
 }

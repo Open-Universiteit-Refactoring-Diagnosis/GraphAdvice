@@ -29,7 +29,7 @@ public final class GraphTests {
 	@Test
 	@DisplayName("Should construct a graph")
 	public void constructorTest() {
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		Assertions.assertNotNull(graph);
 	}
 	
@@ -37,7 +37,7 @@ public final class GraphTests {
 	@DisplayName("Shoud retrieve all nodes")
 	public void getNodesHappyTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		new GraphNodeMicrostepAddMethod(graph);
 		
 		// Act
@@ -51,7 +51,7 @@ public final class GraphTests {
 	@DisplayName("Should retrieve nodes that are assignable to a particular node type")
 	public void getNodesOfTypeHappyTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		new GraphNodeMicrostepAddMethod(graph);
 		new GraphNodeMicrostepRemoveMethod(graph);
 		new GraphNodeRemedyChooseDifferentName(graph);
@@ -67,7 +67,7 @@ public final class GraphTests {
 	@DisplayName("Should correctly determine whether the graph contains a particular node")
 	public void containsNodeHappyTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		new GraphNodeMicrostepAddMethod(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		new GraphNodeRemedyChooseDifferentName(graph);
@@ -83,10 +83,10 @@ public final class GraphTests {
 	@DisplayName("Should add a new edge that is not already present in the graph")
 	public void addEdgeNewTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		GraphNodeRefactoringStart start;
 		try {
-			start = new GraphNodeRefactoringStart(graph);
+			start = new GraphNodeRefactoringStart(graph, "Refactoring Test");
 		} catch (ArgumentNullException e) {
 			e.printStackTrace();
 			Assertions.fail("This should not happen: graph should not be null, failed test.");
@@ -121,7 +121,7 @@ public final class GraphTests {
 	@DisplayName("Should not add the same edge a second time")
 	public void addEdgeExistingTest() {
 		// Arrange
-		final var graph = new Graph();
+		final var graph = new Graph("Refactoring test");
 		final var createMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		

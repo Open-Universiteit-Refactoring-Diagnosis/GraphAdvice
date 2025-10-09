@@ -79,4 +79,14 @@ public final class GraphNodeOperation extends GraphNodeCode {
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
 	}
+
+	@Override
+	public String getLabel() {
+		return "Operation";
+	}
+
+	@Override
+	public String getCaption() {
+		return this.operationName;
+	}
 }

@@ -31,4 +31,9 @@ public final class GraphEdgeObsolesces extends GraphEdge {
 	public GraphNodeRisk getDestinationNode() {
 		return (GraphNodeRisk)super.getDestinationNode();
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Obsolesces";
+	}
 }

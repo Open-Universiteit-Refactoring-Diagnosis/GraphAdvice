@@ -19,4 +19,9 @@ public final class GraphEdgeFinalises extends GraphEdge {
 			throws ArgumentNullException {
 		super(microstep, start);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Finalises";
+	}
 }

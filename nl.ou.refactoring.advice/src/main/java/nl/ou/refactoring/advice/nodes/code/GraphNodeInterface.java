@@ -80,4 +80,14 @@ public final class GraphNodeInterface extends GraphNodeCode {
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
 	}
+
+	@Override
+	public String getLabel() {
+		return "Interface";
+	}
+
+	@Override
+	public String getCaption() {
+		return this.interfaceName;
+	}
 }

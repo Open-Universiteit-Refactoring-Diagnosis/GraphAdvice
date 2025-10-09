@@ -63,4 +63,14 @@ public final class GraphNodePackage extends GraphNodeCode {
 				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
 				GraphEdgeHas.class);
 	}
+
+	@Override
+	public String getLabel() {
+		return "Package";
+	}
+
+	@Override
+	public String getCaption() {
+		return this.packageName;
+	}
 }

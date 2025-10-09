@@ -1,12 +1,8 @@
 package nl.ou.refactoring.advice.nodes.workflow.risks;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
-import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
@@ -71,5 +67,10 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
+	}
+
+	@Override
+	public String getCaption() {
+		return "Double Definition";
 	}
 }

@@ -17,4 +17,9 @@ public abstract class GraphNodeRemedy extends GraphNodeWorkflow {
 			throws ArgumentNullException {
 		super(graph);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "Remedy";
+	}
 }
