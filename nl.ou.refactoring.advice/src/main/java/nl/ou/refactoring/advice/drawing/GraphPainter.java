@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Random;
@@ -123,6 +124,41 @@ public final class GraphPainter {
 		final var labelHeight = fontMetrics.getHeight();
 		graphics.setFont(FONT_EDGE);
 		graphics.drawString(label, (int)labelX - (labelWidth / 2), (int)labelY + labelHeight / 2);
+		
+		// Arrow
+		final var arrowRadius = Math.max(labelWidth + 10, labelHeight + 10);
+		final var arrowAngle =
+				Math.atan2(
+						destinationNodePosition.y - sourceNodePosition.y,
+						destinationNodePosition.x - sourceNodePosition.x);
+		final var arrowWidth = 15;
+		final var arrowHeight = 7;
+		
+		final var arrowTipX = labelX + Math.cos(arrowAngle) * arrowRadius;
+		final var arrowTipY = labelY + Math.sin(arrowAngle) * arrowRadius;
+		final var arrowPerpendicularX = -Math.sin(arrowAngle);
+		final var arrowPerpendicularY = Math.cos(arrowAngle);
+		final var arrowBaseCentreX = arrowTipX - Math.cos(arrowAngle) * arrowHeight;
+		final var arrowBaseCentreY = arrowTipY - Math.sin(arrowAngle) * arrowHeight;
+		final var arrowBaseLeftX = arrowBaseCentreX + arrowPerpendicularX * (arrowWidth / 2);
+		final var arrowBaseLeftY = arrowBaseCentreY + arrowPerpendicularY * (arrowWidth / 2);
+		final var arrowBaseRightX = arrowBaseCentreX + arrowPerpendicularX * (arrowWidth / 2);
+		final var arrowBaseRightY = arrowBaseCentreY + arrowPerpendicularY * (arrowWidth / 2);
+		
+		final var triangleXs =
+				new int[] {
+						(int)arrowTipX,
+						(int)arrowBaseRightX,
+						(int)arrowBaseLeftX
+				};
+		final var triangleYs =
+				new int[] {
+						(int)arrowTipY,
+						(int)arrowBaseRightY,
+						(int)arrowBaseLeftY
+				};
+		final var arrow = new Polygon(triangleXs, triangleYs, 3);
+		graphics.fillPolygon(arrow);
 	}
 	
 	private static void applyRepulsion(Set<GraphCanvasNode> nodes) {

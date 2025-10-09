@@ -83,7 +83,7 @@ public final class GraphCanvasNode {
 		final var caption = this.node.getCaption();
 		final var captionWidth = captionFontMetrics.stringWidth(caption);
 		final var captionHeight = captionFontMetrics.getHeight();
-		final var ovalWidth = Math.max(50, Math.max(labelWidth + 20, captionWidth + 20));
+		final var ovalWidth = Math.max(100, Math.max(labelWidth + 20, captionWidth + 20));
 		final var ovalHeight = labelHeight + captionHeight + 20;
 		
 		// Node oval
