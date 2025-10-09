@@ -46,7 +46,7 @@ public final class GraphNodeInterface extends GraphNodeCode {
 		return this.graph.getOrAddEdge(
 				this,
 				attributeNode,
-				(source, destination) -> new GraphEdgeHas(source, destination),
+				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
 				GraphEdgeHas.class);
 				
 	}
@@ -62,7 +62,7 @@ public final class GraphNodeInterface extends GraphNodeCode {
 		return this.graph.getOrAddEdge(
 				this,
 				operationNode,
-				(source, destination) -> new GraphEdgeHas(source, destination),
+				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
 				GraphEdgeHas.class);
 	}
 	
@@ -77,7 +77,7 @@ public final class GraphNodeInterface extends GraphNodeCode {
 		return this.graph.getOrAddEdge(
 				this,
 				baseInterfaceNode,
-				(source, destination) -> new GraphEdgeIs(source, destination),
+				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
 	}
 }

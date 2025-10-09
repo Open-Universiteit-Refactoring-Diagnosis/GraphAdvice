@@ -45,7 +45,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 		return this.graph.getOrAddEdge(
 				this,
 				classNode,
-				(source, destination) -> new GraphEdgeHas(source, destination),
+				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
 				GraphEdgeHas.class);
 	}
 	

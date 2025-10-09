@@ -45,7 +45,7 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 		return this.graph.getOrAddEdge(
 				this,
 				typeNode,
-				(source, destination) -> new GraphEdgeIs(source, destination),
+				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
 	}
 }
