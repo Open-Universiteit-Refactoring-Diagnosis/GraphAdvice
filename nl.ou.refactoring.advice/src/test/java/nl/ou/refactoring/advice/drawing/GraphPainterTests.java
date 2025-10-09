@@ -37,8 +37,8 @@ public final class GraphPainterTests {
 		removeMethod.causes(missingDefinition);
 		
 		// Arrange graphics
-		final var width = 1024;
-		final var height = 768;
+		final var width = 2048;
+		final var height = 1536;
 		final var graphPainter = new GraphPainter(width, height);
 		final var graphImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		final var graphics = graphImage.createGraphics();

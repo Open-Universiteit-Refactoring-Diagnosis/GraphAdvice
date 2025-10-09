@@ -24,8 +24,8 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
 public final class GraphPainter {
 	// Force-directed layout
 	private static final int ITERATIONS = 5000;
-	private static final double REPULSION_CONSTANT = 1000;
-	private static final double SPRING_LENGTH = 100;
+	private static final double REPULSION_CONSTANT = 2000;
+	private static final double SPRING_LENGTH = 200;
 	private static final double SPRING_STRENGTH = 0.1;
 	private static final double DAMPING = 0.85;
 	private static final double TIME_STEP = 0.5;
@@ -126,7 +126,7 @@ public final class GraphPainter {
 		final var labelWidth = fontMetrics.stringWidth(label);
 		final var labelHeight = fontMetrics.getHeight();
 		graphics.setFont(FONT_EDGE);
-		graphics.drawString(label, (int)labelX - (labelWidth / 2), (int)labelY - (labelHeight / 2));
+		graphics.drawString(label, (int)labelX - (labelWidth / 2), (int)labelY + labelHeight / 2);
 	}
 	
 	private static String getEdgeLabel(GraphEdge edge) {
