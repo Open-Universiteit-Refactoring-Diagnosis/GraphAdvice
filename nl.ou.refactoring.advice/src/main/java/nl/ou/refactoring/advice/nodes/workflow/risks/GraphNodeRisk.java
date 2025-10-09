@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.nodes.workflow.risks;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -8,13 +9,13 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoring;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflowAction;
 
 /**
  * Represents a risk in a Refactoring Advice Graph.
  */
-public abstract class GraphNodeRisk extends GraphNodeRefactoring {
+public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 	/**
 	 * Initialises a new instance of {@link GraphNodeRisk}.
 	 * @param graph The graph that contains the node.
@@ -43,7 +44,7 @@ public abstract class GraphNodeRisk extends GraphNodeRefactoring {
 	 * Gets the nodes that neutralise the risk.
 	 * @return The nodes that neutralise the risk.
 	 */
-	public Set<GraphNode> getNeutralisers() {
+	public Set<GraphNodeWorkflowAction> getNeutralisers() {
 		final var neutralisers =
 				this
 					.graph
@@ -52,27 +53,26 @@ public abstract class GraphNodeRisk extends GraphNodeRefactoring {
 					.map(edge -> edge.getSourceNode())
 					.collect(Collectors.toSet());
 		if (neutralisers.size() <= 1) {
-			return neutralisers;
+			return Collections.unmodifiableSet(neutralisers);
 		}
 		
-		// Ensure a chain of microsteps in the correct order.
-		final var neutraliserMicrosteps =
+		// Ensure a chain of workflow steps in the correct order.
+		final var neutraliserWorkflowSteps =
 				neutralisers
 					.stream()
-					.filter(GraphNodeMicrostep.class::isInstance)
-					.map(GraphNodeMicrostep.class::cast)
 					.sorted((one, other) -> one.getPrecedingLength(other))
 					.collect(Collectors.toList());
-		if (neutraliserMicrosteps.size() <= 1) {
-			return neutralisers;
+		if (neutraliserWorkflowSteps.size() <= 1) {
+			return Collections.unmodifiableSet(neutralisers);
 		}
-		for (var i = neutraliserMicrosteps.size() - 1; i > 0; i--) {
-			final var current = neutraliserMicrosteps.get(i);
-			final var previous = neutraliserMicrosteps.get(i - 1);
+		for (var i = neutraliserWorkflowSteps.size() - 1; i > 0; i--) {
+			final var current = neutraliserWorkflowSteps.get(i);
+			final var previous = neutraliserWorkflowSteps.get(i - 1);
 			if (!current.isPrecededBy(previous)) {
-				neutralisers.remove(previous);
+				// return empty set if neutralisers do not form a chain
+				return Collections.unmodifiableSet(Set.of());
 			}
 		}
-		return neutralisers;
+		return Collections.unmodifiableSet(neutralisers);
 	}
 }

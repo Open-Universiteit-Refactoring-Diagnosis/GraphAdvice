@@ -1,6 +1,6 @@
-package nl.ou.refactoring.advice.nodes.workflow;
+package nl.ou.refactoring.advice.nodes.workflow.risks;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +10,6 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
 public final class GraphNodeRiskTests {
 	@Test
@@ -54,7 +53,6 @@ public final class GraphNodeRiskTests {
 		final var neutralisers = missingDefinition.getNeutralisers();
 		
 		// Assert
-		assertFalse(neutralisers.contains(addMethod));
-		assertTrue(neutralisers.contains(updateReferences));
+		assertEquals(0, neutralisers.size());
 	}
 }

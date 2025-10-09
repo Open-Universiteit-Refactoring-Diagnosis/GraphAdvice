@@ -2,20 +2,30 @@ package nl.ou.refactoring.advice.edges.workflow;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflowAction;
 
 /**
- * An Edge that indicates that a Microstep precedes another Microstep in a refactoring.
+ * An Edge that indicates that a Workflow Step precedes another Workflow Step in a refactoring.
  */
 public final class GraphEdgePrecedes extends GraphEdge {
 	/**
 	 * Initialises a new instance of {@link GraphEdgePrecedes}.
-	 * @param currentMicrostep The current microstep.
-	 * @param nextMicrostep The next current microstep.
-	 * @throws ArgumentNullException Thrown if currentMicrostep or nextMicrostep is null.
+	 * @param currentWorkflowAction The current workflow action.
+	 * @param nextWorkflowAction The next current workflow action.
+	 * @throws ArgumentNullException Thrown if currentWorkflowStep or nextWorkflowStep is null.
 	 */
-	public GraphEdgePrecedes(GraphNodeMicrostep currentMicrostep, GraphNodeMicrostep nextMicrostep)
+	public GraphEdgePrecedes(GraphNodeWorkflowAction currentWorkflowAction, GraphNodeWorkflowAction nextWorkflowAction)
 			throws ArgumentNullException {
-		super(currentMicrostep, nextMicrostep);
+		super(currentWorkflowAction, nextWorkflowAction);
+	}
+	
+	@Override
+	public GraphNodeWorkflowAction getSourceNode() {
+		return (GraphNodeWorkflowAction)super.getSourceNode();
+	}
+	
+	@Override
+	public GraphNodeWorkflowAction getDestinationNode() {
+		return (GraphNodeWorkflowAction)super.getDestinationNode();
 	}
 }

@@ -8,7 +8,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 /**
  * Represents the start node of a refactoring in a Refactoring Advice Graph.
  */
-public final class GraphNodeRefactoringStart extends GraphNodeRefactoring {
+public final class GraphNodeRefactoringStart extends GraphNodeWorkflow {
 	/**
 	 * Initialises a new instance of {@link GraphNodeRefactoringStart}.
 	 * @param graph The graph that contains the node.
@@ -24,17 +24,17 @@ public final class GraphNodeRefactoringStart extends GraphNodeRefactoring {
 	}
 	
 	/**
-	 * Initiates a refactoring with a particular type of microstep.
+	 * Initiates a refactoring with a particular type of workflow step.
 	 * If the relationship already exists, no edges will be added to the graph and the existing edge will be returned.
-	 * @param microstep The microstep to initiate from the refactoring.
+	 * @param workflowStep The workflow step to initiate from the refactoring.
 	 * @return The initial microstep.
 	 * @throws ArgumentNullException Thrown if microstep is null.
 	 */
-	public GraphEdgeInitiates initiates(GraphNodeMicrostep microstep)
+	public GraphEdgeInitiates initiates(GraphNodeWorkflow workflowStep)
 			throws ArgumentNullException {
 		return this.graph.getOrAddEdge(
 				this,
-				microstep,
+				workflowStep,
 				(source, destination) -> new GraphEdgeInitiates(source, destination),
 				GraphEdgeInitiates.class);
 	}

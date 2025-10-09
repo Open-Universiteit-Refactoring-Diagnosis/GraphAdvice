@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nodes.workflow.microsteps;
+package nl.ou.refactoring.advice.nodes.workflow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,8 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
 
-public final class GraphNodeMicrostepTests {
+public final class GraphNodeWorkflowActionTests {
 	@Test
 	@DisplayName("Should get the directly preceding microstep")
 	public void getPreceding() {

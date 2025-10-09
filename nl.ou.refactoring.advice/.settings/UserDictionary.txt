@@ -4,3 +4,4 @@ refactoring
 obsolesces
 microsteps
 obsolesce
+actionable
