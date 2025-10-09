@@ -48,4 +48,19 @@ public final class GraphNodePackage extends GraphNodeCode {
 				(source, destination) -> new GraphEdgeHas(source, destination),
 				GraphEdgeHas.class);
 	}
+	
+	/**
+	 * Indicates that the Package contains an Interface.
+	 * @param interfaceNode The node that describes the Interface in the Package.
+	 * @return The edge that connects the Package and the Interface.
+	 * @throws ArgumentNullException Thrown if interfaceNode is null.
+	 */
+	public GraphEdgeHas has(GraphNodeInterface interfaceNode)
+			throws ArgumentNullException {
+		return this.graph.getOrAddEdge(
+				this,
+				interfaceNode,
+				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
+				GraphEdgeHas.class);
+	}
 }
