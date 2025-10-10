@@ -11,6 +11,8 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeIntermediateRefactoring;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedy;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
@@ -120,9 +122,11 @@ public final class GraphCanvasNode {
 		return switch(this.node) {
 			case GraphNodeAttribute _ -> Color.decode("#60A917");
 			case GraphNodeClass _ -> Color.decode("#0050EF");
+			case GraphNodeIntermediateRefactoring _ -> Color.decode("#F5F5F5");
 			case GraphNodeMicrostep _ -> Color.decode("#DAE8FC");
 			case GraphNodeOperation _ -> Color.decode("#6A00FF");
 			case GraphNodePackage _ -> Color.decode("#D80073");
+			case GraphNodeRefactoringStart _ -> Color.decode("#F5F5F5");
 			case GraphNodeRemedy _ -> Color.decode("#D5E8D4");
 			case GraphNodeRisk _ -> Color.decode("#FFE6CC");
 			default -> Color.white;

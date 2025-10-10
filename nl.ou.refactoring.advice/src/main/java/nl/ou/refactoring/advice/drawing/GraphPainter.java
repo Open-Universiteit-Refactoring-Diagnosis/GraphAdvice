@@ -127,7 +127,7 @@ public final class GraphPainter {
 		
 		// Arrow
 		final var edgeLength = sourceNodePosition.distance(destinationNodePosition);
-		final var arrowRadius = Math.min(Math.max(labelWidth + 15, labelHeight + 15), edgeLength / 2);
+		final var arrowRadius = Math.min(Math.max(labelWidth + 10, labelHeight + 10), edgeLength / 2);
 		final var arrowAngle =
 				Math.atan2(
 						destinationNodePosition.y - sourceNodePosition.y,
