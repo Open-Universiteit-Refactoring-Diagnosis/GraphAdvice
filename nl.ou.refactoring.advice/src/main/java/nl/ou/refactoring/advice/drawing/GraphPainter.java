@@ -123,10 +123,11 @@ public final class GraphPainter {
 		final var labelWidth = fontMetrics.stringWidth(label);
 		final var labelHeight = fontMetrics.getHeight();
 		graphics.setFont(FONT_EDGE);
-		graphics.drawString(label, (int)labelX - (labelWidth / 2), (int)labelY + labelHeight / 2);
+		graphics.drawString(label, (int)labelX - (labelWidth / 2), (int)labelY + fontMetrics.getAscent() / 2);
 		
 		// Arrow
-		final var arrowRadius = Math.max(labelWidth + 10, labelHeight + 10);
+		final var edgeLength = sourceNodePosition.distance(destinationNodePosition);
+		final var arrowRadius = Math.min(Math.max(labelWidth + 15, labelHeight + 15), edgeLength / 2);
 		final var arrowAngle =
 				Math.atan2(
 						destinationNodePosition.y - sourceNodePosition.y,
@@ -142,22 +143,22 @@ public final class GraphPainter {
 		final var arrowBaseCentreY = arrowTipY - Math.sin(arrowAngle) * arrowHeight;
 		final var arrowBaseLeftX = arrowBaseCentreX + arrowPerpendicularX * (arrowWidth / 2);
 		final var arrowBaseLeftY = arrowBaseCentreY + arrowPerpendicularY * (arrowWidth / 2);
-		final var arrowBaseRightX = arrowBaseCentreX + arrowPerpendicularX * (arrowWidth / 2);
-		final var arrowBaseRightY = arrowBaseCentreY + arrowPerpendicularY * (arrowWidth / 2);
+		final var arrowBaseRightX = arrowBaseCentreX - arrowPerpendicularX * (arrowWidth / 2);
+		final var arrowBaseRightY = arrowBaseCentreY - arrowPerpendicularY * (arrowWidth / 2);
 		
-		final var triangleXs =
+		final var arrowXs =
 				new int[] {
 						(int)arrowTipX,
 						(int)arrowBaseRightX,
 						(int)arrowBaseLeftX
 				};
-		final var triangleYs =
+		final var arrowYs =
 				new int[] {
 						(int)arrowTipY,
 						(int)arrowBaseRightY,
 						(int)arrowBaseLeftY
 				};
-		final var arrow = new Polygon(triangleXs, triangleYs, 3);
+		final var arrow = new Polygon(arrowXs, arrowYs, 3);
 		graphics.fillPolygon(arrow);
 	}
 	
