@@ -15,6 +15,7 @@ public final class GraphNodeIntermediateRefactoring extends GraphNodeWorkflowAct
 	/**
 	 * Initialises a new instance of {@link GraphNodeIntermediateRefactoring}.
 	 * @param encompassingGraph The encompassing graph that contains this node.
+	 * @param refactoringName The name of the intermediate refactoring.
 	 * @param intermediateRefactoringGraph The intermediate refactoring graph.
 	 * @throws ArgumentNullException Thrown if encompassingGraph, refactoringName or intermediateRefactoringGraph is null.
 	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains only white spaces.

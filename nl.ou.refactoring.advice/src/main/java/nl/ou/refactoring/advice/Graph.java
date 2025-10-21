@@ -122,6 +122,41 @@ public final class Graph {
 	}
 	
 	/**
+	 * Removes nodes of type nodeType and associated edges (both incoming and outgoing) from the graph.
+	 * @param <TNode> The type of node to remove.
+	 * @param nodeType The type of node to remove.
+	 * @throws ArgumentNullException Thrown if nodeType is null.
+	 */
+	public <TNode extends GraphNode> void removeNodes(Class<TNode> nodeType)
+			throws ArgumentNullException {
+		final var nodes = this.getNodesExact(nodeType);
+		for (var node : nodes) {
+			this.matrix.forEach((_, column) -> {
+				column.remove(node);
+			});
+			this.matrix.remove(node);
+		}
+	}
+	
+	/**
+	 * Gets an {@link GraphEdge} by its unique identifier.
+	 * @param edgeIdentifier The unique identifier of the edge.
+	 * @return The edge with the specified identifier, or if not found, null.
+	 */
+	public GraphEdge getEdge(UUID edgeIdentifier) {
+		return
+				this
+					.matrix
+					.values()
+					.stream()
+					.flatMap(column -> column.values().stream())
+					.flatMap(edges -> edges.stream())
+					.filter(edge -> edge.getId() == edgeIdentifier)
+					.findFirst()
+					.orElse(null);
+	}
+	
+	/**
 	 * Gets the edges in the Refactoring Advice Graph.<br />
 	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not modifiable.
 	 * @return The edges in the Refactoring Advice Graph.

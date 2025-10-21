@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.contracts;
 
+import java.text.MessageFormat;
+
 /**
  * Enforces contracts on parameter arguments in methods.
  */
@@ -39,6 +41,38 @@ public final class ArgumentGuard {
 		}
 		if (value.trim().isEmpty()) {
 			throw new ArgumentEmptyException(parameterName);
+		}
+	}
+	
+	/**
+	 * Requires that a value cannot be less than the specified minimum.
+	 * @param minimum The minimum value.
+	 * @param value The actual value.
+	 * @param parameterName The name of the parameter.
+	 * @throws IllegalArgumentException Thrown if the value is not greater than or equal to the specified minimum.
+	 */
+	public static void requireGreaterThanOrEqual(double minimum, double value, String parameterName)
+			throws IllegalArgumentException {
+		if (value < minimum) {
+			var messageFormat = "'{0}' cannot be less than {1} but was {2}";
+			var message = MessageFormat.format(messageFormat, parameterName, minimum, value);
+			throw new IllegalArgumentException(message);
+		}
+	}
+	
+	/**
+	 * Requires that a value cannot be less than the specified minimum.
+	 * @param minimum The minimum value.
+	 * @param value The actual value.
+	 * @param parameterName The name of the parameter.
+	 * @throws IllegalArgumentException Thrown if the value is not greater than or equal to the specified minimum.
+	 */
+	public static void requireGreaterThanOrEqual(int minimum, int value, String parameterName)
+			throws IllegalArgumentException {
+		if (value < minimum) {
+			var messageFormat = "'{0}' cannot be less than {1} but was {2}";
+			var message = MessageFormat.format(messageFormat, parameterName, minimum, value);
+			throw new IllegalArgumentException(message);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nodes.workflow;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
@@ -20,7 +21,7 @@ public final class GraphNodeRefactoringStart extends GraphNodeWorkflow {
 	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains only white spaces.
 	 */
 	public GraphNodeRefactoringStart(Graph graph, String refactoringName)
-			throws ArgumentNullException, RefactoringMayContainOnlyOneStartNodeException {
+			throws ArgumentNullException, RefactoringMayContainOnlyOneStartNodeException, ArgumentEmptyException {
 		super(graph);
 		if (graph.getNodes(GraphNodeRefactoringStart.class).size() > 1) {
 			throw new RefactoringMayContainOnlyOneStartNodeException();
