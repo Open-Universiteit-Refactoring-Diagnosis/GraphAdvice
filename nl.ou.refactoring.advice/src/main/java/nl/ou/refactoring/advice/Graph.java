@@ -48,6 +48,25 @@ public final class Graph {
 	}
 	
 	/**
+	 * Gets a {@link GraphNode} by its unique identifier.
+	 * @param nodeIdentifier The unique identifier of the node.
+	 * @return The node with the specified identifier, or if not found, null.
+	 * @throws ArgumentNullException Thrown if nodeIdentifier is null.
+	 */
+	public GraphNode getNode(UUID nodeIdentifier)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(nodeIdentifier, "identifier");
+		return
+				this
+					.matrix
+					.keySet()
+					.stream()
+					.filter(node -> node.getId() == nodeIdentifier)
+					.findFirst()
+					.orElse(null);
+	}
+	
+	/**
 	 * Gets the nodes in the Refactoring Advice Graph.<br />
 	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphNode&gt;} is not modifiable.
 	 * @return The nodes in the Refactoring Advice Graph.
@@ -139,11 +158,14 @@ public final class Graph {
 	}
 	
 	/**
-	 * Gets an {@link GraphEdge} by its unique identifier.
+	 * Gets a {@link GraphEdge} by its unique identifier.
 	 * @param edgeIdentifier The unique identifier of the edge.
 	 * @return The edge with the specified identifier, or if not found, null.
+	 * @throws ArgumentNullException Thrown if edgeIdentifier is null.
 	 */
-	public GraphEdge getEdge(UUID edgeIdentifier) {
+	public GraphEdge getEdge(UUID edgeIdentifier)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(edgeIdentifier, "edgeIdentifier");
 		return
 				this
 					.matrix

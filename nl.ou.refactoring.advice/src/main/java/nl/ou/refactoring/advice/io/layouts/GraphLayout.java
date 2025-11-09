@@ -4,6 +4,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
@@ -38,7 +39,8 @@ public abstract class GraphLayout {
 	 * @param area The area to map the layout to.
 	 * @return A set of layout nodes.
 	 * @throws ArgumentNullException Thrown if graph or area is null.
+	 * @throws GraphPathSegmentInvalidException Thrown if a graph path has an invalid segment.
 	 */
 	public abstract Set<GraphLayoutNode> apply(Graph graph, Rectangle2D area)
-			throws ArgumentNullException;
+			throws ArgumentNullException, GraphPathSegmentInvalidException;
 }

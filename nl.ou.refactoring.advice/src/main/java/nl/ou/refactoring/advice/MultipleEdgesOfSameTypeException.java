@@ -47,5 +47,4 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 						sourceNode.getId().toString(),
 						destinationNode.getId().toString());
 	}
-
 }

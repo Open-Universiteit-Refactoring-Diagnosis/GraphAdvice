@@ -1,9 +1,13 @@
 package nl.ou.refactoring.advice.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.UUID;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPath;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
@@ -55,6 +59,51 @@ public abstract class GraphNode {
 	 */
 	public Set<GraphEdge> getEdges() {
 		return this.graph.getEdgesFrom(this);
+	}
+	
+	/**
+	 * Finds paths that lead out of this node, limited by a maximum depth.
+	 * @param maximumDepth The maximum depth of the paths.
+	 * @return The paths that lead out of this node, limited by a maximum depth.
+	 */
+	public List<GraphPath> findPaths(int maximumDepth) {
+		List<GraphPath> result = new ArrayList<>();
+		Stack<GraphPathSearchNode> searchNodes = new Stack<>();
+		var initialPath = new GraphPath(this);
+		searchNodes.push(new GraphPathSearchNode(this, initialPath));
+		
+		while (!searchNodes.isEmpty()) {
+			var currentSearchNode = searchNodes.pop();
+			var currentNode = currentSearchNode.getNode();
+			var currentPath = currentSearchNode.getPath();
+			var currentPathSegments = currentPath.getSegments();
+			
+			if (currentPathSegments.size() <= maximumDepth) {
+				result.add(currentPath);
+			}
+			if (currentPathSegments.size() >= maximumDepth) {
+				continue;
+			}
+			
+			var currentEdges = currentNode.getEdges();
+			for (var edge : currentEdges) {
+				var neighbour = edge.getDestinationNode();
+				if (currentPath.contains(neighbour)) {
+					// avoid cycles
+					continue;
+				}
+				
+				try {
+					var newPath = (GraphPath)currentPath.clone();
+					newPath.append(edge, neighbour);
+					searchNodes.push(new GraphPathSearchNode(neighbour, newPath));
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
 	}
 	
 	/**

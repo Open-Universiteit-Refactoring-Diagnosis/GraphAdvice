@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.layouts.GraphLayout;
@@ -31,10 +32,10 @@ public final class GraphLayoutGlobalRanking extends GraphLayout {
 	public Set<GraphLayoutNode> apply(
 			Graph graph,
 			Rectangle2D area)
-					throws ArgumentNullException {
+					throws ArgumentNullException, GraphPathSegmentInvalidException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(area, "area");
-		final var globalRanking = this.computeGlobalRanking(graph);
+		final var globalRanking = GraphGlobalRanking.compute(this.getSettings(), graph);
 		// TODO implement the rest
 		return Set.of();
 	}
@@ -42,27 +43,5 @@ public final class GraphLayoutGlobalRanking extends GraphLayout {
 	@Override
 	public GraphLayoutGlobalRankingSettings getSettings() {
 		return (GraphLayoutGlobalRankingSettings)super.getSettings();
-	}
-	
-	private Map<GraphNode, Double> computeGlobalRanking(Graph graph) {
-		final var settings = this.getSettings();
-		
-		// Extract variations
-		final var variationMaximumDepth = settings.getVariationMaximumDepth();
-		final var variations =
-				new GraphVariationExtractor()
-					.extract(graph, variationMaximumDepth);
-		
-		// Sort by importance
-		final var edgeWeights = settings.getEdgeWeights();
-		final var variationsSorted = GraphVariationImportanceSorter.sort(variations, edgeWeights);
-		
-		// Create a ranking
-		final var graphRanking = new GraphRanking();
-		for (final var variation : variationsSorted) {
-			graphRanking.update(variation, edgeWeights);
-		}
-		graphRanking.normalise();
-		return graphRanking.getGlobalRanking();
 	}
 }

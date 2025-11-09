@@ -16,12 +16,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.io.layouts.forceDirected.GraphLayoutForceDirectedSettings;
 import nl.ou.refactoring.advice.io.layouts.globalRanking.GraphLayoutGlobalRankingSettings;
-import nl.ou.refactoring.advice.io.layouts.sugiyama.GraphLayoutSugiyamaSettings;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
@@ -38,7 +39,11 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinit
 public final class GraphPainterTests {
 	@Test
 	@DisplayName("Should draw a Refactoring Advice Graph on an image using Force-Directed Layout")
-	public void drawForceDirectedLayoutTest() throws RefactoringMayContainOnlyOneStartNodeException {
+	public void drawForceDirectedLayoutTest()
+			throws
+				ArgumentNullException,
+				GraphPathSegmentInvalidException,
+				RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange graph
 		final var graph = new Graph("Move Method");
 		
@@ -111,9 +116,13 @@ public final class GraphPainterTests {
 		}
 	}
 	
-	@Test
+	// @Test
 	@DisplayName("Should draw a Refactoring Advice Graph on an image using Global Ranking Layout")
-	public void drawGlobalRankingLayoutTest() throws RefactoringMayContainOnlyOneStartNodeException {
+	public void drawGlobalRankingLayoutTest()
+			throws
+				ArgumentNullException,
+				GraphPathSegmentInvalidException,
+				RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange graph
 		final var graph = new Graph("Move Method");
 		

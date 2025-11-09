@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
@@ -56,9 +57,10 @@ public final class GraphPainter {
 	 * @param graphics The graphics surface to draw on.
 	 * @param layoutSettings The graph layout settings.
 	 * @throws ArgumentNullException Thrown if graph, graphics or layoutSettings is null.
+	 * @throws GraphPathSegmentInvalidException Thrown if the graph contains a path with an invalid segment.
 	 */
 	public void draw(Graph graph, Graphics2D graphics, GraphLayoutSettings layoutSettings)
-			throws ArgumentNullException {
+			throws ArgumentNullException, GraphPathSegmentInvalidException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(graphics, "graphics");
 		ArgumentGuard.requireNotNull(layoutSettings, "layoutSettings");
@@ -90,9 +92,10 @@ public final class GraphPainter {
 	 * @param layoutSettings The layout settings for the Refactoring Advice Graph.
 	 * @return An image of the contents of the canvas.
 	 * @throws ArgumentNullException Thrown if graph or layoutSettings is null.
+	 * @throws GraphPathSegmentInvalidException Thrown if the graph contains a path with an invalid segment.
 	 */
 	public Image createImage(Graph graph, GraphLayoutSettings layoutSettings)
-			throws ArgumentNullException {
+			throws ArgumentNullException, GraphPathSegmentInvalidException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(layoutSettings, "layoutSettings");
 		final var image = new BufferedImage((int)this.width, (int)this.height, BufferedImage.TYPE_INT_ARGB);
@@ -136,6 +139,7 @@ public final class GraphPainter {
 						destinationNodeLocation.y - sourceNodeLocation.y,
 						destinationNodeLocation.x - sourceNodeLocation.x);
 		final var arrowWidth = 15;
+		final var arrowWidthHalf = arrowWidth / 2;
 		final var arrowHeight = 7;
 		
 		final var arrowTipX = labelX + Math.cos(arrowAngle) * arrowLocationRadius;
@@ -144,10 +148,12 @@ public final class GraphPainter {
 		final var arrowPerpendicularY = Math.cos(arrowAngle);
 		final var arrowBaseCentreX = arrowTipX - Math.cos(arrowAngle) * arrowHeight;
 		final var arrowBaseCentreY = arrowTipY - Math.sin(arrowAngle) * arrowHeight;
-		final var arrowBaseLeftX = arrowBaseCentreX + arrowPerpendicularX * (arrowWidth / 2);
-		final var arrowBaseLeftY = arrowBaseCentreY + arrowPerpendicularY * (arrowWidth / 2);
-		final var arrowBaseRightX = arrowBaseCentreX - arrowPerpendicularX * (arrowWidth / 2);
-		final var arrowBaseRightY = arrowBaseCentreY - arrowPerpendicularY * (arrowWidth / 2);
+		final var arrowBaseArcLengthHorizontal = arrowPerpendicularX * arrowWidthHalf;
+		final var arrowBaseArcLengthVertical = arrowPerpendicularY * arrowWidthHalf;
+		final var arrowBaseLeftX = arrowBaseCentreX + arrowBaseArcLengthHorizontal;
+		final var arrowBaseLeftY = arrowBaseCentreY + arrowBaseArcLengthVertical;
+		final var arrowBaseRightX = arrowBaseCentreX - arrowBaseArcLengthHorizontal;
+		final var arrowBaseRightY = arrowBaseCentreY - arrowBaseArcLengthVertical;
 		
 		final var arrowXs =
 				new int[] {

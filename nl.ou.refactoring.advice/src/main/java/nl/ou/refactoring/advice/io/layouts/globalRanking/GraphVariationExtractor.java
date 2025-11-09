@@ -6,66 +6,95 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPath;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 
+/**
+ * Extracts graph variations from a graph.
+ */
 public final class GraphVariationExtractor {
-	private final Map<String, Integer> sequenceCounts = new HashMap<>();
-	
-	public GraphVariationExtractor() { }
+	private GraphVariationExtractor() { }
 
-	public Set<GraphVariation> extract(Graph graph, int maximumDepth) {
+	/**
+	 * Extracts the variations from the specified graph.
+	 * @param graph The graph to extract variations from.
+	 * @param maximumDepth The maximum depth of a variation.
+	 * @return The set of variations found in the graph.
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 * @throws GraphPathSegmentInvalidException Thrown if a graph path segment is invalid.
+	 */
+	public static Set<GraphVariation> extract(Graph graph, int maximumDepth)
+			throws ArgumentNullException, GraphPathSegmentInvalidException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		final Map<String, Integer> sequenceCounts = new HashMap<>();
 		for (final var variationStartNode : graph.getNodes()) {
-			this.depthFirstSearch(variationStartNode, new ArrayList<>(), maximumDepth);
+			var paths = variationStartNode.findPaths(maximumDepth);
+			for (var path : paths) {
+				var sequence = encodeSequence(path);
+				sequenceCounts.merge(sequence, 1, Integer::sum);
+			}
 		}
 		
 		return
-				this
-					.sequenceCounts
+				sequenceCounts
 					.entrySet()
 					.stream()
 					.map(entry -> {
-						final var edges = decodeSequence(entry.getKey(), graph);
-						return new GraphVariation(edges, entry.getValue());
+						try {
+							final var segments = decodeSequence(entry.getKey(), graph);
+							return new GraphVariation(segments, entry.getValue());
+						} catch (ClassNotFoundException ex) {
+							ex.printStackTrace();
+							return new GraphVariation(new ArrayList<>(), 0);
+						}
 					})
-					.collect(Collectors.toSet());
+					.collect(Collectors.toUnmodifiableSet());
 	}
 	
-	private void depthFirstSearch(
-			GraphNode current,
-			List<GraphEdge> path,
-			int remainingDepth) {
-		if (remainingDepth == 0) {
-			return;
+	private static String getClassName(Class<? extends GraphNode> nodeClass) {
+		if (GraphNodeMicrostep.class.isAssignableFrom(nodeClass)) {
+			nodeClass = GraphNodeMicrostep.class;
 		}
 		
-		for (final var edge : current.getEdges()) {
-			List<GraphEdge> pathNew = new ArrayList<>(path);
-			pathNew.add(edge);
-			var key = encodeSequence(pathNew);
-			this.sequenceCounts.merge(key, 1, Integer::sum);
-			this.depthFirstSearch(edge.getDestinationNode(), pathNew, remainingDepth - 1);
+		return nodeClass.getName();
+	}
+	
+	private static String encodeSequence(GraphPath path) {
+		final var segments = path.getSegments();
+		var sequence = getClassName(segments.get(0).getNode().getClass());
+		for (var i = 1; i < segments.size(); i++) {
+			final var segment = segments.get(i);
+			final var nodeClassName = getClassName(segment.getNode().getClass());
+			sequence += ",";
+			sequence += segment.getEdge().getClass().getName();
+			sequence += ",";
+			sequence += nodeClassName;
 		}
+		return sequence;
 	}
 	
-	private static String encodeSequence(List<GraphEdge> edges) {
-		return
-				edges
-					.stream()
-					.map(edge -> edge.getId().toString())
-					.collect(Collectors.joining(","));
-	}
-	
-	private static List<GraphEdge> decodeSequence(String encodedSequence, Graph graph) {
-		final var edgeIdentifiers = Arrays.asList(encodedSequence.split(","));
-		return
-				edgeIdentifiers
-					.stream()
-					.map(identifier -> graph.getEdge(UUID.fromString(identifier)))
-					.toList();
+	private static List<GraphVariationSegment> decodeSequence(String encodedSequence, Graph graph)
+			throws ClassNotFoundException {
+		final var segments = new ArrayList<GraphVariationSegment>();
+		final var parts = Arrays.asList(encodedSequence.split(","));
+		final var nodeClassFirst = Class.forName(parts.get(0));
+		segments.add(new GraphVariationSegment(null, (Class<? extends GraphNode>)nodeClassFirst));
+		for (var i = 1; i < parts.size(); i += 2) {
+			final var edgeClassName = parts.get(i);
+			final var edgeClass = (Class<? extends GraphEdge>)Class.forName(edgeClassName);
+			final var nodeClassName = parts.get(i + 1);
+			final var nodeClass = (Class<? extends GraphNode>)Class.forName(nodeClassName);
+			segments.add(new GraphVariationSegment(edgeClass, nodeClass));
+		}
+		return segments;
 	}
 }
