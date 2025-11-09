@@ -14,18 +14,21 @@ import nl.ou.refactoring.advice.io.layouts.GraphLayoutSettings;
  */
 public final class GraphImageWriter implements GraphWriter {
 	private final BufferedImage image;
+	private final GraphLayoutSettings layoutSettings;
 	
 	/**
 	 * Initialises a new instance of {@link GraphImageWriter}.
 	 * @param image The image surface to write on.
+	 * @param layoutSettings The graph layout settings.
 	 */
-	public GraphImageWriter(BufferedImage image) {
+	public GraphImageWriter(BufferedImage image, GraphLayoutSettings layoutSettings) {
 		ArgumentGuard.requireNotNull(image, "image");
 		this.image = image;
+		this.layoutSettings = layoutSettings;
 	}
 
 	@Override
-	public void Write(Graph graph, GraphLayoutSettings layoutSettings)
+	public void write(Graph graph)
 			throws ArgumentNullException, GraphPathSegmentInvalidException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(layoutSettings, "layoutSettings");
@@ -33,6 +36,6 @@ public final class GraphImageWriter implements GraphWriter {
 		final var height = this.image.getHeight();
 		final var painter = new GraphPainter(width, height);
 		final var graphics = this.image.createGraphics();
-		painter.draw(graph, graphics, layoutSettings);
+		painter.draw(graph, graphics, this.layoutSettings);
 	}
 }

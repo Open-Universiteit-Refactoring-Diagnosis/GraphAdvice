@@ -1,0 +1,98 @@
+package nl.ou.refactoring.advice.io.mermaid;
+
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+
+import javax.imageio.ImageIO;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
+import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
+import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyRenameConflictingSymbol;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+
+public final class GraphMermaidWriterTests {
+
+	public GraphMermaidWriterTests() { }
+
+	@Test
+	@DisplayName("Should write a Mermaid flowchart from a graph")
+	public void writeTests()
+			throws ArgumentNullException, GraphPathSegmentInvalidException, RefactoringMayContainOnlyOneStartNodeException {
+		// Arrange graph
+		final var graph = new Graph("Move Method");
+		
+		// Arrange graph code
+		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
+		final var classAlpha = new GraphNodeClass(graph, "Alpha");
+		final var operationAlphaAbc = new GraphNodeOperation(graph, "abc");
+		final var attributeAlphaFoo = new GraphNodeAttribute(graph, "foo");
+		final var attributeAlphaBar = new GraphNodeAttribute(graph, "bar");
+		packageRefactoring.has(classAlpha);
+		classAlpha.has(operationAlphaAbc);
+		classAlpha.has(attributeAlphaFoo);
+		classAlpha.has(attributeAlphaBar);
+		final var classBeta = new GraphNodeClass(graph, "Beta");
+		final var operationBetaAbc2 = new GraphNodeOperation(graph, "abc2");
+		final var attributeBetaMyField = new GraphNodeAttribute(graph, "myField");
+		packageRefactoring.has(classBeta);
+		classBeta.has(operationBetaAbc2);
+		classBeta.has(attributeBetaMyField);
+		
+		// Arrange graph workflow
+		final var start = graph.start();
+		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
+		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		final var doubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
+		final var missingDefinition = new GraphNodeRiskMissingDefinition(graph);
+		final var renameConflictingMethod = new GraphNodeRemedyRenameConflictingSymbol(graph);
+		final var chooseDifferentName = new GraphNodeRemedyChooseDifferentName(graph);
+		start.initiates(addMethod);
+		addMethod.precedes(updateReferences);
+		addMethod.causes(doubleDefinition);
+		addMethod.obsolesces(missingDefinition);
+		updateReferences.precedes(removeMethod);
+		updateReferences.obsolesces(missingDefinition);
+		removeMethod.causes(missingDefinition);
+		renameConflictingMethod.mitigates(doubleDefinition);
+		chooseDifferentName.mitigates(doubleDefinition);
+		doubleDefinition.affects(operationAlphaAbc);
+		doubleDefinition.affects(operationBetaAbc2);
+		
+		// Arrange writer
+		final var stringWriter = new StringWriter();
+		final var writer = new GraphMermaidWriter(stringWriter, GraphMermaidDirection.LeftToRight);
+		
+		// Act / Assert
+		writer.write(graph);
+		try {
+			final var file = new File("C:\\Temp\\Graph_MermaidFlowchart.md");
+			file.delete();
+			file.createNewFile();
+			var bufferedWriter = new BufferedWriter(new FileWriter(file));
+			bufferedWriter.write(stringWriter.toString());
+			bufferedWriter.close();
+		} catch (IOException exception) {
+			fail("Failed to write Mermaid Flowchart");
+		}
+	}
+}
