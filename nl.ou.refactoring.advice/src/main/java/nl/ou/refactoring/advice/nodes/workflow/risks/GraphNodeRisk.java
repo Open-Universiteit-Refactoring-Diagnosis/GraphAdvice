@@ -78,6 +78,6 @@ public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 	
 	@Override
 	public String getLabel() {
-		return "Risk";
+		return this.getNeutralisers().size() > 0 ? "Risk" : "Danger";
 	}
 }

@@ -21,13 +21,15 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 /**
  * Writes a graph to a Mermaid diagram.
  */
-public final class GraphMermaidWriter implements GraphWriter {
+public final class GraphMermaidFlowchartWriter implements GraphWriter {
 	private final String indent = "  ";
 	private final PrintWriter printWriter;
-	private final GraphMermaidDirection direction;
+	private final GraphMermaidFlowchartDirection direction;
 	private int indentIndex = 0;
 	
-	public GraphMermaidWriter(StringWriter stringWriter, GraphMermaidDirection direction) {
+	public GraphMermaidFlowchartWriter(
+			StringWriter stringWriter,
+			GraphMermaidFlowchartDirection direction) {
 		this.printWriter = new PrintWriter(stringWriter);
 		this.direction = direction;
 	}
@@ -58,7 +60,7 @@ public final class GraphMermaidWriter implements GraphWriter {
 		printWriter.println(indent.repeat(indentIndex) + text);
 	}
 	
-	private static String getDirectionString(GraphMermaidDirection direction) {
+	private static String getDirectionString(GraphMermaidFlowchartDirection direction) {
 		return switch (direction) {
 			case LeftToRight -> "LR";
 			case RightToLeft -> "RL";
@@ -90,7 +92,10 @@ public final class GraphMermaidWriter implements GraphWriter {
 			case GraphNodePackage _ -> "#D80073";
 			case GraphNodeRefactoringStart _ -> "#F5F5F5";
 			case GraphNodeRemedy _ -> "#D5E8D4";
-			case GraphNodeRisk _ -> "#FFE6CC";
+			case GraphNodeRisk risk ->
+				risk.getNeutralisers().size() > 0
+					? "#FFE6CC"
+					: "#F8CECC";
 			default -> "#FFFFFF";
 		};
 	}

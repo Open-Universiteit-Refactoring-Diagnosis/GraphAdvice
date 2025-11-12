@@ -229,7 +229,10 @@ public final class GraphPainter {
 			case GraphNodePackage _ -> Color.decode("#D80073");
 			case GraphNodeRefactoringStart _ -> Color.decode("#F5F5F5");
 			case GraphNodeRemedy _ -> Color.decode("#D5E8D4");
-			case GraphNodeRisk _ -> Color.decode("#FFE6CC");
+			case GraphNodeRisk risk ->
+				risk.getNeutralisers().size() > 0
+					? Color.decode("#FFE6CC")
+					: Color.decode("#F8CECC");
 			default -> Color.white;
 		};
 	}

@@ -73,8 +73,8 @@ public final class GraphMermaidWriterTests {
 		addExpression.precedes(removeExpression);
 		addExpression.obsolesces(missingDefinition);
 		removeExpression.precedes(removeMethod);
-		removeExpression.obsolesces(missingDefinition);
 		removeMethod.causes(missingDefinition);
+		removeMethod.finalises();
 		renameConflictingMethod.mitigates(doubleDefinition);
 		chooseDifferentName.mitigates(doubleDefinition);
 		doubleDefinition.affects(operationAlphaAbc);
@@ -82,7 +82,7 @@ public final class GraphMermaidWriterTests {
 		
 		// Arrange writer
 		final var stringWriter = new StringWriter();
-		final var writer = new GraphMermaidWriter(stringWriter, GraphMermaidDirection.LeftToRight);
+		final var writer = new GraphMermaidFlowchartWriter(stringWriter, GraphMermaidFlowchartDirection.LeftToRight);
 		
 		// Act / Assert
 		writer.write(graph);

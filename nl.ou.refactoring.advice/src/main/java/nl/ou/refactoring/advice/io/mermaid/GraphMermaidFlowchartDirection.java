@@ -3,7 +3,7 @@ package nl.ou.refactoring.advice.io.mermaid;
 /**
  * A Mermaid flowchart direction.
  */
-public enum GraphMermaidDirection {
+public enum GraphMermaidFlowchartDirection {
 	/**
 	 * The flowchart will be drawn from left to right.
 	 */

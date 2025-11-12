@@ -82,7 +82,6 @@ public final class GraphPainterTests {
 		addExpression.precedes(removeExpression);
 		addExpression.obsolesces(missingDefinition);
 		removeExpression.precedes(removeMethod);
-		removeExpression.obsolesces(missingDefinition);
 		removeMethod.causes(missingDefinition);
 		renameConflictingMethod.mitigates(doubleDefinition);
 		chooseDifferentName.mitigates(doubleDefinition);
