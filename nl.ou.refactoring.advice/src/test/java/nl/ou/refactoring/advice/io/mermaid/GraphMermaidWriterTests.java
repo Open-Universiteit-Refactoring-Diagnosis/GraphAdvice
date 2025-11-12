@@ -8,8 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.imageio.ImageIO;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +19,10 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyRenameConflictingSymbol;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
@@ -60,18 +59,21 @@ public final class GraphMermaidWriterTests {
 		// Arrange graph workflow
 		final var start = graph.start();
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		final var doubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
 		final var missingDefinition = new GraphNodeRiskMissingDefinition(graph);
 		final var renameConflictingMethod = new GraphNodeRemedyRenameConflictingSymbol(graph);
 		final var chooseDifferentName = new GraphNodeRemedyChooseDifferentName(graph);
 		start.initiates(addMethod);
-		addMethod.precedes(updateReferences);
+		addMethod.precedes(addExpression);
 		addMethod.causes(doubleDefinition);
 		addMethod.obsolesces(missingDefinition);
-		updateReferences.precedes(removeMethod);
-		updateReferences.obsolesces(missingDefinition);
+		addExpression.precedes(removeExpression);
+		addExpression.obsolesces(missingDefinition);
+		removeExpression.precedes(removeMethod);
+		removeExpression.obsolesces(missingDefinition);
 		removeMethod.causes(missingDefinition);
 		renameConflictingMethod.mitigates(doubleDefinition);
 		chooseDifferentName.mitigates(doubleDefinition);

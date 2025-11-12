@@ -7,9 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
 
 public final class GraphNodeRiskTests {
 	@Test
@@ -18,13 +19,15 @@ public final class GraphNodeRiskTests {
 		// Arrange
 		Graph graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		final var missingDefinition = new GraphNodeRiskMissingDefinition(graph);
 		addMethod.obsolesces(missingDefinition);
-		addMethod.precedes(updateReferences);
-		updateReferences.obsolesces(missingDefinition);
-		updateReferences.precedes(removeMethod);
+		addMethod.precedes(addExpression);
+		addExpression.obsolesces(missingDefinition);
+		addExpression.precedes(removeExpression);
+		removeExpression.precedes(removeMethod);
 		removeMethod.causes(missingDefinition);
 		
 		// Act
@@ -32,7 +35,7 @@ public final class GraphNodeRiskTests {
 		
 		// Assert
 		assertTrue(neutralisers.contains(addMethod));
-		assertTrue(neutralisers.contains(updateReferences));
+		assertTrue(neutralisers.contains(addExpression));
 	}
 	
 	@Test
@@ -41,12 +44,14 @@ public final class GraphNodeRiskTests {
 		// Arrange
 		Graph graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		final var missingDefinition = new GraphNodeRiskMissingDefinition(graph);
 		addMethod.obsolesces(missingDefinition);
-		updateReferences.obsolesces(missingDefinition);
-		updateReferences.precedes(removeMethod);
+		addExpression.obsolesces(missingDefinition);
+		addExpression.precedes(removeExpression);
+		removeExpression.precedes(removeMethod);
 		removeMethod.causes(missingDefinition);
 		
 		// Act

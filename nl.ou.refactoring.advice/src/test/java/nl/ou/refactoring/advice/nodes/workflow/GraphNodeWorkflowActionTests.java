@@ -8,9 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
 
 public final class GraphNodeWorkflowActionTests {
 	@Test
@@ -19,20 +20,24 @@ public final class GraphNodeWorkflowActionTests {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		addMethod.precedes(updateReferences);
-		updateReferences.precedes(removeMethod);
+		addMethod.precedes(addExpression);
+		addExpression.precedes(removeExpression);
+		removeExpression.precedes(removeMethod);
 		
 		// Act
 		final var precedingStart = addMethod.getPreceding();
-		final var precedingMiddle = updateReferences.getPreceding();
+		final var precedingSecond = addExpression.getPreceding();
+		final var precedingThird = removeExpression.getPreceding();
 		final var precedingEnd = removeMethod.getPreceding();
 		
 		// Assert
 		assertEquals(null, precedingStart);
-		assertEquals(addMethod, precedingMiddle);
-		assertEquals(updateReferences, precedingEnd);
+		assertEquals(addMethod, precedingSecond);
+		assertEquals(addExpression, precedingThird);
+		assertEquals(removeExpression, precedingEnd);
 	}
 	
 	@Test
@@ -41,24 +46,26 @@ public final class GraphNodeWorkflowActionTests {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		addMethod.precedes(updateReferences);
-		updateReferences.precedes(removeMethod);
+		addMethod.precedes(addExpression);
+		addExpression.precedes(removeExpression);
+		removeExpression.precedes(removeMethod);
 		
 		// Act
 		final var sameNodeLength = removeMethod.getPrecedingLength(removeMethod);
-		final var directlyPrecedingLength = removeMethod.getPrecedingLength(updateReferences);
+		final var directlyPrecedingLength = removeMethod.getPrecedingLength(removeExpression);
 		final var indirectlyPrecedingLength = removeMethod.getPrecedingLength(addMethod);
-		final var middleLength = updateReferences.getPrecedingLength(addMethod);
-		final var next0Length = updateReferences.getPrecedingLength(removeMethod);
-		final var next1Length = addMethod.getPrecedingLength(updateReferences);
+		final var middleLength = addExpression.getPrecedingLength(addMethod);
+		final var next0Length = removeExpression.getPrecedingLength(removeMethod);
+		final var next1Length = addMethod.getPrecedingLength(addExpression);
 		final var reverseChainLength = addMethod.getPrecedingLength(removeMethod);
 		
 		// Assert
 		assertEquals(-1, sameNodeLength);
 		assertEquals(1, directlyPrecedingLength);
-		assertEquals(2, indirectlyPrecedingLength);
+		assertEquals(3, indirectlyPrecedingLength);
 		assertEquals(1, middleLength);
 		assertEquals(-1, next0Length);
 		assertEquals(-1, next1Length);
@@ -71,15 +78,17 @@ public final class GraphNodeWorkflowActionTests {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		addMethod.precedes(updateReferences);
-		updateReferences.precedes(removeMethod);
+		addMethod.precedes(addExpression);
+		addExpression.precedes(removeExpression);
+		removeExpression.precedes(removeMethod);
 		
 		// Act
 		final var isPrecededSame = addMethod.isPrecededBy(addMethod);
-		final var isPrecededNext = addMethod.isPrecededBy(updateReferences);
-		final var isPrecededDirect = updateReferences.isPrecededBy(addMethod);
+		final var isPrecededNext = addMethod.isPrecededBy(addExpression);
+		final var isPrecededDirect = addExpression.isPrecededBy(addMethod);
 		final var isPrecededIndirect = removeMethod.isPrecededBy(addMethod);
 		
 		// Assert

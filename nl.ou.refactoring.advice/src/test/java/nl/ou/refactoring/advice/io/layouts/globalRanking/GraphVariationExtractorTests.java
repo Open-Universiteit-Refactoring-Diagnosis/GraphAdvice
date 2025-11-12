@@ -11,9 +11,10 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepUpdateReferences;
 
 public final class GraphVariationExtractorTests {
 	@Test
@@ -29,11 +30,13 @@ public final class GraphVariationExtractorTests {
 		final var graph = new Graph(graphName);
 		final var start = new GraphNodeRefactoringStart(graph, graphName);
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var updateReferences = new GraphNodeMicrostepUpdateReferences(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		start.initiates(addMethod);
-		addMethod.precedes(updateReferences);
-		updateReferences.precedes(removeMethod);
+		addMethod.precedes(addExpression);
+		addExpression.precedes(removeExpression);
+		removeExpression.precedes(removeMethod);
 		removeMethod.finalises();
 		final int MAXIMUM_DEPTH = 3;
 		
