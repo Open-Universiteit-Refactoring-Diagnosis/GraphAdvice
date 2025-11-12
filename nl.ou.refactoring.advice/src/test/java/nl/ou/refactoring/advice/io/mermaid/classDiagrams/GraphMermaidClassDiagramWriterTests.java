@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.io.mermaid;
+package nl.ou.refactoring.advice.io.mermaid.classDiagrams;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -18,6 +18,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -28,12 +29,12 @@ import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyRenameCon
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
-public final class GraphMermaidWriterTests {
+public final class GraphMermaidClassDiagramWriterTests {
 
-	public GraphMermaidWriterTests() { }
+	public GraphMermaidClassDiagramWriterTests() { }
 
 	@Test
-	@DisplayName("Should write a Mermaid flowchart from a graph")
+	@DisplayName("Should write a Mermaid class diagram from a graph")
 	public void writeTests()
 			throws ArgumentNullException, GraphPathSegmentInvalidException, RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange graph
@@ -41,20 +42,27 @@ public final class GraphMermaidWriterTests {
 		
 		// Arrange graph code
 		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
+		final var typeInt = new GraphNodeType(graph, "int");
+		final var typeString = new GraphNodeType(graph, "String");
 		final var classAlpha = new GraphNodeClass(graph, "Alpha");
-		final var operationAlphaAbc = new GraphNodeOperation(graph, "abc");
 		final var attributeAlphaFoo = new GraphNodeAttribute(graph, "foo");
 		final var attributeAlphaBar = new GraphNodeAttribute(graph, "bar");
+		final var operationAlphaAbc = new GraphNodeOperation(graph, "abc");
 		packageRefactoring.has(classAlpha);
 		classAlpha.has(operationAlphaAbc);
 		classAlpha.has(attributeAlphaFoo);
 		classAlpha.has(attributeAlphaBar);
+		attributeAlphaFoo.is(typeString);
+		attributeAlphaBar.is(typeInt);
+		operationAlphaAbc.hasReturnType(typeString);
 		final var classBeta = new GraphNodeClass(graph, "Beta");
-		final var operationBetaAbc2 = new GraphNodeOperation(graph, "abc2");
 		final var attributeBetaMyField = new GraphNodeAttribute(graph, "myField");
+		final var operationBetaAbc2 = new GraphNodeOperation(graph, "abc2");
 		packageRefactoring.has(classBeta);
 		classBeta.has(operationBetaAbc2);
 		classBeta.has(attributeBetaMyField);
+		attributeBetaMyField.is(typeString);
+		operationBetaAbc2.hasReturnType(typeInt);
 		
 		// Arrange graph workflow
 		final var start = graph.start();
@@ -82,19 +90,19 @@ public final class GraphMermaidWriterTests {
 		
 		// Arrange writer
 		final var stringWriter = new StringWriter();
-		final var writer = new GraphMermaidFlowchartWriter(stringWriter, GraphMermaidFlowchartDirection.LeftToRight);
+		final var writer = new GraphMermaidClassDiagramWriter(stringWriter);
 		
 		// Act / Assert
 		writer.write(graph);
 		try {
-			final var file = new File("C:\\Temp\\Graph_MermaidFlowchart.md");
+			final var file = new File("C:\\Temp\\Graph_MermaidClassDiagram.md");
 			file.delete();
 			file.createNewFile();
 			var bufferedWriter = new BufferedWriter(new FileWriter(file));
 			bufferedWriter.write(stringWriter.toString());
 			bufferedWriter.close();
 		} catch (IOException exception) {
-			fail("Failed to write Mermaid Flowchart");
+			fail("Failed to write Mermaid Class Diagram");
 		}
 	}
 }

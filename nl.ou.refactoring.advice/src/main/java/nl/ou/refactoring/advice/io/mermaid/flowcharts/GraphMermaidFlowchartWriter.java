@@ -1,13 +1,12 @@
-package nl.ou.refactoring.advice.io.mermaid;
+package nl.ou.refactoring.advice.io.mermaid.flowcharts;
 
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
-import nl.ou.refactoring.advice.io.GraphWriter;
+import nl.ou.refactoring.advice.io.mermaid.GraphMermaidWriter;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
@@ -19,25 +18,22 @@ import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedy;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
 /**
- * Writes a graph to a Mermaid diagram.
+ * Writes a graph to a <a href="https://www.mermaidchart.com/">Mermaid</a> diagram.
  */
-public final class GraphMermaidFlowchartWriter implements GraphWriter {
-	private final String indent = "  ";
-	private final PrintWriter printWriter;
+public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 	private final GraphMermaidFlowchartDirection direction;
-	private int indentIndex = 0;
 	
 	public GraphMermaidFlowchartWriter(
 			StringWriter stringWriter,
 			GraphMermaidFlowchartDirection direction) {
-		this.printWriter = new PrintWriter(stringWriter);
+		super(stringWriter);
 		this.direction = direction;
 	}
 
 	@Override
 	public void write(Graph graph)
 			throws ArgumentNullException, GraphPathSegmentInvalidException {
-		printWriter.println("flowchart " + getDirectionString(this.direction));
+		this.printLine("flowchart " + getDirectionString(this.direction));
 		this.indentIndex++;
 		var nodes = graph.getNodes();
 		for (var node : nodes) {
@@ -54,10 +50,6 @@ public final class GraphMermaidFlowchartWriter implements GraphWriter {
 							getFill(node),
 							getColor(node)));
 		}
-	}
-	
-	public void printLine(String text) {
-		printWriter.println(indent.repeat(indentIndex) + text);
 	}
 	
 	private static String getDirectionString(GraphMermaidFlowchartDirection direction) {

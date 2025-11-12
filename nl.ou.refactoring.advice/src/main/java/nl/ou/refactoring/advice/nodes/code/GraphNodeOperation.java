@@ -49,6 +49,25 @@ public final class GraphNodeOperation extends GraphNodeCode {
 	}
 	
 	/**
+	 * Gets the return Type of the Operation, if defined. If not, returns null.
+	 * @return The return Type of the Operation, if defined. If not, returns null.
+	 */
+	public GraphNodeType getReturnType() {
+		final var edgeIs =
+				this
+					.getEdges()
+					.stream()
+					.filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
+					.findFirst()
+					.orElse(null);
+		if (edgeIs == null) {
+			return null;
+		}
+		
+		return (GraphNodeType)edgeIs.getDestinationNode();
+	}
+	
+	/**
 	 * Gets the name of the Operation affected by a refactoring.
 	 * @return The name of the Operation affected by a refactoring.
 	 */

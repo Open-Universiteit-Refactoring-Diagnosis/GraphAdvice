@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.io.mermaid;
+package nl.ou.refactoring.advice.io.mermaid.flowcharts;
 
 /**
  * A Mermaid flowchart direction.
