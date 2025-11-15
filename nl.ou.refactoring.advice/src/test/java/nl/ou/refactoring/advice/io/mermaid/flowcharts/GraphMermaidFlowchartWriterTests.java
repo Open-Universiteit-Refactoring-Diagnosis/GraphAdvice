@@ -14,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
-import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;

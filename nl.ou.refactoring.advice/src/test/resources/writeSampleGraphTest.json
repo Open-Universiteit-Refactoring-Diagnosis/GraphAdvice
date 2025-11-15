@@ -1,0 +1,35 @@
+{
+	"refactoringName": "Sample graph",
+	"nodes": [
+		{
+			"index": 0,
+			"type": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart",
+			"edges": [
+				{
+					"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates",
+					"to": 2,
+				},
+			],
+		},
+		{
+			"index": 1,
+			"type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod",
+			"edges": [
+				{
+					"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes",
+					"to": 1,
+				},
+			],
+		},
+		{
+			"index": 2,
+			"type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression",
+			"edges": [
+				{
+					"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises",
+					"to": 0,
+				},
+			],
+		},
+	],
+}

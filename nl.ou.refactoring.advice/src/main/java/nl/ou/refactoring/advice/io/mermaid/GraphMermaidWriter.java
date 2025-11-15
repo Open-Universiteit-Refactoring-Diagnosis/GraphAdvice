@@ -13,7 +13,7 @@ import nl.ou.refactoring.advice.io.GraphWriter;
  * A base class for {@link GraphWriter} implementations that write <a href="https://www.mermaidchart.com/">Mermaid</a> charts.
  */
 public abstract class GraphMermaidWriter implements GraphWriter {
-	private final String indent = "  ";
+	private static final String INDENT = "  ";
 	private final PrintWriter printWriter;
 	protected int indentIndex = 0;
 	
@@ -37,6 +37,6 @@ public abstract class GraphMermaidWriter implements GraphWriter {
 	 * @param text
 	 */
 	protected final void printLine(String text) {
-		printWriter.println(indent.repeat(indentIndex) + text);
+		this.printWriter.println(INDENT.repeat(indentIndex) + text);
 	}
 }
