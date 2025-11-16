@@ -1,0 +1,53 @@
+{
+	"$schema": "https://json-schema.org/draft-07/schema",
+	"$id": "http://ou.nl/schemas/RefactoringAdviceGraph.schema.json",
+	"title": "Refactoring Advice Graph",
+	"description": "Describes a Refactoring Advice Graph that may lead to a human-readable advice for a refactoring in software code.",
+	"type": "object",
+	"properties": {
+		"refactoringName": {
+			"title": "Refactoring Name",
+			"description": "The name of the Refactoring that is described by the Refactoring Advice Graph",
+			"type": "string"
+		},
+		"nodes": {
+			"title": "Nodes",
+			"description": "The nodes in the Refactoring Advice Graph",
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"title": "Type",
+						"description": "The class type of the Refactoring Advice Graph node.",
+						"type": "string"
+					},
+					"edges": {
+						"title": "Edges",
+						"description": "The outgoing edges of the node.",
+						"type": "array",
+						"items": {
+							"title": "Edge",
+							"description": "An edge in the Refactoring Advice Graph.",
+							"type": "object",
+							"properties": {
+								"type": {
+									"title": "",
+									"type": "string"
+								},
+								"to": {
+									"type": "number",
+									"minimum": 0
+								}
+							},
+							"required": ["type","to"]
+						}
+					}
+				},
+				"required": ["type","edges"]
+			},
+			"uniqueItems": true
+		}
+	},
+	"required": ["refactoringName"]
+}

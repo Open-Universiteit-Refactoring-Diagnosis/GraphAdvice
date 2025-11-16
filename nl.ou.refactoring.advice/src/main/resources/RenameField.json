@@ -1,6 +1,6 @@
 {
-	"$schema": ".\\RefactoringAdviceGraph.schema.json",
-    "refactoringName": "Rename Method",
+    "$schema": ".\\RefactoringAdviceGraph.schema.json",
+    "refactoringName": "Rename Field",
     "nodes": [
         {
             "type": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart",
@@ -12,13 +12,13 @@
             ]
         },
         {
-            "type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod",
+            "type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField",
             "edges": [
                 {
                     "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes",
                     "to": 2
                 },
-				{
+                {
 					"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces",
 					"to": 5
 				},
@@ -54,20 +54,16 @@
 				}
 		    ]
 		},
-		{
-		    "type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod",
-		    "edges": [
-		        {
-		            "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises",
-		            "to": 0
-		        },
-				{
-					"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses",
-					"to": 5
-				}
-		    ]
-		},
-		{
+        {
+            "type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField",
+            "edges": [
+                {
+                    "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises",
+                    "to": 0
+                }
+            ]
+        },
+        {
 			"type": "nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition",
 			"edges": []
 		},

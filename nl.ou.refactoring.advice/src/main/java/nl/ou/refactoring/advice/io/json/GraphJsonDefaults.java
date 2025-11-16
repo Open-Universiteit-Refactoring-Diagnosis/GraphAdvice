@@ -10,12 +10,14 @@ public final class GraphJsonDefaults {
 
 	private GraphJsonDefaults() { }
 	
+	public static Graph renameField()
+			throws GraphReaderException {
+		return readGraph("/RenameField.json");
+	}
+	
 	public static Graph renameMethod()
 			throws GraphReaderException {
-		final var renameMethodJson = loadJson("/RenameMethod.json");
-		final var stringReader = new StringReader(renameMethodJson);
-		final var graphJsonReader = new GraphJsonReader(stringReader);
-		return graphJsonReader.read();
+		return readGraph("/RenameMethod.json");
 	}
 
 	private static String loadJson(String resourceName) {
@@ -32,5 +34,13 @@ public final class GraphJsonDefaults {
 					: "";
 		jsonScanner.close();
 		return json;
+	}
+	
+	private static Graph readGraph(String resourceName)
+			throws GraphReaderException {
+		final var renameMethodJson = loadJson(resourceName);
+		final var stringReader = new StringReader(renameMethodJson);
+		final var graphJsonReader = new GraphJsonReader(stringReader);
+		return graphJsonReader.read();
 	}
 }
