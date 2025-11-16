@@ -3,8 +3,6 @@ package nl.ou.refactoring.advice.io.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.StringWriter;
-import java.util.Scanner;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,29 +16,25 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddM
 public final class GraphJsonWriterTests {
 	@Test
 	@DisplayName("Should write an empty graph to JSON")
-	public void writeEmptyGraphTest()
-			throws ArgumentNullException, GraphPathSegmentInvalidException {
+	public void writeEmptyGraphTest() throws ArgumentNullException, GraphPathSegmentInvalidException {
 		// Arrange
 		final var graph = new Graph("Empty graph");
 		final var stringWriter = new StringWriter();
 		final var graphJsonWriter = new GraphJsonWriter(stringWriter);
-		
+
 		// Act
 		graphJsonWriter.write(graph);
-		final var jsonActual = stringWriter.toString();
-		
+		final var jsonActual = stringWriter.toString().replace("\r\n", "\n");
+
 		// Assert
-		final var jsonExpected = loadJson("/writeEmptyGraphTest.json");
+		final var jsonExpected = JsonSamplesLoader.loadJson("/writeEmptyGraphTest.json").replace("\r\n", "\n");
 		assertEquals(jsonExpected, jsonActual);
 	}
-	
+
 	@Test
 	@DisplayName("Should write a sample graph to JSON")
-	public void writeSampleGraphTest()
-			throws
-				ArgumentNullException,
-				GraphPathSegmentInvalidException,
-				RefactoringMayContainOnlyOneStartNodeException {
+	public void writeSampleGraphTest() throws ArgumentNullException, GraphPathSegmentInvalidException,
+			RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange
 		final var graph = new Graph("Sample graph");
 		final var start = graph.start();
@@ -49,32 +43,16 @@ public final class GraphJsonWriterTests {
 		start.initiates(addMethod);
 		addMethod.precedes(addExpression);
 		addExpression.finalises();
-		
+
 		final var stringWriter = new StringWriter();
 		final var graphJsonWriter = new GraphJsonWriter(stringWriter);
-		
+
 		// Act
 		graphJsonWriter.write(graph);
-		final var jsonActual = stringWriter.toString();
-		
+		final var jsonActual = stringWriter.toString().replace("\r\n", "\n");
+
 		// Assert
-		final var jsonExpected = loadJson("/writeSampleGraphTest.json");
+		final var jsonExpected = JsonSamplesLoader.loadJson("/writeSampleGraphTest.json").replace("\r\n", "\n");
 		assertEquals(jsonExpected, jsonActual);
-	}
-	
-	private static String loadJson(String resourceName) {
-		final var jsonResourceStream =
-				GraphJsonWriterTests
-					.class
-					.getResourceAsStream(resourceName);
-		final var jsonExpectedScanner =
-				new Scanner(jsonResourceStream)
-					.useDelimiter("\\A");
-		final var jsonExpected =
-				jsonExpectedScanner.hasNext()
-					? jsonExpectedScanner.next()
-					: "";
-		jsonExpectedScanner.close();
-		return jsonExpected;
 	}
 }

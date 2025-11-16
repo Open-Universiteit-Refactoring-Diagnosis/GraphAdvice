@@ -7,6 +7,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphAdapter;
+import nl.ou.refactoring.advice.io.GraphReaderException;
 
 /**
  * Reads and writes Refactoring Advice Graphs from and to JSON.
@@ -28,7 +29,8 @@ public final class GraphJsonAdapter implements GraphAdapter {
 	}
 
 	@Override
-	public Graph read() {
+	public Graph read()
+			throws GraphReaderException {
 		return this.reader.read();
 	}
 

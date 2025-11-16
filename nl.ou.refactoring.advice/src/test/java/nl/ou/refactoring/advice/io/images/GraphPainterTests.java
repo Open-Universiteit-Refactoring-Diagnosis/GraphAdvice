@@ -110,7 +110,7 @@ public final class GraphPainterTests {
 		// compare to reference image
 		
 		try {
-			final var file = new File("C:\\Temp\\Graph_ForceDirectedLayout.png");
+			final var file = new File("C:\\Test\\Graph_ForceDirectedLayout.png");
 			file.delete();
 			file.createNewFile();
 			ImageIO.write(graphImage, "png", file);
@@ -195,7 +195,7 @@ public final class GraphPainterTests {
 		// compare to reference image
 		
 		try {
-			final var file = new File("C:\\Temp\\Graph_GlobalRankingLayout.png");
+			final var file = new File("C:\\Test\\Graph_GlobalRankingLayout.png");
 			file.delete();
 			file.createNewFile();
 			ImageIO.write(graphImage, "png", file);

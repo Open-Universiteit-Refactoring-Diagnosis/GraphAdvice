@@ -3,10 +3,10 @@ package nl.ou.refactoring.advice.io.images;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -94,7 +94,7 @@ public final class GraphPainter {
 	 * @throws ArgumentNullException Thrown if graph or layoutSettings is null.
 	 * @throws GraphPathSegmentInvalidException Thrown if the graph contains a path with an invalid segment.
 	 */
-	public Image createImage(Graph graph, GraphLayoutSettings layoutSettings)
+	public RenderedImage createImage(Graph graph, GraphLayoutSettings layoutSettings)
 			throws ArgumentNullException, GraphPathSegmentInvalidException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(layoutSettings, "layoutSettings");

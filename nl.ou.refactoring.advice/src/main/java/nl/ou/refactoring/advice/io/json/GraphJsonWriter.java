@@ -1,10 +1,15 @@
 package nl.ou.refactoring.advice.io.json;
 
-import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.spi.JsonProvider;
+import jakarta.json.stream.JsonGenerator;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -16,9 +21,7 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
  * Writes Refactoring Advice Graphs to JSON.
  */
 public final class GraphJsonWriter implements GraphWriter {
-	private static final String INDENT = "\t";
-	private final PrintWriter printWriter;
-	private int indentIndex = 0;
+	private final Writer writer;
 	
 	/**
 	 * Initialises a new instance of {@link GraphJsonWriter}.
@@ -28,14 +31,19 @@ public final class GraphJsonWriter implements GraphWriter {
 	public GraphJsonWriter(Writer writer)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(writer, "writer");
-		this.printWriter = new PrintWriter(writer);
+		this.writer = writer;
 	}
 
 	@Override
 	public void write(Graph graph) throws ArgumentNullException, GraphPathSegmentInvalidException {
-		this.printLine("{");
-		this.indentIndex++;
-		this.printProperty("refactoringName", graph.getRefactoringName());
+		Map<String, Boolean> configuration = new HashMap<>();
+		configuration.put(JsonGenerator.PRETTY_PRINTING, true);
+		final var jsonProvider = JsonProvider.provider();
+		final var jsonWriterFactory = jsonProvider.createWriterFactory(configuration);
+		final var jsonWriter = jsonWriterFactory.createWriter(this.writer);
+		final var refactoringObjectBuilder = Json.createObjectBuilder();
+		refactoringObjectBuilder.add("refactoringName", graph.getRefactoringName());
+		
 		final var nodes =
 				graph
 					.getNodes()
@@ -43,40 +51,24 @@ public final class GraphJsonWriter implements GraphWriter {
 					.sorted((n1, n2) -> n1.getClass().getName().compareTo(n2.getClass().getName()))
 					.collect(Collectors.toList());
 		if (nodes.size() > 0) {
-			this.printLine("\"nodes\": [");
-			this.indentIndex++;
-			var nodeCounter = 0;
-			for (final var node : graph.getNodes()) {
-				this.printNode(nodes, node, nodeCounter);
-				nodeCounter++;
+			final var nodesArrayBuilder = Json.createArrayBuilder();
+			for (final var node : nodes) {
+				final var nodeObject = buildNodeJsonObject(nodes, node);
+				nodesArrayBuilder.add(nodeObject);
 			}
-			this.indentIndex--;
-			this.printLine("],");
+			refactoringObjectBuilder.add("nodes", nodesArrayBuilder.build());
 		}
-		this.indentIndex--;
-		this.printLine("}");
-	}
-	
-	private void printLine(String text) {
-		this.printWriter.println(INDENT.repeat(indentIndex) + text);
-	}
-	
-	private void printProperty(String propertyName, String propertyValue) {
-		this.printLine(String.format("\"%s\": \"%s\",", propertyName, propertyValue));
-	}
-	
-	private void printProperty(String propertyName, int propertyValue) {
-		this.printLine(String.format("\"%s\": %d,", propertyName, propertyValue));
-	}
-	
-	private void printNode(List<GraphNode> nodes, GraphNode node, int nodeCounter) {
-		this.printLine("{");
-		this.indentIndex++;
 		
-		this.printProperty("index", nodeCounter);
+		jsonWriter.writeObject(refactoringObjectBuilder.build());
+	}
+	
+	private static JsonObject buildNodeJsonObject(
+			List<GraphNode> nodes,
+			GraphNode node) {
+		final var objectBuilder = Json.createObjectBuilder();
 		
 		final var type = node.getClass().getName();
-		this.printProperty("type", type);
+		objectBuilder.add("type", type);
 		
 		final var edges =
 				node
@@ -85,22 +77,19 @@ public final class GraphJsonWriter implements GraphWriter {
 					.sorted((e1, e2) -> e1.getClass().getName().compareTo(e2.getClass().getName()))
 					.collect(Collectors.toList());
 		if (edges.size() > 0) {
-			this.printLine("\"edges\": [");
-			this.indentIndex++;
+			final var edgesArrayBuilder = Json.createArrayBuilder();
 			for (final var edge : edges) {
-				this.printLine("{");
-				this.indentIndex++;
-				this.printProperty("type", edge.getClass().getName());
+				final var edgeObjectBuilder = Json.createObjectBuilder();
+				edgeObjectBuilder.add("type", edge.getClass().getName());
+				
 				final var destinationNodeIndex = nodes.indexOf(edge.getDestinationNode());
-				this.printProperty("to", destinationNodeIndex);
-				this.indentIndex--;
-				this.printLine("},");
+				edgeObjectBuilder.add("to", destinationNodeIndex);
+				edgesArrayBuilder.add(edgeObjectBuilder.build());
 			}
-			this.indentIndex--;
-			this.printLine("],");
+			
+			objectBuilder.add("edges", edgesArrayBuilder.build());
 		}
 		
-		this.indentIndex--;
-		this.printLine("},");
+		return objectBuilder.build();
 	}
 }
