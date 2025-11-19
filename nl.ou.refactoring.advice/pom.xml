@@ -59,7 +59,6 @@
 					<altDeploymentRepository>
 						github::default::https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice
 					</altDeploymentRepository>
-					<skip>true</skip> <!-- Skip metadata checks -->
 				</configuration>
 			</plugin>
 		</plugins>
