@@ -37,6 +37,27 @@ jobs:
           mkdir -p ~/.m2
           cat > ~/.m2/settings.xml <<EOF
           <settings>
+            <activeProfiles>
+              <activeProfile>github</activeProfile>
+            </activeProfiles>
+            <profiles>
+              <profile>
+                <id>github</id>
+                <repositories>
+                  <repository>
+                    <id>central</id>
+                    <url>https//repo.maven.apache.org/maven2
+                  </repository>
+                  <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice</url>
+                    <snapshots>
+                      <enabled>true</enabled>
+                    </snapshots>
+                  </repository>
+                </repositories>
+              </profile>
+            </profiles>
             <servers>
               <server>
                 <id>github</id>
