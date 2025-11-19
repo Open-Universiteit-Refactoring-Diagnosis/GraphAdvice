@@ -54,6 +54,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}-SNAPSHOT.jar
-          asset_name: nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}-SNAPSHOT.jar
+          asset_path: target/nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}.jar
+          asset_name: nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}.jar
           asset_content_type: application/java-archive
