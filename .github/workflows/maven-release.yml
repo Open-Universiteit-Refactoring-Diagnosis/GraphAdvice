@@ -48,7 +48,7 @@ jobs:
           EOF
 
       - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests -X
+        run: mvn deploy -DskipTests
         env:
           GITHUB_TOKEN: ${{ secrets.GRAPHADVICEPUBLISHPACKAGESPAT }}
 
@@ -62,13 +62,3 @@ jobs:
           release_name: Release v${{ steps.get_version.outputs.version }}
           draft: false
           prerelease: false
-
-      - name: Upload JAR as Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GRAPHADVICEPUBLISHPACKAGESPAT }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}.jar
-          asset_name: nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}.jar
-          asset_content_type: application/java-archive
