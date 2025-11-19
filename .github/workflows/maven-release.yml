@@ -48,7 +48,7 @@ jobs:
           EOF
 
       - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests
+        run: mvn deploy -DskipTests -X
         env:
           GITHUB_TOKEN: ${{ secrets.GRAPHADVICEPUBLISHPACKAGESPAT }}
 
