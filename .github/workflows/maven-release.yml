@@ -32,6 +32,21 @@ jobs:
       - name: List target directory (debug)
         run: ls -la target/
 
+      - name: Configure Maven for GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>x-access-token</username>
+                <password>\${{ secrets.GITHUB_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
       - name: Publish to GitHub Packages
         run: mvn deploy -DskipTests
         env:
