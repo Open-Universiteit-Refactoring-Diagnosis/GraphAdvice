@@ -54,6 +54,24 @@
 		</plugins>
 	</build>
 	<packaging>jar</packaging>
+	<profiles>
+		<profile>
+			<id>github</id>
+			<repositories>
+				<repository>
+					<id>central</id>
+					<url>https://repo.maven.apache.org/maven2</url>
+				</repository>
+				<repository>
+					<id>github</id>
+					<url>https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
 	<distributionManagement>
 		<repository>
 			<id>github</id>
