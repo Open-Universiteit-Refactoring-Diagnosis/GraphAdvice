@@ -64,7 +64,7 @@
 				</repository>
 				<repository>
 					<id>github</id>
-					<url>https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis</url>
+					<url>https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/*</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
@@ -76,7 +76,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub Packages</name>
-			<url>https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis</url>
+			<url>https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/*</url>
 		</repository>
 	</distributionManagement>
 </project>
