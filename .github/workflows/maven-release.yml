@@ -7,6 +7,10 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./nl.ou.refactoring.advice
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,6 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/your-artifact-${{ steps.get_version.outputs.version }}.jar
-          asset_name: your-artifact-${{ steps.get_version.outputs.version }}.jar
+          asset_path: nl.ou.refactoring.advice/target/nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}.jar
+          asset_name: nl.ou.refactoring.advice-${{ steps.get_version.outputs.version }}.jar
           asset_content_type: application/java-archive
