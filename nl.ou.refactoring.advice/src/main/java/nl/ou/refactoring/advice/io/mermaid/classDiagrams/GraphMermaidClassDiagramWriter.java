@@ -33,6 +33,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		for (final var packageNode : packageNodes) {
 			this.writePackage(packageNode);
 		}
+		// do we forgive and include classes that do not have a package?
 	}
 	
 	private void writePackage(GraphNodePackage packageNode) {

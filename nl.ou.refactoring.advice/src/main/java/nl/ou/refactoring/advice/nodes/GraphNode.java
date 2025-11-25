@@ -65,8 +65,12 @@ public abstract class GraphNode {
 	 * Finds paths that lead out of this node, limited by a maximum depth.
 	 * @param maximumDepth The maximum depth of the paths.
 	 * @return The paths that lead out of this node, limited by a maximum depth.
+	 * @throws IllegalArgumentException Thrown if maximumDepth is not greater than or equal to 0.
 	 */
-	public List<GraphPath> findPaths(int maximumDepth) {
+	public List<GraphPath> findPaths(int maximumDepth)
+			throws IllegalArgumentException {
+		ArgumentGuard.requireGreaterThanOrEqual(0, maximumDepth, "maximumDepth");
+		
 		List<GraphPath> result = new ArrayList<>();
 		Stack<GraphPathSearchNode> searchNodes = new Stack<>();
 		var initialPath = new GraphPath(this);
@@ -79,6 +83,50 @@ public abstract class GraphNode {
 			var currentPathSegments = currentPath.getSegments();
 			
 			if (currentPathSegments.size() <= maximumDepth) {
+				result.add(currentPath);
+			}
+			if (currentPathSegments.size() >= maximumDepth) {
+				continue;
+			}
+			
+			var currentEdges = currentNode.getEdges();
+			for (var edge : currentEdges) {
+				var neighbour = edge.getDestinationNode();
+				if (currentPath.contains(neighbour)) {
+					// avoid cycles
+					continue;
+				}
+				
+				try {
+					var newPath = (GraphPath)currentPath.clone();
+					newPath.append(edge, neighbour);
+					searchNodes.push(new GraphPathSearchNode(neighbour, newPath));
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public List<GraphPath> findPaths(GraphNode destinationNode, int maximumDepth)
+			throws ArgumentNullException, IllegalArgumentException {
+		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
+		ArgumentGuard.requireGreaterThanOrEqual(0, maximumDepth, "maximumDepth");
+		
+		List<GraphPath> result = new ArrayList<>();
+		Stack<GraphPathSearchNode> searchNodes = new Stack<>();
+		var initialPath = new GraphPath(this);
+		searchNodes.push(new GraphPathSearchNode(this, initialPath));
+		
+		while (!searchNodes.isEmpty()) {
+			var currentSearchNode = searchNodes.pop();
+			var currentNode = currentSearchNode.getNode();
+			var currentPath = currentSearchNode.getPath();
+			var currentPathSegments = currentPath.getSegments();
+			
+			if (currentNode.equals(destinationNode)) {
 				result.add(currentPath);
 			}
 			if (currentPathSegments.size() >= maximumDepth) {
