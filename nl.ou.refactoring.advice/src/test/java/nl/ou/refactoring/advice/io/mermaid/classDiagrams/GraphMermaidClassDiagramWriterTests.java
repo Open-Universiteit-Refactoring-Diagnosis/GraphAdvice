@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
+import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
@@ -90,12 +92,13 @@ public final class GraphMermaidClassDiagramWriterTests {
 		
 		// Arrange writer
 		final var stringWriter = new StringWriter();
-		final var writer = new GraphMermaidClassDiagramWriter(stringWriter);
+		final var classDiagramWriterSettings = new GraphMermaidClassDiagramWriterSettings();
+		final var classDiagramWriter = new GraphMermaidClassDiagramWriter(stringWriter, classDiagramWriterSettings);
 		
 		// Act / Assert
-		writer.write(graph);
+		classDiagramWriter.write(graph);
 		try {
-			final var file = new File("C:\\Temp\\Graph_MermaidClassDiagram.md");
+			final var file = new File("C:\\Test\\Graph_MermaidClassDiagram.mermaid");
 			file.delete();
 			file.createNewFile();
 			var bufferedWriter = new BufferedWriter(new FileWriter(file));

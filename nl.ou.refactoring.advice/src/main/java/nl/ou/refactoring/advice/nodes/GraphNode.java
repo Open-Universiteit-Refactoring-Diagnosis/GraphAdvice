@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -22,10 +23,11 @@ public abstract class GraphNode {
 	/**
 	 * Initialises a new instance of a {@link GraphNode}.
 	 * @param graph The graph that contains the node.
-	 * @throws ArgumentNullException Thrown if graph is null.
+	 * @throws NullPointerException Thrown if graph is null.
 	 */
-	protected GraphNode(Graph graph) throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(graph, "graph");
+	protected GraphNode(Graph graph)
+			throws NullPointerException {
+		Objects.requireNonNull(graph, "graph");
 		this.id = UUID.randomUUID();
 		this.graph = graph;
 		this.ensureGraphContainsNode();
@@ -55,10 +57,38 @@ public abstract class GraphNode {
 	
 	/**
 	 * Gets the edges that depart from this node.
-	 * @return The edges that depart from this node.
+	 * @return An unmodifiable set of edges that depart from this node.
 	 */
 	public Set<GraphEdge> getEdges() {
 		return this.graph.getEdgesFrom(this);
+	}
+	
+	/**
+	 * Gets the edges that depart from this node, filtered by edgeType.
+	 * @param <TEdge> The type of edge to filter.
+	 * @param edgeType The type of edge to filter.
+	 * @return An unmodifiable set of edges that depart from this node, filtered by edgeType.
+	 */
+	public <TEdge extends GraphEdge> Set<TEdge> getEdges(Class<TEdge> edgeType) {
+		return this.graph.getEdgesFrom(this, edgeType);
+	}
+	
+	/**
+	 * Gets the edges that arrive to this node.
+	 * @return An unmodifiable set of edges that arrive to this node.
+	 */
+	public Set<GraphEdge> getEdgesIncoming() {
+		return this.graph.getEdgesTo(this);
+	}
+	
+	/**
+	 * Gets the edges that arrive to this node, filtered by edgeType.
+	 * @param <TEdge> The type of edge to filter.
+	 * @param edgeType The type of edge to filter.
+	 * @return An unmodifiable set of edges that arrive to this node, filtered by edgeType.
+	 */
+	public <TEdge extends GraphEdge> Set<TEdge> getEdgesIncoming(Class<TEdge> edgeType) {
+		return this.graph.getEdgesTo(this, edgeType);
 	}
 	
 	/**

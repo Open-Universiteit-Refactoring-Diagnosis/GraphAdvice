@@ -87,7 +87,7 @@ public final class GraphMermaidFlowchartWriterTests {
 		// Act / Assert
 		writer.write(graph);
 		try {
-			final var file = new File("C:\\Test\\Graph_MermaidFlowchart.md");
+			final var file = new File("C:\\Test\\Graph_MermaidFlowchart.mermaid");
 			file.delete();
 			file.createNewFile();
 			var bufferedWriter = new BufferedWriter(new FileWriter(file));

@@ -13,7 +13,7 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Operation of a Class that is affected by a refactoring.
  */
-public final class GraphNodeOperation extends GraphNodeCode {
+public final class GraphNodeOperation extends GraphNodeClassMember {
 	private final String operationName;
 	private final List<GraphNodeOperationParameter> operationParameters;
 	
