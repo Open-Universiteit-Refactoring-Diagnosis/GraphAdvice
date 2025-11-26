@@ -63,6 +63,8 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 	}
 	
 	private void writePackage(GraphNodePackage packageNode) {
+		this.printLine(MessageFormat.format("namespace {0} '{'", packageNode.getCaption()));
+		this.indentIndex++;
 		final var classNodes =
 				packageNode
 					.getEdges()
@@ -77,6 +79,8 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		for (final var classNode : classNodes) {
 			this.writeClass(classNode);
 		}
+		this.indentIndex--;
+		this.printLine("}");
 	}
 	
 	private void writeClass(GraphNodeClass classNode) {
