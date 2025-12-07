@@ -2,7 +2,6 @@ package nl.ou.refactoring.advice.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -23,11 +22,11 @@ public abstract class GraphNode {
 	/**
 	 * Initialises a new instance of a {@link GraphNode}.
 	 * @param graph The graph that contains the node.
-	 * @throws NullPointerException Thrown if graph is null.
+	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
 	protected GraphNode(Graph graph)
-			throws NullPointerException {
-		Objects.requireNonNull(graph, "graph");
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		this.id = UUID.randomUUID();
 		this.graph = graph;
 		this.ensureGraphContainsNode();

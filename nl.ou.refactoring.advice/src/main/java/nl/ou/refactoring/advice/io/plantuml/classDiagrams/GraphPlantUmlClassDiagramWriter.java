@@ -1,65 +1,52 @@
-package nl.ou.refactoring.advice.io.mermaid.classDiagrams;
+package nl.ou.refactoring.advice.io.plantuml.classDiagrams;
 
 import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.stream.Collectors;
+
+import javax.swing.SortOrder;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
-import nl.ou.refactoring.advice.io.mermaid.GraphMermaidWriter;
+import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
-public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
-	/**
-	 * Initialises a new instance of {@link GraphMermaidClassDiagramWriter}.
-	 * @param stringWriter Writes text output. Cannot be null.
-	 * @param settings The settings for the Mermaid Class Diagram writer.
-	 * @throws ArgumentNullException Thrown if stringWriter is null.
-	 */
-	public GraphMermaidClassDiagramWriter(
-			StringWriter stringWriter,
-			GraphMermaidClassDiagramWriterSettings settings)
-					throws ArgumentNullException {
+public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
+
+	public GraphPlantUmlClassDiagramWriter(StringWriter stringWriter) {
 		super(stringWriter);
 	}
 	
-	/**
-	 * Initialises a new instance of {@link GraphMermaidClassDiagramWriter}.
-	 * @param stringWriter Writes text output. Cannot be null.
-	 * @throws ArgumentNullException Thrown if stringWriter is null.
-	 */
-	public GraphMermaidClassDiagramWriter(StringWriter stringWriter) {
-		this(stringWriter, null);
-	}
-
 	@Override
 	public void write(Graph graph)
 			throws ArgumentNullException, GraphPathSegmentInvalidException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		this.printLine("classDiagram");
-		this.indentIndex++;
+		this.printLine(String.format("@startuml %s", graph.getRefactoringName()));
 		
+		// Domain model
 		final var packageNodes = graph.getNodes(GraphNodePackage.class);
 		for (final var packageNode : packageNodes) {
 			this.writePackage(packageNode);
 		}
-		// do we forgive and include classes that do not have a package?
 		
+		// Notes
 		this.writeNotes(graph);
+		
+		this.printLine("@enduml");
 	}
-	
+
 	private void writePackage(GraphNodePackage packageNode) {
-		this.printLine(MessageFormat.format("namespace {0} '{'", packageNode.getCaption()));
+		this.printLine(String.format("namespace %s {", packageNode.getCaption()));
 		this.indentIndex++;
 		
-		final var classNodes = packageNode.getClassNodes();
+		final var classNodes = packageNode.getClassNodes(SortOrder.ASCENDING);
 		for (final var classNode : classNodes) {
 			this.writeClass(classNode);
 		}
@@ -74,7 +61,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		this.indentIndex++;
 		
 		// Attributes
-		final var attributeNodes = classNode.getAttributeNodes();
+		final var attributeNodes = classNode.getAttributeNodes(SortOrder.ASCENDING);
 		for (final var attributeNode : attributeNodes) {
 			final var attributeTypeNode = attributeNode.getType();
 			final var stringBuilder = new StringBuilder();
@@ -86,7 +73,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		}
 		
 		// Operations
-		final var operationNodes = classNode.getOperationNodes();
+		final var operationNodes = classNode.getOperationNodes(SortOrder.ASCENDING);
 		for (final var operationNode : operationNodes) {
 			final var returnType = operationNode.getReturnType();
 			final var stringBuilder = new StringBuilder();
@@ -112,6 +99,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 	}
 	
 	private void writeNotes(Graph graph) {
+		var nodeCounter = 0;
 		final var dangerNodes =
 				graph
 					.getNodes(GraphNodeRisk.class)
@@ -121,7 +109,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		
 		// Analyse risks
 		for (final var dangerNode : dangerNodes) {
-			final var codeNodesAffected =
+			final var affects =
 					dangerNode
 						.getEdges(GraphEdgeAffects.class)
 						.stream()
@@ -129,19 +117,38 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 						.filter(node -> GraphNodeCode.class.isAssignableFrom(node.getClass()))
 						.map(GraphNodeCode.class::cast)
 						.collect(Collectors.toUnmodifiableSet());
-			for (final var codeNodeAffected : codeNodesAffected) {
-				final var codeNodeSubject = findSubject(codeNodeAffected);
-				for (final var codeNode2 : codeNodesAffected) {
-					if (codeNodeAffected.equals(codeNode2) || codeNodeAffected.hashCode() < codeNode2.hashCode()) {
+			for (final var codeNode : affects) {
+				nodeCounter++;
+				final var codeNodeSubject = findSubject(codeNode);
+				for (final var codeNode2 : affects) {
+					if (codeNode.equals(codeNode2) || codeNode.hashCode() < codeNode2.hashCode()) {
 						continue;
 					}
+					
+					final var nodeIdentifier = String.format("N%d", nodeCounter);
 					final var codeNodeSubject2 = findSubject(codeNode2);
+					
+					this.printLine(String.format("note as %s", nodeIdentifier));
+					this.indentIndex++;
+					this.printLine(getDangerLabel(codeNode, codeNode2, dangerNode));
+					this.indentIndex--;
+					this.printLine("end note");
 					this.printLine(
-							MessageFormat.format(
-									"{0} <..> {1} : {2}",
+							String.format(
+									"%s::%s .. %s",
 									codeNodeSubject.getCaption(),
+									codeNode.getCaption(),
+									nodeIdentifier
+							)
+					);
+					this.printLine(
+							String.format(
+									"%s .. %s::%s",
+									nodeIdentifier,
 									codeNodeSubject2.getCaption(),
-									getDangerLabel(codeNodeAffected, codeNode2, dangerNode)));
+									codeNode2.getCaption()
+							)
+					);
 				}
 			}
 		}
@@ -159,7 +166,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 	private final String getDangerLabel(GraphNodeCode one, GraphNodeCode other, GraphNodeRisk danger) {
 		return
 				MessageFormat.format(
-						"<strong>{0}</strong><br />on {1} and {2}",
+						"<b>{0}</b> on {1} and {2}",
 						danger.getCaption(),
 						one.getCaption(),
 						other.getCaption());

@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 /**
  * An exception that is thrown if an argument is null.
  */
-public final class ArgumentNullException extends IllegalArgumentException {
+public final class ArgumentNullException extends NullPointerException {
 	/**
 	 * A generated serial version UID for serialisation purposes.
 	 */

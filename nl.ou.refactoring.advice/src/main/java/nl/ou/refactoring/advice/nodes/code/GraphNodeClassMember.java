@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 
 /**
@@ -10,10 +11,10 @@ public abstract class GraphNodeClassMember extends GraphNodeCode {
 	/**
 	 * Initialises a new instance of {@link GraphNodeClassMember}.
 	 * @param graph The graph that owns this node.
-	 * @throws NullPointerException Thrown if graph is null.
+	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
 	protected GraphNodeClassMember(Graph graph)
-			throws NullPointerException {
+			throws ArgumentNullException {
 		super(graph);
 	}
 	

@@ -1,7 +1,7 @@
 package nl.ou.refactoring.advice;
 
-import java.util.Objects;
-
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 
@@ -16,11 +16,11 @@ public final class GraphPathSegment {
 	 * Initialises a new instance of {@link GraphPathSegment}.
 	 * @param edge An outgoing edge of the node.
 	 * @param node The node of a graph.
-	 * @throws NullPointerException Thrown if node is null. Edge can be null.
+	 * @throws ArgumentNullException Thrown if node is null. Edge can be null.
 	 */
 	public GraphPathSegment(GraphEdge edge, GraphNode node)
-			throws NullPointerException {
-		Objects.requireNonNull(node, "node");
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(node, "node");
 		this.node = node;
 		this.edge = edge;
 	}
