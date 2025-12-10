@@ -17,3 +17,4 @@ Initial project setup.
 ## 0.0.2
 
 - Enhanced feature for writing RAGs to Mermaid Class Diagrams.
+- Added a feature for writing RAGs to PlantUML Class Diagrams.

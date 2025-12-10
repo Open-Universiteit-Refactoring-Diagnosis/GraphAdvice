@@ -11,12 +11,13 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskBrokenLocalRef
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskBrokenSubTyping;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskCorrespondingSubclassSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskLostSpecification;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskImposedSpecification;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingAbstractImplementation;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingSuperImplementation;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskOverloadParameterConversion;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskRemoveConcreteOverride;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskPrecedingOverload;
 
 /**
  * An edge that indicates that a refactoring Node affects a code symbol.
@@ -181,12 +182,38 @@ public final class GraphEdgeAffects extends GraphEdge {
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeAffects}.
+	 * @param forcedOverride A Forced Override risk.
+	 * @param operationNode The Operation that may override an Operation with the same signature in a super Class.
+	 * @throws ArgumentNullException Thrown if forcedOverride or operationNode is null.
+	 */
+	public GraphEdgeAffects(
+			GraphNodeRiskForcedOverride forcedOverride,
+			GraphNodeOperation operationNode)
+					throws ArgumentNullException {
+		super(forcedOverride, operationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAffects}.
+	 * @param imposedSpecification An Imposed Specification risk.
+	 * @param operationNode The Operation that impose a new specification for subclass(es).
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 */
+	public GraphEdgeAffects(
+			GraphNodeRiskImposedSpecification imposedSpecification,
+			GraphNodeOperation operationNode)
+					throws ArgumentNullException {
+		super(imposedSpecification, operationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAffects}.
 	 * @param lostSpecification A Lost Specification risk.
 	 * @param operationNode The Operation that may define the specification of a root of a tree of overriding methods, or any of the overriding methods.
 	 * @throws ArgumentNullException Thrown if lostSpecification or operationNode is null.
 	 */
 	public GraphEdgeAffects(
-			GraphNodeRiskLostSpecification lostSpecification,
+			GraphNodeRiskMissingSpecification lostSpecification,
 			GraphNodeOperation operationNode)
 					throws ArgumentNullException {
 		super(lostSpecification, operationNode);
@@ -233,28 +260,15 @@ public final class GraphEdgeAffects extends GraphEdge {
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param overloadParameterConversion An Overload Parameter Conversion risk.
-	 * @param operationNode The Operation that may be overloaded or the overloading Operation.
-	 * @throws ArgumentNullException Thrown if overloadedParameterConversion or operationNode is null.
+	 * @param precedingOverload A Preceding Overload risk.
+	 * @param operationNode The Operation that may add an overload that precedes other overload(s).
+	 * @throws ArgumentNullException Thrown if precedingOverload or operationNode is null.
 	 */
 	public GraphEdgeAffects(
-			GraphNodeRiskOverloadParameterConversion overloadParameterConversion,
+			GraphNodeRiskPrecedingOverload precedingOverload,
 			GraphNodeOperation operationNode)
 					throws ArgumentNullException {
-		super(overloadParameterConversion, operationNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param removeConcreteOverride A Remove Concrete Override risk.
-	 * @param operationNode The Operation that is being removed and overrides another Operation, or the Operation that a call will fall back to.
-	 * @throws ArgumentNullException Thrown if removeConcreteOverride or operationNode is null.
-	 */
-	public GraphEdgeAffects(
-			GraphNodeRiskRemoveConcreteOverride removeConcreteOverride,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
-		super(removeConcreteOverride, operationNode);
+		super(precedingOverload, operationNode);
 	}
 	
 	@Override

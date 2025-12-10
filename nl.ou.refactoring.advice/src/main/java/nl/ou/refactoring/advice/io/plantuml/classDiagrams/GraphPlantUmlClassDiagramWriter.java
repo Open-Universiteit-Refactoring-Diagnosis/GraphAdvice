@@ -28,7 +28,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	public void write(Graph graph)
 			throws ArgumentNullException, GraphPathSegmentInvalidException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		this.printLine(String.format("@startuml %s", graph.getRefactoringName()));
+		this.writeStartUml(graph.getRefactoringName());
 		
 		// Domain model
 		final var packageNodes = graph.getNodes(GraphNodePackage.class);
@@ -39,7 +39,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		// Notes
 		this.writeNotes(graph);
 		
-		this.printLine("@enduml");
+		this.writeEndUml();
 	}
 
 	private void writePackage(GraphNodePackage packageNode) {
@@ -57,7 +57,14 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	
 	private void writeClass(GraphNodeClass classNode) {
 		// Class
-		this.printLine(String.format("class %s {", classNode.getClassName()));
+		final var className = classNode.getClassName();
+		this.printLine(
+				String.format(
+						"class \"%s\" as %s {",
+						className,
+						sanitize(className)
+				)
+		);
 		this.indentIndex++;
 		
 		// Attributes
@@ -136,17 +143,17 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 					this.printLine(
 							String.format(
 									"%s::%s .. %s",
-									codeNodeSubject.getCaption(),
-									codeNode.getCaption(),
-									nodeIdentifier
+									sanitize(codeNodeSubject.getCaption()),
+									sanitize(codeNode.getCaption()),
+									sanitize(nodeIdentifier)
 							)
 					);
 					this.printLine(
 							String.format(
 									"%s .. %s::%s",
-									nodeIdentifier,
-									codeNodeSubject2.getCaption(),
-									codeNode2.getCaption()
+									sanitize(nodeIdentifier),
+									sanitize(codeNodeSubject2.getCaption()),
+									sanitize(codeNode2.getCaption())
 							)
 					);
 				}
@@ -161,6 +168,10 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			case GraphNodeClassMember member -> member.getClassNode();
 			default -> codeNode;
 		};
+	}
+	
+	private final String sanitize(String name) {
+		return name.replace('*', '_');
 	}
 	
 	private final String getDangerLabel(GraphNodeCode one, GraphNodeCode other, GraphNodeRisk danger) {

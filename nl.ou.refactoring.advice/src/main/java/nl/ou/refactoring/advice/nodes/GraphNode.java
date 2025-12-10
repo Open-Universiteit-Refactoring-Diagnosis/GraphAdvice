@@ -11,6 +11,7 @@ import nl.ou.refactoring.advice.GraphPath;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * Represents a node in a Refactoring Advice Graph.
@@ -193,7 +194,12 @@ public abstract class GraphNode {
 	 * Gets the caption for the node.
 	 * @return A caption for the node.
 	 */
-	public abstract String getCaption();
+	public String getCaption() {
+		return
+				ResourceProvider
+					.GraphNodeCaptions
+					.getCaption(this.getClass());
+	}
 	
 	/**
 	 * Determines whether the current node and the other object are equal.

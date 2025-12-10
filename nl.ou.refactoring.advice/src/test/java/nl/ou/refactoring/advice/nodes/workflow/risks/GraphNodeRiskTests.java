@@ -1,11 +1,24 @@
 package nl.ou.refactoring.advice.nodes.workflow.risks;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -13,6 +26,57 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemo
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
 public final class GraphNodeRiskTests {
+	private static final Locale[] SUPPORTED_LOCALES = {
+		Locale.of("nl", "NL"),
+		Locale.of("en", "GB")
+	};
+	
+	@ParameterizedTest
+	@MethodSource("getCaptionsTestCases")
+	@DisplayName("Should get localised captions for nodes")
+	public void getCaptionsTest(
+			Class<? extends GraphNodeRisk> riskNodeClass
+	)
+			throws
+				InstantiationException,
+				IllegalAccessException,
+				IllegalArgumentException,
+				InvocationTargetException,
+				NoSuchMethodException
+	{
+		final var graph = new Graph("Test");
+		final var riskNode = (GraphNodeRisk)riskNodeClass.getConstructors()[0].newInstance(graph);
+		
+		for (final var locale : SUPPORTED_LOCALES) {
+			Locale.setDefault(locale);
+			final var result = riskNode.getCaption();
+			assertNotNull(result);
+			System.out.println(result);
+		}
+		System.out.println();
+	}
+	
+	private static Stream<Arguments> getCaptionsTestCases() {
+	    final String packageName = "nl.ou.refactoring.advice.nodes.workflow.risks";
+	    try (ScanResult scanResult = new ClassGraph()
+	            //.verbose()
+	            .enableAllInfo()
+	            .acceptPackages(packageName)
+	            .scan()) {
+	        // Collect results into a list while ScanResult is open
+	        List<Arguments> resultList = new ArrayList<>();
+	        for (ClassInfo classInfo : scanResult.getSubclasses(GraphNodeRisk.class)) {
+	            try {
+	                resultList.add(Arguments.of(classInfo.loadClass()));
+	            } catch (Exception e) {
+	                // Add null for unloadable classes
+	                resultList.add(Arguments.of((Class<?>) null));
+	            }
+	        }
+	        return resultList.stream();
+	    }
+	}
+	
 	@Test
 	@DisplayName("Should get microsteps that neutralise the risk")
 	public void getNeutralisersTest() {

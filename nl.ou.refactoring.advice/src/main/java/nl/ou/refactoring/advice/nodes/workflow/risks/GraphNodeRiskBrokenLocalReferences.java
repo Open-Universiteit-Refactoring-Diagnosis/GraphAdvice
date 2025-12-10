@@ -9,7 +9,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
  * Represents a "Broken Local References" risk in a Refactoring Advice Graph.
  * This risk may arise if a method body contains references in the programme code that are no longer accessible after a microstep.
  */
-public class GraphNodeRiskBrokenLocalReferences extends GraphNodeRisk {
+public final class GraphNodeRiskBrokenLocalReferences extends GraphNodeRisk {
 	/**
 	 * Initialises a new instance of {@link GraphNodeRiskBrokenLocalReferences}.
 	 * @param graph {@link Graph} The graph that contains the risk.
@@ -33,10 +33,5 @@ public class GraphNodeRiskBrokenLocalReferences extends GraphNodeRisk {
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
-	}
-
-	@Override
-	public String getCaption() {
-		return "Broken Local References";
 	}
 }
