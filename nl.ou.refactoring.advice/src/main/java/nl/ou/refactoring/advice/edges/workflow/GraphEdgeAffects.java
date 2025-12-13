@@ -5,8 +5,6 @@ import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
-import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
-import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyRenameConflictingSymbol;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskBrokenLocalReferences;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskBrokenSubTyping;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskCorrespondingSubclassSpecification;
@@ -15,93 +13,17 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskImposedSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingAbstractImplementation;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingConcreteImplementation;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingSuperImplementation;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskPrecedingOverload;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskScopeShadowing;
 
 /**
  * An edge that indicates that a refactoring Node affects a code symbol.
  * This is mainly used to connect refactoring workflow subgraphs with code symbol subgraphs.
  */
-public final class GraphEdgeAffects extends GraphEdge {
-	/**
-	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param chooseDifferentName Choose a different name to mitigate a Double Definition risk.
-	 * @param attributeNode The Attribute that will receive a different name.
-	 * @throws ArgumentNullException Thrown if chooseDifferentName or attributeNode is null.
-	 */
-	public GraphEdgeAffects(
-			GraphNodeRemedyChooseDifferentName chooseDifferentName,
-			GraphNodeAttribute attributeNode)
-					throws ArgumentNullException {
-		super(chooseDifferentName, attributeNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param chooseDifferentName Choose a different name to mitigate a Double Definition risk.
-	 * @param classNode The Class that will receive a different name.
-	 * @throws ArgumentNullException Thrown if chooseDifferentName or classNode is null.
-	 */
-	public GraphEdgeAffects(
-			GraphNodeRemedyChooseDifferentName chooseDifferentName,
-			GraphNodeClass classNode)
-					throws ArgumentNullException {
-		super(chooseDifferentName, classNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param chooseDifferentName Choose a different name to mitigate a Double Definition risk.
-	 * @param operationNode The Operation that will receive a different name.
-	 * @throws ArgumentNullException Thrown if chooseDifferentName or operationNode is null.
-	 */
-	public GraphEdgeAffects(
-			GraphNodeRemedyChooseDifferentName chooseDifferentName,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
-		super(chooseDifferentName, operationNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param renameConflictingSymbol Rename the conflicting code symbol to mitigate a Double Definition risk.
-	 * @param attributeNode The Attribute that will be renamed or the Attribute that is introduced.
-	 * @throws ArgumentNullException Thrown if renameConflictingSymbol or attributeNode is null.
-	 */
-	public GraphEdgeAffects(
-			GraphNodeRemedyRenameConflictingSymbol renameConflictingSymbol,
-			GraphNodeAttribute attributeNode)
-					throws ArgumentNullException {
-		super(renameConflictingSymbol, attributeNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param renameConflictingSymbol Rename the conflicting code symbol to mitigate a Double Definition risk.
-	 * @param classNode The Class that will be renamed or the Class that is introduced.
-	 * @throws ArgumentNullException Thrown if renameConflictingSymbol or classNode is null.
-	 */
-	public GraphEdgeAffects(
-			GraphNodeRemedyRenameConflictingSymbol renameConflictingSymbol,
-			GraphNodeClass classNode)
-					throws ArgumentNullException {
-		super(renameConflictingSymbol, classNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeAffects}.
-	 * @param renameConflictingSymbol Rename the conflicting code symbol to mitigate a Double Definition risk.
-	 * @param operationNode The Operation that will be renamed or the Operation that is introduced.
-	 * @throws ArgumentNullException Thrown if renameConflictingSymbol or operationNode is null.
-	 */
-	public GraphEdgeAffects(
-			GraphNodeRemedyRenameConflictingSymbol renameConflictingSymbol,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
-		super(renameConflictingSymbol, operationNode);
-	}
-	
+public final class GraphEdgeAffects extends GraphEdge {	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeAffects}.
 	 * @param brokenLocalReferences A Broken Local References risk.
@@ -231,6 +153,19 @@ public final class GraphEdgeAffects extends GraphEdge {
 					throws ArgumentNullException {
 		super(missingAbstractImplementation, operationNode);
 	}
+
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAffects}.
+	 * @param missingConcreteImplementation A Missing Concrete Implementation risk.
+	 * @param operationNode The Operation that is removed or the abstract Operation.
+	 * @throws ArgumentNullException Thrown if missingConcreteImplementation or operationNode is null.
+	 */
+	public GraphEdgeAffects(
+			GraphNodeRiskMissingConcreteImplementation missingConcreteImplementation,
+			GraphNodeOperation operationNode)
+					throws ArgumentNullException {
+		super(missingConcreteImplementation, operationNode);
+	}
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeAffects}.
@@ -269,6 +204,19 @@ public final class GraphEdgeAffects extends GraphEdge {
 			GraphNodeOperation operationNode)
 					throws ArgumentNullException {
 		super(precedingOverload, operationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAffects}.
+	 * @param scopeShadowing A Scope Shadowing risk.
+	 * @param attributeNode The Attribute that may shadow another Attribute.
+	 * @throws ArgumentNullException Thrown if scopeShadowing or attributeNode is null.
+	 */
+	public GraphEdgeAffects(
+			GraphNodeRiskScopeShadowing scopeShadowing,
+			GraphNodeAttribute attributeNode)
+					throws ArgumentNullException {
+		super(scopeShadowing, attributeNode);
 	}
 	
 	@Override
