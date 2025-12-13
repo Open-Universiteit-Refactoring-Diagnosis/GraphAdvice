@@ -1,5 +1,11 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.swing.SortOrder;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -94,6 +100,84 @@ public final class GraphNodeClass extends GraphNodeCode {
 				interfaceNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
+	}
+	
+	/**
+	 * Gets all attribute nodes that are included in the class.
+	 * @return A set of attribute nodes. The set is not modifiable.
+	 */
+	public Set<GraphNodeAttribute> getAttributeNodes() {
+		return
+				this
+					.getEdges(GraphEdgeHas.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> GraphNodeAttribute.class.isAssignableFrom(node.getClass()))
+					.map(GraphNodeAttribute.class::cast)
+					.collect(Collectors.toUnmodifiableSet());
+	}
+	
+	/**
+	 * Gets all attribute nodes that are included in the class, sorted by the specified sort order.
+	 * @param sortOrder The order in which the attributes should be sorted.
+	 * @return A sorted list of attribute nodes. The list is not modifiable.
+	 */
+	public List<GraphNodeAttribute> getAttributeNodes(SortOrder sortOrder) {
+		return
+				this
+					.getAttributeNodes()
+					.stream()
+					.sorted(
+							(a1, a2) -> {
+								return switch (sortOrder) {
+									case SortOrder.ASCENDING ->
+										a1.getCaption().compareTo(a2.getCaption());
+									case SortOrder.DESCENDING ->
+										a2.getCaption().compareTo(a1.getCaption());
+									default -> 0;
+								};
+							}
+					)
+					.collect(Collectors.toUnmodifiableList());
+	}
+	
+	/**
+	 * Gets all operation nodes that are included in the class.
+	 * @return A set of operation nodes. The set is not modifiable.
+	 */
+	public Set<GraphNodeOperation> getOperationNodes() {
+		return
+				this
+					.getEdges(GraphEdgeHas.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> GraphNodeOperation.class.isAssignableFrom(node.getClass()))
+					.map(GraphNodeOperation.class::cast)
+					.collect(Collectors.toUnmodifiableSet());
+	}
+	
+	/**
+	 * Gets all operation nodes that are included in the class, sorted by the specified sort order.
+	 * @param sortOrder The order in which the operations should be sorted.
+	 * @return A sorted list of operation nodes. The list is not modifiable.
+	 */
+	public List<GraphNodeOperation> getOperationNodes(SortOrder sortOrder) {
+		return
+				this
+					.getOperationNodes()
+					.stream()
+					.sorted(
+							(o1, o2) -> {
+								return switch (sortOrder) {
+									case SortOrder.ASCENDING ->
+										o1.getCaption().compareTo(o2.getCaption());
+									case SortOrder.DESCENDING ->
+										o2.getCaption().compareTo(o1.getCaption());
+									default -> 0;
+								};
+							}
+					)
+					.collect(Collectors.toUnmodifiableList());
 	}
 
 	@Override

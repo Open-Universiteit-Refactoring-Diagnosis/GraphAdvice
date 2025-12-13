@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import nl.ou.refactoring.advice.edges.GraphEdge;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * An exception that is thrown if multiple Edges of the same type are being connected to the same source Node and the same destination Node.
@@ -37,9 +38,9 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 		final var sourceNode = this.edge.getSourceNode();
 		final var destinationNode = this.edge.getDestinationNode();
 		final var messageFormat =
-				ResourceBundle
-					.getBundle("ExceptionMessages")
-					.getString("multipleEdgesOfSameType");
+				ResourceProvider
+					.ExceptionMessages
+					.getMessageTemplate(this.getClass());
 		return
 				MessageFormat.format(
 						messageFormat,

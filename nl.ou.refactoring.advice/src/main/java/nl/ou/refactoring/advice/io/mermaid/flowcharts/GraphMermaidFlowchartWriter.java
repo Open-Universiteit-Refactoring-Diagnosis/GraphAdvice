@@ -23,11 +23,24 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 	private final GraphMermaidFlowchartDirection direction;
 	
+	/**
+	 * Initialises a new instance of {@link GraphMermaidFlowchartWriter}.
+	 * @param stringWriter Writes the flowchart output as a {@link String}.
+	 * @param direction The direction of the flowchart.
+	 */
 	public GraphMermaidFlowchartWriter(
 			StringWriter stringWriter,
 			GraphMermaidFlowchartDirection direction) {
 		super(stringWriter);
 		this.direction = direction;
+	}
+	
+	/**
+	 * Gets the flowchart direction.
+	 * @return The flowchart direction.
+	 */
+	public GraphMermaidFlowchartDirection getDirection() {
+		return this.direction;
 	}
 
 	@Override
@@ -35,8 +48,8 @@ public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 			throws ArgumentNullException, GraphPathSegmentInvalidException {
 		this.printLine("flowchart " + getDirectionString(this.direction));
 		this.indentIndex++;
-		var nodes = graph.getNodes();
-		for (var node : nodes) {
+		final var nodes = graph.getNodes();
+		for (final var node : nodes) {
 			for (var edge : node.getEdges()) {
 				this.printLine(
 						getNodeString(node) +
@@ -103,7 +116,6 @@ public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 				edge.getLabel() +
 				" --> ";
 		};
-
 	}
 	
 	private static String getNodeString(GraphNode node) {
