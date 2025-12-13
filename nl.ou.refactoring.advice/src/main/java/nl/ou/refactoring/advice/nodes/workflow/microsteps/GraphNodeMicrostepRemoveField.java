@@ -16,9 +16,4 @@ public final class GraphNodeMicrostepRemoveField extends GraphNodeMicrostep {
 			throws ArgumentNullException {
 		super(graph);
 	}
-
-	@Override
-	public String getCaption() {
-		return "Remove Field";
-	}
 }

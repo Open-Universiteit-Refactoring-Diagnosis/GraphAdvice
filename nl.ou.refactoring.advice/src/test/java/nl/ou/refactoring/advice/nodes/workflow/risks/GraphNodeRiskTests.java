@@ -18,7 +18,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -58,7 +57,7 @@ public final class GraphNodeRiskTests {
 	
 	private static Stream<Arguments> getCaptionsTestCases() {
 	    final String packageName = "nl.ou.refactoring.advice.nodes.workflow.risks";
-	    try (ScanResult scanResult = new ClassGraph()
+	    try (final var scanResult = new ClassGraph()
 	            //.verbose()
 	            .enableAllInfo()
 	            .acceptPackages(packageName)

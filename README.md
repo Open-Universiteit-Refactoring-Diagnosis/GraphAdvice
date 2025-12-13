@@ -153,3 +153,146 @@ class Example {
     }
 }
 ```
+
+
+## Adding a new Microstep to the model
+
+In the `nl.ou.refactoring.advice.nodes.workflow.microsteps` package, add a new class that extends the `GraphNodeMicrostep` class:
+
+```java
+/**
+ * Represents a Microstep in a Refactoring Advice Graph that provides as an example for documentation.
+ */
+public final class GraphNodeMicrostepExample extends GraphNodeMicrostep {
+	/**
+	 * Initialises a new instance of {@link GraphNodeMicrostepExample}.
+	 * @param graph The graph that contains the microstep. Cannot be null.
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 */
+	public GraphNodeMicrostepExample(Graph graph)
+			throws ArgumentNullException {
+		super(graph);
+	}
+}
+```
+
+Generally, the caption of graph nodes is read from resources to enable multilingual support.
+*GraphNodeCaptions.properties*
+```
+GraphNodeMicrostepExample=Example
+```
+
+*GraphNodeCaptions_nl_NL.properties*
+```
+GraphNodeMicrostepExample=Voorbeeld
+```
+
+Optionally, the method `getCaption` can be overridden so the resource is not necessarily read anymore.
+```java
+/**
+ * Represents a Microstep in a Refactoring Advice Graph that provides as an example for documentation.
+ */
+public final class GraphNodeMicrostepExample extends GraphNodeMicrostep {
+	/**
+	 * Initialises a new instance of {@link GraphNodeMicrostepExample}.
+	 * @param graph The graph that contains the microstep. Cannot be null.
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 */
+	public GraphNodeMicrostepExample(Graph graph)
+			throws ArgumentNullException {
+		super(graph);
+	}
+
+	@Override
+	public String getCaption() {
+		return "Example";
+	}
+}
+```
+
+
+## Adding a new Risk to the model
+
+In the `nl.ou.refactoring.advice.nodes.workflow.risks` package, add a new class that extends the `GraphNodeRisk` class:
+
+```java
+/**
+ * Represents an "Example" risk in a Refactoring Advice Graph.
+ * This risk may arise if an example is used in the documentation to illustrate how a new risk node is added to the model.
+ */
+public final class GraphNodeRiskExample extends GraphNodeRisk {
+	/**
+	 * Initialises a new instance of {@link GraphNodeRiskExample}.
+	 * @param graph {@link Graph} The graph that contains the risk.
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 */
+	public GraphNodeRiskExample(Graph graph)
+			throws ArgumentNullException {
+		super(graph);
+	}
+	
+	/**
+	 * Indicates that the "Example" risk affects an Operation.
+	 * @param operationNode The affected Operation.
+	 * @return The edge that connects the "Example" risk and the affected Operation.
+	 * @throws ArgumentNullException Thrown if operationNode is null.
+	 */
+	public GraphEdgeAffects affects(GraphNodeOperation operationNode)
+			throws ArgumentNullException {
+		return this.graph.getOrAddEdge(
+				this,
+				operationNode,
+				(source, destination) -> new GraphEdgeAffects(source, destination),
+				GraphEdgeAffects.class);
+	}
+}
+```
+
+In this example the risk affects an 'operation' in the code section of the model.
+Any combination of code nodes may be affected, depending on the nature of the refactoring risk.
+For these combinations an `affects` overload must be implemented for each relationship.
+
+Analogous to a new `Microstep`, the `getCaption` method must either be provided with a new resource entry or an overriding implementation.
+
+
+## Adding a new Remedy to the model
+
+In the `nl.ou.refactoring.advice.nodes.workflow.remedies` package, add a new class that extends the `GraphNodeRemedy` class:
+
+```java
+/**
+ * Represents a remedy of providing an example in documentation on how to add a new remedy to the graph model.
+ */
+public final class GraphNodeRemedyExample extends GraphNodeRemedy {
+	/**
+	 * Initialises a new instance of {@link GraphNodeRemedyExample}.
+	 * @param graph {@link Graph} The graph that contains the remedy.
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 */
+	public GraphNodeRemedyExample(Graph graph)
+			throws ArgumentNullException {
+		super(graph);
+	}
+	
+	/**
+	 * Indicates that the Example remedy mitigates the Example risk.
+	 * @param doubleDefinition The Example risk that is mitigated by this remedy.
+	 * @return An edge that connects the remedy and the risk.
+	 * @throws ArgumentNullException Thrown if doubleDefinition is null.
+	 */
+	public GraphEdgeMitigates mitigates(GraphNodeRiskExample example)
+			throws ArgumentNullException {
+		return this.graph.getOrAddEdge(
+				this,
+				example,
+				(source, destination) -> new GraphEdgeMitigates(source, destination),
+				GraphEdgeMitigates.class);
+	}
+}
+```
+
+In this example the remedy mitigates an 'Example' risk.
+Any combination of risk nodes may be mitigated, depending on the nature of the refactoring remedy.
+For these combinations a `mitigates` overload must be implemented for each relationship.
+
+Analogous to a new `Microstep`, the `getCaption` method must either be provided with a new resource entry or an overriding implementation.
