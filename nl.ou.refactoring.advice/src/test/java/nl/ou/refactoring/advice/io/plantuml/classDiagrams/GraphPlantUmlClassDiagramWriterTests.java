@@ -1,0 +1,121 @@
+package nl.ou.refactoring.advice.io.plantuml.classDiagrams;
+
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeClassHasMultipleGeneralisationsException;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
+import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
+import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyRenameConflictingSymbol;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+
+public final class GraphPlantUmlClassDiagramWriterTests {
+	private static Path OUTPUT_DIR;
+	
+	@BeforeAll
+	static void setUp() throws IOException {
+		OUTPUT_DIR = Paths.get("target", "test-output");
+		Files.createDirectories(OUTPUT_DIR);
+	}
+
+	@Test
+	@DisplayName("Should write a PlantUML class diagram from a graph")
+	public void writeTests()
+			throws
+				ArgumentNullException,
+				GraphPathSegmentInvalidException,
+				RefactoringMayContainOnlyOneStartNodeException,
+				GraphNodeClassHasMultipleGeneralisationsException
+	{
+		// Arrange graph
+		final var graph = new Graph("Move Method");
+		
+		// Arrange graph code
+		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
+		final var typeInt = new GraphNodeType(graph, "int");
+		final var typeString = new GraphNodeType(graph, "String");
+		final var classAlpha = new GraphNodeClass(graph, "Alpha");
+		final var attributeAlphaFoo = new GraphNodeAttribute(graph, "foo");
+		final var attributeAlphaBar = new GraphNodeAttribute(graph, "bar");
+		final var operationAlphaAbc = new GraphNodeOperation(graph, "abc");
+		packageRefactoring.has(classAlpha);
+		classAlpha.has(operationAlphaAbc);
+		classAlpha.has(attributeAlphaFoo);
+		classAlpha.has(attributeAlphaBar);
+		attributeAlphaFoo.is(typeString);
+		attributeAlphaBar.is(typeInt);
+		operationAlphaAbc.hasReturnType(typeString);
+		final var classBeta = new GraphNodeClass(graph, "Beta");
+		final var attributeBetaMyField = new GraphNodeAttribute(graph, "myField");
+		final var operationBetaAbc2 = new GraphNodeOperation(graph, "abc2");
+		packageRefactoring.has(classBeta);
+		classBeta.has(operationBetaAbc2);
+		classBeta.has(attributeBetaMyField);
+		attributeBetaMyField.is(typeString);
+		operationBetaAbc2.hasReturnType(typeInt);
+		
+		// Arrange graph workflow
+		final var start = graph.start();
+		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
+		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
+		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);
+		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		final var doubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
+		final var missingDefinition = new GraphNodeRiskMissingDefinition(graph);
+		final var renameConflictingMethod = new GraphNodeRemedyRenameConflictingSymbol(graph);
+		final var chooseDifferentName = new GraphNodeRemedyChooseDifferentName(graph);
+		start.initiates(addMethod);
+		addMethod.precedes(addExpression);
+		addMethod.causes(doubleDefinition);
+		addMethod.obsolesces(missingDefinition);
+		addExpression.precedes(removeExpression);
+		addExpression.obsolesces(missingDefinition);
+		removeExpression.precedes(removeMethod);
+		removeMethod.causes(missingDefinition);
+		removeMethod.finalises();
+		renameConflictingMethod.mitigates(doubleDefinition);
+		chooseDifferentName.mitigates(doubleDefinition);
+		doubleDefinition.affects(operationAlphaAbc);
+		doubleDefinition.affects(operationBetaAbc2);
+		
+		// Arrange writer
+		final var stringWriter = new StringWriter();
+		final var classDiagramWriter = new GraphPlantUmlClassDiagramWriter(stringWriter);
+		
+		// Act / Assert
+		classDiagramWriter.write(graph);
+		final var plantUmlClassDiagramFilePath =
+				OUTPUT_DIR.resolve("Graph_PlantUMLClassDiagram.puml");
+		try (final var bufferedWriter =
+				new BufferedWriter(new FileWriter(plantUmlClassDiagramFilePath.toFile()))) {
+			bufferedWriter.write(stringWriter.toString());
+			bufferedWriter.close();
+		} catch (IOException exception) {
+			fail("Failed to write PlantUML Class Diagram");
+		}
+	}
+}

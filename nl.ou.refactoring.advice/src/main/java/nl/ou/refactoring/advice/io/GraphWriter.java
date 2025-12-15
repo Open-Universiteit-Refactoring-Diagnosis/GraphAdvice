@@ -3,7 +3,6 @@ package nl.ou.refactoring.advice.io;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.io.layouts.GraphLayoutSettings;
 
 /**
  * Writes Refactoring Advice Graphs to a destination.

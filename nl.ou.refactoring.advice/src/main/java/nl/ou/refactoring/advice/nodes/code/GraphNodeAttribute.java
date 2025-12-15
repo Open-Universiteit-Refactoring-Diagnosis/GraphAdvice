@@ -9,7 +9,7 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Attribute of a Class that is affected by a refactoring.
  */
-public final class GraphNodeAttribute extends GraphNodeCode {
+public final class GraphNodeAttribute extends GraphNodeClassMember {
 	private final String attributeName;
 	
 	/**

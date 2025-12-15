@@ -3,7 +3,7 @@ package nl.ou.refactoring.advice.nodes.workflow;
 /**
  * An exception that is thrown if a graph contains more than one start node.
  */
-public final class RefactoringMayContainOnlyOneStartNodeException extends Exception {
+public final class RefactoringMayContainOnlyOneStartNodeException extends RuntimeException {
 	/**
 	 * Generated serial version UID.
 	 */

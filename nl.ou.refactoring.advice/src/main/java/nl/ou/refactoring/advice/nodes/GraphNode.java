@@ -11,6 +11,7 @@ import nl.ou.refactoring.advice.GraphPath;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * Represents a node in a Refactoring Advice Graph.
@@ -24,7 +25,8 @@ public abstract class GraphNode {
 	 * @param graph The graph that contains the node.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	protected GraphNode(Graph graph) throws ArgumentNullException {
+	protected GraphNode(Graph graph)
+			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		this.id = UUID.randomUUID();
 		this.graph = graph;
@@ -55,18 +57,50 @@ public abstract class GraphNode {
 	
 	/**
 	 * Gets the edges that depart from this node.
-	 * @return The edges that depart from this node.
+	 * @return An unmodifiable set of edges that depart from this node.
 	 */
 	public Set<GraphEdge> getEdges() {
 		return this.graph.getEdgesFrom(this);
 	}
 	
 	/**
+	 * Gets the edges that depart from this node, filtered by edgeType.
+	 * @param <TEdge> The type of edge to filter.
+	 * @param edgeType The type of edge to filter.
+	 * @return An unmodifiable set of edges that depart from this node, filtered by edgeType.
+	 */
+	public <TEdge extends GraphEdge> Set<TEdge> getEdges(Class<TEdge> edgeType) {
+		return this.graph.getEdgesFrom(this, edgeType);
+	}
+	
+	/**
+	 * Gets the edges that arrive to this node.
+	 * @return An unmodifiable set of edges that arrive to this node.
+	 */
+	public Set<GraphEdge> getEdgesIncoming() {
+		return this.graph.getEdgesTo(this);
+	}
+	
+	/**
+	 * Gets the edges that arrive to this node, filtered by edgeType.
+	 * @param <TEdge> The type of edge to filter.
+	 * @param edgeType The type of edge to filter.
+	 * @return An unmodifiable set of edges that arrive to this node, filtered by edgeType.
+	 */
+	public <TEdge extends GraphEdge> Set<TEdge> getEdgesIncoming(Class<TEdge> edgeType) {
+		return this.graph.getEdgesTo(this, edgeType);
+	}
+	
+	/**
 	 * Finds paths that lead out of this node, limited by a maximum depth.
 	 * @param maximumDepth The maximum depth of the paths.
 	 * @return The paths that lead out of this node, limited by a maximum depth.
+	 * @throws IllegalArgumentException Thrown if maximumDepth is not greater than or equal to 0.
 	 */
-	public List<GraphPath> findPaths(int maximumDepth) {
+	public List<GraphPath> findPaths(int maximumDepth)
+			throws IllegalArgumentException {
+		ArgumentGuard.requireGreaterThanOrEqual(0, maximumDepth, "maximumDepth");
+		
 		List<GraphPath> result = new ArrayList<>();
 		Stack<GraphPathSearchNode> searchNodes = new Stack<>();
 		var initialPath = new GraphPath(this);
@@ -106,6 +140,50 @@ public abstract class GraphNode {
 		return result;
 	}
 	
+	public List<GraphPath> findPaths(GraphNode destinationNode, int maximumDepth)
+			throws ArgumentNullException, IllegalArgumentException {
+		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
+		ArgumentGuard.requireGreaterThanOrEqual(0, maximumDepth, "maximumDepth");
+		
+		List<GraphPath> result = new ArrayList<>();
+		Stack<GraphPathSearchNode> searchNodes = new Stack<>();
+		var initialPath = new GraphPath(this);
+		searchNodes.push(new GraphPathSearchNode(this, initialPath));
+		
+		while (!searchNodes.isEmpty()) {
+			var currentSearchNode = searchNodes.pop();
+			var currentNode = currentSearchNode.getNode();
+			var currentPath = currentSearchNode.getPath();
+			var currentPathSegments = currentPath.getSegments();
+			
+			if (currentNode.equals(destinationNode)) {
+				result.add(currentPath);
+			}
+			if (currentPathSegments.size() >= maximumDepth) {
+				continue;
+			}
+			
+			var currentEdges = currentNode.getEdges();
+			for (var edge : currentEdges) {
+				var neighbour = edge.getDestinationNode();
+				if (currentPath.contains(neighbour)) {
+					// avoid cycles
+					continue;
+				}
+				
+				try {
+					var newPath = (GraphPath)currentPath.clone();
+					newPath.append(edge, neighbour);
+					searchNodes.push(new GraphPathSearchNode(neighbour, newPath));
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Gets the label for the node.
 	 * @return A label for the node.
@@ -116,7 +194,12 @@ public abstract class GraphNode {
 	 * Gets the caption for the node.
 	 * @return A caption for the node.
 	 */
-	public abstract String getCaption();
+	public String getCaption() {
+		return
+				ResourceProvider
+					.GraphNodeCaptions
+					.getCaption(this.getClass());
+	}
 	
 	/**
 	 * Determines whether the current node and the other object are equal.

@@ -34,9 +34,4 @@ public final class GraphNodeRiskMissingSuperImplementation extends GraphNodeRisk
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
 	}
-
-	@Override
-	public String getCaption() {
-		return "Missing Super Implementation";
-	}
 }

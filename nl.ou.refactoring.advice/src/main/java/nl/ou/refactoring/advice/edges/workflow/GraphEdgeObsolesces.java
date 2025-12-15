@@ -2,9 +2,7 @@ package nl.ou.refactoring.advice.edges.workflow;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflowAction;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
 /**
