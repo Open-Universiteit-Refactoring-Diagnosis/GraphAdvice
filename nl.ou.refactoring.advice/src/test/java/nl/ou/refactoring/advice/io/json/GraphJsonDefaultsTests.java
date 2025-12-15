@@ -8,9 +8,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +27,14 @@ import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirec
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 
 public final class GraphJsonDefaultsTests {
+	private static Path OUTPUT_DIR;
+	
+	@BeforeAll
+	static void setUp() throws IOException {
+		OUTPUT_DIR = Paths.get("target", "test-output");
+		Files.createDirectories(OUTPUT_DIR);
+	}
+	
 	@Test
 	@DisplayName("Should load Rename Field refactoring")
 	public void renameFieldTest()
@@ -39,10 +51,11 @@ public final class GraphJsonDefaultsTests {
 		final var layoutSettings = new GraphLayoutForceDirectedSettings();
 		layoutSettings.setSpringLength(200.0);
 		layoutSettings.setRepulsionConstant(2000.0);
-		final var image = (RenderedImage)graphPainter.createImage(renameFieldGraph, layoutSettings);
-		final var imageFile = new File("C:\\Test\\RenameField.png");
-		imageFile.delete();
-		ImageIO.write(image, "png", imageFile);
+		final var renameFieldImage =
+				(RenderedImage)graphPainter.createImage(renameFieldGraph, layoutSettings);
+		final var renameFieldImageFilePath =
+				OUTPUT_DIR.resolve("RenameField.png");
+		ImageIO.write(renameFieldImage, "png", renameFieldImageFilePath.toFile());
 		
 		// Mermaid
 		final var mermaidFlowchartStringWriter = new StringWriter();
@@ -51,10 +64,10 @@ public final class GraphJsonDefaultsTests {
 						mermaidFlowchartStringWriter,
 						GraphMermaidFlowchartDirection.LeftToRight);
 		mermaidFlowchartWriter.write(renameFieldGraph);
-		final var mermaidFlowchartFile = new File("C:\\Test\\RenameField_Flowchart.md");
-		mermaidFlowchartFile.delete();
-		mermaidFlowchartFile.createNewFile();
-		final var mermaidFlowchartBufferedWriter = new BufferedWriter(new FileWriter(mermaidFlowchartFile));
+		final var renameFieldFlowchartFilePath =
+				OUTPUT_DIR.resolve("RenameField_Flowchart.md");
+		final var mermaidFlowchartBufferedWriter =
+				new BufferedWriter(new FileWriter(renameFieldFlowchartFilePath.toFile()));
 		mermaidFlowchartBufferedWriter.write(mermaidFlowchartStringWriter.toString());
 		mermaidFlowchartBufferedWriter.close();
 	}
@@ -75,10 +88,11 @@ public final class GraphJsonDefaultsTests {
 		final var layoutSettings = new GraphLayoutForceDirectedSettings();
 		layoutSettings.setSpringLength(200.0);
 		layoutSettings.setRepulsionConstant(2000.0);
-		final var image = (RenderedImage)graphPainter.createImage(renameMethodGraph, layoutSettings);
-		final var imageFile = new File("C:\\Test\\RenameMethod.png");
-		imageFile.delete();
-		ImageIO.write(image, "png", imageFile);
+		final var renameMethodImage =
+				(RenderedImage)graphPainter.createImage(renameMethodGraph, layoutSettings);
+		final var renameMethodImageFilePath =
+				OUTPUT_DIR.resolve("RenameMethod.png");
+		ImageIO.write(renameMethodImage, "png", renameMethodImageFilePath.toFile());
 		
 		// Mermaid
 		final var mermaidFlowchartStringWriter = new StringWriter();
@@ -87,10 +101,10 @@ public final class GraphJsonDefaultsTests {
 						mermaidFlowchartStringWriter,
 						GraphMermaidFlowchartDirection.LeftToRight);
 		mermaidFlowchartWriter.write(renameMethodGraph);
-		final var mermaidFlowchartFile = new File("C:\\Test\\RenameMethod_Flowchart.md");
-		mermaidFlowchartFile.delete();
-		mermaidFlowchartFile.createNewFile();
-		final var mermaidFlowchartBufferedWriter = new BufferedWriter(new FileWriter(mermaidFlowchartFile));
+		final var renameMethodFlowchartFilePath =
+				OUTPUT_DIR.resolve("RenameMethod_Flowchart.md");
+		final var mermaidFlowchartBufferedWriter =
+				new BufferedWriter(new FileWriter(renameMethodFlowchartFilePath.toFile()));
 		mermaidFlowchartBufferedWriter.write(mermaidFlowchartStringWriter.toString());
 		mermaidFlowchartBufferedWriter.close();
 	}

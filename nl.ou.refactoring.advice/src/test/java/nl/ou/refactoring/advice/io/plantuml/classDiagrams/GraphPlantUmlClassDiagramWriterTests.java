@@ -3,11 +3,14 @@ package nl.ou.refactoring.advice.io.plantuml.classDiagrams;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,8 +34,13 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefiniti
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
 public final class GraphPlantUmlClassDiagramWriterTests {
-
-	public GraphPlantUmlClassDiagramWriterTests() { }
+	private static Path OUTPUT_DIR;
+	
+	@BeforeAll
+	static void setUp() throws IOException {
+		OUTPUT_DIR = Paths.get("target", "test-output");
+		Files.createDirectories(OUTPUT_DIR);
+	}
 
 	@Test
 	@DisplayName("Should write a PlantUML class diagram from a graph")
@@ -100,11 +108,10 @@ public final class GraphPlantUmlClassDiagramWriterTests {
 		
 		// Act / Assert
 		classDiagramWriter.write(graph);
-		try {
-			final var file = new File("C:\\Test\\Graph_PlantUMLClassDiagram.puml");
-			file.delete();
-			file.createNewFile();
-			var bufferedWriter = new BufferedWriter(new FileWriter(file));
+		final var plantUmlClassDiagramFilePath =
+				OUTPUT_DIR.resolve("Graph_PlantUMLClassDiagram.puml");
+		try (final var bufferedWriter =
+				new BufferedWriter(new FileWriter(plantUmlClassDiagramFilePath.toFile()))) {
 			bufferedWriter.write(stringWriter.toString());
 			bufferedWriter.close();
 		} catch (IOException exception) {

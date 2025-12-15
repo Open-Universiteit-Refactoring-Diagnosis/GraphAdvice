@@ -3,19 +3,20 @@ package nl.ou.refactoring.advice.io.mermaid.classDiagrams;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
-import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
@@ -32,8 +33,13 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefiniti
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
 public final class GraphMermaidClassDiagramWriterTests {
-
-	public GraphMermaidClassDiagramWriterTests() { }
+	private static Path OUTPUT_DIR;
+	
+	@BeforeAll
+	static void setUp() throws IOException {
+		OUTPUT_DIR = Paths.get("target", "test-output");
+		Files.createDirectories(OUTPUT_DIR);
+	}
 
 	@Test
 	@DisplayName("Should write a Mermaid class diagram from a graph")
@@ -97,11 +103,10 @@ public final class GraphMermaidClassDiagramWriterTests {
 		
 		// Act / Assert
 		classDiagramWriter.write(graph);
-		try {
-			final var file = new File("C:\\Test\\Graph_MermaidClassDiagram.mermaid");
-			file.delete();
-			file.createNewFile();
-			var bufferedWriter = new BufferedWriter(new FileWriter(file));
+		final var mermaidClassDiagramFilePath =
+				OUTPUT_DIR.resolve("Graph_MermaidClassDiagram.mermaid");
+		try (final var bufferedWriter =
+				new BufferedWriter(new FileWriter(mermaidClassDiagramFilePath.toFile()))) {
 			bufferedWriter.write(stringWriter.toString());
 			bufferedWriter.close();
 		} catch (IOException exception) {

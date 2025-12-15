@@ -3,11 +3,14 @@ package nl.ou.refactoring.advice.io.mermaid.flowcharts;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +32,13 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefiniti
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
 public final class GraphMermaidFlowchartWriterTests {
-
-	public GraphMermaidFlowchartWriterTests() { }
+	private static Path OUTPUT_DIR;
+	
+	@BeforeAll
+	static void setUp() throws IOException {
+		OUTPUT_DIR = Paths.get("target", "test-output");
+		Files.createDirectories(OUTPUT_DIR);
+	}
 
 	@Test
 	@DisplayName("Should write a Mermaid flowchart from a graph")
@@ -86,11 +94,10 @@ public final class GraphMermaidFlowchartWriterTests {
 		
 		// Act / Assert
 		writer.write(graph);
-		try {
-			final var file = new File("C:\\Test\\Graph_MermaidFlowchart.mermaid");
-			file.delete();
-			file.createNewFile();
-			var bufferedWriter = new BufferedWriter(new FileWriter(file));
+		final var mermaidFlowchartFilePath =
+				OUTPUT_DIR.resolve("Graph_MermaidFlowchart.mermaid");
+		try (final var bufferedWriter =
+				new BufferedWriter(new FileWriter(mermaidFlowchartFilePath.toFile()))) {
 			bufferedWriter.write(stringWriter.toString());
 			bufferedWriter.close();
 		} catch (IOException exception) {
