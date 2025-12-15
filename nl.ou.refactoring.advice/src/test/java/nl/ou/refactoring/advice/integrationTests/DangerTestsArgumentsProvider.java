@@ -16,6 +16,7 @@ import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStart
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskImposedSpecification;
 
 public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 
@@ -27,7 +28,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		return
 				Stream.of(
 						constructDoubleDefinitionGraph(),
-						constructForcedOverrideGraph()
+						constructForcedOverrideGraph(),
+						constructImposedSpecificationGraph()
 				)
 				.map(Arguments::of);
 	}
@@ -37,7 +39,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("AM-1 Double Definition");
 		
 		// Code
-		final var packageNode = new GraphNodePackage(graph, "nl.ou.refactoring.doubleDefinition");
+		final var packageNode =
+				new GraphNodePackage(graph, "nl.ou.refactoring.doubleDefinition");
 		final var alphaClassNode =
 				new GraphNodeClass(
 						graph,
@@ -76,7 +79,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("AM-2 Forced Override");
 		
 		// Code
-		final var packageNode = new GraphNodePackage(graph, "nl.ou.refactoring.dangers.forcedOverride");
+		final var packageNode =
+				new GraphNodePackage(graph, "nl.ou.refactoring.dangers.forcedOverride");
 		final var alphaClassNode = new GraphNodeClass(graph, "Alpha", null);
 		packageNode.has(alphaClassNode);
 		final var fooOperationNode = new GraphNodeOperation(graph, "foo");
@@ -109,6 +113,52 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		forcedOverrideRisk.affects(fooOperationNode);
 		forcedOverrideRisk.affects(fooNewOperationNode);
 		addMethodNode.causes(forcedOverrideRisk);
+		
+		return graph;
+	}
+	
+	private static Graph constructImposedSpecificationGraph()
+			throws RefactoringMayContainOnlyOneStartNodeException {
+		final var graph = new Graph("AM-3 Imposed Specification");
+		
+		// Code
+		final var packageNode =
+				new GraphNodePackage(graph, "nl.ou.refactoring.dangers.imposedSpecification");
+		final var alphaClassNodeBefore =
+				new GraphNodeClass(
+						graph,
+						"Alpha",
+						GraphNodeClassStereotype.BEFORE
+				);
+		packageNode.has(alphaClassNodeBefore);
+		final var alphaClassNodeAfter =
+				new GraphNodeClass(
+						graph,
+						"Alpha",
+						GraphNodeClassStereotype.AFTER
+				);
+		packageNode.has(alphaClassNodeAfter);
+		final var fooNewOperationNode = new GraphNodeOperation(graph, "foo");
+		alphaClassNodeAfter.has(fooNewOperationNode);
+		
+		final var betaClassNode =
+				new GraphNodeClass(
+						graph,
+						"Beta"
+				);
+		packageNode.has(betaClassNode);
+		betaClassNode.is(alphaClassNodeAfter);
+		final var fooOperationNode = new GraphNodeOperation(graph, "foo");
+		betaClassNode.has(fooOperationNode);
+		
+		// Workflow
+		final var startNode = graph.start();
+		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
+		startNode.initiates(addMethodNode);
+		final var imposedSpecificationRisk = new GraphNodeRiskImposedSpecification(graph);
+		imposedSpecificationRisk.affects(fooNewOperationNode);
+		imposedSpecificationRisk.affects(fooOperationNode);
+		addMethodNode.causes(imposedSpecificationRisk);
 		
 		return graph;
 	}
