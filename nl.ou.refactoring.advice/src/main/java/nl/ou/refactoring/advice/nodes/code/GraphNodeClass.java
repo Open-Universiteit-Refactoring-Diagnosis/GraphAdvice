@@ -18,6 +18,27 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
  */
 public final class GraphNodeClass extends GraphNodeCode {
 	private final String className;
+	private final GraphNodeClassStereotype stereotype;
+	
+	/**
+	 * Initialises a new instance of {@link GraphNodeClass}.
+	 * @param graph {@link Graph}  The graph that contains the node.
+	 * @param className The name of the affected Class.
+	 * @param stereotype The stereotype of the affected Class.
+	 * @throws ArgumentNullException Thrown if graph or className is null.
+	 * @throws ArgumentEmptyException Thrown if className is empty or contains only white spaces.
+	 */
+	public GraphNodeClass(
+			Graph graph,
+			String className,
+			GraphNodeClassStereotype stereotype
+	)
+			throws ArgumentNullException, ArgumentEmptyException {
+		super(graph);
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(className, "className");
+		this.className = className;
+		this.stereotype = stereotype;
+	}
 	
 	/**
 	 * Initialises a new instance of {@link GraphNodeClass}.
@@ -26,11 +47,12 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @throws ArgumentNullException Thrown if graph or className is null.
 	 * @throws ArgumentEmptyException Thrown if className is empty or contains only white spaces.
 	 */
-	public GraphNodeClass(Graph graph, String className)
+	public GraphNodeClass(
+			Graph graph,
+			String className
+	)
 			throws ArgumentNullException, ArgumentEmptyException {
-		super(graph);
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(className, "className");
-		this.className = className;
+		this(graph, className, null);
 	}
 	
 	/**
@@ -39,6 +61,14 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 */
 	public String getClassName() {
 		return this.className;
+	}
+	
+	/**
+	 * Gets the stereotype of the affected Class.
+	 * @return The stereotype of the affected Class.
+	 */
+	public GraphNodeClassStereotype getStereotype() {
+		return this.stereotype;
 	}
 	
 	/**
@@ -139,6 +169,28 @@ public final class GraphNodeClass extends GraphNodeCode {
 							}
 					)
 					.collect(Collectors.toUnmodifiableList());
+	}
+	
+	/**
+	 * Gets the node of the class that generalises this class.
+	 * @return The node of the class that generalises this class.
+	 * @throws GraphNodeClassHasMultipleGeneralisationsException Thrown if the class node has multiple generalisation class nodes associated with it.
+	 */
+	public GraphNodeClass getGeneralisationClassNode()
+			throws GraphNodeClassHasMultipleGeneralisationsException {
+		final var generalisingNodes =
+				this
+					.getEdges(GraphEdgeIs.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
+					.map(GraphNodeClass.class::cast)
+					.collect(Collectors.toUnmodifiableSet());
+		return switch (generalisingNodes.size()) {
+			case 0 -> null;
+			case 1 -> generalisingNodes.stream().findFirst().get();
+			default -> throw new GraphNodeClassHasMultipleGeneralisationsException(this);
+		};
 	}
 	
 	/**

@@ -4,7 +4,7 @@
 
 ## 0.0.1
 
-Initial project setup.
+- Initial project setup.
 - Added a Refactoring Advice Graph model.
 - Added the Force Directed Layout algorithm for drawing RAGs.
 - Added an unfinished implementation of a Global Ranking Layout algorithm for drawing RAGs.
@@ -18,3 +18,5 @@ Initial project setup.
 
 - Enhanced feature for writing RAGs to Mermaid Class Diagrams.
 - Added a feature for writing RAGs to PlantUML Class Diagrams.
+- Added Risk nodes.
+- Localisations of node captions.

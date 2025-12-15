@@ -9,7 +9,7 @@ import nl.ou.refactoring.advice.resources.ResourceProvider;
 /**
  * An exception that is thrown if multiple Edges of the same type are being connected to the same source Node and the same destination Node.
  */
-public final class MultipleEdgesOfSameTypeException extends Exception {
+public final class MultipleEdgesOfSameTypeException extends GraphValidationException {
 	/**
 	 * A generated serial version UID for serialisation purposes.
 	 */
@@ -46,6 +46,7 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 						messageFormat,
 						this.edge.getClass().getName(),
 						sourceNode.getId().toString(),
-						destinationNode.getId().toString());
+						destinationNode.getId().toString()
+				);
 	}
 }

@@ -16,6 +16,7 @@ import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeClassHasMultipleGeneralisationsException;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
@@ -36,7 +37,12 @@ public final class GraphPlantUmlClassDiagramWriterTests {
 	@Test
 	@DisplayName("Should write a PlantUML class diagram from a graph")
 	public void writeTests()
-			throws ArgumentNullException, GraphPathSegmentInvalidException, RefactoringMayContainOnlyOneStartNodeException {
+			throws
+				ArgumentNullException,
+				GraphPathSegmentInvalidException,
+				RefactoringMayContainOnlyOneStartNodeException,
+				GraphNodeClassHasMultipleGeneralisationsException
+	{
 		// Arrange graph
 		final var graph = new Graph("Move Method");
 		

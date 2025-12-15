@@ -13,7 +13,9 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeClassHasMultipleGeneralisationsException;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClassMember;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeClassStereotype;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
@@ -26,7 +28,11 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	
 	@Override
 	public void write(Graph graph)
-			throws ArgumentNullException, GraphPathSegmentInvalidException {
+			throws
+				ArgumentNullException,
+				GraphPathSegmentInvalidException,
+				GraphNodeClassHasMultipleGeneralisationsException
+	{
 		ArgumentGuard.requireNotNull(graph, "graph");
 		this.writeStartUml(graph.getRefactoringName());
 		
@@ -42,7 +48,8 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		this.writeEndUml();
 	}
 
-	private void writePackage(GraphNodePackage packageNode) {
+	private void writePackage(GraphNodePackage packageNode)
+			throws GraphNodeClassHasMultipleGeneralisationsException {
 		this.printLine(String.format("namespace %s {", packageNode.getCaption()));
 		this.indentIndex++;
 		
@@ -55,14 +62,17 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		this.printLine("}");
 	}
 	
-	private void writeClass(GraphNodeClass classNode) {
+	private void writeClass(GraphNodeClass classNode)
+			throws GraphNodeClassHasMultipleGeneralisationsException {
 		// Class
-		final var className = classNode.getClassName();
+		final var stereotype = classNode.getStereotype();
 		this.printLine(
 				String.format(
-						"class \"%s\" as %s {",
-						className,
-						sanitize(className)
+						"class %s%s {",
+						getSanitizedName(classNode),
+						stereotype == null
+							? ""
+							: " <<" + stereotype + ">> " + getStereotypeInlineStyle(stereotype)
 				)
 		);
 		this.indentIndex++;
@@ -103,6 +113,18 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		
 		this.indentIndex--;
 		this.printLine("}");
+		
+		// Specialisations
+		final var generalisation = classNode.getGeneralisationClassNode();
+		if (generalisation != null) {
+			this.printLine(
+					String.format(
+							"%s <|-- %s",
+							getSanitizedName(generalisation),
+							getSanitizedName(classNode)
+					)
+			);
+		}
 	}
 	
 	private void writeNotes(Graph graph) {
@@ -143,17 +165,17 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 					this.printLine(
 							String.format(
 									"%s::%s .. %s",
-									sanitize(codeNodeSubject.getCaption()),
-									sanitize(codeNode.getCaption()),
-									sanitize(nodeIdentifier)
+									getSanitizedName(codeNodeSubject),
+									getSanitizedName(codeNode),
+									getSanitizedName(nodeIdentifier)
 							)
 					);
 					this.printLine(
 							String.format(
 									"%s .. %s::%s",
-									sanitize(nodeIdentifier),
-									sanitize(codeNodeSubject2.getCaption()),
-									sanitize(codeNode2.getCaption())
+									getSanitizedName(nodeIdentifier),
+									getSanitizedName(codeNodeSubject2),
+									getSanitizedName(codeNode2)
 							)
 					);
 				}
@@ -170,16 +192,54 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		};
 	}
 	
-	private final String sanitize(String name) {
-		return name.replace('*', '_');
-	}
-	
-	private final String getDangerLabel(GraphNodeCode one, GraphNodeCode other, GraphNodeRisk danger) {
+	private static final String getDangerLabel(
+			GraphNodeCode one,
+			GraphNodeCode other,
+			GraphNodeRisk danger
+	) {
 		return
 				MessageFormat.format(
 						"<b>{0}</b> on {1} and {2}",
 						danger.getCaption(),
 						one.getCaption(),
 						other.getCaption());
+	}
+	
+	private static final String getSanitizedName(GraphNodeCode codeNode) {
+		final var name = switch (codeNode) {
+			case GraphNodeClass classNode -> {
+				final var className = classNode.getClassName();
+				final var stereotype = classNode.getStereotype();
+				yield
+					className +
+					getStereotypeSuffix(stereotype);
+			}
+			default -> codeNode.getCaption();
+		};
+
+		return getSanitizedName(name);
+	}
+	
+	private static final String getSanitizedName(String name) {
+		return name.replace('*', '_');
+	}
+	
+	private static final String getStereotypeInlineStyle(GraphNodeClassStereotype stereotype) {
+		return switch(stereotype) {
+			case GraphNodeClassStereotype.BEFORE -> "#DarkGray";
+			case GraphNodeClassStereotype.AFTER -> "#LightGray";
+			default -> "";
+		};
+	}
+	
+	private static final String getStereotypeSuffix(GraphNodeClassStereotype stereotype) {
+		if (stereotype == null) {
+			return "";
+		}
+		return switch(stereotype) {
+			case GraphNodeClassStereotype.BEFORE -> "_x";
+			case GraphNodeClassStereotype.AFTER -> "_y";
+			default -> "";
+		};
 	}
 }

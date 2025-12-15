@@ -63,6 +63,4 @@ public final class DangerTests {
 	        fail(String.format("Failed to write PlantUML Class Diagram for graph '%s'", refactoringName));
 	    }
 	}
-	
-	
 }
