@@ -5,13 +5,16 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +41,14 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefiniti
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
 public final class GraphPainterTests {
+	private static Path OUTPUT_DIR;
+	
+	@BeforeAll
+	static void setUp() throws IOException {
+		OUTPUT_DIR = Paths.get("target", "test-output");
+		Files.createDirectories(OUTPUT_DIR);
+	}
+	
 	@Test
 	@DisplayName("Should draw a Refactoring Advice Graph on an image using Force-Directed Layout")
 	public void drawForceDirectedLayoutTest()
@@ -109,11 +120,10 @@ public final class GraphPainterTests {
 		assertEquals(height, graphImage.getHeight());
 		// compare to reference image
 		
+		final var forceDirectedLayoutImageFilePath =
+				OUTPUT_DIR.resolve("Graph_ForceDirectedLayout.png");
 		try {
-			final var file = new File("C:\\Test\\Graph_ForceDirectedLayout.png");
-			file.delete();
-			file.createNewFile();
-			ImageIO.write(graphImage, "png", file);
+			ImageIO.write(graphImage, "png", forceDirectedLayoutImageFilePath.toFile());
 		} catch (IOException exception) {
 			fail("Failed to write test image");
 		}
@@ -194,11 +204,10 @@ public final class GraphPainterTests {
 		assertEquals(height, graphImage.getHeight());
 		// compare to reference image
 		
+		final var globalRankingLayoutImageFilePath =
+				OUTPUT_DIR.resolve("Graph_GlobalRankingLayout.png");
 		try {
-			final var file = new File("C:\\Test\\Graph_GlobalRankingLayout.png");
-			file.delete();
-			file.createNewFile();
-			ImageIO.write(graphImage, "png", file);
+			ImageIO.write(graphImage, "png", globalRankingLayoutImageFilePath.toFile());
 		} catch (IOException exception) {
 			fail("Failed to write test image");
 		}

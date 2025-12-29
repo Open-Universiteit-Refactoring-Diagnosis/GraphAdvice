@@ -9,7 +9,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 
 /**
  * Represents a "Double Definition" risk in a Refactoring Advice Graph.
- * This risk may arise if a Class or a Method with the same definition is already defined in the same context.
+ * This risk may arise if a Class, Method or Field with the same definition is already defined in the same context.
  */
 public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 	/**
@@ -67,10 +67,5 @@ public final class GraphNodeRiskDoubleDefinition extends GraphNodeRisk {
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
-	}
-
-	@Override
-	public String getCaption() {
-		return "Double Definition";
 	}
 }

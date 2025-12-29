@@ -1,14 +1,13 @@
 package nl.ou.refactoring.advice;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
-
 import nl.ou.refactoring.advice.edges.GraphEdge;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * An exception that is thrown if multiple Edges of the same type are being connected to the same source Node and the same destination Node.
  */
-public final class MultipleEdgesOfSameTypeException extends Exception {
+public final class MultipleEdgesOfSameTypeException extends GraphValidationException {
 	/**
 	 * A generated serial version UID for serialisation purposes.
 	 */
@@ -37,14 +36,15 @@ public final class MultipleEdgesOfSameTypeException extends Exception {
 		final var sourceNode = this.edge.getSourceNode();
 		final var destinationNode = this.edge.getDestinationNode();
 		final var messageFormat =
-				ResourceBundle
-					.getBundle("ExceptionMessages")
-					.getString("multipleEdgesOfSameType");
+				ResourceProvider
+					.ExceptionMessages
+					.getMessageTemplate(this.getClass());
 		return
 				MessageFormat.format(
 						messageFormat,
 						this.edge.getClass().getName(),
 						sourceNode.getId().toString(),
-						destinationNode.getId().toString());
+						destinationNode.getId().toString()
+				);
 	}
 }

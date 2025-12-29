@@ -34,9 +34,4 @@ public final class GraphNodeRiskCorrespondingSubclassSpecification extends Graph
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
 	}
-
-	@Override
-	public String getCaption() {
-		return "Corresponding Subclass Specification";
-	}
 }

@@ -15,9 +15,4 @@ public final class GraphNodeMicrostepRemoveExpression extends GraphNodeMicrostep
 	public GraphNodeMicrostepRemoveExpression(Graph graph) throws ArgumentNullException {
 		super(graph);
 	}
-
-	@Override
-	public String getCaption() {
-		return "Remove Expression";
-	}
 }
