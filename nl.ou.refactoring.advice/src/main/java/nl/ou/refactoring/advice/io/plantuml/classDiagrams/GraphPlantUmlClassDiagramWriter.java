@@ -35,6 +35,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	{
 		ArgumentGuard.requireNotNull(graph, "graph");
 		this.writeStartUml(graph.getRefactoringName());
+		this.writeSetSeparator("none");
 		
 		// Domain model
 		final var packageNodes = graph.getNodes(GraphNodePackage.class);
@@ -101,7 +102,14 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 							", ",
 							parameters
 								.stream()
-								.map(param -> param.getParameterName())
+								.map(param -> {
+									final var paramName = param.getParameterName();
+									final var paramType = param.getParameterType();
+									return
+											paramType == null
+												? paramName
+												: String.format("%s : %s", paramName, paramType.getCaption());
+								})
 								.collect(Collectors.toList()))
 			);
 			stringBuilder.append(")");
@@ -228,6 +236,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		return switch(stereotype) {
 			case GraphNodeClassStereotype.BEFORE -> "#DarkGray";
 			case GraphNodeClassStereotype.AFTER -> "#LightGray";
+			case GraphNodeClassStereotype.MITIGATED -> "#LightGreen";
 			default -> "";
 		};
 	}
@@ -237,8 +246,9 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			return "";
 		}
 		return switch(stereotype) {
-			case GraphNodeClassStereotype.BEFORE -> "_x";
-			case GraphNodeClassStereotype.AFTER -> "_y";
+			case GraphNodeClassStereotype.BEFORE -> "_before";
+			case GraphNodeClassStereotype.AFTER -> "_after";
+			case GraphNodeClassStereotype.MITIGATED -> "_mitigated";
 			default -> "";
 		};
 	}

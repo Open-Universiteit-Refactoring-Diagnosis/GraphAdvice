@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import nl.ou.refactoring.advice.resources.ResourceProvider;
+
 /**
  * The stereotype of a class in a refactoring advice Class Diagram.
  */
@@ -12,23 +14,39 @@ public enum GraphNodeClassStereotype {
 	/**
 	 * An "after" class.
 	 */
-	AFTER("after");
+	AFTER("after"),
+	
+	/**
+	 * A "mitigated" class.
+	 */
+	MITIGATED("mitigated");
 	
 	private final String displayName;
 	
 	/**
-	 * Instantiates an enum value with displayName.
-	 * @param displayName The display name of the enum value.
+	 * Instantiates a class stereotype value with displayName.
+	 * @param displayName The display name of the class stereotype value.
 	 */
 	GraphNodeClassStereotype(String displayName) {
 		this.displayName = displayName;
 	}
 	
 	/**
-	 * Returns the display name of the enum value.
+	 * Gets the neutral display name for the class stereotype.
+	 * @return The neutral display name for the class stereotype.
+	 */
+	public String getDisplayName() {
+		return this.displayName;
+	}
+	
+	/**
+	 * Returns the localised display name of the class stereotype value.
 	 */
 	@Override
 	public String toString() {
-		return this.displayName;
+		return
+			ResourceProvider
+				.GraphNodeClassStereotypeDisplayNames
+				.getDisplayName(this);
 	}
 }

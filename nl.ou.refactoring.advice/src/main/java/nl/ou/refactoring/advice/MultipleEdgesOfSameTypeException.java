@@ -1,8 +1,6 @@
 package nl.ou.refactoring.advice;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
-
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 

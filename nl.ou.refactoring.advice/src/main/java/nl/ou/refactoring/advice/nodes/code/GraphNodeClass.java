@@ -172,6 +172,43 @@ public final class GraphNodeClass extends GraphNodeCode {
 	}
 	
 	/**
+	 * Gets the {@link GraphNodeAttribute} with attributeName.
+	 * @param attributeName The name of the attribute.
+	 * @return The {@link GraphNodeAttribute} with attributeName or null if not found.
+	 * @throws ArgumentNullException Thrown if attributeName is null.
+	 * @throws ArgumentEmptyException Thrown if attributeName is empty or contains only white spaces.
+	 */
+	public GraphNodeAttribute getAttributeNode(String attributeName)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(attributeName, "attributeName");
+		return
+				this
+					.getAttributeNodes()
+					.stream()
+					.filter(node -> node.getAttributeName() == attributeName)
+					.findFirst()
+					.orElse(null);
+	}
+	
+	/**
+	 * If an attribute with attributeName is already present, it is returned, otherwise a new attribute with attributeName is created and added to this class.
+	 * @param attributeName The name of the attribute to either get or add.
+	 * @return The attribute node with attributeName that either already existed or was added to the class.
+	 * @throws ArgumentNullException Thrown if attributeName is null.
+	 * @throws ArgumentEmptyException Thrown if attributeName is empty or contains only white spaces.
+	 */
+	public GraphNodeAttribute computeAttributeNode(String attributeName)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(attributeName, "attributeName");
+		var attributeNode = this.getAttributeNode(attributeName);
+		if (attributeNode == null) {
+			attributeNode = new GraphNodeAttribute(this.graph, attributeName);
+			this.has(attributeNode);
+		}
+		return attributeNode;
+	}
+	
+	/**
 	 * Gets the node of the class that generalises this class.
 	 * @return The node of the class that generalises this class.
 	 * @throws GraphNodeClassHasMultipleGeneralisationsException Thrown if the class node has multiple generalisation class nodes associated with it.
@@ -230,6 +267,55 @@ public final class GraphNodeClass extends GraphNodeCode {
 							}
 					)
 					.collect(Collectors.toUnmodifiableList());
+	}
+	
+	/**
+	 * Gets the operation node associated with this class, with operationName and operationParameters as its signature.
+	 * @param operationName The name of the operation.
+	 * @param operationParameters The parameters of the operation.
+	 * @return The operation with operationName and operationParameters, if found, otherwise null.
+	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
+	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
+	 */
+	public GraphNodeOperation getOperationNode(
+			String operationName,
+			List<GraphNodeOperationParameter> operationParameters
+	) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
+		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
+		return
+				this
+					.getOperationNodes()
+					.stream()
+					.filter(
+							node ->
+							node.getOperationName() == operationName &&
+							node.getOperationParameters().equals(operationParameters))
+					.findFirst()
+					.orElse(null);
+	}
+	
+	/**
+	 * Attempts to get an operation node associated with this class, with operationName and operationParameters as its signature.
+	 * If it is not found, a new operation node with operationName and operationParameters is created and associated with this class node.
+	 * @param operationName The name of the operation.
+	 * @param operationParameters The parameters of the operation.
+	 * @return The operation with operationName and operationParameters, if found, otherwise a newly created operation node with operationName and operationParameters.
+	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
+	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
+	 */
+	public GraphNodeOperation computeOperationNode(
+			String operationName,
+			List<GraphNodeOperationParameter> operationParameters
+	) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
+		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
+		var operationNode = this.getOperationNode(operationName, operationParameters);
+		if (operationNode == null) {
+			operationNode = new GraphNodeOperation(this.graph, operationName, operationParameters);
+			this.has(operationNode);
+		}
+		return operationNode;
 	}
 
 	@Override

@@ -37,7 +37,11 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 * @throws ArgumentNullException Thrown if graph or operationName are null.
 	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
-	public GraphNodeOperation(Graph graph, String operationName, List<GraphNodeOperationParameter> operationParameters)
+	public GraphNodeOperation(
+			Graph graph,
+			String operationName,
+			List<GraphNodeOperationParameter> operationParameters
+	)
 			throws ArgumentNullException, ArgumentEmptyException {
 		super(graph);
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");

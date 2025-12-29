@@ -109,6 +109,27 @@ public final class GraphNodePackage extends GraphNodeCode {
 					.collect(Collectors.toUnmodifiableList());
 					
 	}
+	
+	/**
+	 * Gets the {@link GraphNodeClass} in this package with className.
+	 * If a class with className is not present, it is added and the newly created class node is returned.
+	 * @param className The name of the class to get or add.
+	 * @return The existing or newly created {@link GraphNodeClass}.
+	 */
+	public GraphNodeClass computeClassNode(String className) {
+		var classNode =
+				this
+					.getClassNodes()
+					.stream()
+					.filter(node -> node.getClassName() == className)
+					.findFirst()
+					.orElse(null);
+		if (classNode == null) {
+			classNode = new GraphNodeClass(this.graph, className);
+			this.has(classNode);
+		}
+		return classNode;
+	}
 
 	@Override
 	public String getLabel() {

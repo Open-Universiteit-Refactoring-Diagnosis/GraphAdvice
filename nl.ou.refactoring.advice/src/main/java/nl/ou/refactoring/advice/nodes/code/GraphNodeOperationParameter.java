@@ -34,6 +34,18 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 		return this.parameterName;
 	}
 	
+	public GraphNodeType getParameterType() {
+		return
+			this
+				.getEdges(GraphEdgeIs.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeType)
+				.map(GraphNodeType.class::cast)
+				.findFirst()
+				.orElse(null);
+	}
+	
 	/**
 	 * Indicates that the Operation Parameter is of a particular data Type.
 	 * @param typeNode The node that describes the data Type.
@@ -47,6 +59,40 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 				typeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		
+		if (!(other instanceof GraphNodeOperationParameter)) {
+			return false;
+		}
+		
+		return this.equals((GraphNodeOperationParameter)other);
+	}
+	
+	/**
+	 * Determines whether the operation parameters are equal.
+	 * @param other The operation parameter to compare with.
+	 * @return true if equal, otherwise false.
+	 */
+	public boolean equals(GraphNodeOperationParameter other) {
+		if (other == null) {
+			return false;
+		}
+		
+		final var parameterTypeThis = this.getParameterType();
+		final var parameterTypeOther = other.getParameterType();
+		return
+			this.getParameterName() == other.getParameterName() &&
+			(
+				(parameterTypeThis == null && parameterTypeOther == null) ||
+				(parameterTypeThis != null && parameterTypeThis.equals(parameterTypeOther))
+			);
+			
 	}
 
 	@Override
