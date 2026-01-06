@@ -99,9 +99,9 @@ public final class GraphNodePackage extends GraphNodeCode {
 							(c1, c2) -> {
 								return switch(sortOrder) {
 									case SortOrder.ASCENDING ->
-										c2.getCaption().compareTo(c1.getCaption());
-									case SortOrder.DESCENDING ->
 										c1.getCaption().compareTo(c2.getCaption());
+									case SortOrder.DESCENDING ->
+										c2.getCaption().compareTo(c1.getCaption());
 									default -> 0;
 								};
 							}

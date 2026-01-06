@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,6 +20,7 @@ import io.github.classgraph.ClassInfo;
 import nl.ou.refactoring.advice.Graph;
 
 public final class GraphNodeMicrostepTests {
+	private static final Logger LOGGER = LogManager.getLogger(GraphNodeMicrostepTests.class);
 	private static final Locale[] SUPPORTED_LOCALES = {
 			Locale.of("nl", "NL"),
 			Locale.of("en", "GB")
@@ -37,15 +40,19 @@ public final class GraphNodeMicrostepTests {
 				NoSuchMethodException
 	{
 		final var graph = new Graph("Test");
-		final var riskNode = (GraphNodeMicrostep)microstepNodeClass.getConstructors()[0].newInstance(graph);
+		final var microstepNode = (GraphNodeMicrostep)microstepNodeClass.getConstructors()[0].newInstance(graph);
 		
 		for (final var locale : SUPPORTED_LOCALES) {
 			Locale.setDefault(locale);
-			final var result = riskNode.getCaption();
+			final var result = microstepNode.getCaption();
 			assertNotNull(result);
-			System.out.println(result);
+			LOGGER.info(
+					"getCaption (microstep: {}, locale: {}): {}",
+					microstepNode.getClass().getSimpleName(),
+					locale.toLanguageTag(),
+					result
+			);
 		}
-		System.out.println();
 	}
 	
 	private static Stream<Arguments> getCaptionsTestCases() {

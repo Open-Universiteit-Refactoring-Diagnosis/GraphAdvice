@@ -24,8 +24,10 @@ public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
 	 * Indicates that this "Add Class" microstep adds the classNode.
 	 * @param classNode The node that represents the class that is added to the code context.
 	 * @return The edge that indicates that this microstep adds the classNode.
+	 * @throws ArgumentNullException Thrown if classNode is null.
 	 */
-	public GraphEdgeAdds adds(GraphNodeClass classNode) {
+	public GraphEdgeAdds adds(GraphNodeClass classNode)
+			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(classNode, "classNode");
 		return new GraphEdgeAdds(this, classNode);
 	}

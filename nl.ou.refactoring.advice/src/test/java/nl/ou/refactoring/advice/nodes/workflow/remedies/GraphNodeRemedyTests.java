@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nodes.worklow.remedies;
+package nl.ou.refactoring.advice.nodes.workflow.remedies;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,9 +18,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedy;
 
 public final class GraphNodeRemedyTests {
+	private static final Logger LOGGER = LogManager.getLogger(GraphNodeRemedyTests.class);
 	private static final Locale[] SUPPORTED_LOCALES = {
 			Locale.of("nl", "NL"),
 			Locale.of("en", "GB")
@@ -44,9 +46,13 @@ public final class GraphNodeRemedyTests {
 			Locale.setDefault(locale);
 			final var result = remedyNode.getCaption();
 			assertNotNull(result);
-			System.out.println(result);
+			LOGGER.info(
+					"getCaption (remedy: {}, locale: {}): {}",
+					remedyNode.getClass().getSimpleName(),
+					locale.toLanguageTag(),
+					result
+			);
 		}
-		System.out.println();
 	}
 	
 	private static Stream<Arguments> getCaptionsTestCases() {
@@ -56,13 +62,13 @@ public final class GraphNodeRemedyTests {
 	            .enableAllInfo()
 	            .acceptPackages(packageName)
 	            .scan()) {
-	        // Collect results into a list while ScanResult is open
+	        // Collect results into a list while ScanResult is open.
 	        List<Arguments> resultList = new ArrayList<>();
 	        for (ClassInfo classInfo : scanResult.getSubclasses(GraphNodeRemedy.class)) {
 	            try {
 	                resultList.add(Arguments.of(classInfo.loadClass()));
 	            } catch (Exception e) {
-	                // Add null for unloadable classes
+	                // Add null for classes that couldn't be loaded.
 	                resultList.add(Arguments.of((Class<?>) null));
 	            }
 	        }
