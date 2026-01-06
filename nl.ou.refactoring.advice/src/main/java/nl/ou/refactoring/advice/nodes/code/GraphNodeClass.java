@@ -185,7 +185,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 				this
 					.getAttributeNodes()
 					.stream()
-					.filter(node -> node.getAttributeName() == attributeName)
+					.filter(node -> node.getAttributeName().equals(attributeName))
 					.findFirst()
 					.orElse(null);
 	}
@@ -259,9 +259,9 @@ public final class GraphNodeClass extends GraphNodeCode {
 							(o1, o2) -> {
 								return switch (sortOrder) {
 									case SortOrder.ASCENDING ->
-										o1.getCaption().compareTo(o2.getCaption());
-									case SortOrder.DESCENDING ->
 										o2.getCaption().compareTo(o1.getCaption());
+									case SortOrder.DESCENDING ->
+										o1.getCaption().compareTo(o2.getCaption());
 									default -> 0;
 								};
 							}
@@ -289,7 +289,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 					.stream()
 					.filter(
 							node ->
-							node.getOperationName() == operationName &&
+							node.getOperationName().equals(operationName) &&
 							node.getOperationParameters().equals(operationParameters))
 					.findFirst()
 					.orElse(null);

@@ -15,7 +15,7 @@ public final class ResourceProvider {
 	/**
 	 * Retrieves localised exception message templates.
 	 */
-	public final class ExceptionMessages {
+	public static final class ExceptionMessages {
 		private static final String BUNDLE_NAME = "ExceptionMessages";
 		private ExceptionMessages() { }
 		
@@ -31,17 +31,18 @@ public final class ResourceProvider {
 		/**
 		 * Gets the message template for the specified classType, in the specified locale.
 		 * @param classType The type of the class of {@link Exception}.
+		 * @param locale The locale for which to retrieve the message template.
 		 * @return The message template for the specified classType, in the specified locale.
 		 */
-		public static String getMessageTemplate(Class<? extends Exception> cls, Locale locale) {
-			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(cls.getSimpleName());
+		public static String getMessageTemplate(Class<? extends Exception> classType, Locale locale) {
+			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(classType.getSimpleName());
 		}
 	}
 	
 	/**
 	 * Retrieves localised captions for Refactoring Advice Graph nodes.
 	 */
-	public final class GraphNodeCaptions {
+	public static final class GraphNodeCaptions {
 		private static final String BUNDLE_NAME = "GraphNodeCaptions";
 		private GraphNodeCaptions() { }
 		
@@ -67,7 +68,7 @@ public final class ResourceProvider {
 	/**
 	 * Retrieves localised display names for Class stereotypes.
 	 */
-	public final class GraphNodeClassStereotypeDisplayNames {
+	public static final class GraphNodeClassStereotypeDisplayNames {
 		private static final String BUNDLE_NAME = "GraphNodeClassStereotypeDisplayNames";
 		private GraphNodeClassStereotypeDisplayNames() { }
 		

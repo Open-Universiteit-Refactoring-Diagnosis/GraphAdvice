@@ -71,28 +71,15 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 			return false;
 		}
 		
-		return this.equals((GraphNodeOperationParameter)other);
-	}
-	
-	/**
-	 * Determines whether the operation parameters are equal.
-	 * @param other The operation parameter to compare with.
-	 * @return true if equal, otherwise false.
-	 */
-	public boolean equals(GraphNodeOperationParameter other) {
-		if (other == null) {
-			return false;
-		}
-		
+		final var parameterOther = (GraphNodeOperationParameter)other;
 		final var parameterTypeThis = this.getParameterType();
-		final var parameterTypeOther = other.getParameterType();
+		final var parameterTypeOther = parameterOther.getParameterType();
 		return
-			this.getParameterName() == other.getParameterName() &&
+			this.getParameterName().equals(parameterOther.getParameterName()) &&
 			(
 				(parameterTypeThis == null && parameterTypeOther == null) ||
 				(parameterTypeThis != null && parameterTypeThis.equals(parameterTypeOther))
 			);
-			
 	}
 
 	@Override
