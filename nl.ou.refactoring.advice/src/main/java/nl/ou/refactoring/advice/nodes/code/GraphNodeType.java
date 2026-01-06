@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.Objects;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -31,6 +33,11 @@ public final class GraphNodeType extends GraphNodeCode {
 	 */
 	public String getTypeName() {
 		return this.typeName;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.typeName);
 	}
 
 	@Override

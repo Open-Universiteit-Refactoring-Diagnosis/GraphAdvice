@@ -6,24 +6,25 @@ import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 
 /**
- * Represents a "Lost Specification" risk in a Refactoring Advice Graph.
- * This risk may arise if a method that specifies the root of a tree of overriding methods is removed.
+ * Represents an "Imposed Specification" risk in a Refactoring Advice Graph.
+ * This risk may arise if a method is defined in subclass(es)
+ * and adding the method will introduce a specification to existing methods that might not correspond.
  */
-public final class GraphNodeRiskLostSpecification extends GraphNodeRisk {
+public final class GraphNodeRiskImposedSpecification extends GraphNodeRisk {
 	/**
-	 * Initialises a new instance of {@link GraphNodeRiskLostSpecification}.
+	 * Initialises a new instance of {@link GraphNodeRiskImposedSpecification}.
 	 * @param graph {@link Graph} The graph that contains the risk.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	public GraphNodeRiskLostSpecification(Graph graph)
+	public GraphNodeRiskImposedSpecification(Graph graph)
 			throws ArgumentNullException {
 		super(graph);
 	}
 	
 	/**
-	 * Indicates that the "Lost Specification" affects an Operation.
+	 * Indicates that the "Imposed Specification" risk affects an Operation.
 	 * @param operationNode The affected Operation.
-	 * @return The edge that connects the "Lost Specification" risk and the affected Operation.
+	 * @return The edge that connects the "Imposed Specification" risk and the affected Operation.
 	 * @throws ArgumentNullException Thrown if operationNode is null.
 	 */
 	public GraphEdgeAffects affects(GraphNodeOperation operationNode)
@@ -33,10 +34,5 @@ public final class GraphNodeRiskLostSpecification extends GraphNodeRisk {
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
-	}
-
-	@Override
-	public String getCaption() {
-		return "Lost Specification";
 	}
 }

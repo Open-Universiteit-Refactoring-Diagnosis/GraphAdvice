@@ -13,7 +13,7 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Operation of a Class that is affected by a refactoring.
  */
-public final class GraphNodeOperation extends GraphNodeCode {
+public final class GraphNodeOperation extends GraphNodeClassMember {
 	private final String operationName;
 	private final List<GraphNodeOperationParameter> operationParameters;
 	
@@ -37,7 +37,11 @@ public final class GraphNodeOperation extends GraphNodeCode {
 	 * @throws ArgumentNullException Thrown if graph or operationName are null.
 	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
-	public GraphNodeOperation(Graph graph, String operationName, List<GraphNodeOperationParameter> operationParameters)
+	public GraphNodeOperation(
+			Graph graph,
+			String operationName,
+			List<GraphNodeOperationParameter> operationParameters
+	)
 			throws ArgumentNullException, ArgumentEmptyException {
 		super(graph);
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");

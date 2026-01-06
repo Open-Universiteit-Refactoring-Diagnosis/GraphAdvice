@@ -1,12 +1,12 @@
 package nl.ou.refactoring.advice.contracts;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * An exception that is thrown if an argument is null.
  */
-public final class ArgumentNullException extends IllegalArgumentException {
+public final class ArgumentNullException extends NullPointerException {
 	/**
 	 * A generated serial version UID for serialisation purposes.
 	 */
@@ -40,7 +40,10 @@ public final class ArgumentNullException extends IllegalArgumentException {
 	 */
 	@Override
 	public String getLocalizedMessage() {
-		final var messageFormat = ResourceBundle.getBundle("ExceptionMessages").getString("argumentNull");
+		final var messageFormat =
+				ResourceProvider
+					.ExceptionMessages
+					.getMessageTemplate(this.getClass());
 		return MessageFormat.format(messageFormat, this.parameterName);
 	}
 }

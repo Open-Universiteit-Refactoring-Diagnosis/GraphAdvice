@@ -1,22 +1,17 @@
 package nl.ou.refactoring.advice.io.mermaid;
 
-import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
-import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.io.GraphStringWriter;
 import nl.ou.refactoring.advice.io.GraphWriter;
 
 /**
  * A base class for {@link GraphWriter} implementations that write <a href="https://www.mermaidchart.com/">Mermaid</a> charts.
  */
-public abstract class GraphMermaidWriter implements GraphWriter {
-	private static final String INDENT = "  ";
-	private final PrintWriter printWriter;
-	protected int indentIndex = 0;
-	
+public abstract class GraphMermaidWriter extends GraphStringWriter {
 	/**
 	 * Initialises a new instance of {@link GraphMermaidWriter}.
 	 * @param stringWriter Writes text output. Cannot be null.
@@ -24,19 +19,10 @@ public abstract class GraphMermaidWriter implements GraphWriter {
 	 */
 	public GraphMermaidWriter(StringWriter stringWriter)
 			throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(stringWriter, "stringWriter");
-		this.printWriter = new PrintWriter(stringWriter);
+		super(stringWriter);
 	}
 
 	@Override
 	public abstract void write(Graph graph)
 			throws ArgumentNullException, GraphPathSegmentInvalidException;
-	
-	/**
-	 * Prints a line to the output {@link StringWriter}.
-	 * @param text
-	 */
-	protected final void printLine(String text) {
-		this.printWriter.println(INDENT.repeat(indentIndex) + text);
-	}
 }

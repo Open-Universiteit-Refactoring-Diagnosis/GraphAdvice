@@ -1,6 +1,11 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.SortOrder;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
@@ -62,6 +67,67 @@ public final class GraphNodePackage extends GraphNodeCode {
 				interfaceNode,
 				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
 				GraphEdgeHas.class);
+	}
+	
+	/**
+	 * Gets all class nodes that are included in the package.
+	 * @return All class nodes that are included in the package.
+	 */
+	public Set<GraphNodeClass> getClassNodes() {
+		return
+				this
+					.getEdges(GraphEdgeHas.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
+					.map(GraphNodeClass.class::cast)
+					.collect(Collectors.toUnmodifiableSet());
+	}
+	
+	/**
+	 * Gets all class nodes that are included in the package, sorted by the specified sort order.
+	 * @param sortOrder The sort order for the classes.
+	 * @return A sorted list of class nodes. The list is not modifiable.
+	 */
+	public List<GraphNodeClass> getClassNodes(SortOrder sortOrder) {
+		return
+				this
+					.getClassNodes()
+					.stream()
+					.sorted(
+							(c1, c2) -> {
+								return switch(sortOrder) {
+									case SortOrder.ASCENDING ->
+										c1.getCaption().compareTo(c2.getCaption());
+									case SortOrder.DESCENDING ->
+										c2.getCaption().compareTo(c1.getCaption());
+									default -> 0;
+								};
+							}
+					)
+					.collect(Collectors.toUnmodifiableList());
+					
+	}
+	
+	/**
+	 * Gets the {@link GraphNodeClass} in this package with className.
+	 * If a class with className is not present, it is added and the newly created class node is returned.
+	 * @param className The name of the class to get or add.
+	 * @return The existing or newly created {@link GraphNodeClass}.
+	 */
+	public GraphNodeClass computeClassNode(String className) {
+		var classNode =
+				this
+					.getClassNodes()
+					.stream()
+					.filter(node -> node.getClassName().equals(className))
+					.findFirst()
+					.orElse(null);
+		if (classNode == null) {
+			classNode = new GraphNodeClass(this.graph, className);
+			this.has(classNode);
+		}
+		return classNode;
 	}
 
 	@Override

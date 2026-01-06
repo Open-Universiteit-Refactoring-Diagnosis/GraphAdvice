@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.ou.refactoring</groupId>
 	<artifactId>nl.ou.refactoring.advice</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>Open Universiteit Refactoring Advice through Knowledge Graphs</name>
 	<description>A software component for generating refactoring advices by assembling a refactoring in a graph and converting it to a human-readable advice.</description>
 	<dependencies>
@@ -13,6 +13,28 @@
 			<groupId>ai.djl</groupId>
 			<artifactId>api</artifactId>
 			<version>0.34.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.github.classgraph</groupId>
+		    <artifactId>classgraph</artifactId>
+		    <version>4.8.184</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.25.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.25.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-bom</artifactId>
+		    <version>2.25.3</version>
+		    <type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
