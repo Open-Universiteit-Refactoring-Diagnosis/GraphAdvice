@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.Objects;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -34,6 +36,10 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 		return this.parameterName;
 	}
 	
+	/**
+	 * Gets the type of the parameter.
+	 * @return The type of the parameter.
+	 */
 	public GraphNodeType getParameterType() {
 		return
 			this

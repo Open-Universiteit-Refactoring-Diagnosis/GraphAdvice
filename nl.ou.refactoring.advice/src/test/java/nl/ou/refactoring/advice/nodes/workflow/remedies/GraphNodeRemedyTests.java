@@ -68,7 +68,9 @@ public final class GraphNodeRemedyTests {
 	            try {
 	                resultList.add(Arguments.of(classInfo.loadClass()));
 	            } catch (Exception e) {
-	                // Add null for classes that couldn't be loaded.
+	                // Add null for classes that could not be loaded.
+	            	LOGGER.catching(e);
+	            	LOGGER.warn("Could not load class '{}'", classInfo.getName());
 	                resultList.add(Arguments.of((Class<?>) null));
 	            }
 	        }
