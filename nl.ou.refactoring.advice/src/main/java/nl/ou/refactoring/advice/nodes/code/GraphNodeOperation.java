@@ -9,6 +9,8 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Operation of a Class that is affected by a refactoring.
@@ -77,6 +79,21 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 */
 	public String getOperationName() {
 		return this.operationName;
+	}
+	
+	/**
+	 * Gets the {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}.
+	 * @return The {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}, if any, otherwise null.
+	 */
+	public GraphNodeMicrostepAddMethod getAddedBy() {
+		return
+				this
+					.getEdgesIncoming(GraphEdgeAdds.class)
+					.stream()
+					.map(edge -> edge.getSourceNode())
+					.map(GraphNodeMicrostepAddMethod.class::cast)
+					.findFirst()
+					.orElse(null);
 	}
 	
 	/**

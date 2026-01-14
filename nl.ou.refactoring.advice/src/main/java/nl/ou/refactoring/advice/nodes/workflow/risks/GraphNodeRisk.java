@@ -33,8 +33,7 @@ public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 	public Set<GraphNode> getAffected() {
 		return
 				this
-					.graph
-					.getEdgesFrom(this, GraphEdgeAffects.class)
+					.getEdgesIncoming(GraphEdgeAffects.class)
 					.stream()
 					.map(edge -> edge.getDestinationNode())
 					.collect(Collectors.toSet());

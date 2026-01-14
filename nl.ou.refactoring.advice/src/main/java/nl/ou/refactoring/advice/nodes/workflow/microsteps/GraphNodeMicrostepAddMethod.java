@@ -29,6 +29,14 @@ public final class GraphNodeMicrostepAddMethod extends GraphNodeMicrostep {
 	public GraphEdgeAdds adds(GraphNodeOperation operationNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(operationNode, "operationNode");
-		return new GraphEdgeAdds(this, operationNode);
+		return
+				this
+					.graph
+					.getOrAddEdge(
+							this,
+							operationNode,
+							(source, destination) -> new GraphEdgeAdds(source, destination),
+							GraphEdgeAdds.class
+					);
 	}
 }
