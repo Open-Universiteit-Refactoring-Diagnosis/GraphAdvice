@@ -6,15 +6,28 @@ import java.util.Scanner;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 
+/**
+ * Accesses JSON resource files that contain default Refactoring Advice Graphs.
+ */
 public final class GraphJsonDefaults {
 
 	private GraphJsonDefaults() { }
 	
+	/**
+	 * A "Rename Field" Refactoring Advice Graph.
+	 * @return The "Rename Field" Refactoring Advice Graph as contained in the JSON file.
+	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 */
 	public static Graph renameField()
 			throws GraphReaderException {
 		return readGraph("/RenameField.json");
 	}
 	
+	/**
+	 * A "Rename Method" Refactoring Advice Graph.
+	 * @return The "Rename Method" Refactoring Advice Graph as contained in the JSON file.
+	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 */
 	public static Graph renameMethod()
 			throws GraphReaderException {
 		return readGraph("/RenameMethod.json");

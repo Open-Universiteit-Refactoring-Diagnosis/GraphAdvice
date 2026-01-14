@@ -7,10 +7,13 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  * Represents a "Missing Override" risk.
  */
 public class GraphNodeRiskMissingOverride extends GraphNodeRisk {
-
+	/**
+	 * Initialises a new instance of {@link GraphNodeRiskMissingOverride}.
+	 * @param graph The Refactoring Advice Graph to which the node belongs.
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 */
 	public GraphNodeRiskMissingOverride(Graph graph)
 			throws ArgumentNullException {
 		super(graph);
 	}
-
 }

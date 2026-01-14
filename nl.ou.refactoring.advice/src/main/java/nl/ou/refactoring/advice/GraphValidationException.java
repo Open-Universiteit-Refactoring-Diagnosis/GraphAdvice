@@ -1,5 +1,8 @@
 package nl.ou.refactoring.advice;
 
+/**
+ * An exception that is thrown during validation of a Refactoring Advice Graph.
+ */
 public abstract class GraphValidationException extends RuntimeException {
 	/**
 	 * A generated serial version UID for serialisation purposes.

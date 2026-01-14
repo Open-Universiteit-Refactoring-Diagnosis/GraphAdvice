@@ -19,8 +19,14 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
+/**
+ * Writes PlantUML Class Diagrams from Refactoring Advice Graphs.
+ */
 public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
-
+	/**
+	 * Initialises a new instance of {@link GraphPlantUmlClassDiagramWriter}.
+	 * @param stringWriter A {@link StringWriter} that is responsible for text output.
+	 */
 	public GraphPlantUmlClassDiagramWriter(StringWriter stringWriter) {
 		super(stringWriter);
 	}

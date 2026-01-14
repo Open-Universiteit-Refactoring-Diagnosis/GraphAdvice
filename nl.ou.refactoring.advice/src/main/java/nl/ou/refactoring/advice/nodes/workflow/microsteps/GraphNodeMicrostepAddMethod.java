@@ -22,7 +22,7 @@ public final class GraphNodeMicrostepAddMethod extends GraphNodeMicrostep {
 	
 	/**
 	 * Indicates that the "Add Method" microstep adds the operation represented by operationNode.
-	 * @param operationNode The operation node that is added by this microstep.
+	 * @param operationNode The operation that is added by this microstep.
 	 * @return The edge that indicates that the "Add Method" microstep adds the operation represented by operationNode.
 	 * @throws ArgumentNullException Thrown if operationNode is null.
 	 */

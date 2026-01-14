@@ -7,6 +7,9 @@ import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphStringWriter;
 
+/**
+ * An abstract implementation of a writer that writes Scalable Vector Graphics (SVG) specifications.
+ */
 public abstract class GraphSvgWriter extends GraphStringWriter {
 	/**
 	 * Initialises a new instance of {@link GraphSvgWriter}.

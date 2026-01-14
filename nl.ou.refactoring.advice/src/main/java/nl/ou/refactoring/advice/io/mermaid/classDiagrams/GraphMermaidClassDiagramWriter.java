@@ -16,6 +16,9 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
+/**
+ * Writes Mermaid Class Diagrams from a Refactoring Advice Graph.
+ */
 public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 	/**
 	 * Initialises a new instance of {@link GraphMermaidClassDiagramWriter}.

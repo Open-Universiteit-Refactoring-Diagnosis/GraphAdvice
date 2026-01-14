@@ -58,6 +58,7 @@ public final class ResourceProvider {
 		/**
 		 * Gets the localised caption for the specified classType, in the specified locale.
 		 * @param classType The type of the class of {@link GraphNode}.
+		 * @param locale The {@link Locale} for which to get the caption.
 		 * @return The localised caption for the specified classType, in the specified locale.
 		 */
 		public static String getCaption(Class<? extends GraphNode> classType, Locale locale) {
@@ -84,6 +85,7 @@ public final class ResourceProvider {
 		/**
 		 * Gets the localised display name for the specified class stereotype, in the specified locale.
 		 * @param stereotype The class stereotype.
+		 * @param locale The {@link Locale} for which to get the display name.
 		 * @return The localised display name for the specified class stereotype, in the specified locale.
 		 */
 		public static String getDisplayName(GraphNodeClassStereotype stereotype, Locale locale) {

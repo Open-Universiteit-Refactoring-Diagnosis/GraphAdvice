@@ -10,6 +10,9 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  * Settings for Scalable Vector Graphics (SVGs).
  */
 public final class GraphSvgSettings {
+	/**
+	 * The Scalable Vector Graphics (SVGs) XML namespace.
+	 */
 	public static final QName SVG_NAMESPACE = new QName("http://www.w3.org/2000/svg");
 	private int width = 1024;
 	private int height = 768;

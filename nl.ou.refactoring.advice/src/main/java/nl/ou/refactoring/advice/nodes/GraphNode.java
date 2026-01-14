@@ -140,6 +140,14 @@ public abstract class GraphNode {
 		return result;
 	}
 	
+	/**
+	 * Finds all paths that lead to the specified destination node, restricted to a maximum depth.
+	 * @param destinationNode The node to which to find paths from this node.
+	 * @param maximumDepth The maximum depths of the paths to find.
+	 * @return A list of paths found between this node and the destination node.
+	 * @throws ArgumentNullException Thrown if destinationNode is null.
+	 * @throws IllegalArgumentException Thrown if maximumDepth is not a positive integer.
+	 */
 	public List<GraphPath> findPaths(GraphNode destinationNode, int maximumDepth)
 			throws ArgumentNullException, IllegalArgumentException {
 		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
