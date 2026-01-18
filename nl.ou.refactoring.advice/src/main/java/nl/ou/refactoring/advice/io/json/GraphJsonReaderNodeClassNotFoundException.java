@@ -9,6 +9,9 @@ public final class GraphJsonReaderNodeClassNotFoundException extends GraphJsonRe
 	 */
 	private static final long serialVersionUID = 5493974119813085154L;
 	
+	/**
+	 * The name of the class that was not found.
+	 */
 	private final String className;
 
 	/**

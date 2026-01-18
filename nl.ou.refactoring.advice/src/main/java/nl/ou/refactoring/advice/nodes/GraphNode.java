@@ -18,6 +18,10 @@ import nl.ou.refactoring.advice.resources.ResourceProvider;
  */
 public abstract class GraphNode {
 	private final UUID id;
+	
+	/**
+	 * The Refactoring Advice Graph to which this node belongs.
+	 */
 	protected final Graph graph;
 	
 	/**

@@ -10,7 +10,6 @@ import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClassStereotype;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;

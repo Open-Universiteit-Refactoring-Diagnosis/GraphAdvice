@@ -14,7 +14,7 @@ public final class ColorExtensions {
 	
 	/**
 	 * Converts a colour to its hexadecimal equivalent in a {@link String}.
-	 * @param color The colour to convert.
+	 * @param colour The colour to convert.
 	 * @return The hexadecimal equivalent of colour in a {@link String}.
 	 * @throws ArgumentNullException Thrown if colour is null.
 	 */

@@ -57,9 +57,9 @@ public abstract class GraphPlantUmlWriter extends GraphStringWriter {
 	}
 	
 	/**
-	 * Writes a "sprite" directive for a PlantUML diagram, that draws a bug icon.
+	 * Writes a "sprite" directive for a PlantUML diagram, that draws a bug icon.<br />
+	 * Source <a href="https://plantuml.com/sprite">PlantUML Sprites</a>
 	 * @param name The name of the sprite.
-	 * @see Source: <a href="https://plantuml.com/sprite">PlantUML Sprites</a>
 	 */
 	protected final void writeSpriteBug(String name) {
 		this.printLine(
@@ -71,9 +71,9 @@ public abstract class GraphPlantUmlWriter extends GraphStringWriter {
 	}
 	
 	/**
-	 * Writes a "sprite" directive for a PlantUML diagram, that draws a disk icon.
+	 * Writes a "sprite" directive for a PlantUML diagram, that draws a disk icon.<br />
+	 * Source <a href="https://plantuml.com/sprite">PlantUML Sprites</a>
 	 * @param name The name of the sprite.
-	 * @see Source: <a href="https://plantuml.com/sprite">PlantUML Sprites</a>
 	 */
 	protected final void writeSpriteDisk(String name) {
 		final var separator = System.lineSeparator();

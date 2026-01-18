@@ -14,6 +14,10 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 public abstract class GraphStringWriter implements GraphWriter {
 	private static final String INDENT = "  ";
 	private final PrintWriter printWriter;
+	
+	/**
+	 * The index of the indent that multiplies the indent level.
+	 */
 	protected int indentIndex = 0;
 
 	/**

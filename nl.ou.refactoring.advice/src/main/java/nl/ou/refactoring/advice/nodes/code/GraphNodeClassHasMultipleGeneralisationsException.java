@@ -12,6 +12,9 @@ import nl.ou.refactoring.advice.resources.ResourceProvider;
  */
 public final class GraphNodeClassHasMultipleGeneralisationsException
 		extends GraphValidationException {
+	/**
+	 * The class node that has multiple generalising class nodes associated with it.
+	 */
 	private final GraphNodeClass classNode;
 
 	/**

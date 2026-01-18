@@ -40,7 +40,7 @@ public abstract class GraphNodeCode extends GraphNode {
 	
 	/**
 	 * Gets all {@link GraphNodeRisk} nodes associated with this code element, which are not neutralised.
-	 * @return The {@link GraphNodeDanger} nodes associated with this code element.
+	 * @return The {@link GraphNodeRisk} nodes associated with this code element.
 	 */
 	public Set<GraphNodeRisk> getDangers() {
 		return
