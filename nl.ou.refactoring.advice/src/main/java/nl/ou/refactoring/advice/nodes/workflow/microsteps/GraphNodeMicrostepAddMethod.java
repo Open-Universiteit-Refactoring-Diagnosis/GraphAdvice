@@ -39,4 +39,20 @@ public final class GraphNodeMicrostepAddMethod extends GraphNodeMicrostep {
 							GraphEdgeAdds.class
 					);
 	}
+	
+	/**
+	 * Gets the {@link GraphNodeOperation} node that represents the operation that is added by the microstep.
+	 * @return The {@link GraphNodeOperation} node that represents the operation that is added by the microstep, or null if there is none.
+	 */
+	public GraphNodeOperation getOperationNode() {
+		return
+				this
+					.getEdges(GraphEdgeAdds.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> node instanceof GraphNodeOperation)
+					.map(GraphNodeOperation.class::cast)
+					.findAny()
+					.orElse(null);
+	}
 }

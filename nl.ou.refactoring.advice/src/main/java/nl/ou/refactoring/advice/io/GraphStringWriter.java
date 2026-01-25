@@ -36,6 +36,14 @@ public abstract class GraphStringWriter implements GraphWriter {
 			throws ArgumentNullException, GraphPathSegmentInvalidException;
 
 	/**
+	 * Prints text to the output {@link StringWriter}.
+	 * @param text The text to write.
+	 */
+	protected final void print(String text) {
+		this.printWriter.print(text);
+	}
+	
+	/**
 	 * Prints a line to the output {@link StringWriter}.
 	 * @param text The text to write on the line.
 	 */

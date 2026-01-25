@@ -31,4 +31,20 @@ public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
 		ArgumentGuard.requireNotNull(attributeNode, "attributeNode");
 		return new GraphEdgeAdds(this, attributeNode);
 	}
+	
+	/**
+	 * Gets the {@link GraphNodeAttribute} node that represents the attribute that is added by the microstep.
+	 * @return The {@link GraphNodeAttribute} node that represents the attribute that is added by the microstep, or null if there is none.
+	 */
+	public GraphNodeAttribute getAttributeNode() {
+		return
+				this
+					.getEdges(GraphEdgeAdds.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> node instanceof GraphNodeAttribute)
+					.map(GraphNodeAttribute.class::cast)
+					.findAny()
+					.orElse(null);
+	}
 }

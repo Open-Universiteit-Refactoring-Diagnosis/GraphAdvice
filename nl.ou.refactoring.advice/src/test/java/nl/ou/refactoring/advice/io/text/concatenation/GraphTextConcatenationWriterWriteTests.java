@@ -53,16 +53,12 @@ public class GraphTextConcatenationWriterWriteTests {
 		
 		final var graphStartOnly = createGraphStartOnly();
 		LOGGER.info("Testing graph '{}'", graphStartOnly.getRefactoringName());
-		final var textStartOnly =
-				"Refactoring: Start only" + System.lineSeparator()
-				+ System.lineSeparator();
+		final var textStartOnly = "";
 		arguments.add(Arguments.of(graphStartOnly, textStartOnly));
 		
 		final var graphMoveMethod = createGraphMoveMethod();
 		LOGGER.info("Testing graph '{}'", graphMoveMethod.getRefactoringName());
-		final var textMoveMethod =
-				"Refactoring: Move method" + System.lineSeparator()
-				+ System.lineSeparator();
+		final var textMoveMethod = "";
 		arguments.add(Arguments.of(graphMoveMethod, textMoveMethod));
 		
 		return arguments.stream();

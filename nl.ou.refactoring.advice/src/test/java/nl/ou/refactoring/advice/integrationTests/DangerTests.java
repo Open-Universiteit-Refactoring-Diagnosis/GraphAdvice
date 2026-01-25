@@ -20,6 +20,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
+import nl.ou.refactoring.advice.io.text.concatenation.GraphTextConcatenationWriter;
 
 public final class DangerTests {
 	private static Path OUTPUT_DIR;
@@ -37,12 +38,15 @@ public final class DangerTests {
 	    final var refactoringName = graph.getRefactoringName();
 	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");
 	    final var plantUmlClassDiagramFilePath = OUTPUT_DIR.resolve(refactoringName + ".puml");
+	    final var concatenatedAdviceFilePath = OUTPUT_DIR.resolve(refactoringName + ".txt");
 
-	    try (final var mermaidFlowchartStringWriter =
-	    		new StringWriter();
-	    	final var mermaidFlowchartBufferedWriter =
-	    			new BufferedWriter(new FileWriter(mermaidFlowchartFilePath.toFile()))) {
-	    	
+	    // Flowchart (graph)
+	    try (
+	    		final var mermaidFlowchartStringWriter =
+	    			new StringWriter();
+	    		final var mermaidFlowchartBufferedWriter =
+	    			new BufferedWriter(new FileWriter(mermaidFlowchartFilePath.toFile()));
+	    ) {
 	    	new GraphMermaidFlowchartWriter(
 	    			mermaidFlowchartStringWriter,
 	    			GraphMermaidFlowchartDirection.LeftToRight
@@ -52,15 +56,30 @@ public final class DangerTests {
 	    	fail(String.format("Failed to write Mermaid Flowchart for graph '%s'", refactoringName));
 	    }
 	    
-	    try (final var plantUmlClassDiagramStringWriter =
-	    		new StringWriter();
-	         final var plantUmlClassDiagramBufferedWriter =
-	             new BufferedWriter(new FileWriter(plantUmlClassDiagramFilePath.toFile()))) {
-
+	    // UML Class Diagram
+	    try (
+	    		final var plantUmlClassDiagramStringWriter =
+	    			new StringWriter();
+	    		final var plantUmlClassDiagramBufferedWriter =
+	    			new BufferedWriter(new FileWriter(plantUmlClassDiagramFilePath.toFile()));
+	    ) {
 	        new GraphPlantUmlClassDiagramWriter(plantUmlClassDiagramStringWriter).write(graph);
 	        plantUmlClassDiagramBufferedWriter.write(plantUmlClassDiagramStringWriter.toString());
 	    } catch (IOException exception) {
 	        fail(String.format("Failed to write PlantUML Class Diagram for graph '%s'", refactoringName));
+	    }
+	    
+	    // Concatenated text
+	    try (
+	    		final var concatenatingStringWriter =
+	    			new StringWriter();
+	    		final var concatenatingBufferedWriter =
+	    			new BufferedWriter(new FileWriter(concatenatedAdviceFilePath.toFile()))
+	    ) {
+	    	new GraphTextConcatenationWriter(concatenatingStringWriter).write(graph);
+	    	concatenatingBufferedWriter.write(concatenatingStringWriter.toString());
+	    } catch (IOException exception) {
+	    	fail(String.format("Failed to write concatenated text advice for graph '%s'", refactoringName));
 	    }
 	}
 }
