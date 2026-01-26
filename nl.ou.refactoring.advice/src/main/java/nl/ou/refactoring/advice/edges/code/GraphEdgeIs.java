@@ -79,9 +79,4 @@ public final class GraphEdgeIs extends GraphEdge {
 			throws ArgumentNullException {
 		super(operationParameterNode, typeNode);
 	}
-	
-	@Override
-	public String getLabel() {
-		return "Is";
-	}
 }

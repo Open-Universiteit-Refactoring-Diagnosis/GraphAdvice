@@ -218,9 +218,4 @@ public final class GraphEdgeAffects extends GraphEdge {
 					throws ArgumentNullException {
 		super(scopeShadowing, attributeNode);
 	}
-	
-	@Override
-	public String getLabel() {
-		return "Affects";
-	}
 }

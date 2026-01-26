@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.resources;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClassStereotype;
 
@@ -36,6 +37,33 @@ public final class ResourceProvider {
 		 */
 		public static String getMessageTemplate(Class<? extends Exception> classType, Locale locale) {
 			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(classType.getSimpleName());
+		}
+	}
+	
+	/**
+	 * Retrieves localised labels for Refactoring Advice Graph edges.
+	 */
+	public static final class GraphEdgeLabels {
+		private static final String BUNDLE_NAME = "GraphEdgeLabels";
+		private GraphEdgeLabels() { }
+		
+		/**
+		 * Gets the localised label for the specified edgeType.
+		 * @param edgeType The type of the edge.
+		 * @return The localised label for the specified edgeType.
+		 */
+		public static String getLabel(Class<? extends GraphEdge> edgeType) {
+			return ResourceBundle.getBundle(BUNDLE_NAME).getString(edgeType.getSimpleName());
+		}
+		
+		/**
+		 * Gets the localised label for the specified edgeType, in the specified locale.
+		 * @param edgeType The type of the edge.
+		 * @param locale The locale for which to retrieve the localised label.
+		 * @return The localised label for the specified edgeType, in the specified locale.
+		 */
+		public static String getLabel(Class<? extends GraphEdge> edgeType, Locale locale) {
+			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(edgeType.getSimpleName());
 		}
 	}
 	

@@ -51,9 +51,4 @@ public final class GraphEdgeRemoves extends GraphEdge {
 	) throws ArgumentNullException {
 		super(sourceNode, destinationNode);
 	}
-
-	@Override
-	public String getLabel() {
-		return "Removes";
-	}
 }

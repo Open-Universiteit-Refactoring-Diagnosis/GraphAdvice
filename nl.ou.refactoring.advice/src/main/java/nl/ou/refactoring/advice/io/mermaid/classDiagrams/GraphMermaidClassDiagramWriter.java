@@ -140,11 +140,13 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 					}
 					final var codeNodeSubject2 = findSubject(codeNode2);
 					this.printLine(
-							MessageFormat.format(
-									"{0} <..> {1} : {2}",
-									codeNodeSubject.getCaption(),
-									codeNodeSubject2.getCaption(),
-									getDangerLabel(codeNodeAffected, codeNode2, dangerNode)));
+						MessageFormat.format(
+							"{0} <..> {1} : {2}",
+								codeNodeSubject.getCaption(),
+								codeNodeSubject2.getCaption(),
+								getDangerLabel(codeNodeAffected, codeNode2, dangerNode)
+						)
+					);
 				}
 			}
 		}

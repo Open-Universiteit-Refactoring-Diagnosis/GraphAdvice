@@ -35,9 +35,4 @@ public final class GraphEdgeMitigates extends GraphEdge {
 					throws ArgumentNullException {
 		super(renameConflictingSymbol, doubleDefinition);
 	}
-	
-	@Override
-	public String getLabel() {
-		return "Mitigates";
-	}
 }
