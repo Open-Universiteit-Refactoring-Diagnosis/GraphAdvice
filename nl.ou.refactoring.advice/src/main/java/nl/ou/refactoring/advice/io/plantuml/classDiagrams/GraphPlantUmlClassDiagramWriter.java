@@ -113,8 +113,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			if (operationIsNew) {
 				stringBuilder.append(
 						String.format(
-								"<color:%s><%s></color> ",
-								toHexadecimal(Color.blue),
+								"<%s> ",
 								SPRITE_NAME_NEW
 						)
 				);

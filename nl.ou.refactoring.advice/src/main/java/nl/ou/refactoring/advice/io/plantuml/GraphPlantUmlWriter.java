@@ -106,7 +106,6 @@ public abstract class GraphPlantUmlWriter extends GraphStringWriter {
 	 * @param name The name of the sprite.
 	 */
 	protected final void writeSpritePlus(String name) {
-		final var separator = System.lineSeparator();
 		this.printLine(
 			String.format(
 				"sprite %s <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" xmlns:v=\"https://vecta.io/nano\"><path d=\"M7 0h2v16H7z\" fill=\"#00AA00\"/><path d=\"M0 7h16v2H0z\" fill=\"#00AA00\"/></svg>",
