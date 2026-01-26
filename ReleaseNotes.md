@@ -20,3 +20,9 @@
 - Added a feature for writing RAGs to PlantUML Class Diagrams.
 - Added Risk nodes.
 - Localisations of node captions.
+
+## 0.3.0
+
+- Ensured that Javadoc is included in the Maven Package for distribution.
+- Modified PlantUML Class Diagrams to show whether items have been added and whether they carry a risk.
+- Added a feature for writing RAGs as a text advice, using concatenation of phrase parts.
