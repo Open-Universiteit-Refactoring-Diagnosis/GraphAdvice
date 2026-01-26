@@ -55,11 +55,11 @@ public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 		this.indentIndex++;
 		final var nodes = graph.getNodes();
 		for (final var node : nodes) {
-			this.write(node);
+			this.writeNode(node);
 		}
 	}
 	
-	private void write(GraphEdge edge) {
+	private void writeEdge(GraphEdge edge) {
 		final var sourceNode = edge.getSourceNode();
 		final var destinationNode = edge.getDestinationNode();
 		this.printLine(
@@ -75,13 +75,13 @@ public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 		);
 	}
 	
-	private void write(GraphNode node) {
+	private void writeNode(GraphNode node) {
 		this.printLine(getNodeDeclarationString(node));
 		for (var edge : node.getEdges()) {
-			this.write(edge);
+			this.writeEdge(edge);
 		}
 		if (node instanceof GraphNodeOperation) {
-			this.write((GraphNodeOperation)node);
+			this.writeNodeOperation((GraphNodeOperation)node);
 		}
 		this.printLine(
 				String.format(
@@ -91,7 +91,7 @@ public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 						getColor(node)));
 	}
 	
-	private void write(GraphNodeOperation operationNode) {
+	private void writeNodeOperation(GraphNodeOperation operationNode) {
 		final var operationParameterNodes = operationNode.getOperationParameters();
 		final var format = "%s -. %s .-> %s";
 		if (operationParameterNodes.size() > 0) {

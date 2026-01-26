@@ -40,29 +40,29 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		for (final var dangerNode : dangerNodes) {
 			final var dangerPaths = startNode.findPaths(dangerNode, 100);
 			if (dangerPaths.size() == 0) {
-				return;
+				continue;
 			}
 			
 			final var dangerPath = dangerPaths.get(0);
 			for (final var dangerPathSegment : dangerPath.getSegments()) {
 				switch (dangerPathSegment.getNode()) {
-					case GraphNodeRefactoringStart start -> this.write(start);
-					case GraphNodeMicrostepAddClass addClass -> this.write(addClass);
-					case GraphNodeMicrostepAddField addField -> this.write(addField);
-					case GraphNodeMicrostepAddMethod addMethod -> this.write(addMethod);
-					case GraphNodeRiskDoubleDefinition doubleDefinition -> this.write(doubleDefinition);
-					case GraphNodeRisk risk -> this.write(risk);
+					case GraphNodeRefactoringStart start -> this.writeNodeRefactoringStart(start);
+					case GraphNodeMicrostepAddClass addClass -> this.writeNodeMicrostepAddClass(addClass);
+					case GraphNodeMicrostepAddField addField -> this.writeNodeMicrostepAddField(addField);
+					case GraphNodeMicrostepAddMethod addMethod -> this.writeNodeMicrostepAddMethod(addMethod);
+					case GraphNodeRiskDoubleDefinition doubleDefinition -> this.writeNodeRiskDoubleDefinition(doubleDefinition);
+					case GraphNodeRisk risk -> this.writeNodeRisk(risk);
 					default -> { }
 				}
 			}
 		}
 	}
 	
-	private void write(GraphNodeRefactoringStart startNode) {
+	private void writeNodeRefactoringStart(GraphNodeRefactoringStart startNode) {
 		this.printLine(startNode.getRefactoringName());
 	}
 	
-	private void write(GraphNodeMicrostepAddClass addClass) {
+	private void writeNodeMicrostepAddClass(GraphNodeMicrostepAddClass addClass) {
 		final var classNode = addClass.getClassNode();
 		if (classNode == null) {
 			this.print("Adding class");
@@ -75,7 +75,7 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		}
 	}
 	
-	private void write(GraphNodeMicrostepAddField addField) {
+	private void writeNodeMicrostepAddField(GraphNodeMicrostepAddField addField) {
 		final var attributeNode = addField.getAttributeNode();
 		if (attributeNode == null) {
 			this.print("Adding field");
@@ -88,7 +88,7 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		}
 	}
 	
-	private void write(GraphNodeMicrostepAddMethod addMethod) {
+	private void writeNodeMicrostepAddMethod(GraphNodeMicrostepAddMethod addMethod) {
 		final var operationNode = addMethod.getOperationNode();
 		if (operationNode == null) {
 			this.print("Adding method");
@@ -101,9 +101,9 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		}
 	}
 	
-	private void write (GraphNodeRiskDoubleDefinition doubleDefinition) {
-		this.print(" will introduce code symbols with identical signatures");
-		final var affectedNodes = doubleDefinition.getAffected();
+	private void writeNodeRisk(GraphNodeRisk risk) {
+		this.print(String.format(" will cause a %s", risk.getCaption()));
+		final var affectedNodes = risk.getAffected();
 		final var affectedNames =
 				affectedNodes
 					.stream()
@@ -112,9 +112,9 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		this.print(" on " + getEnumeration(affectedNames));
 	}
 	
-	private void write(GraphNodeRisk risk) {
-		this.print(String.format(" will cause a %s", risk.getCaption()));
-		final var affectedNodes = risk.getAffected();
+	private void writeNodeRiskDoubleDefinition(GraphNodeRiskDoubleDefinition doubleDefinition) {
+		this.print(" will introduce code symbols with identical signatures");
+		final var affectedNodes = doubleDefinition.getAffected();
 		final var affectedNames =
 				affectedNodes
 					.stream()
@@ -131,7 +131,7 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 			return items.get(0);
 		}
 		if (items.size() == 2) {
-			return String.format("%s and %s", items.get(0), items.get(1));
+			return String.format("'%s' and '%s'", items.get(0), items.get(1));
 		}
 		final var stringBuilder = new StringBuilder();
 		stringBuilder.append(String.format("'%s'", items.get(0)));
