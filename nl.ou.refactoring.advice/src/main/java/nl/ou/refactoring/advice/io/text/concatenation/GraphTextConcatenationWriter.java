@@ -14,6 +14,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddC
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 
 /**
  * Generates refactoring advice text from a Refactoring Advice Graph by concatenating the text.
@@ -49,6 +50,7 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 					case GraphNodeMicrostepAddClass addClass -> this.write(addClass);
 					case GraphNodeMicrostepAddField addField -> this.write(addField);
 					case GraphNodeMicrostepAddMethod addMethod -> this.write(addMethod);
+					case GraphNodeRiskDoubleDefinition doubleDefinition -> this.write(doubleDefinition);
 					case GraphNodeRisk risk -> this.write(risk);
 					default -> { }
 				}
@@ -66,7 +68,10 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 			this.print("Adding class");
 		} else {
 			this.print(String.format("Adding class '%s'", classNode.getCaption()));
-			// final var packageNode = classNode.getPackage();
+			final var packageNode = classNode.getPackageNode();
+			if (packageNode != null) {
+				this.print(String.format(" to package '%s'", packageNode.getPackageName()));
+			}
 		}
 	}
 	
@@ -96,6 +101,17 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		}
 	}
 	
+	private void write (GraphNodeRiskDoubleDefinition doubleDefinition) {
+		this.print(" will introduce code symbols with identical signatures");
+		final var affectedNodes = doubleDefinition.getAffected();
+		final var affectedNames =
+				affectedNodes
+					.stream()
+					.map(node -> node.getCaption())
+					.collect(Collectors.toUnmodifiableList());
+		this.print(" on " + getEnumeration(affectedNames));
+	}
+	
 	private void write(GraphNodeRisk risk) {
 		this.print(String.format(" will cause a %s", risk.getCaption()));
 		final var affectedNodes = risk.getAffected();
@@ -118,11 +134,11 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 			return String.format("%s and %s", items.get(0), items.get(1));
 		}
 		final var stringBuilder = new StringBuilder();
-		stringBuilder.append(items.get(0));
+		stringBuilder.append(String.format("'%s'", items.get(0)));
 		for (var i = 1; i < items.size() - 1; i++) {
-			stringBuilder.append(String.format(", %s", items.get(i)));
+			stringBuilder.append(String.format(", '%s'", items.get(i)));
 		}
-		stringBuilder.append(String.format(" and %s", items.get(items.size() - 1)));
+		stringBuilder.append(String.format(" and '%s'", items.get(items.size() - 1)));
 		return stringBuilder.toString();
 	}
 }
