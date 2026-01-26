@@ -48,7 +48,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		this.writeStartUml(graph.getRefactoringName());
 		this.writeSetSeparator("none");
 		this.writeSpriteBug(SPRITE_NAME_DANGER);
-		this.writeSpriteDisk(SPRITE_NAME_NEW);
+		this.writeSpritePlus(SPRITE_NAME_NEW);
 		
 		// Domain model
 		final var packageNodes = graph.getNodes(GraphNodePackage.class);
