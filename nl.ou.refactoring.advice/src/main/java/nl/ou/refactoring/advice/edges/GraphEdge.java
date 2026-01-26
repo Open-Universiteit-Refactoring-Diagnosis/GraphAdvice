@@ -5,6 +5,7 @@ import java.util.UUID;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * Represents an edge from one node to another in a Refactoring Advice Graph.
@@ -57,7 +58,9 @@ public abstract class GraphEdge {
 	 * Gets the label for the edge.
 	 * @return The label for the edge.
 	 */
-	public abstract String getLabel();
+	public String getLabel() {
+		return ResourceProvider.GraphEdgeLabels.getLabel(this.getClass());
+	}
 	
 	@Override
 	public boolean equals(Object other) {

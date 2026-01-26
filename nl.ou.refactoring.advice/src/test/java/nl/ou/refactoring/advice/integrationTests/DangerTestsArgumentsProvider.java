@@ -10,7 +10,6 @@ import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClassStereotype;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
@@ -52,32 +51,23 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var alphaClassNode =
 				new GraphNodeClass(
 						graph,
-						"Alpha",
-						GraphNodeClassStereotype.BEFORE
+						"Alpha"
 				);
 		packageNode.has(alphaClassNode);
 		final var fooOperationNode = new GraphNodeOperation(graph, "foo");
 		alphaClassNode.has(fooOperationNode);
-		final var alphaNewClassNode =
-				new GraphNodeClass(
-						graph,
-						"Alpha",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageNode.has(alphaNewClassNode);
+
 		final var fooNewOperationNode = new GraphNodeOperation(graph, "foo");
-		alphaNewClassNode.has(fooNewOperationNode);
-		final var fooNewDoubleOperationNode = new GraphNodeOperation(graph, "foo");
-		alphaNewClassNode.has(fooNewDoubleOperationNode);
+		alphaClassNode.has(fooNewOperationNode);
 		
 		// Workflow
 		final var startNode = graph.start();
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
-		addMethodNode.adds(fooNewDoubleOperationNode);
+		addMethodNode.adds(fooNewOperationNode);
 		startNode.initiates(addMethodNode);
 		final var doubleDefinitionRisk = new GraphNodeRiskDoubleDefinition(graph);
 		doubleDefinitionRisk.affects(fooOperationNode);
-		doubleDefinitionRisk.affects(fooNewDoubleOperationNode);
+		doubleDefinitionRisk.affects(fooNewOperationNode);
 		addMethodNode.causes(doubleDefinitionRisk);
 		
 		return graph;
@@ -94,56 +84,33 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 						"nl.ou.refactoring.dangers.forcedOverride"
 				);
 		
-		// BEFORE
-		final var alphaClassNodeBefore =
+		final var classNodeAlpha =
 				new GraphNodeClass(
 						graph,
-						"Alpha",
-						GraphNodeClassStereotype.BEFORE
+						"Alpha"
 				);
-		packageNode.has(alphaClassNodeBefore);
-		final var fooOperationNodeBefore = new GraphNodeOperation(graph, "foo");
-		alphaClassNodeBefore.has(fooOperationNodeBefore);
+		packageNode.has(classNodeAlpha);
+		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, "foo");
+		classNodeAlpha.has(operationNodeAlphaFoo);
 		
-		final var betaClassNodeBefore =
+		final var classNodeBeta =
 				new GraphNodeClass(
 						graph,
-						"Beta",
-						GraphNodeClassStereotype.BEFORE
+						"Beta"
 				);
-		packageNode.has(betaClassNodeBefore);
-		betaClassNodeBefore.is(alphaClassNodeBefore);
-		
-		// AFTER
-		final var alphaClassNodeAfter =
-				new GraphNodeClass(
-						graph,
-						"Alpha",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageNode.has(alphaClassNodeAfter);
-		final var fooOperationNodeAfter = new GraphNodeOperation(graph, "foo");
-		alphaClassNodeAfter.has(fooOperationNodeAfter);
-		
-		final var betaClassNodeAfter =
-				new GraphNodeClass(
-						graph,
-						"Beta",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageNode.has(betaClassNodeAfter);
-		betaClassNodeAfter.is(alphaClassNodeAfter);
-		final var fooOperationNodeAfterNew = new GraphNodeOperation(graph, "foo");
-		betaClassNodeAfter.has(fooOperationNodeAfterNew);
+		packageNode.has(classNodeBeta);
+		classNodeBeta.is(classNodeAlpha);
+		final var operationNodeBetaFoo = new GraphNodeOperation(graph, "foo");
+		classNodeBeta.has(operationNodeBetaFoo);
 		
 		// Workflow
 		final var startNode = graph.start();
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
-		addMethodNode.adds(fooOperationNodeAfterNew);
+		addMethodNode.adds(operationNodeBetaFoo);
 		startNode.initiates(addMethodNode);
 		final var forcedOverrideRisk = new GraphNodeRiskForcedOverride(graph);
-		forcedOverrideRisk.affects(fooOperationNodeBefore);
-		forcedOverrideRisk.affects(fooOperationNodeAfterNew);
+		forcedOverrideRisk.affects(operationNodeAlphaFoo);
+		forcedOverrideRisk.affects(operationNodeBetaFoo);
 		addMethodNode.causes(forcedOverrideRisk);
 		
 		return graph;
@@ -159,58 +126,34 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 						graph,
 						"nl.ou.refactoring.dangers.imposedSpecification"
 				);
-		// BEFORE
-		// BEFORE: Alpha
-		final var alphaClassNodeBefore =
+		// Code: Alpha
+		final var classNodeAlpha =
 				new GraphNodeClass(
 						graph,
-						"Alpha",
-						GraphNodeClassStereotype.BEFORE
+						"Alpha"
 				);
-		packageNode.has(alphaClassNodeBefore);
-		// BEFORE: Beta
-		final var betaClassNodeBefore =
+		packageNode.has(classNodeAlpha);
+		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, "foo");
+		classNodeAlpha.has(operationNodeAlphaFoo);
+		// Code: Beta
+		final var classNodeBeta =
 				new GraphNodeClass(
 						graph,
-						"Beta",
-						GraphNodeClassStereotype.BEFORE
+						"Beta"
 				);
-		packageNode.has(betaClassNodeBefore);
-		betaClassNodeBefore.is(alphaClassNodeBefore);
-		final var fooOperationNodeBetaBefore = new GraphNodeOperation(graph, "foo");
-		betaClassNodeBefore.has(fooOperationNodeBetaBefore);
-		
-		// AFTER
-		// AFTER: Alpha
-		final var alphaClassNodeAfter =
-				new GraphNodeClass(
-						graph,
-						"Alpha",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageNode.has(alphaClassNodeAfter);
-		final var fooOperationNodeAlphaAfterNew = new GraphNodeOperation(graph, "foo");
-		alphaClassNodeAfter.has(fooOperationNodeAlphaAfterNew);
-		// AFTER: Beta
-		final var betaClassNodeAfter =
-				new GraphNodeClass(
-						graph,
-						"Beta",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageNode.has(betaClassNodeAfter);
-		betaClassNodeAfter.is(alphaClassNodeAfter);
-		final var fooOperationNodeBetaAfter = new GraphNodeOperation(graph, "foo");
-		betaClassNodeAfter.has(fooOperationNodeBetaAfter);
+		packageNode.has(classNodeBeta);
+		classNodeBeta.is(classNodeAlpha);
+		final var operationNodeBetaFoo = new GraphNodeOperation(graph, "foo");
+		classNodeBeta.has(operationNodeBetaFoo);
 		
 		// Workflow
 		final var startNode = graph.start();
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
-		addMethodNode.adds(fooOperationNodeAlphaAfterNew);
+		addMethodNode.adds(operationNodeAlphaFoo);
 		startNode.initiates(addMethodNode);
 		final var imposedSpecificationRisk = new GraphNodeRiskImposedSpecification(graph);
-		imposedSpecificationRisk.affects(fooOperationNodeAlphaAfterNew);
-		imposedSpecificationRisk.affects(fooOperationNodeBetaAfter);
+		imposedSpecificationRisk.affects(operationNodeAlphaFoo);
+		imposedSpecificationRisk.affects(operationNodeBetaFoo);
 		addMethodNode.causes(imposedSpecificationRisk);
 		
 		return graph;
@@ -225,61 +168,43 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var doubleType = new GraphNodeType(graph, "double");
 		final var packageNode =
 				new GraphNodePackage(graph, "nl.ou.refactoring.dangers.precedingOverload");
-		final var alphaClassNodeBefore =
+		final var alphaClassNode =
 				new GraphNodeClass(
 						graph,
-						"Alpha",
-						GraphNodeClassStereotype.BEFORE
+						"Alpha"
 				);
-		packageNode.has(alphaClassNodeBefore);
-		final var fooOperationNodeBeforeIntParameters = new ArrayList<GraphNodeOperationParameter>();
-		final var fooOperationNodeBeforeIntParameter = new GraphNodeOperationParameter(graph, "number");
-		fooOperationNodeBeforeIntParameter.is(intType);
-		fooOperationNodeBeforeIntParameters.add(fooOperationNodeBeforeIntParameter);
-		final var fooOperationNodeBefore =
+		packageNode.has(alphaClassNode);
+		final var operationNodeFooIntParameters = new ArrayList<GraphNodeOperationParameter>();
+		final var operationNodeFooIntParameter = new GraphNodeOperationParameter(graph, "number");
+		operationNodeFooIntParameter.is(intType);
+		operationNodeFooIntParameters.add(operationNodeFooIntParameter);
+		final var operationNodeFooInt =
 				new GraphNodeOperation(
 						graph,
 						"foo",
-						fooOperationNodeBeforeIntParameters
+						operationNodeFooIntParameters
 				);
-		alphaClassNodeBefore.has(fooOperationNodeBefore);
-		final var alphaClassNodeAfter =
-				new GraphNodeClass(
-						graph,
-						"Alpha",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageNode.has(alphaClassNodeAfter);
-		final var fooOperationNodeAfterIntParameters = new ArrayList<GraphNodeOperationParameter>();
-		final var fooOperationNodeAfterIntParameter = new GraphNodeOperationParameter(graph, "number");
-		fooOperationNodeAfterIntParameter.is(intType);
-		fooOperationNodeAfterIntParameters.add(fooOperationNodeAfterIntParameter);
-		final var fooOperationNodeAfter =
+		alphaClassNode.has(operationNodeFooInt);
+		final var operationNodeFooDoubleParameters = new ArrayList<GraphNodeOperationParameter>();
+		final var operationNodeFooDoubleParameter = new GraphNodeOperationParameter(graph, "number");
+		operationNodeFooDoubleParameter.is(doubleType);
+		operationNodeFooDoubleParameters.add(operationNodeFooDoubleParameter);
+		final var operationNodeFooDouble =
 				new GraphNodeOperation(
 						graph,
 						"foo",
-						fooOperationNodeAfterIntParameters
+						operationNodeFooDoubleParameters
 				);
-		alphaClassNodeAfter.has(fooOperationNodeAfter);
-		final var fooOperationNodeAfterDoubleParameters = new ArrayList<GraphNodeOperationParameter>();
-		final var fooOperationNodeAfterDoubleParameter = new GraphNodeOperationParameter(graph, "number");
-		fooOperationNodeAfterDoubleParameter.is(doubleType);
-		fooOperationNodeAfterDoubleParameters.add(fooOperationNodeAfterDoubleParameter);
-		final var fooOperationNodeAfterNew =
-				new GraphNodeOperation(
-						graph,
-						"foo",
-						fooOperationNodeAfterDoubleParameters
-				);
-		alphaClassNodeAfter.has(fooOperationNodeAfterNew);
+		alphaClassNode.has(operationNodeFooDouble);
 		
 		// Workflow
 		final var startNode = graph.start();
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
 		startNode.initiates(addMethodNode);
+		addMethodNode.adds(operationNodeFooDouble);
 		final var precedingOverloadRisk = new GraphNodeRiskPrecedingOverload(graph);
-		precedingOverloadRisk.affects(fooOperationNodeBefore);
-		precedingOverloadRisk.affects(fooOperationNodeAfterNew);
+		precedingOverloadRisk.affects(operationNodeFooInt);
+		precedingOverloadRisk.affects(operationNodeFooDouble);
 		addMethodNode.causes(precedingOverloadRisk);
 		
 		return graph;

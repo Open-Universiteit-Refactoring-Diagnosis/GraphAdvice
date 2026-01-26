@@ -14,6 +14,10 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 public abstract class GraphStringWriter implements GraphWriter {
 	private static final String INDENT = "  ";
 	private final PrintWriter printWriter;
+	
+	/**
+	 * The index of the indent that multiplies the indent level.
+	 */
 	protected int indentIndex = 0;
 
 	/**
@@ -31,6 +35,14 @@ public abstract class GraphStringWriter implements GraphWriter {
 	public abstract void write(Graph graph)
 			throws ArgumentNullException, GraphPathSegmentInvalidException;
 
+	/**
+	 * Prints text to the output {@link StringWriter}.
+	 * @param text The text to write.
+	 */
+	protected final void print(String text) {
+		this.printWriter.print(text);
+	}
+	
 	/**
 	 * Prints a line to the output {@link StringWriter}.
 	 * @param text The text to write on the line.

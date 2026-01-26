@@ -22,13 +22,37 @@ public final class GraphNodeMicrostepAddMethod extends GraphNodeMicrostep {
 	
 	/**
 	 * Indicates that the "Add Method" microstep adds the operation represented by operationNode.
-	 * @param operationNode The operation node that is added by this microstep.
+	 * @param operationNode The operation that is added by this microstep.
 	 * @return The edge that indicates that the "Add Method" microstep adds the operation represented by operationNode.
 	 * @throws ArgumentNullException Thrown if operationNode is null.
 	 */
 	public GraphEdgeAdds adds(GraphNodeOperation operationNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(operationNode, "operationNode");
-		return new GraphEdgeAdds(this, operationNode);
+		return
+				this
+					.graph
+					.getOrAddEdge(
+							this,
+							operationNode,
+							(source, destination) -> new GraphEdgeAdds(source, destination),
+							GraphEdgeAdds.class
+					);
+	}
+	
+	/**
+	 * Gets the {@link GraphNodeOperation} node that represents the operation that is added by the microstep.
+	 * @return The {@link GraphNodeOperation} node that represents the operation that is added by the microstep, or null if there is none.
+	 */
+	public GraphNodeOperation getOperationNode() {
+		return
+				this
+					.getEdges(GraphEdgeAdds.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> node instanceof GraphNodeOperation)
+					.map(GraphNodeOperation.class::cast)
+					.findAny()
+					.orElse(null);
 	}
 }

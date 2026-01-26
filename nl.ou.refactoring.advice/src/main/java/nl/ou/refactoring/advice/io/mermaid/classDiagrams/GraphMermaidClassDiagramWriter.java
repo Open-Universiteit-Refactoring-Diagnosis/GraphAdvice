@@ -16,6 +16,9 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
+/**
+ * Writes Mermaid Class Diagrams from a Refactoring Advice Graph.
+ */
 public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 	/**
 	 * Initialises a new instance of {@link GraphMermaidClassDiagramWriter}.
@@ -137,11 +140,13 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 					}
 					final var codeNodeSubject2 = findSubject(codeNode2);
 					this.printLine(
-							MessageFormat.format(
-									"{0} <..> {1} : {2}",
-									codeNodeSubject.getCaption(),
-									codeNodeSubject2.getCaption(),
-									getDangerLabel(codeNodeAffected, codeNode2, dangerNode)));
+						MessageFormat.format(
+							"{0} <..> {1} : {2}",
+								codeNodeSubject.getCaption(),
+								codeNodeSubject2.getCaption(),
+								getDangerLabel(codeNodeAffected, codeNode2, dangerNode)
+						)
+					);
 				}
 			}
 		}

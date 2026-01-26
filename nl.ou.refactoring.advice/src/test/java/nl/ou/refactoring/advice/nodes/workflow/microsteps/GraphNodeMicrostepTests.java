@@ -20,7 +20,8 @@ import io.github.classgraph.ClassInfo;
 import nl.ou.refactoring.advice.Graph;
 
 public final class GraphNodeMicrostepTests {
-	private static final Logger LOGGER = LogManager.getLogger(GraphNodeMicrostepTests.class);
+	private static final Logger LOGGER =
+			LogManager.getLogger(GraphNodeMicrostepTests.class);
 	private static final Locale[] SUPPORTED_LOCALES = {
 			Locale.of("nl", "NL"),
 			Locale.of("en", "GB")

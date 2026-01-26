@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +22,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
@@ -33,6 +36,17 @@ public final class GraphNodeRiskTests {
 		Locale.of("en", "GB")
 	};
 	
+	@ParameterizedTest
+	@MethodSource("getAffectedTestCases")
+	@DisplayName("Should get nodes affected by a risk")
+	public void getAffectedTest(
+			GraphNodeRisk risk,
+			Set<GraphNode> expected
+	) {
+		final var actual = risk.getAffected();
+		assertEquals(expected, actual);
+	}
+ 
 	@ParameterizedTest
 	@MethodSource("getCaptionsTestCases")
 	@DisplayName("Should get localised captions for nodes")
@@ -60,6 +74,20 @@ public final class GraphNodeRiskTests {
 					result
 			);
 		}
+	}
+	
+	private static Stream<Arguments> getAffectedTestCases() {
+		final var argumentsList = new ArrayList<Arguments>();
+		
+		final var graphTest = new Graph("Affected Test");
+		final var graphTestNodeRisk = new GraphNodeRiskDoubleDefinition(graphTest);
+		final var graphTestNodeOperation1 = new GraphNodeOperation(graphTest, "Test 1");
+		final var graphTestNodeOperation2 = new GraphNodeOperation(graphTest, "Test 2");
+		graphTestNodeRisk.affects(graphTestNodeOperation1);
+		graphTestNodeRisk.affects(graphTestNodeOperation2);
+		argumentsList.add(Arguments.of(graphTestNodeRisk, Set.of(graphTestNodeOperation1, graphTestNodeOperation2)));
+		
+		return argumentsList.stream();
 	}
 	
 	private static Stream<Arguments> getCaptionsTestCases() {

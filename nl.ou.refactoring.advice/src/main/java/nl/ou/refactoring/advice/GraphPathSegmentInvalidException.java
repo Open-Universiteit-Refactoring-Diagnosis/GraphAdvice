@@ -17,7 +17,14 @@ public final class GraphPathSegmentInvalidException extends Exception {
 	 */
 	private static final long serialVersionUID = -5763936417696992897L;
 	
+	/**
+	 * The node that is invalid within the segment.
+	 */
 	private final GraphNode node;
+	
+	/**
+	 * The edge that is invalid within the segment.
+	 */
 	private final GraphEdge edge;
 
 	/**

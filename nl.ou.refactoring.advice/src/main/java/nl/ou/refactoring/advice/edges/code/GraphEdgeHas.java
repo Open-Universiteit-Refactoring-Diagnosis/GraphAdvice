@@ -78,9 +78,4 @@ public final class GraphEdgeHas extends GraphEdge {
 			throws ArgumentNullException {
 		super(packageNode, interfaceNode);
 	}
-	
-	@Override
-	public String getLabel() {
-		return "Has";
-	}
 }

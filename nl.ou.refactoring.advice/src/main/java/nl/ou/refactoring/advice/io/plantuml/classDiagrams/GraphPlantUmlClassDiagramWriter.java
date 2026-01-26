@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.io.plantuml.classDiagrams;
 
+import java.awt.Color;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.stream.Collectors;
@@ -19,8 +20,19 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
-public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
+import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
 
+/**
+ * Writes PlantUML Class Diagrams from Refactoring Advice Graphs.
+ */
+public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
+	private static final String SPRITE_NAME_DANGER = "$danger";
+	private static final String SPRITE_NAME_NEW = "$new";
+	
+	/**
+	 * Initialises a new instance of {@link GraphPlantUmlClassDiagramWriter}.
+	 * @param stringWriter A {@link StringWriter} that is responsible for text output.
+	 */
 	public GraphPlantUmlClassDiagramWriter(StringWriter stringWriter) {
 		super(stringWriter);
 	}
@@ -35,6 +47,8 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		this.writeStartUml(graph.getRefactoringName());
 		this.writeSetSeparator("none");
+		this.writeSpriteBug(SPRITE_NAME_DANGER);
+		this.writeSpritePlus(SPRITE_NAME_NEW);
 		
 		// Domain model
 		final var packageNodes = graph.getNodes(GraphNodePackage.class);
@@ -94,6 +108,28 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		for (final var operationNode : operationNodes) {
 			final var returnType = operationNode.getReturnType();
 			final var stringBuilder = new StringBuilder();
+			
+			final var operationIsNew = operationNode.getAddedBy() != null;
+			if (operationIsNew) {
+				stringBuilder.append(
+						String.format(
+								"<%s> ",
+								SPRITE_NAME_NEW
+						)
+				);
+			}
+			
+			final var operationHasDangers = !operationNode.getDangers().isEmpty();
+			if (operationHasDangers) {
+				stringBuilder.append(
+						String.format(
+								"<color:%s><%s></color> ",
+								toHexadecimal(Color.red),
+								SPRITE_NAME_DANGER
+						)
+				);
+			}
+			
 			stringBuilder.append(operationNode.getCaption() + "(");
 			final var parameters = operationNode.getOperationParameters();
 			stringBuilder.append(
@@ -150,7 +186,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 						.getEdges(GraphEdgeAffects.class)
 						.stream()
 						.map(edge -> edge.getDestinationNode())
-						.filter(node -> GraphNodeCode.class.isAssignableFrom(node.getClass()))
+						.filter(node -> node instanceof GraphNodeCode)
 						.map(GraphNodeCode.class::cast)
 						.collect(Collectors.toUnmodifiableSet());
 			for (final var codeNode : affects) {
@@ -216,10 +252,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		final var name = switch (codeNode) {
 			case GraphNodeClass classNode -> {
 				final var className = classNode.getClassName();
-				final var stereotype = classNode.getStereotype();
-				yield
-					className +
-					getStereotypeSuffix(stereotype);
+				yield className;
 			}
 			default -> codeNode.getCaption();
 		};
@@ -236,18 +269,6 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			case GraphNodeClassStereotype.BEFORE -> "#DarkGray";
 			case GraphNodeClassStereotype.AFTER -> "#LightGray";
 			case GraphNodeClassStereotype.MITIGATED -> "#LightGreen";
-			default -> "";
-		};
-	}
-	
-	private static final String getStereotypeSuffix(GraphNodeClassStereotype stereotype) {
-		if (stereotype == null) {
-			return "";
-		}
-		return switch(stereotype) {
-			case GraphNodeClassStereotype.BEFORE -> "_before";
-			case GraphNodeClassStereotype.AFTER -> "_after";
-			case GraphNodeClassStereotype.MITIGATED -> "_mitigated";
 			default -> "";
 		};
 	}

@@ -6,6 +6,9 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
  * Settings for a {@link GraphMermaidClassDiagramWriter}.
  */
 public class GraphMermaidClassDiagramWriterSettings {
+	/**
+	 * The default maximum depth of the paths that check for dangers on a code element.
+	 */
 	public static final int CODE_DANGER_PATH_MAXIMUM_DEPTH_DEFAULT = 10;
 	private int codeDangerPathMaximumDepth = CODE_DANGER_PATH_MAXIMUM_DEPTH_DEFAULT;
 	

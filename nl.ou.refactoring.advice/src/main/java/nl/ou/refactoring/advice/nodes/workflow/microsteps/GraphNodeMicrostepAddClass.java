@@ -31,4 +31,20 @@ public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
 		ArgumentGuard.requireNotNull(classNode, "classNode");
 		return new GraphEdgeAdds(this, classNode);
 	}
+	
+	/**
+	 * Gets the {@link GraphNodeClass} node that represents the class that is added by the microstep.
+	 * @return The {@link GraphNodeClass} node that represents the class that is added by the microstep, or null if there is none.
+	 */
+	public GraphNodeClass getClassNode() {
+		return
+				this
+					.getEdges(GraphEdgeAdds.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> node instanceof GraphNodeClass)
+					.map(GraphNodeClass.class::cast)
+					.findAny()
+					.orElse(null);
+	}
 }

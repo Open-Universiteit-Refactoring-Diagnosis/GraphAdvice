@@ -26,20 +26,38 @@ public final class GraphLayoutGlobalRankingSettings extends GraphLayoutSettings 
 		return new GraphLayoutGlobalRanking(this);
 	}
 	
+	/**
+	 * Gets the weights of the graph's edges in a Global Ranking.
+	 * @return A map of edge class types and their respective weights.
+	 */
 	public Map<Class<? extends GraphEdge>, Double> getEdgeWeights() {
 		return Collections.unmodifiableMap(this.edgeWeights);
 	}
 	
+	/**
+	 * Sets the weights of the graph's edges in a Global Ranking.
+	 * @param value A map of edge class types and their respective weights.
+	 * @throws ArgumentNullException Thrown if value is null.
+	 */
 	public void setEdgeWeights(Map<Class<? extends GraphEdge>, Double> value)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(value, "value");
 		this.edgeWeights = value;
 	}
 	
+	/**
+	 * Gets the maximum depth of a variation extracted from the graph.
+	 * @return The maximum depth of a variation extracted from the graph.
+	 */
 	public int getVariationMaximumDepth() {
 		return this.variationMaximumDepth;
 	}
 	
+	/**
+	 * Sets the maximum depth of a variation extracted from the graph.
+	 * @param value The maximum depth of a variation extracted from the graph.
+	 * @throws IllegalArgumentException Thrown if value is not a positive integer.
+	 */
 	public void setVariationMaximumDepth(int value)
 			throws IllegalArgumentException {
 		ArgumentGuard.requireGreaterThanOrEqual(0, value, "variationMaximumDepth");

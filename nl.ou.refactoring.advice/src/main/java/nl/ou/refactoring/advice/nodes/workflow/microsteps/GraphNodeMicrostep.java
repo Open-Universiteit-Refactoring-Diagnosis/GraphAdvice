@@ -1,5 +1,8 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
@@ -62,6 +65,34 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 				risk,
 				(source, destination) -> new GraphEdgeObsolesces(source, destination),
 				GraphEdgeObsolesces.class);
+	}
+	
+	/**
+	 * Gets the risks associated with this microstep.
+	 * @return The risks associated with this microstep.
+	 */
+	public Set<GraphNodeRisk> getRisks() {
+		return
+				this
+					.getEdges(GraphEdgeCauses.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> node instanceof GraphNodeRisk)
+					.map(node -> (GraphNodeRisk)node)
+					.collect(Collectors.toUnmodifiableSet());
+	}
+	
+	/**
+	 * Gets the dangers associated with this microstep.
+	 * @return The dangers associated with this microstep.
+	 */
+	public Set<GraphNodeRisk> getDangers() {
+		return
+				this
+					.getRisks()
+					.stream()
+					.filter(node -> node.getNeutralisers().size() == 0)
+					.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	@Override

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.ou.refactoring</groupId>
 	<artifactId>nl.ou.refactoring.advice</artifactId>
-	<version>0.0.2</version>
+	<version>0.3.0</version>
 	<name>Open Universiteit Refactoring Advice through Knowledge Graphs</name>
 	<description>A software component for generating refactoring advices by assembling a refactoring in a graph and converting it to a human-readable advice.</description>
 	<dependencies>
@@ -67,6 +67,20 @@
 				<configuration>
 					<release>25</release>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.12.0</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

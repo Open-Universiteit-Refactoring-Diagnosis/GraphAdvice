@@ -316,6 +316,22 @@ public final class GraphNodeClass extends GraphNodeCode {
 		}
 		return operationNode;
 	}
+	
+	/**
+	 * Attempts to get a package node associated with this class, indicating that the package contains the class.
+	 * @return The package node associated with this class, representing the package that contains the class. If no association is found, returns null.
+	 */
+	public GraphNodePackage getPackageNode() {
+		return
+			this
+				.getEdgesIncoming(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.filter(node -> node instanceof GraphNodePackage)
+				.map(GraphNodePackage.class::cast)
+				.findAny()
+				.orElse(null);
+	}
 
 	@Override
 	public String getLabel() {

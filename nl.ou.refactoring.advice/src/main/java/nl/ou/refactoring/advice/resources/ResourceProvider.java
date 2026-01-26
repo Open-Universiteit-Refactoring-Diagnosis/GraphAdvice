@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.resources;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeClassStereotype;
 
@@ -40,6 +41,33 @@ public final class ResourceProvider {
 	}
 	
 	/**
+	 * Retrieves localised labels for Refactoring Advice Graph edges.
+	 */
+	public static final class GraphEdgeLabels {
+		private static final String BUNDLE_NAME = "GraphEdgeLabels";
+		private GraphEdgeLabels() { }
+		
+		/**
+		 * Gets the localised label for the specified edgeType.
+		 * @param edgeType The type of the edge.
+		 * @return The localised label for the specified edgeType.
+		 */
+		public static String getLabel(Class<? extends GraphEdge> edgeType) {
+			return ResourceBundle.getBundle(BUNDLE_NAME).getString(edgeType.getSimpleName());
+		}
+		
+		/**
+		 * Gets the localised label for the specified edgeType, in the specified locale.
+		 * @param edgeType The type of the edge.
+		 * @param locale The locale for which to retrieve the localised label.
+		 * @return The localised label for the specified edgeType, in the specified locale.
+		 */
+		public static String getLabel(Class<? extends GraphEdge> edgeType, Locale locale) {
+			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(edgeType.getSimpleName());
+		}
+	}
+	
+	/**
 	 * Retrieves localised captions for Refactoring Advice Graph nodes.
 	 */
 	public static final class GraphNodeCaptions {
@@ -58,6 +86,7 @@ public final class ResourceProvider {
 		/**
 		 * Gets the localised caption for the specified classType, in the specified locale.
 		 * @param classType The type of the class of {@link GraphNode}.
+		 * @param locale The {@link Locale} for which to get the caption.
 		 * @return The localised caption for the specified classType, in the specified locale.
 		 */
 		public static String getCaption(Class<? extends GraphNode> classType, Locale locale) {
@@ -84,6 +113,7 @@ public final class ResourceProvider {
 		/**
 		 * Gets the localised display name for the specified class stereotype, in the specified locale.
 		 * @param stereotype The class stereotype.
+		 * @param locale The {@link Locale} for which to get the display name.
 		 * @return The localised display name for the specified class stereotype, in the specified locale.
 		 */
 		public static String getDisplayName(GraphNodeClassStereotype stereotype, Locale locale) {

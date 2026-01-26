@@ -45,9 +45,4 @@ public final class GraphEdgeAdds extends GraphEdge {
 			throws ArgumentNullException {
 		super(sourceNode, destinationNode);
 	}
-
-	@Override
-	public String getLabel() {
-		return "Adds";
-	}
 }

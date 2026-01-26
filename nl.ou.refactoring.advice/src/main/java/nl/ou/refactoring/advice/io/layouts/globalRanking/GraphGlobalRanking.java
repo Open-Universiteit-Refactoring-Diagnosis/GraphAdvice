@@ -62,6 +62,13 @@ public final class GraphGlobalRanking {
 		return Collections.unmodifiableMap(this.globalRanking);
 	}
 	
+	/**
+	 * Computes a Global Ranking.
+	 * @param settings The Global Ranking settings.
+	 * @param graph The Refactoring Advice Graph for which to compute a Global Ranking.
+	 * @return The computed Global Ranking.
+	 * @throws GraphPathSegmentInvalidException Thrown if an invalid path segment was constructed during the ranking.
+	 */
 	public static GraphGlobalRanking compute(
 			GraphLayoutGlobalRankingSettings settings,
 			Graph graph)
