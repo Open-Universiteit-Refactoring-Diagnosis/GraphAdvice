@@ -3,9 +3,11 @@ package nl.ou.refactoring.advice.edges.workflow;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveClass;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
@@ -22,6 +24,19 @@ public final class GraphEdgeRemoves extends GraphEdge {
 	public GraphEdgeRemoves(
 			GraphNodeMicrostepRemoveClass sourceNode,
 			GraphNodeClass destinationNode
+	) throws ArgumentNullException {
+		super(sourceNode, destinationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeRemoves}.
+	 * @param sourceNode The source "Remove Expression" microstep.
+	 * @param destinationNode The destination "Statement Expression" code node.
+	 * @throws ArgumentNullException Thrown if sourceNode or destinationNode is null.
+	 */
+	public GraphEdgeRemoves(
+			GraphNodeMicrostepRemoveExpression sourceNode,
+			GraphNodeStatementExpression destinationNode
 	) throws ArgumentNullException {
 		super(sourceNode, destinationNode);
 	}

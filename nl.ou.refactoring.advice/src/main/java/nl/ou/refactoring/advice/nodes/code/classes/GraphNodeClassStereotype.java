@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nodes.code;
+package nl.ou.refactoring.advice.nodes.code.classes;
 
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 

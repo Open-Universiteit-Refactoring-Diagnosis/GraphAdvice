@@ -12,12 +12,15 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlWriter;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClassHasMultipleGeneralisationsException;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClassMember;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClassStereotype;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassHasMultipleGeneralisationsException;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
 import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
@@ -157,6 +160,20 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		this.indentIndex--;
 		this.printLine("}");
 		
+		// Inner Classes
+		final var innerClassNodes = classNode.getInnerClassNodes();
+		for (final var innerClassNode : innerClassNodes) {
+			this.writeClass(innerClassNode);
+			this
+				.printLine(
+					String.format(
+						"%s +-- %s",
+						getSanitizedName(classNode),
+						getSanitizedName(innerClassNode)
+					)
+				);
+		}
+		
 		// Specialisations
 		final var generalisation = classNode.getGeneralisationClassNode();
 		if (generalisation != null) {
@@ -171,57 +188,102 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	}
 	
 	private void writeNotes(Graph graph) {
-		var nodeCounter = 0;
+		var noteCounter = 0;
 		final var dangerNodes =
-				graph
-					.getNodes(GraphNodeRisk.class)
-					.stream()
-					.filter(node -> node.getNeutralisers().size() == 0)
-					.collect(Collectors.toSet());
+			graph
+				.getNodes(GraphNodeRisk.class)
+				.stream()
+				.filter(node -> node.getNeutralisers().size() == 0)
+				.collect(Collectors.toSet());
 		
 		// Analyse risks
 		for (final var dangerNode : dangerNodes) {
+			noteCounter++;
 			final var affects =
-					dangerNode
-						.getEdges(GraphEdgeAffects.class)
-						.stream()
-						.map(edge -> edge.getDestinationNode())
-						.filter(node -> node instanceof GraphNodeCode)
-						.map(GraphNodeCode.class::cast)
-						.collect(Collectors.toUnmodifiableSet());
+				dangerNode
+					.getEdges(GraphEdgeAffects.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> node instanceof GraphNodeCode)
+					.map(GraphNodeCode.class::cast)
+					.collect(Collectors.toUnmodifiableSet());
+			
+			final var noteIdentifier = String.format("N%d", noteCounter);
+			this.printLine(String.format("note as %s", noteIdentifier));
+			this.indentIndex++;
+			
+			// Note text
+			this.printLine(
+				String.format(
+					"<b>%s</b> on %s",
+					dangerNode.getCaption(),
+					String.join(
+						", ",
+						affects
+							.stream()
+							.map(node -> {
+								return switch (node) {
+									case GraphNodeAttribute attributeNode -> attributeNode.getCaption();
+									case GraphNodeClass classNode -> classNode.getCaption();
+									case GraphNodeOperation operationNode -> operationNode.getCaption();
+									default -> findSubject(node).getCaption();
+								};
+							})
+							.toList()
+					)
+				)
+			);
+			
+			this.indentIndex--;
+			this.printLine("end note");
+			
+			// Note relationships
 			for (final var codeNode : affects) {
-				nodeCounter++;
+				this.writeNoteRelationship(codeNode, noteIdentifier);
+			}
+		}
+	}
+	
+	private final void writeNoteRelationship(GraphNodeCode codeNode, String noteIdentifier) {
+		switch (codeNode) {
+			case GraphNodeAttribute codeNodeAttribute: {
+				final var codeNodeClass = findSubject(codeNodeAttribute);
+				this.printLine(
+					String.format(
+						"%s::%s .. %s",
+						getSanitizedName(codeNodeClass),
+						getSanitizedName(codeNodeAttribute),
+						getSanitizedName(noteIdentifier)
+					)
+				);
+				break;
+			}
+			case GraphNodeClass codeNodeClass: {
+				this.printLine(
+					String.format(
+						"%s .. %s",
+						getSanitizedName(codeNodeClass),
+						getSanitizedName(noteIdentifier)
+					)
+				);
+				break;
+			}
+			case GraphNodeOperation codeNodeOperation: {
+				final var codeNodeClass = findSubject(codeNodeOperation);
+				this.printLine(
+					String.format(
+						"%s::%s .. %s",
+						getSanitizedName(codeNodeClass),
+						getSanitizedName(codeNodeOperation),
+						getSanitizedName(noteIdentifier)
+					)
+				);
+				break;
+			}
+			default: {
 				final var codeNodeSubject = findSubject(codeNode);
-				for (final var codeNode2 : affects) {
-					if (codeNode.equals(codeNode2) || codeNode.hashCode() < codeNode2.hashCode()) {
-						continue;
-					}
-					
-					final var nodeIdentifier = String.format("N%d", nodeCounter);
-					final var codeNodeSubject2 = findSubject(codeNode2);
-					
-					this.printLine(String.format("note as %s", nodeIdentifier));
-					this.indentIndex++;
-					this.printLine(getDangerLabel(codeNode, codeNode2, dangerNode));
-					this.indentIndex--;
-					this.printLine("end note");
-					this.printLine(
-							String.format(
-									"%s::%s .. %s",
-									getSanitizedName(codeNodeSubject),
-									getSanitizedName(codeNode),
-									getSanitizedName(nodeIdentifier)
-							)
-					);
-					this.printLine(
-							String.format(
-									"%s .. %s::%s",
-									getSanitizedName(nodeIdentifier),
-									getSanitizedName(codeNodeSubject2),
-									getSanitizedName(codeNode2)
-							)
-					);
-				}
+				this.writeNoteRelationship(codeNodeSubject, noteIdentifier);
+				break;
 			}
 		}
 	}
@@ -231,21 +293,9 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			case GraphNodePackage pkg -> pkg;
 			case GraphNodeClass cls -> cls;
 			case GraphNodeClassMember member -> member.getClassNode();
+			case GraphNodeMethodInvocationExpression methodInvocationExpression -> methodInvocationExpression.getOperationNode();
 			default -> codeNode;
 		};
-	}
-	
-	private static final String getDangerLabel(
-			GraphNodeCode one,
-			GraphNodeCode other,
-			GraphNodeRisk danger
-	) {
-		return
-				MessageFormat.format(
-						"<b>{0}</b> on {1} and {2}",
-						danger.getCaption(),
-						one.getCaption(),
-						other.getCaption());
 	}
 	
 	private static final String getSanitizedName(GraphNodeCode codeNode) {

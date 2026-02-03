@@ -10,6 +10,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 
 /**
  * Represents a node in a Refactoring Advice Graph that represents a programme code package that is affected by a refactoring.

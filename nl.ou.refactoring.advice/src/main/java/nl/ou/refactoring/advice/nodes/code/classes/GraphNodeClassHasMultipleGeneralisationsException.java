@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nodes.code;
+package nl.ou.refactoring.advice.nodes.code.classes;
 
 import java.text.MessageFormat;
 

@@ -23,7 +23,7 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;

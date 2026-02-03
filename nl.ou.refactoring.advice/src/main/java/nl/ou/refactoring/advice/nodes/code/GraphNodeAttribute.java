@@ -5,6 +5,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Attribute of a Class that is affected by a refactoring.

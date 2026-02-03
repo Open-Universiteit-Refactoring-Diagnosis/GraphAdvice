@@ -6,6 +6,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an affected Interface.

@@ -1,15 +1,22 @@
-package nl.ou.refactoring.advice.nodes.code;
+package nl.ou.refactoring.advice.nodes.code.operations;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 
 /**
@@ -43,8 +50,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 			Graph graph,
 			String operationName,
 			List<GraphNodeOperationParameter> operationParameters
-	)
-			throws ArgumentNullException, ArgumentEmptyException {
+	) throws ArgumentNullException, ArgumentEmptyException {
 		super(graph);
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
 		this.operationName = operationName;
@@ -113,11 +119,57 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 */
 	public GraphEdgeIs hasReturnType(GraphNodeType typeNode)
 			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(typeNode, "typeNode");
 		return this.graph.getOrAddEdge(
 				this,
 				typeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
+	}
+	
+	/**
+	 * Indicates that the Operation has a body block represented by blockNode.
+	 * @param blockNode The node that represents the code block that serves as the operation's body block.
+	 * @return The edge that connects the Operation and its body block.
+	 * @throws ArgumentNullException Thrown if blockNode is null.
+	 */
+	public GraphEdgeHas hasBody(GraphNodeBlock blockNode)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(blockNode, "blockNode");
+		return this.graph.getOrAddEdge(
+				this,
+				blockNode,
+				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
+				GraphEdgeHas.class);
+	}
+	
+	/**
+	 * Gets the operation body, if any.
+	 * @return A node that represents a code block that serves as the operation's body.
+	 */
+	public GraphNodeBlock getBody() {
+		return
+			this
+				.getEdges(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeBlock)
+				.map(GraphNodeBlock.class::cast)
+				.findAny()
+				.orElse(null);
+	}
+	
+	/**
+	 * Gets the {@link GraphNodeMethodInvocationExpression} nodes that represent the method invocation expressions that call this operation.
+	 * @return An unmodifiable set of {@link GraphNodeMethodInvocationExpression} nodes that represent the method invocation expressions that call this operation.
+	 */
+	public Set<GraphNodeMethodInvocationExpression> getInvocations() {
+		return
+			this
+				.getEdgesIncoming(GraphEdgeInvokes.class)
+				.stream()
+				.map(edge -> edge.getMethodInvocationExpression())
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	@Override

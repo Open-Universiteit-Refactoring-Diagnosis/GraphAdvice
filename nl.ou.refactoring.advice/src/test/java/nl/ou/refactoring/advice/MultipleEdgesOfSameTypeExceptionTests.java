@@ -7,7 +7,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 
 public final class MultipleEdgesOfSameTypeExceptionTests {

@@ -4,8 +4,8 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Represents a "Double Definition" risk in a Refactoring Advice Graph.

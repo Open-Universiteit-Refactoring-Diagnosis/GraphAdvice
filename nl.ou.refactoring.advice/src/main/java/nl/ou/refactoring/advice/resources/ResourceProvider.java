@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClassStereotype;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
 
 /**
  * Facilitates retrieving localised resource values.

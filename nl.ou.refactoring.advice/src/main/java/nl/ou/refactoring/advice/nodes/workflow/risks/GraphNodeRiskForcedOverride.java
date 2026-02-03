@@ -3,7 +3,7 @@ package nl.ou.refactoring.advice.nodes.workflow.risks;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Represents a "Forced Override" risk in a Refactoring Advice Graph.
