@@ -5,7 +5,7 @@ import java.util.Scanner;
 public final class JsonSamplesLoader {
 	private JsonSamplesLoader() { }
 
-	protected static String loadJson(String resourceName) {
+	public static String loadJson(String resourceName) {
 		final var jsonResourceStream =
 				JsonSamplesLoader
 					.class

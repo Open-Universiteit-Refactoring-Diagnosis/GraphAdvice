@@ -1,0 +1,108 @@
+{
+	"$schema": "../../main/resources/RefactoringAdviceGraph.schema.json",
+    "refactoringName": "Move Method",
+    "nodes": [
+        {
+            "type": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart",
+            "edges": [
+                {
+                    "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates",
+                    "to": 1
+                }
+            ],
+            "refactoringName": "Move Method"
+        },
+        {
+            "type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod",
+            "edges": [
+                {
+                    "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes",
+                    "to": 2
+                },
+                {
+                	"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds",
+                	"to": 7
+                }
+            ]
+        },
+        {
+        	"type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod",
+        	"edges": [
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises",
+        			"to": 0
+        		},
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves",
+        			"to": 5
+        		},
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses",
+        			"to": 8
+        		}
+        	]
+        },
+        {
+        	"type": "nl.ou.refactoring.advice.nodes.code.GraphNodePackage",
+        	"edges": [
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.code.GraphEdgeHas",
+        			"to": 4
+        		},
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.code.GraphEdgeHas",
+        			"to": 6
+        		}
+        	],
+        	"packageName": "nl.ou.refactoring.moveMethod"
+        },
+        {
+        	"type": "nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass",
+        	"edges": [
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.code.GraphEdgeHas",
+        			"to": 5
+        		}
+        	],
+        	"className": "Alpha"
+        },
+        {
+        	"type": "nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation",
+        	"edges": [],
+        	"operationName": "foo"
+        },
+		{
+        	"type": "nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass",
+        	"edges": [
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.code.GraphEdgeHas",
+        			"to": 7
+        		}
+        	],
+        	"className": "Beta"
+        },
+        {
+        	"type": "nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation",
+        	"edges": [],
+        	"operationName": "foo"
+        },
+        {
+        	"type": "nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition",
+        	"edges": [
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects",
+        			"to": 5
+        		}
+        	]
+        },
+        {
+        	"type": "nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyUpdateReferences",
+        	"edges": [
+        		{
+        			"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeMitigates",
+        			"to": 8
+        		}
+        	]
+        }
+    ]
+}

@@ -78,7 +78,7 @@ public class GraphJsonReader implements GraphReader {
 					throw new GraphJsonReaderNodeClassNotFoundException(nodeType);
 				}
 
-				nodes.add(this.constructNode(graph, nodeClass));
+				nodes.add(this.constructNode(graph, nodeClass, nodeJsonObject));
 			}
 			for (var i = 0; i < nodeJsonArray.size(); i++) {
 				final var node = nodes.get(i);
@@ -116,27 +116,66 @@ public class GraphJsonReader implements GraphReader {
 			GraphNode left,
 			GraphNode right) {
 		try {
-			final var edgeConstructor = nodeEdge.getConstructors()[0];
+			final var edgeConstructors = List.of(nodeEdge.getConstructors());
+			final var edgeConstructor =
+				edgeConstructors
+					.stream()
+					.filter(
+						constructor -> {
+							final var constructorParameterTypes = constructor.getParameterTypes();
+							if (constructorParameterTypes.length != 2) {
+								return false;
+							}
+							
+							return
+								constructorParameterTypes[0].isAssignableFrom(left.getClass()) &&
+								constructorParameterTypes[1].isAssignableFrom(right.getClass());
+						}
+					)
+					.findAny()
+					.orElse(null);
+			if (edgeConstructor == null) {
+				throw new RuntimeException("No matching constructor"); // TODO specific exception
+			}
 			return (TEdge)edgeConstructor.newInstance(left, right);
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 	
-	private GraphNode constructNode(Graph graph, Class<?> nodeClass) {
+	private GraphNode constructNode(Graph graph, Class<?> nodeClass, JsonObject nodeJsonObject) {
 		try {
-			Function<Graph, GraphNode> nodeConstructorDefault =
-					g -> {
-			            try {
-			                var constructor = nodeClass.getConstructors()[0];
-			                return (GraphNode) constructor.newInstance(g);
-			            } catch (Exception e) {
-			                throw new RuntimeException(e);
-			            }
-					};
-			
-			final var nodeFactory = nodeConstructors.getOrDefault(nodeClass, nodeConstructorDefault);
-			return nodeFactory.apply(graph);
+			final var nodeClassConstructorDefault = nodeClass.getConstructors()[0];
+			final var nodeClassConstructorArguments = new ArrayList<Object>();
+			nodeClassConstructorArguments.add(graph);
+			switch (nodeClass.getName()) {
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodePackage": {
+					final var packageName = nodeJsonObject.getString("packageName");
+					nodeClassConstructorArguments.add(packageName);
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass": {
+					final var className = nodeJsonObject.getString("className");
+					nodeClassConstructorArguments.add(className);
+					nodeClassConstructorArguments.add(null); // class stereotype
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation": {
+					final var operationName = nodeJsonObject.getString("operationName");
+					nodeClassConstructorArguments.add(operationName);
+					nodeClassConstructorArguments.add(null); // operation parameters
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart": {
+					final var refactoringName = this.readRefactoringName(nodeJsonObject);
+					nodeClassConstructorArguments.add(refactoringName);
+					break;
+				}
+				default: {
+					break;
+				}
+			}
+			return (GraphNode)nodeClassConstructorDefault.newInstance(nodeClassConstructorArguments.toArray());
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

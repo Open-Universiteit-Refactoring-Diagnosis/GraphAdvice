@@ -28,10 +28,11 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskPrecedingOverl
 public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 
 	@Override
-	public Stream<? extends Arguments> provideArguments(
+	public Stream<? extends Arguments> provideArguments
+	(
 			ParameterDeclarations parameters,
-			ExtensionContext context)
-					throws RefactoringMayContainOnlyOneStartNodeException {
+			ExtensionContext context
+	) throws RefactoringMayContainOnlyOneStartNodeException {
 		return
 				Stream.of(
 						constructDoubleDefinitionGraph(),
@@ -271,6 +272,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		changedNestedRelationshipRiskNode.affects(alphaFooOperationNode);
 		changedNestedRelationshipRiskNode.affects(betaFooOperationNode);
 		changedNestedRelationshipRiskNode.affects(betaBarMethodInvocationExpressionNode);
+		addMethodNode.causes(changedNestedRelationshipRiskNode);
 		
 		return graph;
 	}

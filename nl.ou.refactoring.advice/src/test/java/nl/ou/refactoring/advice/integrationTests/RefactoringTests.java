@@ -23,7 +23,7 @@ import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWrite
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 import nl.ou.refactoring.advice.io.text.concatenation.GraphTextConcatenationWriter;
 
-public final class DangerTests {
+public final class RefactoringTests {
 	private static Path OUTPUT_DIR;
 
 	@BeforeAll
@@ -31,17 +31,17 @@ public final class DangerTests {
 		OUTPUT_DIR = Paths.get("target", "test-output");
 		Files.createDirectories(OUTPUT_DIR);
 	}
-
-	@DisplayName("Should properly generate a flowchart, class diagram and advice text for dangers")
+	
+	@DisplayName("Should properly generate a flowchart, class diagram and advice text for refactorings")
 	@ParameterizedTest
-	@ArgumentsSource(DangerTestsArgumentsProvider.class)
+	@ArgumentsSource(RefactoringTestsArgumentsProvider.class)
 	public void writeFlowchartClassDiagramAndTextTest(Graph graph)
 			throws IOException, ArgumentNullException, GraphPathSegmentInvalidException {
 	    final var refactoringName = graph.getRefactoringName();
 	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");
 	    final var plantUmlClassDiagramFilePath = OUTPUT_DIR.resolve(refactoringName + ".puml");
 	    final var concatenatedAdviceFilePath = OUTPUT_DIR.resolve(refactoringName + ".txt");
-
+	    
 	    // Flowchart (graph)
 	    try (
 	    		final var mermaidFlowchartStringWriter =

@@ -30,18 +30,6 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 * Initialises a new instance of {@link GraphNodeOperation}.
 	 * @param graph The graph that contains the node.
 	 * @param operationName The name of the operation.
-	 * @throws ArgumentNullException Thrown if graph or operationName are null.
-	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
-	 */
-	public GraphNodeOperation(Graph graph, String operationName)
-			throws ArgumentNullException, ArgumentEmptyException {
-		this(graph, operationName, new ArrayList<GraphNodeOperationParameter>());
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphNodeOperation}.
-	 * @param graph The graph that contains the node.
-	 * @param operationName The name of the operation.
 	 * @param operationParameters The parameters of the operation. If null, an empty list will be created.
 	 * @throws ArgumentNullException Thrown if graph or operationName are null.
 	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
@@ -58,6 +46,18 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 				operationParameters == null
 					? new ArrayList<GraphNodeOperationParameter>()
 					: operationParameters;
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphNodeOperation}.
+	 * @param graph The graph that contains the node.
+	 * @param operationName The name of the operation.
+	 * @throws ArgumentNullException Thrown if graph or operationName are null.
+	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
+	 */
+	public GraphNodeOperation(Graph graph, String operationName)
+			throws ArgumentNullException, ArgumentEmptyException {
+		this(graph, operationName, new ArrayList<GraphNodeOperationParameter>());
 	}
 	
 	/**

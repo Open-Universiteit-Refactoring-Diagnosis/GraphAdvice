@@ -2,7 +2,6 @@ package nl.ou.refactoring.advice.io.plantuml.classDiagrams;
 
 import java.awt.Color;
 import java.io.StringWriter;
-import java.text.MessageFormat;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
