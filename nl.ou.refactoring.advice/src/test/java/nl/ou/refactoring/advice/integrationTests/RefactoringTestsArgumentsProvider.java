@@ -11,6 +11,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphTemplates;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
@@ -53,16 +54,24 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var packageNode = new GraphNodePackage(graph, "nl.ou.refactoring.moveMethod.classToClass");
 		
 		final var alphaClassNode = new GraphNodeClass(graph, "Alpha");
+		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
+		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
 		final var alphaBarOperationNode = new GraphNodeOperation(graph, "bar");
 		final var alphaFooOperationNode = new GraphNodeOperation(graph, "foo");
 		packageNode.has(alphaClassNode);
+		alphaClassNode.has(alphaOneAttributeNode);
+		alphaClassNode.has(alphaTwoAttributeNode);
 		alphaClassNode.has(alphaBarOperationNode);
 		alphaClassNode.has(alphaFooOperationNode);
 		removeMethodMicrostepNode.removes(alphaFooOperationNode);
 		
 		final var betaClassNode = new GraphNodeClass(graph, "Beta");
+		final var betaField1AttributeNode = new GraphNodeAttribute(graph, "field1");
+		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
 		final var betaFooOperationNode = new GraphNodeOperation(graph, "foo");
 		packageNode.has(betaClassNode);
+		betaClassNode.has(betaField1AttributeNode);
+		betaClassNode.has(betaField2AttributeNode);
 		betaClassNode.has(betaFooOperationNode);
 		addMethodMicrostepNode.adds(betaFooOperationNode);
 		
