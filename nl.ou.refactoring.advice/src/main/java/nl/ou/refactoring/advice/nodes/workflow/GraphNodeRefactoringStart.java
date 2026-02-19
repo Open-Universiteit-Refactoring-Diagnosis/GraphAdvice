@@ -2,32 +2,27 @@ package nl.ou.refactoring.advice.nodes.workflow;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
-import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 
 /**
  * Represents the start node of a refactoring in a Refactoring Advice Graph.
  */
 public final class GraphNodeRefactoringStart extends GraphNodeWorkflow {
-	private final String refactoringName;
-	
 	/**
 	 * Initialises a new instance of {@link GraphNodeRefactoringStart}.
 	 * @param graph The graph that contains the node.
-	 * @param refactoringName The name of the refactoring that is started.
 	 * @throws ArgumentNullException Thrown if graph or refactoringName is null.
 	 * @throws RefactoringMayContainOnlyOneStartNodeException Thrown if the graph already contains a start node.
 	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains only white spaces.
 	 */
-	public GraphNodeRefactoringStart(Graph graph, String refactoringName)
+	public GraphNodeRefactoringStart(Graph graph)
 			throws ArgumentNullException, RefactoringMayContainOnlyOneStartNodeException, ArgumentEmptyException {
 		super(graph);
 		if (graph.getNodes(GraphNodeRefactoringStart.class).size() > 1) {
 			throw new RefactoringMayContainOnlyOneStartNodeException();
 		}
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
-		this.refactoringName = refactoringName;
 	}
 	
 	/**
@@ -51,7 +46,19 @@ public final class GraphNodeRefactoringStart extends GraphNodeWorkflow {
 	 * @return The name of the refactoring that is started.
 	 */
 	public String getRefactoringName() {
-		return this.refactoringName;
+		return this.graph.getRefactoringName();
+	}
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeRefactoringStart(graph);
+	}
+	
+	@Override
+	public boolean equals(GraphNode other) {
+		return
+			other instanceof GraphNodeRefactoringStart &&
+			this.getRefactoringName().equals(((GraphNodeRefactoringStart)other).getRefactoringName());
 	}
 
 	@Override
@@ -61,6 +68,6 @@ public final class GraphNodeRefactoringStart extends GraphNodeWorkflow {
 
 	@Override
 	public String getCaption() {
-		return this.refactoringName;
+		return this.getRefactoringName();
 	}
 }

@@ -10,6 +10,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 
 /**
@@ -129,6 +130,19 @@ public final class GraphNodePackage extends GraphNodeCode {
 			this.has(classNode);
 		}
 		return classNode;
+	}
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodePackage(graph, this.packageName);
+	}
+	
+	@Override
+	public boolean equals(GraphNode other) {
+		return
+			other != null &&
+			other instanceof GraphNodePackage &&
+			this.getPackageName().equals(((GraphNodePackage)other).getPackageName());
 	}
 
 	@Override

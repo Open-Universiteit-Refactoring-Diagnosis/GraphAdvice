@@ -28,7 +28,7 @@ public final class DangerTests {
 
 	@BeforeAll
 	static void setUp() throws IOException {
-		OUTPUT_DIR = Paths.get("target", "test-output");
+		OUTPUT_DIR = Paths.get("target", "test-output", "dangers");
 		Files.createDirectories(OUTPUT_DIR);
 	}
 

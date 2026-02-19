@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.integrationTests;
+package nl.ou.refactoring.advice.io.json;
 
 import java.util.stream.Stream;
 
@@ -7,13 +7,11 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.ParameterDeclarations;
 
-import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
-import nl.ou.refactoring.advice.io.json.GraphJsonDefaults;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
-public final class RefactoringTestsArgumentsProvider implements ArgumentsProvider {
+public final class GraphJsonDefaultsTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
 	public Stream<? extends Arguments> provideArguments
 	(
@@ -22,14 +20,10 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 	) throws RefactoringMayContainOnlyOneStartNodeException, ArgumentNullException, GraphReaderException {
 		return
 			Stream.of(
-				moveMethodFromClassToClass()
+				GraphJsonDefaults.moveMethod(),
+				GraphJsonDefaults.renameField(),
+				GraphJsonDefaults.renameMethod()
 			)
 			.map(Arguments::of);
-	}
-	
-	private static Graph moveMethodFromClassToClass() throws GraphReaderException {
-		final var graph = GraphJsonDefaults.moveMethod();
-		
-		return graph;
 	}
 }

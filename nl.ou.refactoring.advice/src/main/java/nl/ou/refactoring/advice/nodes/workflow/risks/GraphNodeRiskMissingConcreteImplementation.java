@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.nodes.workflow.risks;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
@@ -34,5 +35,10 @@ public class GraphNodeRiskMissingConcreteImplementation extends GraphNodeRisk {
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeRiskMissingConcreteImplementation(graph);
 	}
 }

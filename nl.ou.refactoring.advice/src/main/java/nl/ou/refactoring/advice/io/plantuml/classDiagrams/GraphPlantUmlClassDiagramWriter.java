@@ -205,7 +205,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 					.map(edge -> edge.getDestinationNode())
 					.filter(node -> node instanceof GraphNodeCode)
 					.map(GraphNodeCode.class::cast)
-					.collect(Collectors.toUnmodifiableSet());
+					.collect(Collectors.toUnmodifiableList());
 			
 			final var noteIdentifier = String.format("N%d", noteCounter);
 			this.printLine(String.format("note as %s", noteIdentifier));

@@ -4,6 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 
@@ -62,5 +63,10 @@ public class GraphNodeRiskChangedNestedRelationship extends GraphNodeRisk {
 					(sourceNode, destinationNode) -> new GraphEdgeAffects(sourceNode, destinationNode),
 					GraphEdgeAffects.class
 				);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeRiskChangedNestedRelationship(graph);
 	}
 }

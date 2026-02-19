@@ -11,6 +11,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
@@ -287,7 +288,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * Gets all operation nodes that are included in the class.
 	 * @return A set of operation nodes. The set is not modifiable.
 	 */
-	public Set<GraphNodeOperation> getOperationNodes() {
+	public List<GraphNodeOperation> getOperationNodes() {
 		return
 			this
 				.getEdges(GraphEdgeHas.class)
@@ -295,7 +296,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 				.map(edge -> edge.getDestinationNode())
 				.filter(node -> node instanceof GraphNodeOperation)
 				.map(GraphNodeOperation.class::cast)
-				.collect(Collectors.toUnmodifiableSet());
+				.collect(Collectors.toUnmodifiableList());
 	}
 	
 	/**
@@ -385,6 +386,21 @@ public final class GraphNodeClass extends GraphNodeCode {
 			this.has(operationNode);
 		}
 		return operationNode;
+	}
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeClass(graph, this.className);
+	}
+	
+	@Override
+	public boolean equals(GraphNode other) {
+		if (!(other instanceof GraphNodeClass)) {
+			return false;
+		}
+		final var classNode = (GraphNodeClass)other;
+		// how much more should be included?
+		return this.getClassName().equals(classNode.getClassName());
 	}
 
 	@Override

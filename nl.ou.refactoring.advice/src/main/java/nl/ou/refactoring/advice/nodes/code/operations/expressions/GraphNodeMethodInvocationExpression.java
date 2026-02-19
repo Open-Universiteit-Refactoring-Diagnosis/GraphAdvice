@@ -4,6 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
@@ -50,5 +51,10 @@ public final class GraphNodeMethodInvocationExpression extends GraphNodeStatemen
 					(sourceNode, destinationNode) -> new GraphEdgeInvokes(sourceNode, destinationNode),
 					GraphEdgeInvokes.class
 				);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeMethodInvocationExpression(graph);
 	}
 }

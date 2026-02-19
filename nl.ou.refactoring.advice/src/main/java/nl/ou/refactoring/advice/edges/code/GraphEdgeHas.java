@@ -19,6 +19,50 @@ import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeStatem
 public final class GraphEdgeHas extends GraphEdge {
 	/**
 	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param packageNode A Package node that owns the Interface node.
+	 * @param interfaceNode An Interface node that is owned by the Package node.
+	 * @throws ArgumentNullException Thrown if packageNode or interfaceNode is null.
+	 */
+	public GraphEdgeHas(GraphNodePackage packageNode, GraphNodeInterface interfaceNode)
+			throws ArgumentNullException {
+		super(packageNode, interfaceNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param packageNode A Package node that owns the Class node.
+	 * @param classNode A Class node that is owned by the Package node.
+	 * @throws ArgumentNullException Thrown if packageNode or classNode is null.
+	 */
+	public GraphEdgeHas(GraphNodePackage packageNode, GraphNodeClass classNode)
+			throws ArgumentNullException {
+		super(packageNode, classNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param interfaceNode An Interface node that owns the Attribute node.
+	 * @param attributeNode An Attribute node that is owned by the Interface node.
+	 * @throws ArgumentNullException Thrown if interfaceNode or attributeNode is null.
+	 */
+	public GraphEdgeHas(GraphNodeInterface interfaceNode, GraphNodeAttribute attributeNode)
+			throws ArgumentNullException {
+		super(interfaceNode, attributeNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param interfaceNode An Interface node that owns the Operation node.
+	 * @param operationNode An Operation node that is owned by the Interface node.
+	 * @throws ArgumentNullException Thrown if interfaceNode or operationNode is null.
+	 */
+	public GraphEdgeHas(GraphNodeInterface interfaceNode, GraphNodeOperation operationNode)
+			throws ArgumentNullException {
+		super(interfaceNode, operationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
 	 * @param outerClassNode A Class node that represents an outer class.
 	 * @param innerClassNode A class node that represents an inner class.
 	 * @throws ArgumentNullException Thrown if outerClassNode or innerClassNode is null.
@@ -48,50 +92,6 @@ public final class GraphEdgeHas extends GraphEdge {
 	public GraphEdgeHas(GraphNodeClass classNode, GraphNodeOperation operationNode)
 			throws ArgumentNullException {
 		super(classNode, operationNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeHas}.
-	 * @param interfaceNode An Interface node that owns the Attribute node.
-	 * @param attributeNode An Attribute node that is owned by the Interface node.
-	 * @throws ArgumentNullException Thrown if interfaceNode or attributeNode is null.
-	 */
-	public GraphEdgeHas(GraphNodeInterface interfaceNode, GraphNodeAttribute attributeNode)
-			throws ArgumentNullException {
-		super(interfaceNode, attributeNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeHas}.
-	 * @param interfaceNode An Interface node that owns the Operation node.
-	 * @param operationNode An Operation node that is owned by the Interface node.
-	 * @throws ArgumentNullException Thrown if interfaceNode or operationNode is null.
-	 */
-	public GraphEdgeHas(GraphNodeInterface interfaceNode, GraphNodeOperation operationNode)
-			throws ArgumentNullException {
-		super(interfaceNode, operationNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeHas}.
-	 * @param packageNode A Package node that owns the Class node.
-	 * @param classNode A Class node that is owned by the Package node.
-	 * @throws ArgumentNullException Thrown if packageNode or classNode is null.
-	 */
-	public GraphEdgeHas(GraphNodePackage packageNode, GraphNodeClass classNode)
-			throws ArgumentNullException {
-		super(packageNode, classNode);
-	}
-	
-	/**
-	 * Initialises a new instance of {@link GraphEdgeHas}.
-	 * @param packageNode A Package node that owns the Interface node.
-	 * @param interfaceNode An Interface node that is owned by the Package node.
-	 * @throws ArgumentNullException Thrown if packageNode or interfaceNode is null.
-	 */
-	public GraphEdgeHas(GraphNodePackage packageNode, GraphNodeInterface interfaceNode)
-			throws ArgumentNullException {
-		super(packageNode, interfaceNode);
 	}
 	
 	/**

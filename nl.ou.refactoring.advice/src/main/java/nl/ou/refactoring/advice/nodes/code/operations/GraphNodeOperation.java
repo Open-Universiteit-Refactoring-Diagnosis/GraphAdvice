@@ -14,6 +14,7 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
@@ -170,6 +171,41 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 				.stream()
 				.map(edge -> edge.getMethodInvocationExpression())
 				.collect(Collectors.toUnmodifiableSet());
+	}
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		// TODO include parameters
+		return new GraphNodeOperation(graph, this.operationName);
+	}
+	
+	@Override
+	public boolean equals(GraphNode other) {
+		if (!(other instanceof GraphNodeOperation)) {
+			return false;
+		}
+		
+		// Check references are equal.
+		if (this == other) {
+			return true;
+		}
+		
+		// Check name and parameters.
+		final var operationNode = (GraphNodeOperation)other;
+		if (!this.getOperationName().equals(operationNode.getOperationName()) ||
+			!this.getOperationParameters().equals(operationNode.getOperationParameters())) {
+			return false;
+		}
+		
+		// Check Class.
+		final var classNodeThis = this.getClassNode();
+		final var classNodeOther = operationNode.getClassNode();
+		if (classNodeThis == null || classNodeOther == null ||
+			!classNodeThis.getClassName().equals(classNodeOther.getClassName())) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override

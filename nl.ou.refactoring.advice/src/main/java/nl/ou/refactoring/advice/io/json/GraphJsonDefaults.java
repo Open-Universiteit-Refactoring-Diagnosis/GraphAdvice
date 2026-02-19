@@ -14,13 +14,23 @@ public final class GraphJsonDefaults {
 	private GraphJsonDefaults() { }
 	
 	/**
+	 * A "Move Method" Refactoring Advice Graph.
+	 * @return The "Move Method" Refactoring Advice Graph as contained in the JSON file.
+	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 */
+	public static Graph moveMethod()
+			throws GraphReaderException {
+		return readGraph("/refactorings/MoveMethod.json");
+	}
+	
+	/**
 	 * A "Rename Field" Refactoring Advice Graph.
 	 * @return The "Rename Field" Refactoring Advice Graph as contained in the JSON file.
 	 * @throws GraphReaderException Thrown if reading the JSON file failed.
 	 */
 	public static Graph renameField()
 			throws GraphReaderException {
-		return readGraph("/RenameField.json");
+		return readGraph("/refactorings/RenameField.json");
 	}
 	
 	/**
@@ -30,7 +40,7 @@ public final class GraphJsonDefaults {
 	 */
 	public static Graph renameMethod()
 			throws GraphReaderException {
-		return readGraph("/RenameMethod.json");
+		return readGraph("/refactorings/RenameMethod.json");
 	}
 
 	private static String loadJson(String resourceName) {

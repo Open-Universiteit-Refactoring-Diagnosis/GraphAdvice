@@ -5,6 +5,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 
 /**
@@ -68,7 +69,24 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
 	}
-
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeAttribute(graph, this.attributeName);
+	}
+	
+	@Override
+	public boolean equals(GraphNode other) {
+		if (other == null || !(other instanceof GraphNodeAttribute)) {
+			return false;
+		}
+		final var attributeNode = (GraphNodeAttribute)other;
+		return
+			this.getAttributeName().equals(attributeNode.getAttributeName()) &&
+			((this.getType() == null && attributeNode.getType() == null) ||
+			this.getType().equals(attributeNode.getType()));
+	}
+	
 	@Override
 	public String getLabel() {
 		return "Attribute";

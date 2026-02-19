@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.nodes.workflow.risks;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 
 /**
@@ -11,7 +12,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
  * Adding the field will hide the field in the ancestor class, causing existing accessors
  * to use the local definition instead of the ancestor's definition.
  */
-public class GraphNodeRiskScopeShadowing extends GraphNodeRisk {
+public final class GraphNodeRiskScopeShadowing extends GraphNodeRisk {
 	/**
 	 * Initialises a new instance of {@link GraphNodeRiskScopeShadowing}.
 	 * @param graph {@link Graph} The graph that contains the risk.
@@ -34,5 +35,10 @@ public class GraphNodeRiskScopeShadowing extends GraphNodeRisk {
 				attributeNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeRiskScopeShadowing(graph);
 	}
 }

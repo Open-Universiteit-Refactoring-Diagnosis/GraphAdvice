@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.nodes.code.operations.statements;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
 
 /**
@@ -36,5 +37,10 @@ public final class GraphNodeExpressionStatement extends GraphNodeStatement {
 					(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
 					GraphEdgeHas.class
 				);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeExpressionStatement(graph);
 	}
 }

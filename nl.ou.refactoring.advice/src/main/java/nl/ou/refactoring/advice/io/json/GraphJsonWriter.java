@@ -16,6 +16,9 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphWriter;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Writes Refactoring Advice Graphs to JSON.
@@ -62,13 +65,16 @@ public final class GraphJsonWriter implements GraphWriter {
 		jsonWriter.writeObject(refactoringObjectBuilder.build());
 	}
 	
-	private static JsonObject buildNodeJsonObject(
-			List<GraphNode> nodes,
-			GraphNode node) {
+	private static JsonObject buildNodeJsonObject
+	(
+		List<GraphNode> nodes,
+		GraphNode node
+	)
+	{
 		final var objectBuilder = Json.createObjectBuilder();
 		
-		final var type = node.getClass().getName();
-		objectBuilder.add("type", type);
+		final var nodeClassTypeName = node.getClass().getName();
+		objectBuilder.add("type", nodeClassTypeName);
 		
 		final var edges =
 				node
@@ -88,6 +94,24 @@ public final class GraphJsonWriter implements GraphWriter {
 			}
 			
 			objectBuilder.add("edges", edgesArrayBuilder.build());
+		}
+		
+		switch (node) {
+			case GraphNodePackage packageNode: {
+				objectBuilder.add("packageName", packageNode.getPackageName());
+				break;
+			}
+			case GraphNodeClass classNode: {
+				objectBuilder.add("className", classNode.getClassName());
+				break;
+			}
+			case GraphNodeOperation operationNode: {
+				objectBuilder.add("operationName", operationNode.getOperationName());
+				break;
+			}
+			default: {
+				break;
+			}
 		}
 		
 		return objectBuilder.build();

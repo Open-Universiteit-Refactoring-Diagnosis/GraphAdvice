@@ -37,7 +37,7 @@ public final class GraphMermaidClassDiagramWriterTests {
 	
 	@BeforeAll
 	static void setUp() throws IOException {
-		OUTPUT_DIR = Paths.get("target", "test-output");
+		OUTPUT_DIR = Paths.get("target", "test-output", "Mermaid", "classDiagrams");
 		Files.createDirectories(OUTPUT_DIR);
 	}
 

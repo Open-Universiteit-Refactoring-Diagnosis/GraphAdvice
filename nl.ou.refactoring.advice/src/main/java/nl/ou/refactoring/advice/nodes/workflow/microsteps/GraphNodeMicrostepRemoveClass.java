@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes a Class.
@@ -15,5 +16,10 @@ public final class GraphNodeMicrostepRemoveClass extends GraphNodeMicrostep {
 	public GraphNodeMicrostepRemoveClass(Graph graph)
 			throws ArgumentNullException {
 		super(graph);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeMicrostepRemoveClass(graph);
 	}
 }

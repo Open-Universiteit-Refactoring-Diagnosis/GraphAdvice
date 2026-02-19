@@ -32,8 +32,7 @@ public class GraphJsonReader implements GraphReader {
 	 * @param reader Reads JSON.
 	 * @throws ArgumentNullException Thrown if reader is null.
 	 */
-	public GraphJsonReader(Reader reader)
-			throws ArgumentNullException {
+	public GraphJsonReader(final Reader reader) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(reader, "reader");
 		this.reader = reader;
 		this.nodeConstructors.put(
@@ -49,8 +48,7 @@ public class GraphJsonReader implements GraphReader {
 	}
 
 	@Override
-	public Graph read()
-			throws GraphReaderException {
+	public Graph read() throws GraphReaderException {
 		try {
 			this.reader.reset();
 		}
@@ -111,12 +109,15 @@ public class GraphJsonReader implements GraphReader {
 		return graph;
 	}
 	
-	private <TEdge extends GraphEdge> TEdge constructEdge(
-			Class<TEdge> nodeEdge,
-			GraphNode left,
-			GraphNode right) {
+	private <TEdge extends GraphEdge> TEdge constructEdge
+	(
+		final Class<TEdge> edgeClassType,
+		final GraphNode sourceNode,
+		final GraphNode destinationNode
+	) throws GraphJsonReaderEdgeConstructorNoMatchException
+	{
 		try {
-			final var edgeConstructors = List.of(nodeEdge.getConstructors());
+			final var edgeConstructors = List.of(edgeClassType.getConstructors());
 			final var edgeConstructor =
 				edgeConstructors
 					.stream()
@@ -128,22 +129,22 @@ public class GraphJsonReader implements GraphReader {
 							}
 							
 							return
-								constructorParameterTypes[0].isAssignableFrom(left.getClass()) &&
-								constructorParameterTypes[1].isAssignableFrom(right.getClass());
+								constructorParameterTypes[0].isAssignableFrom(sourceNode.getClass()) &&
+								constructorParameterTypes[1].isAssignableFrom(destinationNode.getClass());
 						}
 					)
 					.findAny()
 					.orElse(null);
 			if (edgeConstructor == null) {
-				throw new RuntimeException("No matching constructor"); // TODO specific exception
+				throw new GraphJsonReaderEdgeConstructorNoMatchException(edgeClassType, sourceNode, destinationNode);
 			}
-			return (TEdge)edgeConstructor.newInstance(left, right);
+			return (TEdge)edgeConstructor.newInstance(sourceNode, destinationNode);
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 	
-	private GraphNode constructNode(Graph graph, Class<?> nodeClass, JsonObject nodeJsonObject) {
+	private GraphNode constructNode(final Graph graph, final Class<?> nodeClass, final JsonObject nodeJsonObject) {
 		try {
 			final var nodeClassConstructorDefault = nodeClass.getConstructors()[0];
 			final var nodeClassConstructorArguments = new ArrayList<Object>();
@@ -164,11 +165,6 @@ public class GraphJsonReader implements GraphReader {
 					final var operationName = nodeJsonObject.getString("operationName");
 					nodeClassConstructorArguments.add(operationName);
 					nodeClassConstructorArguments.add(null); // operation parameters
-					break;
-				}
-				case "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart": {
-					final var refactoringName = this.readRefactoringName(nodeJsonObject);
-					nodeClassConstructorArguments.add(refactoringName);
 					break;
 				}
 				default: {

@@ -28,7 +28,7 @@ public final class GraphVariationExtractorTests {
 		// Arrange
 		final String graphName = "Variations graph";
 		final var graph = new Graph(graphName);
-		final var start = new GraphNodeRefactoringStart(graph, graphName);
+		final var start = new GraphNodeRefactoringStart(graph);
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var addExpression = new GraphNodeMicrostepAddExpression(graph);
 		final var removeExpression = new GraphNodeMicrostepRemoveExpression(graph);

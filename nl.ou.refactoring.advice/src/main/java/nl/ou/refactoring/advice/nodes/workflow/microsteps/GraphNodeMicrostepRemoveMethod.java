@@ -4,6 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
@@ -30,5 +31,10 @@ public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(operationNode, "operationNode");
 		return new GraphEdgeRemoves(this, operationNode);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeMicrostepRemoveMethod(graph);
 	}
 }

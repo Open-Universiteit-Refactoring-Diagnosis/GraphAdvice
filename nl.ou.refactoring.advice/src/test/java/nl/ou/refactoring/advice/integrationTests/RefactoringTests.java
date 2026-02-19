@@ -28,14 +28,14 @@ public final class RefactoringTests {
 
 	@BeforeAll
 	static void setUp() throws IOException {
-		OUTPUT_DIR = Paths.get("target", "test-output");
+		OUTPUT_DIR = Paths.get("target", "test-output", "refactorings");
 		Files.createDirectories(OUTPUT_DIR);
 	}
 	
 	@DisplayName("Should properly generate a flowchart, class diagram and advice text for refactorings")
 	@ParameterizedTest
 	@ArgumentsSource(RefactoringTestsArgumentsProvider.class)
-	public void writeFlowchartClassDiagramAndTextTest(Graph graph)
+	public void writeRefactoringOutputsTest(Graph graph)
 			throws IOException, ArgumentNullException, GraphPathSegmentInvalidException {
 	    final var refactoringName = graph.getRefactoringName();
 	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");

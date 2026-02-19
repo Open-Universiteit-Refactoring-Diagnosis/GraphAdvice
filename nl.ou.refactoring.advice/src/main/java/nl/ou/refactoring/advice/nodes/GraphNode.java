@@ -214,6 +214,13 @@ public abstract class GraphNode {
 	}
 	
 	/**
+	 * Creates a clone of this node with identical attributes but belonging to the specified graph.
+	 * @param graph The graph in which to insert the cloned node.
+	 * @return The cloned node.
+	 */
+	public abstract GraphNode clone(Graph graph);
+	
+	/**
 	 * Determines whether the current node and the other object are equal.
 	 * <br />
 	 * Overrides {@link Object#equals(Object)}.

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -21,7 +22,9 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveClass;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
 
@@ -86,7 +89,7 @@ public final class GraphTests {
 		final var graph = new Graph("Refactoring test");
 		GraphNodeRefactoringStart start;
 		try {
-			start = new GraphNodeRefactoringStart(graph, "Refactoring Test");
+			start = new GraphNodeRefactoringStart(graph);
 		} catch (ArgumentNullException e) {
 			e.printStackTrace();
 			Assertions.fail("This should not happen: graph should not be null, failed test.");
@@ -141,5 +144,24 @@ public final class GraphTests {
 		
 		// Assert
 		assertArrayEquals(edgesBefore, edgesAfter);
+	}
+	
+	@Test
+	@DisplayName("Should clone the graph")
+	public void cloneTest() {
+		// Arrange
+		final var graph = new Graph("Clone test original");
+		final var startNode = graph.start();
+		final var addClassNode = new GraphNodeMicrostepAddClass(graph);
+		final var removeClassNode = new GraphNodeMicrostepRemoveClass(graph);
+		startNode.initiates(addClassNode);
+		addClassNode.precedes(removeClassNode);
+		removeClassNode.finalises();
+		
+		// Act
+		final Graph graphClone = graph.clone("Clone test cloned");
+		
+		// Assert
+		assertNotNull(graphClone);
 	}
 }

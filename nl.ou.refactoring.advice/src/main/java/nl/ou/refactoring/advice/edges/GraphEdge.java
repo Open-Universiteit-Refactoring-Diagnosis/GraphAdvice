@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.edges;
 
+import java.util.List;
 import java.util.UUID;
 
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -60,6 +61,58 @@ public abstract class GraphEdge {
 	 */
 	public String getLabel() {
 		return ResourceProvider.GraphEdgeLabels.getLabel(this.getClass());
+	}
+	
+	private GraphEdge createClone(GraphNode source, GraphNode destination)
+			throws GraphEdgeNodesNotClonedException {
+		try {
+			return
+				(GraphEdge)List.of(this.getClass().getConstructors())
+					.stream()
+					.filter(c -> {
+						final var parameters = c.getParameters();
+						return
+							parameters[0].getType().isAssignableFrom(source.getClass()) &&
+							parameters[1].getType().isAssignableFrom(destination.getClass());
+					})
+					.findAny()
+					.orElseThrow()
+					.newInstance(source, destination);
+		} catch (Exception ex) {
+			throw new GraphEdgeNodesNotClonedException
+			(
+				this.getSourceNode(),
+				this.getDestinationNode(),
+				source,
+				destination
+			);
+		}
+	}
+	
+	/**
+	 * Creates a clone of this edge with the specified source and destination nodes.
+	 * @param source The source node for the cloned edge.
+	 * @param destination The destination node for the cloned edge.
+	 * @return The cloned edge.
+	 * @throws GraphEdgeNodesNotClonedException Thrown if the specified source and destination nodes are not clones of their original.
+	 */
+	public GraphEdge clone(GraphNode source, GraphNode destination)
+			throws GraphEdgeNodesNotClonedException {
+		final var sourceOriginal = this.getSourceNode();
+		final var destinationOriginal = this.getDestinationNode();
+		if (source == sourceOriginal ||
+				destination == destinationOriginal ||
+				source.getGraph() == sourceOriginal.getGraph() ||
+				destination.getGraph() == destinationOriginal.getGraph()) {
+			throw new GraphEdgeNodesNotClonedException
+			(
+				sourceOriginal,
+				destinationOriginal,
+				source,
+				destination
+			);
+		}
+		return createClone(source, destination);
 	}
 	
 	@Override

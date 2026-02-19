@@ -4,6 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
 
 /**
@@ -38,5 +39,10 @@ public final class GraphNodeMicrostepRemoveExpression extends GraphNodeMicrostep
 					(sourceNode, destinationNode) -> new GraphEdgeRemoves(sourceNode, destinationNode),
 					GraphEdgeRemoves.class
 				);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeMicrostepRemoveExpression(graph);
 	}
 }

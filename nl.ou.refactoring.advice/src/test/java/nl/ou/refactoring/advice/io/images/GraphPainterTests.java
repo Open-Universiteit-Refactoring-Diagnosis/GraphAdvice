@@ -45,7 +45,7 @@ public final class GraphPainterTests {
 	
 	@BeforeAll
 	static void setUp() throws IOException {
-		OUTPUT_DIR = Paths.get("target", "test-output");
+		OUTPUT_DIR = Paths.get("target", "test-output", "images");
 		Files.createDirectories(OUTPUT_DIR);
 	}
 	
