@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.io.json;
+package nl.ou.refactoring.advice;
 
 import java.util.stream.Stream;
 
@@ -11,7 +11,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
-public final class GraphJsonDefaultsTestsArgumentsProvider implements ArgumentsProvider {
+public final class GraphTemplatesTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
 	public Stream<? extends Arguments> provideArguments
 	(
@@ -20,9 +20,9 @@ public final class GraphJsonDefaultsTestsArgumentsProvider implements ArgumentsP
 	) throws RefactoringMayContainOnlyOneStartNodeException, ArgumentNullException, GraphReaderException {
 		return
 			Stream.of(
-				GraphJsonDefaults.moveMethod(),
-				GraphJsonDefaults.renameField(),
-				GraphJsonDefaults.renameMethod()
+				GraphTemplates.moveMethod(),
+				GraphTemplates.renameField(),
+				GraphTemplates.renameMethod()
 			)
 			.map(Arguments::of);
 	}

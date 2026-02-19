@@ -1,17 +1,17 @@
-package nl.ou.refactoring.advice.io.json;
+package nl.ou.refactoring.advice;
 
 import java.io.StringReader;
 import java.util.Scanner;
 
-import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.io.GraphReaderException;
+import nl.ou.refactoring.advice.io.json.GraphJsonReader;
 
 /**
  * Accesses JSON resource files that contain default Refactoring Advice Graphs.
  */
-public final class GraphJsonDefaults {
+public final class GraphTemplates {
 
-	private GraphJsonDefaults() { }
+	private GraphTemplates() { }
 	
 	/**
 	 * A "Move Method" Refactoring Advice Graph.
@@ -45,7 +45,7 @@ public final class GraphJsonDefaults {
 
 	private static String loadJson(String resourceName) {
 		final var jsonResourceStream =
-				GraphJsonDefaults
+				GraphTemplates
 					.class
 					.getResourceAsStream(resourceName);
 		final var jsonScanner =

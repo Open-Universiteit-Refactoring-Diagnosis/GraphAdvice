@@ -14,11 +14,13 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Operation of a Class that is affected by a refactoring.
@@ -94,13 +96,28 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 */
 	public GraphNodeMicrostepAddMethod getAddedBy() {
 		return
-				this
-					.getEdgesIncoming(GraphEdgeAdds.class)
-					.stream()
-					.map(edge -> edge.getSourceNode())
-					.map(GraphNodeMicrostepAddMethod.class::cast)
-					.findFirst()
-					.orElse(null);
+			this
+				.getEdgesIncoming(GraphEdgeAdds.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.map(GraphNodeMicrostepAddMethod.class::cast)
+				.findFirst()
+				.orElse(null);
+	}
+	
+	/**
+	 * Gets the {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}.
+	 * @return The {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}, if any, otherwise null.
+	 */
+	public GraphNodeMicrostepRemoveMethod getRemovedBy() {
+		return
+			this
+				.getEdgesIncoming(GraphEdgeRemoves.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.map(GraphNodeMicrostepRemoveMethod.class::cast)
+				.findFirst()
+				.orElse(null);
 	}
 	
 	/**

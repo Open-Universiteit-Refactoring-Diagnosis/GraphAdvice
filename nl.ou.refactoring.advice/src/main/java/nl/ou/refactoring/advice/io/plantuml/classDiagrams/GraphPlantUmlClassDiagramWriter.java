@@ -30,6 +30,7 @@ import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
 public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	private static final String SPRITE_NAME_DANGER = "$danger";
 	private static final String SPRITE_NAME_NEW = "$new";
+	private static final String SPRITE_NAME_REMOVED = "$removed";
 	
 	/**
 	 * Initialises a new instance of {@link GraphPlantUmlClassDiagramWriter}.
@@ -50,6 +51,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		this.writeStartUml(graph.getRefactoringName());
 		this.writeSetSeparator("none");
 		this.writeSpriteBug(SPRITE_NAME_DANGER);
+		this.writeSpriteMinus(SPRITE_NAME_REMOVED);
 		this.writeSpritePlus(SPRITE_NAME_NEW);
 		
 		// Domain model
@@ -114,21 +116,31 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			final var operationIsNew = operationNode.getAddedBy() != null;
 			if (operationIsNew) {
 				stringBuilder.append(
-						String.format(
-								"<%s> ",
-								SPRITE_NAME_NEW
-						)
+					String.format(
+						"<%s> ",
+						SPRITE_NAME_NEW
+					)
+				);
+			}
+			
+			final var operationIsRemoved = operationNode.getRemovedBy() != null;
+			if (operationIsRemoved) {
+				stringBuilder.append(
+					String.format(
+						"<%s> ",
+						SPRITE_NAME_REMOVED
+					)
 				);
 			}
 			
 			final var operationHasDangers = !operationNode.getDangers().isEmpty();
 			if (operationHasDangers) {
 				stringBuilder.append(
-						String.format(
-								"<color:%s><%s></color> ",
-								toHexadecimal(Color.red),
-								SPRITE_NAME_DANGER
-						)
+					String.format(
+						"<color:%s><%s></color> ",
+						toHexadecimal(Color.red),
+						SPRITE_NAME_DANGER
+					)
 				);
 			}
 			

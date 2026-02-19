@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.io.json;
+package nl.ou.refactoring.advice;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -15,15 +15,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 import nl.ou.refactoring.advice.io.text.concatenation.GraphTextConcatenationWriter;
 
-public final class GraphJsonDefaultsTests {
+public final class GraphTemplatesTests {
 	private static Path OUTPUT_DIR;
 
 	@BeforeAll
@@ -34,7 +32,7 @@ public final class GraphJsonDefaultsTests {
 	
 	@DisplayName("Should properly generate a flowchart, class diagram and advice text for refactorings")
 	@ParameterizedTest
-	@ArgumentsSource(GraphJsonDefaultsTestsArgumentsProvider.class)
+	@ArgumentsSource(GraphTemplatesTestsArgumentsProvider.class)
 	public void writeRefactoringOutputsTest(Graph graph)
 			throws IOException, ArgumentNullException, GraphPathSegmentInvalidException {
 	    final var refactoringName = graph.getRefactoringName();
