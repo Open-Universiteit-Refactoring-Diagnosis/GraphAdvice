@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.edges;
 
 import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
@@ -15,9 +16,24 @@ public final class GraphEdgeNodesNotClonedException extends GraphValidationExcep
 	 */
 	private static final long serialVersionUID = 8102925781738144537L;
 	
+	/**
+	 * The original source node.
+	 */
 	private final GraphNode sourceOriginal;
+	
+	/**
+	 * The original destination node.
+	 */
 	private final GraphNode destinationOriginal;
+	
+	/**
+	 * The cloned source node.
+	 */
 	private final GraphNode sourceCloned;
+	
+	/**
+	 * The cloned destination node.
+	 */
 	private final GraphNode destinationCloned;
 	
 	/**
@@ -32,7 +48,7 @@ public final class GraphEdgeNodesNotClonedException extends GraphValidationExcep
 			GraphNode sourceOriginal,
 			GraphNode destinationOriginal,
 			GraphNode sourceCloned,
-			GraphNode destinationCloned) {
+			GraphNode destinationCloned) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(sourceOriginal, "sourceOriginal");
 		ArgumentGuard.requireNotNull(destinationOriginal, "destinationOriginal");
 		ArgumentGuard.requireNotNull(sourceCloned, "sourceOther");

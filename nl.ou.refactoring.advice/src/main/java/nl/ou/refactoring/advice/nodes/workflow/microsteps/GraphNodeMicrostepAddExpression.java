@@ -21,6 +21,12 @@ public final class GraphNodeMicrostepAddExpression extends GraphNodeMicrostep {
 		super(graph);
 	}
 	
+	/**
+	 * Indicates that the microstep adds the specified statement expression.
+	 * @param statementExpressionNode The node that represents the statement expression that is added.
+	 * @return The edge that indicates that the microstep adds the specified statement expression.
+	 * @throws ArgumentNullException Thrown if statementExpressionNode is null.
+	 */
 	public GraphEdgeAdds adds(GraphNodeStatementExpression statementExpressionNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(statementExpressionNode, "statementExpressionNode");

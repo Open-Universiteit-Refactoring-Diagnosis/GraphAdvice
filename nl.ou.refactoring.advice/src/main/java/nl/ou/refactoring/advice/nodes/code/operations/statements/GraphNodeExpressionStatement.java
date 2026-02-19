@@ -12,8 +12,8 @@ import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeState
 public final class GraphNodeExpressionStatement extends GraphNodeStatement {
 	/**
 	 * Initialises a new instance of {@link GraphNodeExpressionStatement}.
-	 * @param graph 
-	 * @throws ArgumentNullException
+	 * @param graph The graph that contains the expression statement.
+	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
 	public GraphNodeExpressionStatement(Graph graph)
 			throws ArgumentNullException {

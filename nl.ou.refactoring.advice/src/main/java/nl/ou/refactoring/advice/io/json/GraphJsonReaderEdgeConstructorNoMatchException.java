@@ -14,8 +14,19 @@ public final class GraphJsonReaderEdgeConstructorNoMatchException extends GraphJ
 	 */
 	private static final long serialVersionUID = 3816614330150419327L;
 	
+	/**
+	 * The class type of the edge.
+	 */
 	private final Class<? extends GraphEdge> edgeClassType;
+	
+	/**
+	 * The source node.
+	 */
 	private final GraphNode sourceNode;
+	
+	/**
+	 * The destination node.
+	 */
 	private final GraphNode destinationNode;
 
 	/**

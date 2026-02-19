@@ -46,7 +46,7 @@ public class GraphNodeRiskChangedNestedRelationship extends GraphNodeRisk {
 	
 	/**
 	 * Indicates that the "Changed Nested Relationship" risk
-	 * affects {@link GraphNodeMethodInvocationExpressionNode} methodInvocationExpressionNode.
+	 * affects {@link GraphNodeMethodInvocationExpression} methodInvocationExpressionNode.
 	 * @param methodInvocationExpressionNode The {@link GraphNodeMethodInvocationExpression} node that represents the Method Invocation Expression affected by this risk.
 	 * @return {@link GraphEdgeAffects} The edge that indicates that the Method Invocation Expression is affected by this risk.
 	 * @throws ArgumentNullException Thrown if methodInvocationExpressionNode is null.

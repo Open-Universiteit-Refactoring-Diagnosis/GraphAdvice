@@ -40,6 +40,9 @@ public final class GraphJsonSchemaWriter {
 		this.writer = writer;
 	}
 
+	/**
+	 * Writes the JSON Schema based on the current Refactoring Advice Graph model.
+	 */
 	public void write() {
 		Map<String, Boolean> configuration = new HashMap<>();
 		configuration.put(JsonGenerator.PRETTY_PRINTING, true);
