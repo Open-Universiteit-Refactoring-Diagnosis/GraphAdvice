@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.edges;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -64,7 +65,10 @@ public abstract class GraphEdge {
 	}
 	
 	private GraphEdge createClone(GraphNode source, GraphNode destination)
-			throws GraphEdgeNodesNotClonedException {
+			throws
+				GraphEdgeCloneConstructorNotFoundException,
+				GraphEdgeCloneFailedException
+	{
 		try {
 			return
 				(GraphEdge)List.of(this.getClass().getConstructors())
@@ -78,14 +82,10 @@ public abstract class GraphEdge {
 					.findAny()
 					.orElseThrow()
 					.newInstance(source, destination);
+		} catch (NoSuchElementException ex) {
+			throw new GraphEdgeCloneConstructorNotFoundException(this.getClass());
 		} catch (Exception ex) {
-			throw new GraphEdgeNodesNotClonedException
-			(
-				this.getSourceNode(),
-				this.getDestinationNode(),
-				source,
-				destination
-			);
+			throw new GraphEdgeCloneFailedException(this.getClass(), ex);
 		}
 	}
 	
@@ -97,7 +97,11 @@ public abstract class GraphEdge {
 	 * @throws GraphEdgeNodesNotClonedException Thrown if the specified source and destination nodes are not clones of their original.
 	 */
 	public GraphEdge clone(GraphNode source, GraphNode destination)
-			throws GraphEdgeNodesNotClonedException {
+			throws
+				GraphEdgeCloneConstructorNotFoundException,
+				GraphEdgeCloneFailedException,
+				GraphEdgeNodesNotClonedException
+	{
 		final var sourceOriginal = this.getSourceNode();
 		final var destinationOriginal = this.getDestinationNode();
 		if (source == sourceOriginal ||
