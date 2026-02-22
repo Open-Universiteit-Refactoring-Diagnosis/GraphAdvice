@@ -134,6 +134,12 @@ public final class GraphJsonSchemaWriter {
 		jsonSchemaPropertiesObjectBuilder.add("nodes", jsonSchemaPropertiesNodesObjectBuilder.build());
 		jsonSchemaObjectBuilder.add("properties", jsonSchemaPropertiesObjectBuilder.build());
 		
+		// Required
+		final var jsonSchemaRequiredArrayBuilder = Json.createArrayBuilder();
+		jsonSchemaRequiredArrayBuilder.add("refactoringName");
+		jsonSchemaRequiredArrayBuilder.add("nodes");
+		jsonSchemaObjectBuilder.add("required", jsonSchemaRequiredArrayBuilder);
+		
 		final var jsonSchemaObject = jsonSchemaObjectBuilder.build();
 		jsonWriter.write(jsonSchemaObject);
 	}
@@ -198,6 +204,10 @@ public final class GraphJsonSchemaWriter {
 		propertiesToSchemaJsonObjectBuilder.add("type", "number");
 		propertiesSchemaJsonObjectBuilder.add("to", propertiesToSchemaJsonObjectBuilder.build());
 		schemaJsonObjectBuilder.add("properties", propertiesSchemaJsonObjectBuilder.build());
+		final var requiredArrayBuilder = Json.createArrayBuilder();
+		requiredArrayBuilder.add("type");
+		requiredArrayBuilder.add("to");
+		schemaJsonObjectBuilder.add("required", requiredArrayBuilder);
 		return schemaJsonObjectBuilder.build();
 	}
 	

@@ -225,9 +225,6 @@
                 },
                 "className": {
                     "type": "string"
-                },
-                "stereotype": {
-                    "type": "GraphNodeClassStereotype"
                 }
             },
             "required": [
@@ -326,9 +323,6 @@
                 },
                 "operationName": {
                     "type": "string"
-                },
-                "operationParameters": {
-                    "type": "List"
                 }
             },
             "required": [
@@ -434,13 +428,13 @@
                     "items": {
                         "anyOf": [
                             {
-                                "title": "GraphEdgeList",
+                                "title": "GraphEdgeHas",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeList",
-                                        "const": "nl.ou.refactoring.advice.edges.code.GraphEdgeList"
+                                        "title": "GraphEdgeHas",
+                                        "const": "nl.ou.refactoring.advice.edges.code.GraphEdgeHas"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -450,13 +444,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeHas",
+                                "title": "GraphEdgeList",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeHas",
-                                        "const": "nl.ou.refactoring.advice.edges.code.GraphEdgeHas"
+                                        "title": "GraphEdgeList",
+                                        "const": "nl.ou.refactoring.advice.edges.code.GraphEdgeList"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -511,7 +505,7 @@
                     "type": "string"
                 },
                 "intermediateRefactoringGraph": {
-                    "type": "Graph"
+                    "type": "object"
                 }
             },
             "required": [
@@ -575,22 +569,6 @@
                     "items": {
                         "anyOf": [
                             {
-                                "title": "GraphEdgePrecedes",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            {
                                 "title": "GraphEdgeObsolesces",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
@@ -607,13 +585,29 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeCauses",
+                                "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeCauses",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
+                                        "title": "GraphEdgePrecedes",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
+                                "title": "GraphEdgeFinalises",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -639,13 +633,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeFinalises",
+                                "title": "GraphEdgeCauses",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "title": "GraphEdgeCauses",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -678,22 +672,6 @@
                     "items": {
                         "anyOf": [
                             {
-                                "title": "GraphEdgePrecedes",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            {
                                 "title": "GraphEdgeObsolesces",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
@@ -710,13 +688,29 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeCauses",
+                                "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeCauses",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
+                                        "title": "GraphEdgePrecedes",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
+                                "title": "GraphEdgeFinalises",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -742,13 +736,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeFinalises",
+                                "title": "GraphEdgeCauses",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "title": "GraphEdgeCauses",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -781,22 +775,6 @@
                     "items": {
                         "anyOf": [
                             {
-                                "title": "GraphEdgePrecedes",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            {
                                 "title": "GraphEdgeObsolesces",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
@@ -813,13 +791,29 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeCauses",
+                                "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeCauses",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
+                                        "title": "GraphEdgePrecedes",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
+                                "title": "GraphEdgeFinalises",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -845,13 +839,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeFinalises",
+                                "title": "GraphEdgeCauses",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "title": "GraphEdgeCauses",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -884,22 +878,6 @@
                     "items": {
                         "anyOf": [
                             {
-                                "title": "GraphEdgePrecedes",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            {
                                 "title": "GraphEdgeObsolesces",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
@@ -916,13 +894,29 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeCauses",
+                                "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeCauses",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
+                                        "title": "GraphEdgePrecedes",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
+                                "title": "GraphEdgeFinalises",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -948,13 +942,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeFinalises",
+                                "title": "GraphEdgeCauses",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "title": "GraphEdgeCauses",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -987,13 +981,29 @@
                     "items": {
                         "anyOf": [
                             {
-                                "title": "GraphEdgeFinalises",
+                                "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "title": "GraphEdgePrecedes",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
+                                "title": "GraphEdgeCauses",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeCauses",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -1019,29 +1029,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgePrecedes",
+                                "title": "GraphEdgeFinalises",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            {
-                                "title": "GraphEdgeCauses",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgeCauses",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -1074,6 +1068,22 @@
                     "items": {
                         "anyOf": [
                             {
+                                "title": "GraphEdgeObsolesces",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeObsolesces",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
                                 "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
@@ -1090,13 +1100,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeObsolesces",
+                                "title": "GraphEdgeFinalises",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeObsolesces",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces"
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -1136,22 +1146,6 @@
                                         "type": "number"
                                     }
                                 }
-                            },
-                            {
-                                "title": "GraphEdgeFinalises",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
                             }
                         ]
                     }
@@ -1177,13 +1171,29 @@
                     "items": {
                         "anyOf": [
                             {
-                                "title": "GraphEdgeFinalises",
+                                "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "title": "GraphEdgePrecedes",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
+                                "title": "GraphEdgeCauses",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeCauses",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -1209,29 +1219,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgePrecedes",
+                                "title": "GraphEdgeFinalises",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            {
-                                "title": "GraphEdgeCauses",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgeCauses",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -1264,6 +1258,22 @@
                     "items": {
                         "anyOf": [
                             {
+                                "title": "GraphEdgeObsolesces",
+                                "description": "An edge in the Refactoring Advice Graph.",
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "GraphEdgeObsolesces",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces"
+                                    },
+                                    "to": {
+                                        "title": "Relates to",
+                                        "description": "The index of the node in the nodes list to which the edge refers.",
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            {
                                 "title": "GraphEdgePrecedes",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
@@ -1280,13 +1290,13 @@
                                 }
                             },
                             {
-                                "title": "GraphEdgeObsolesces",
+                                "title": "GraphEdgeFinalises",
                                 "description": "An edge in the Refactoring Advice Graph.",
                                 "type": "object",
                                 "properties": {
                                     "type": {
-                                        "title": "GraphEdgeObsolesces",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces"
+                                        "title": "GraphEdgeFinalises",
+                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -1319,22 +1329,6 @@
                                     "type": {
                                         "title": "GraphEdgeCauses",
                                         "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
-                                    },
-                                    "to": {
-                                        "title": "Relates to",
-                                        "description": "The index of the node in the nodes list to which the edge refers.",
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            {
-                                "title": "GraphEdgeFinalises",
-                                "description": "An edge in the Refactoring Advice Graph.",
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -2171,5 +2165,9 @@
                 ]
             }
         }
-    }
+    },
+    "required": [
+        "refactoringName",
+        "nodes"
+    ]
 }
