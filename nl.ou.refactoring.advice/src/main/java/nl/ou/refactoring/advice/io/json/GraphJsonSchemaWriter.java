@@ -215,9 +215,17 @@ public final class GraphJsonSchemaWriter {
 	
 	private static JsonValue getClassTypeSchemaJsonValue(Class<?> classType) {
 		final var classTypeName = classType.getName();
-		return switch (classTypeName) { 
+		return switch (classTypeName) {
+			case "java.lang.Boolean" -> Json.createValue("boolean");
+			case "java.lang.Byte" -> Json.createValue("number");
+			case "java.lang.Double" -> Json.createValue("number");
+			case "java.lang.Float" -> Json.createValue("number");
+			case "java.lang.Integer" -> Json.createValue("number");
+			case "java.lang.Long" -> Json.createValue("number");
+			case "java.lang.Number" -> Json.createValue("number");
+			case "java.lang.Short" -> Json.createValue("number");
 			case "java.lang.String" -> Json.createValue("string");
-			default -> Json.createValue(classType.getSimpleName());
+			default -> Json.createValue("object");
 		};
 	}
 }
