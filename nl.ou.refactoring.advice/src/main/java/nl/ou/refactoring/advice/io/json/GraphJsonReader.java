@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue.ValueType;
 import jakarta.json.spi.JsonProvider;
@@ -149,13 +148,33 @@ public class GraphJsonReader implements GraphReader {
 	
 	private GraphNode constructNode(final Graph graph, final Class<?> nodeClass, final JsonObject nodeJsonObject) {
 		try {
-			final var nodeClassConstructorDefault = nodeClass.getConstructors()[0];
+			final var nodeClassConstructorDefault =
+				List.of(nodeClass.getConstructors())
+					.stream()
+					.sorted((c1, c2) -> c1.getParameterCount() - c2.getParameterCount())
+					.findFirst()
+					.get();
 			final var nodeClassConstructorArguments = new ArrayList<Object>();
 			nodeClassConstructorArguments.add(graph);
 			switch (nodeClass.getName()) {
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute": {
+					final var attributeName = nodeJsonObject.getString("attributeName");
+					nodeClassConstructorArguments.add(attributeName);
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodeInterface": {
+					final var interfaceName = nodeJsonObject.getString("interfaceName");
+					nodeClassConstructorArguments.add(interfaceName);
+					break;
+				}
 				case "nl.ou.refactoring.advice.nodes.code.GraphNodePackage": {
 					final var packageName = nodeJsonObject.getString("packageName");
 					nodeClassConstructorArguments.add(packageName);
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodeType": {
+					final var typeName = nodeJsonObject.getString("typeName");
+					nodeClassConstructorArguments.add(typeName);
 					break;
 				}
 				case "nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass": {
