@@ -6,6 +6,8 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an affected Interface.
@@ -79,6 +81,37 @@ public final class GraphNodeInterface extends GraphNodeCode {
 				baseInterfaceNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
+	}
+	
+	/**
+	 * Gets the interface that is extended by this interface, if any.
+	 * @return The interface that is extended by this interface, though null if none apply.
+	 */
+	public GraphNodeInterface getBaseInterface() {
+		return this.getEdges(GraphEdgeIs.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeInterface)
+				.map(GraphNodeInterface.class::cast)
+				.findAny()
+				.orElse(null);
+	}
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeInterface(graph, this.interfaceName);
+	}
+	
+	@Override
+	public boolean equals(GraphNode other) {
+		if (other == null || !(other instanceof GraphNodeInterface)) {
+			return false;
+		}
+		final var interfaceNode = (GraphNodeInterface)other;
+		return
+			this.getInterfaceName().equals(interfaceNode.getInterfaceName()) &&
+			((this.getBaseInterface() == null && interfaceNode.getBaseInterface() == null) ||
+			this.getBaseInterface().equals(interfaceNode.getBaseInterface()));
 	}
 
 	@Override

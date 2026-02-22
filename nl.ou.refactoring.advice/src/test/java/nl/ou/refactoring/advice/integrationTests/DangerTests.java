@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
@@ -27,13 +28,14 @@ public final class DangerTests {
 
 	@BeforeAll
 	static void setUp() throws IOException {
-		OUTPUT_DIR = Paths.get("target", "test-output");
+		OUTPUT_DIR = Paths.get("target", "test-output", "dangers");
 		Files.createDirectories(OUTPUT_DIR);
 	}
 
+	@DisplayName("Should properly generate a flowchart, class diagram and advice text for dangers")
 	@ParameterizedTest
 	@ArgumentsSource(DangerTestsArgumentsProvider.class)
-	public void writeClassDiagramAndFlowchartTest(Graph graph)
+	public void writeFlowchartClassDiagramAndTextTest(Graph graph)
 			throws IOException, ArgumentNullException, GraphPathSegmentInvalidException {
 	    final var refactoringName = graph.getRefactoringName();
 	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");

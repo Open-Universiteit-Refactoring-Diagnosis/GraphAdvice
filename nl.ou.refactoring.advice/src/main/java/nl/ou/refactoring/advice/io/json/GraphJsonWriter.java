@@ -16,6 +16,12 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphWriter;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Writes Refactoring Advice Graphs to JSON.
@@ -62,13 +68,16 @@ public final class GraphJsonWriter implements GraphWriter {
 		jsonWriter.writeObject(refactoringObjectBuilder.build());
 	}
 	
-	private static JsonObject buildNodeJsonObject(
-			List<GraphNode> nodes,
-			GraphNode node) {
+	private static JsonObject buildNodeJsonObject
+	(
+		List<GraphNode> nodes,
+		GraphNode node
+	)
+	{
 		final var objectBuilder = Json.createObjectBuilder();
 		
-		final var type = node.getClass().getName();
-		objectBuilder.add("type", type);
+		final var nodeClassTypeName = node.getClass().getName();
+		objectBuilder.add("type", nodeClassTypeName);
 		
 		final var edges =
 				node
@@ -88,6 +97,36 @@ public final class GraphJsonWriter implements GraphWriter {
 			}
 			
 			objectBuilder.add("edges", edgesArrayBuilder.build());
+		}
+		
+		switch (node) {
+			case GraphNodeAttribute attributeNode: {
+				objectBuilder.add("attributeName", attributeNode.getAttributeName());
+				break;
+			}
+			case GraphNodeClass classNode: {
+				objectBuilder.add("className", classNode.getClassName());
+				break;
+			}
+			case GraphNodeInterface interfaceNode: {
+				objectBuilder.add("interfaceName", interfaceNode.getInterfaceName());
+				break;
+			}
+			case GraphNodeOperation operationNode: {
+				objectBuilder.add("operationName", operationNode.getOperationName());
+				break;
+			}
+			case GraphNodePackage packageNode: {
+				objectBuilder.add("packageName", packageNode.getPackageName());
+				break;
+			}
+			case GraphNodeType typeNode: {
+				objectBuilder.add("typeName", typeNode.getTypeName());
+				break;
+			}
+			default: {
+				break;
+			}
 		}
 		
 		return objectBuilder.build();

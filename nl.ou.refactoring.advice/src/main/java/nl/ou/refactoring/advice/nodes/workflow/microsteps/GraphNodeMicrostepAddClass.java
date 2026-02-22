@@ -4,7 +4,8 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 
 /**
  * Represents a Microstep in a Refactoring Advice Graph that adds a Class.
@@ -38,13 +39,18 @@ public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
 	 */
 	public GraphNodeClass getClassNode() {
 		return
-				this
-					.getEdges(GraphEdgeAdds.class)
-					.stream()
-					.map(edge -> edge.getDestinationNode())
-					.filter(node -> node instanceof GraphNodeClass)
-					.map(GraphNodeClass.class::cast)
-					.findAny()
-					.orElse(null);
+			this
+				.getEdges(GraphEdgeAdds.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeClass)
+				.map(GraphNodeClass.class::cast)
+				.findAny()
+				.orElse(null);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeMicrostepAddClass(graph);
 	}
 }

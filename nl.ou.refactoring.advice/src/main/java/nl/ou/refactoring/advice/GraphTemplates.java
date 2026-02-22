@@ -1,17 +1,27 @@
-package nl.ou.refactoring.advice.io.json;
+package nl.ou.refactoring.advice;
 
 import java.io.StringReader;
 import java.util.Scanner;
 
-import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.io.GraphReaderException;
+import nl.ou.refactoring.advice.io.json.GraphJsonReader;
 
 /**
  * Accesses JSON resource files that contain default Refactoring Advice Graphs.
  */
-public final class GraphJsonDefaults {
+public final class GraphTemplates {
 
-	private GraphJsonDefaults() { }
+	private GraphTemplates() { }
+	
+	/**
+	 * A "Move Method" Refactoring Advice Graph.
+	 * @return The "Move Method" Refactoring Advice Graph as contained in the JSON file.
+	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 */
+	public static Graph moveMethod()
+			throws GraphReaderException {
+		return readGraph("/refactorings/MoveMethod.json");
+	}
 	
 	/**
 	 * A "Rename Field" Refactoring Advice Graph.
@@ -20,7 +30,7 @@ public final class GraphJsonDefaults {
 	 */
 	public static Graph renameField()
 			throws GraphReaderException {
-		return readGraph("/RenameField.json");
+		return readGraph("/refactorings/RenameField.json");
 	}
 	
 	/**
@@ -30,12 +40,12 @@ public final class GraphJsonDefaults {
 	 */
 	public static Graph renameMethod()
 			throws GraphReaderException {
-		return readGraph("/RenameMethod.json");
+		return readGraph("/refactorings/RenameMethod.json");
 	}
 
 	private static String loadJson(String resourceName) {
 		final var jsonResourceStream =
-				GraphJsonDefaults
+				GraphTemplates
 					.class
 					.getResourceAsStream(resourceName);
 		final var jsonScanner =

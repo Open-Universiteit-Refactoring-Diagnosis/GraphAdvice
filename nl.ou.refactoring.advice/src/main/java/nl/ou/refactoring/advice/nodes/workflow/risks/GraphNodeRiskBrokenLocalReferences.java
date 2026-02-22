@@ -3,7 +3,8 @@ package nl.ou.refactoring.advice.nodes.workflow.risks;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Represents a "Broken Local References" risk in a Refactoring Advice Graph.
@@ -33,5 +34,10 @@ public final class GraphNodeRiskBrokenLocalReferences extends GraphNodeRisk {
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),
 				GraphEdgeAffects.class);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeRiskBrokenLocalReferences(graph);
 	}
 }

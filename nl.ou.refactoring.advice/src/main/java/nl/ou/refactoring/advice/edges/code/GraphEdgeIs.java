@@ -3,11 +3,11 @@ package nl.ou.refactoring.advice.edges.code;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
 
 /**
  * An edge that represents the type of a code symbol.

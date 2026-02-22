@@ -26,3 +26,13 @@
 - Ensured that Javadoc is included in the Maven Package for distribution.
 - Modified PlantUML Class Diagrams to show whether items have been added and whether they carry a risk.
 - Added a feature for writing RAGs as a text advice, using concatenation of phrase parts.
+
+## 0.4.0
+
+- Breaking change: moved code nodes that concern classes to their own classes name space.
+- Breaking change: moved code nodes that concern operations to their own operations name space.
+- Expanded the Refactoring Advice Graph model with more fine-grained code nodes such as blocks inside an operation and statements inside a block.
+- Improved the PlantUML Class Diagram feature: now also supports inner classes.
+- Added support for risk Changed Nested Relationship.
+- Added test case for the "Move Method" refactoring, including JSON and required fixes in the model and flowchart, UML generation.
+- Added JSON Schema generation for serialisation and deserialisation of representations of Refactoring Advice Graphs in JSON.

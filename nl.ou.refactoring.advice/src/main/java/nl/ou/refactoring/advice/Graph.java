@@ -20,10 +20,10 @@ import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStart
 /**
  * Represents a Refactoring Advice Graph.
  */
-public final class Graph {
+public final class Graph implements Cloneable {
 	private final UUID id;
 	private final Map<GraphNode, Map<GraphNode, Set<GraphEdge>>> matrix;
-	private final String refactoringName;
+	private String refactoringName;
 	
 	/**
 	 * Initialises a new instance of {@link Graph}.
@@ -369,7 +369,7 @@ public final class Graph {
 	 */
 	public GraphNodeRefactoringStart start()
 			throws RefactoringMayContainOnlyOneStartNodeException {
-		return new GraphNodeRefactoringStart(this, this.refactoringName);
+		return new GraphNodeRefactoringStart(this);
 	}
 	
 	/**
@@ -394,6 +394,48 @@ public final class Graph {
 	 */
 	public String getRefactoringName() {
 		return this.refactoringName;
+	}
+	
+	@Override
+	protected Object clone() {
+		final var graph = new Graph(this.refactoringName);
+		Map<GraphNode, GraphNode> nodeClones = new HashMap<GraphNode, GraphNode>();
+		for (final var node : this.matrix.keySet()) {
+			nodeClones.put(node, node.clone(graph));
+		}
+		for (final var entry : this.matrix.entrySet()) {
+			final var nodeSourceOriginal = entry.getKey();
+			final var nodeSourceClone = nodeClones.get(nodeSourceOriginal);
+			final var nodeEdgesOriginal = entry.getValue();
+			for (final var edgeOriginalEntry : nodeEdgesOriginal.entrySet()) {
+				final var nodeDestinationClone = nodeClones.get(edgeOriginalEntry.getKey());
+				final var edgesOriginal = edgeOriginalEntry.getValue();
+				for (final var edgeOriginal : edgesOriginal) {
+					graph.getOrAddEdge(
+						nodeSourceClone,
+						nodeDestinationClone,
+						(source, destination) -> edgeOriginal.clone(source, destination),
+						GraphEdge.class
+					);
+				}
+			}
+		}
+		return graph;
+	}
+	
+	/**
+	 * Creates a clone of this {@link Graph}, including its nodes and edges.
+	 * @param refactoringName The new name of the cloned {@link Graph}.
+	 * @return The cloned {@link Graph}, which bears the new name.
+	 * @throws ArgumentNullException Thrown if refactoringName is null.
+	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains only white spaces.
+	 */
+	public Graph clone(String refactoringName)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
+		final var graph = (Graph)this.clone();
+		graph.refactoringName = refactoringName;
+		return graph;
 	}
 	
 	/**

@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
+
 public final class GraphNodeClassStereotypeTests {
 	private static final Logger LOGGER =
 			LogManager.getLogger(GraphNodeClassStereotypeTests.class);

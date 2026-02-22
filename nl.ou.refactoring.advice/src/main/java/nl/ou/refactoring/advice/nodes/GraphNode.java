@@ -47,7 +47,7 @@ public abstract class GraphNode {
 	 * Gets the unique identifier of the node.
 	 * @return The unique identifier of the node.
 	 */
-	public UUID getId() {
+	public final UUID getId() {
 		return this.id;
 	}
 	
@@ -55,7 +55,7 @@ public abstract class GraphNode {
 	 * Gets the graph that contains the node.
 	 * @return The graph that contains the node.
 	 */
-	public Graph getGraph() {
+	public final Graph getGraph() {
 		return this.graph;
 	}
 	
@@ -63,7 +63,7 @@ public abstract class GraphNode {
 	 * Gets the edges that depart from this node.
 	 * @return An unmodifiable set of edges that depart from this node.
 	 */
-	public Set<GraphEdge> getEdges() {
+	public final Set<GraphEdge> getEdges() {
 		return this.graph.getEdgesFrom(this);
 	}
 	
@@ -73,7 +73,7 @@ public abstract class GraphNode {
 	 * @param edgeType The type of edge to filter.
 	 * @return An unmodifiable set of edges that depart from this node, filtered by edgeType.
 	 */
-	public <TEdge extends GraphEdge> Set<TEdge> getEdges(Class<TEdge> edgeType) {
+	public final <TEdge extends GraphEdge> Set<TEdge> getEdges(Class<TEdge> edgeType) {
 		return this.graph.getEdgesFrom(this, edgeType);
 	}
 	
@@ -81,7 +81,7 @@ public abstract class GraphNode {
 	 * Gets the edges that arrive to this node.
 	 * @return An unmodifiable set of edges that arrive to this node.
 	 */
-	public Set<GraphEdge> getEdgesIncoming() {
+	public final Set<GraphEdge> getEdgesIncoming() {
 		return this.graph.getEdgesTo(this);
 	}
 	
@@ -91,7 +91,7 @@ public abstract class GraphNode {
 	 * @param edgeType The type of edge to filter.
 	 * @return An unmodifiable set of edges that arrive to this node, filtered by edgeType.
 	 */
-	public <TEdge extends GraphEdge> Set<TEdge> getEdgesIncoming(Class<TEdge> edgeType) {
+	public final <TEdge extends GraphEdge> Set<TEdge> getEdgesIncoming(Class<TEdge> edgeType) {
 		return this.graph.getEdgesTo(this, edgeType);
 	}
 	
@@ -101,7 +101,7 @@ public abstract class GraphNode {
 	 * @return The paths that lead out of this node, limited by a maximum depth.
 	 * @throws IllegalArgumentException Thrown if maximumDepth is not greater than or equal to 0.
 	 */
-	public List<GraphPath> findPaths(int maximumDepth)
+	public final List<GraphPath> findPaths(int maximumDepth)
 			throws IllegalArgumentException {
 		ArgumentGuard.requireGreaterThanOrEqual(0, maximumDepth, "maximumDepth");
 		
@@ -152,7 +152,7 @@ public abstract class GraphNode {
 	 * @throws ArgumentNullException Thrown if destinationNode is null.
 	 * @throws IllegalArgumentException Thrown if maximumDepth is not a positive integer.
 	 */
-	public List<GraphPath> findPaths(GraphNode destinationNode, int maximumDepth)
+	public final List<GraphPath> findPaths(GraphNode destinationNode, int maximumDepth)
 			throws ArgumentNullException, IllegalArgumentException {
 		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
 		ArgumentGuard.requireGreaterThanOrEqual(0, maximumDepth, "maximumDepth");
@@ -212,6 +212,13 @@ public abstract class GraphNode {
 					.GraphNodeCaptions
 					.getCaption(this.getClass());
 	}
+	
+	/**
+	 * Creates a clone of this node with identical attributes but belonging to the specified graph.
+	 * @param graph The graph in which to insert the cloned node.
+	 * @return The cloned node.
+	 */
+	public abstract GraphNode clone(Graph graph);
 	
 	/**
 	 * Determines whether the current node and the other object are equal.

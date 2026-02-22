@@ -58,11 +58,12 @@ public final class GraphNodeMicrostepTests {
 	
 	private static Stream<Arguments> getCaptionsTestCases() {
 	    final String packageName = "nl.ou.refactoring.advice.nodes.workflow.microsteps";
-	    try (final var scanResult = new ClassGraph()
-	            //.verbose()
-	            .enableAllInfo()
-	            .acceptPackages(packageName)
-	            .scan()) {
+	    try (final var scanResult =
+	    		new ClassGraph()
+		            //.verbose()
+		            .enableAllInfo()
+		            .acceptPackages(packageName)
+		            .scan()) {
 	        // Collect results into a list while ScanResult is open
 	        List<Arguments> resultList = new ArrayList<>();
 	        for (ClassInfo classInfo : scanResult.getSubclasses(GraphNodeMicrostep.class)) {

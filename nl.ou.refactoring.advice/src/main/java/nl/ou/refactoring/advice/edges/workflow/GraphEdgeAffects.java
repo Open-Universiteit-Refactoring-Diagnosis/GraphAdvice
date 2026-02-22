@@ -3,10 +3,12 @@ package nl.ou.refactoring.advice.edges.workflow;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskBrokenLocalReferences;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskBrokenSubTyping;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskChangedNestedRelationship;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskCorrespondingSubclassSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
@@ -32,8 +34,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskBrokenLocalReferences brokenLocalReferences,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(brokenLocalReferences, operationNode);
 	}
 	
@@ -45,9 +47,35 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskBrokenSubTyping brokenSubTyping,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(brokenSubTyping, operationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAffects}.
+	 * @param changedNestedRelationship A Changed Nested Relationship Risk.
+	 * @param methodInvocationExpressionNode The Method Invocation Expression that calls an Operation that is also affected by the Changed Nested Relationshop risk.
+	 * @throws ArgumentNullException Thrown if changedNestedRelationship or methodInvocationExpressionNode is null.
+	 */
+	public GraphEdgeAffects(
+			GraphNodeRiskChangedNestedRelationship changedNestedRelationship,
+			GraphNodeMethodInvocationExpression methodInvocationExpressionNode
+	) throws ArgumentNullException {
+		super(changedNestedRelationship, methodInvocationExpressionNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAffects}.
+	 * @param changedNestedRelationship A Changed Nested Relationship risk.
+	 * @param operationNode The Operation that may either be in an outer class or an inner class that is involved in the Changed Nested Relationship risk.
+	 * @throws ArgumentNullException Thrown if changedNestedRelationship or operationNode is null.
+	 */
+	public GraphEdgeAffects(
+			GraphNodeRiskChangedNestedRelationship changedNestedRelationship,
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
+		super(changedNestedRelationship, operationNode);
 	}
 	
 	/**
@@ -58,8 +86,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskCorrespondingSubclassSpecification correspondingSubclassSpecification,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(correspondingSubclassSpecification, operationNode);
 	}
 	
@@ -71,8 +99,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskDoubleDefinition doubleDefinition,
-			GraphNodeAttribute attributeNode)
-					throws ArgumentNullException {
+			GraphNodeAttribute attributeNode
+	) throws ArgumentNullException {
 		super(doubleDefinition, attributeNode);
 	}
 	
@@ -84,8 +112,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskDoubleDefinition doubleDefinition,
-			GraphNodeClass classNode)
-					throws ArgumentNullException {
+			GraphNodeClass classNode
+	) throws ArgumentNullException {
 		super(doubleDefinition, classNode);
 	}
 	
@@ -97,8 +125,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskDoubleDefinition doubleDefinition,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(doubleDefinition, operationNode);
 	}
 	
@@ -110,8 +138,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskForcedOverride forcedOverride,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(forcedOverride, operationNode);
 	}
 	
@@ -123,8 +151,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskImposedSpecification imposedSpecification,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(imposedSpecification, operationNode);
 	}
 	
@@ -136,8 +164,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskMissingSpecification lostSpecification,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(lostSpecification, operationNode);
 	}
 	
@@ -149,8 +177,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskMissingAbstractImplementation missingAbstractImplementation,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(missingAbstractImplementation, operationNode);
 	}
 
@@ -162,8 +190,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskMissingConcreteImplementation missingConcreteImplementation,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(missingConcreteImplementation, operationNode);
 	}
 	
@@ -175,8 +203,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskMissingDefinition missingDefinition,
-			GraphNodeOperation operationNode) 
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(missingDefinition, operationNode);
 	}
 	
@@ -188,8 +216,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskMissingSuperImplementation missingSuperImplementation,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(missingSuperImplementation, operationNode);
 	}
 	
@@ -201,8 +229,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskPrecedingOverload precedingOverload,
-			GraphNodeOperation operationNode)
-					throws ArgumentNullException {
+			GraphNodeOperation operationNode
+	) throws ArgumentNullException {
 		super(precedingOverload, operationNode);
 	}
 	
@@ -214,8 +242,8 @@ public final class GraphEdgeAffects extends GraphEdge {
 	 */
 	public GraphEdgeAffects(
 			GraphNodeRiskScopeShadowing scopeShadowing,
-			GraphNodeAttribute attributeNode)
-					throws ArgumentNullException {
+			GraphNodeAttribute attributeNode
+	) throws ArgumentNullException {
 		super(scopeShadowing, attributeNode);
 	}
 }

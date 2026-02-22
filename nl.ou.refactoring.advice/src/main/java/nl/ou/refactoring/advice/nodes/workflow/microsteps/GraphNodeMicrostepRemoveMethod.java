@@ -4,7 +4,8 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes a Method.
@@ -29,6 +30,17 @@ public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
 	public GraphEdgeRemoves removes(GraphNodeOperation operationNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(operationNode, "operationNode");
-		return new GraphEdgeRemoves(this, operationNode);
+		return
+			this.graph.getOrAddEdge(
+				this,
+				operationNode,
+				(source, destination) -> new GraphEdgeRemoves(source, destination),
+				GraphEdgeRemoves.class
+			);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeMicrostepRemoveMethod(graph);
 	}
 }

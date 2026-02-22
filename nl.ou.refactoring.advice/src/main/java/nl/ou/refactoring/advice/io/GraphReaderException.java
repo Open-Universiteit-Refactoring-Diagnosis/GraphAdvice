@@ -3,7 +3,7 @@ package nl.ou.refactoring.advice.io;
 /**
  * An exception that is thrown when a {@link GraphReader} encounters a fault.
  */
-public abstract class GraphReaderException extends Exception {
+public abstract class GraphReaderException extends RuntimeException {
 	/**
 	 * A generated serial version Unique Identifier.
 	 */

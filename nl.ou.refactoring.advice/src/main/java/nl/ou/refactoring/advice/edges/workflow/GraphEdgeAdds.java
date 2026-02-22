@@ -3,9 +3,11 @@ package nl.ou.refactoring.advice.edges.workflow;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 
@@ -20,6 +22,17 @@ public final class GraphEdgeAdds extends GraphEdge {
 	 * @throws ArgumentNullException Thrown if sourceNode or destinationNode is null.
 	 */
 	public GraphEdgeAdds(GraphNodeMicrostepAddClass sourceNode, GraphNodeClass destinationNode)
+			throws ArgumentNullException {
+		super(sourceNode, destinationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAdds}.
+	 * @param sourceNode The source "Add Expression" microstep.
+	 * @param destinationNode The destination "Statement Expression" code node.
+	 * @throws ArgumentNullException Thrown if sourceNode or destinationNode is null.
+	 */
+	public GraphEdgeAdds(GraphNodeMicrostepAddExpression sourceNode, GraphNodeStatementExpression destinationNode)
 			throws ArgumentNullException {
 		super(sourceNode, destinationNode);
 	}

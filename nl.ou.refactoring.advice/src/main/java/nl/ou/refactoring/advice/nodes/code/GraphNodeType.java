@@ -6,6 +6,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 
 /**
  * Represents a data type in a Refactoring Advice Graph.
@@ -33,6 +34,24 @@ public final class GraphNodeType extends GraphNodeCode {
 	 */
 	public String getTypeName() {
 		return this.typeName;
+	}
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeType(graph, this.typeName);
+	}
+	
+	@Override
+	public boolean equals(GraphNode other) {
+		if (other == null || !(other instanceof GraphNodeType)) {
+			return false;
+		}
+		final var typeNodeOther = (GraphNodeType)other;
+		final var typeNameThis = this.getTypeName();
+		final var typeNameOther = typeNodeOther.getTypeName();
+		return
+			((typeNameThis == null && typeNameOther == null) ||
+			typeNameThis != null && typeNameThis.equals(typeNameOther));
 	}
 	
 	@Override

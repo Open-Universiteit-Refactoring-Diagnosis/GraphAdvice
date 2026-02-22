@@ -1,7 +1,11 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
+import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
 
 /**
  * Represents a Microstep in a Refactoring Advice Graph that adds an Expression.
@@ -15,5 +19,30 @@ public final class GraphNodeMicrostepAddExpression extends GraphNodeMicrostep {
 	public GraphNodeMicrostepAddExpression(Graph graph)
 			throws ArgumentNullException {
 		super(graph);
+	}
+	
+	/**
+	 * Indicates that the microstep adds the specified statement expression.
+	 * @param statementExpressionNode The node that represents the statement expression that is added.
+	 * @return The edge that indicates that the microstep adds the specified statement expression.
+	 * @throws ArgumentNullException Thrown if statementExpressionNode is null.
+	 */
+	public GraphEdgeAdds adds(GraphNodeStatementExpression statementExpressionNode)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(statementExpressionNode, "statementExpressionNode");
+		return
+			this
+				.graph
+				.getOrAddEdge(
+					this,
+					statementExpressionNode,
+					(sourceNode, destinationNode) -> new GraphEdgeAdds(sourceNode, destinationNode),
+					GraphEdgeAdds.class
+				);
+	}
+
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeMicrostepAddExpression(graph);
 	}
 }

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue.ValueType;
 import jakarta.json.spi.JsonProvider;
@@ -32,8 +31,7 @@ public class GraphJsonReader implements GraphReader {
 	 * @param reader Reads JSON.
 	 * @throws ArgumentNullException Thrown if reader is null.
 	 */
-	public GraphJsonReader(Reader reader)
-			throws ArgumentNullException {
+	public GraphJsonReader(final Reader reader) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(reader, "reader");
 		this.reader = reader;
 		this.nodeConstructors.put(
@@ -49,8 +47,7 @@ public class GraphJsonReader implements GraphReader {
 	}
 
 	@Override
-	public Graph read()
-			throws GraphReaderException {
+	public Graph read() throws GraphReaderException {
 		try {
 			this.reader.reset();
 		}
@@ -78,7 +75,7 @@ public class GraphJsonReader implements GraphReader {
 					throw new GraphJsonReaderNodeClassNotFoundException(nodeType);
 				}
 
-				nodes.add(this.constructNode(graph, nodeClass));
+				nodes.add(this.constructNode(graph, nodeClass, nodeJsonObject));
 			}
 			for (var i = 0; i < nodeJsonArray.size(); i++) {
 				final var node = nodes.get(i);
@@ -111,32 +108,92 @@ public class GraphJsonReader implements GraphReader {
 		return graph;
 	}
 	
-	private <TEdge extends GraphEdge> TEdge constructEdge(
-			Class<TEdge> nodeEdge,
-			GraphNode left,
-			GraphNode right) {
+	private <TEdge extends GraphEdge> TEdge constructEdge
+	(
+		final Class<TEdge> edgeClassType,
+		final GraphNode sourceNode,
+		final GraphNode destinationNode
+	)
+		throws GraphJsonReaderEdgeConstructorNoMatchException
+	{
 		try {
-			final var edgeConstructor = nodeEdge.getConstructors()[0];
-			return (TEdge)edgeConstructor.newInstance(left, right);
+			final var edgeConstructors = List.of(edgeClassType.getConstructors());
+			final var edgeConstructor =
+				edgeConstructors
+					.stream()
+					.filter(
+						constructor -> {
+							final var constructorParameterTypes = constructor.getParameterTypes();
+							if (constructorParameterTypes.length != 2) {
+								return false;
+							}
+							
+							return
+								constructorParameterTypes[0].isAssignableFrom(sourceNode.getClass()) &&
+								constructorParameterTypes[1].isAssignableFrom(destinationNode.getClass());
+						}
+					)
+					.findAny()
+					.orElse(null);
+			if (edgeConstructor == null) {
+				throw new GraphJsonReaderEdgeConstructorNoMatchException(edgeClassType, sourceNode, destinationNode);
+			}
+			return (TEdge)edgeConstructor.newInstance(sourceNode, destinationNode);
+		} catch (GraphJsonReaderEdgeConstructorNoMatchException exception) {
+			throw exception;
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 	
-	private GraphNode constructNode(Graph graph, Class<?> nodeClass) {
+	private GraphNode constructNode(final Graph graph, final Class<?> nodeClass, final JsonObject nodeJsonObject) {
 		try {
-			Function<Graph, GraphNode> nodeConstructorDefault =
-					g -> {
-			            try {
-			                var constructor = nodeClass.getConstructors()[0];
-			                return (GraphNode) constructor.newInstance(g);
-			            } catch (Exception e) {
-			                throw new RuntimeException(e);
-			            }
-					};
-			
-			final var nodeFactory = nodeConstructors.getOrDefault(nodeClass, nodeConstructorDefault);
-			return nodeFactory.apply(graph);
+			final var nodeClassConstructorDefault =
+				List.of(nodeClass.getConstructors())
+					.stream()
+					.sorted((c1, c2) -> c1.getParameterCount() - c2.getParameterCount())
+					.findFirst()
+					.get();
+			final var nodeClassConstructorArguments = new ArrayList<Object>();
+			nodeClassConstructorArguments.add(graph);
+			switch (nodeClass.getName()) {
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute": {
+					final var attributeName = nodeJsonObject.getString("attributeName");
+					nodeClassConstructorArguments.add(attributeName);
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodeInterface": {
+					final var interfaceName = nodeJsonObject.getString("interfaceName");
+					nodeClassConstructorArguments.add(interfaceName);
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodePackage": {
+					final var packageName = nodeJsonObject.getString("packageName");
+					nodeClassConstructorArguments.add(packageName);
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.GraphNodeType": {
+					final var typeName = nodeJsonObject.getString("typeName");
+					nodeClassConstructorArguments.add(typeName);
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass": {
+					final var className = nodeJsonObject.getString("className");
+					nodeClassConstructorArguments.add(className);
+					nodeClassConstructorArguments.add(null); // class stereotype
+					break;
+				}
+				case "nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation": {
+					final var operationName = nodeJsonObject.getString("operationName");
+					nodeClassConstructorArguments.add(operationName);
+					nodeClassConstructorArguments.add(null); // operation parameters
+					break;
+				}
+				default: {
+					break;
+				}
+			}
+			return (GraphNode)nodeClassConstructorDefault.newInstance(nodeClassConstructorArguments.toArray());
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

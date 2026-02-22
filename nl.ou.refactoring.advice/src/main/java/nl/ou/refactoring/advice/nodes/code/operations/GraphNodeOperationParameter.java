@@ -1,10 +1,13 @@
-package nl.ou.refactoring.advice.nodes.code;
+package nl.ou.refactoring.advice.nodes.code.operations;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 
 /**
  * Represents a parameter in an operation affected by a refactoring.
@@ -63,6 +66,11 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 				typeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
+	}
+	
+	@Override
+	public GraphNode clone(Graph graph) {
+		return new GraphNodeOperationParameter(graph, this.parameterName);
 	}
 	
 	@Override

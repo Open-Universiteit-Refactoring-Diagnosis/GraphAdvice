@@ -15,6 +15,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddF
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
 
 /**
  * Generates refactoring advice text from a Refactoring Advice Graph by concatenating the text.
@@ -51,6 +52,7 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 					case GraphNodeMicrostepAddField addField -> this.writeNodeMicrostepAddField(addField);
 					case GraphNodeMicrostepAddMethod addMethod -> this.writeNodeMicrostepAddMethod(addMethod);
 					case GraphNodeRiskDoubleDefinition doubleDefinition -> this.writeNodeRiskDoubleDefinition(doubleDefinition);
+					case GraphNodeRiskForcedOverride forcedOverride -> this.writeNodeRiskForcedOverride(forcedOverride);
 					case GraphNodeRisk risk -> this.writeNodeRisk(risk);
 					default -> { }
 				}
@@ -105,10 +107,10 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		this.print(String.format(" will cause a %s", risk.getCaption()));
 		final var affectedNodes = risk.getAffected();
 		final var affectedNames =
-				affectedNodes
-					.stream()
-					.map(node -> node.getCaption())
-					.collect(Collectors.toUnmodifiableList());
+			affectedNodes
+				.stream()
+				.map(node -> node.getCaption())
+				.collect(Collectors.toUnmodifiableList());
 		this.print(" on " + getEnumeration(affectedNames));
 	}
 	
@@ -116,11 +118,22 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 		this.print(" will introduce code symbols with identical signatures");
 		final var affectedNodes = doubleDefinition.getAffected();
 		final var affectedNames =
-				affectedNodes
-					.stream()
-					.map(node -> node.getCaption())
-					.collect(Collectors.toUnmodifiableList());
+			affectedNodes
+				.stream()
+				.map(node -> node.getCaption())
+				.collect(Collectors.toUnmodifiableList());
 		this.print(" on " + getEnumeration(affectedNames));
+	}
+	
+	private void writeNodeRiskForcedOverride(GraphNodeRiskForcedOverride forcedOverride) {
+		this.print(" will forcefully cause an override of ");
+		final var affectedNodes = forcedOverride.getAffected();
+		final var affectedNames =
+			affectedNodes
+				.stream()
+				.map(node -> node.getCaption())
+				.collect(Collectors.toUnmodifiableList());
+		this.print(getEnumeration(affectedNames));
 	}
 	
 	private static String getEnumeration(List<String> items) {

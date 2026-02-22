@@ -9,13 +9,17 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperation;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
+import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskChangedNestedRelationship;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskImposedSpecification;
@@ -24,16 +28,18 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskPrecedingOverl
 public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 
 	@Override
-	public Stream<? extends Arguments> provideArguments(
+	public Stream<? extends Arguments> provideArguments
+	(
 			ParameterDeclarations parameters,
-			ExtensionContext context)
-					throws RefactoringMayContainOnlyOneStartNodeException {
+			ExtensionContext context
+	) throws RefactoringMayContainOnlyOneStartNodeException {
 		return
 				Stream.of(
 						constructDoubleDefinitionGraph(),
 						constructForcedOverrideGraph(),
 						constructImposedSpecificationGraph(),
-						constructPrecedingOverloadGraph()
+						constructPrecedingOverloadGraph(),
+						constructChangedNestedRelationship()
 				)
 				.map(Arguments::of);
 	}
@@ -206,6 +212,67 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		precedingOverloadRisk.affects(operationNodeFooInt);
 		precedingOverloadRisk.affects(operationNodeFooDouble);
 		addMethodNode.causes(precedingOverloadRisk);
+		
+		return graph;
+	}
+	
+	private static Graph constructChangedNestedRelationship()
+			throws RefactoringMayContainOnlyOneStartNodeException {
+		final var graph = new Graph("AM-5 Changed Nested Relationship");
+		
+		// Code
+		final var packageNode =
+				new GraphNodePackage(graph, "nl.ou.refactoring.dangers.changedNestedRelationship");
+		final var alphaClassNode =
+				new GraphNodeClass(
+						graph,
+						"Alpha"
+				);
+		packageNode.has(alphaClassNode);
+		final var alphaFooOperationNode =
+				new GraphNodeOperation(
+						graph,
+						"foo"
+				);
+		alphaClassNode.has(alphaFooOperationNode);
+		final var betaClassNode =
+				new GraphNodeClass(
+						graph,
+						"Beta"
+				);
+		alphaClassNode.has(betaClassNode);
+		final var betaBarOperationNode =
+				new GraphNodeOperation(
+						graph,
+						"bar"
+				);
+		betaClassNode.has(betaBarOperationNode);
+		final var betaBarBlockNode = new GraphNodeBlock(graph);
+		betaBarOperationNode.hasBody(betaBarBlockNode);
+		final var betaBarExpressionStatementNode = new GraphNodeExpressionStatement(graph);
+		betaBarBlockNode.has(betaBarExpressionStatementNode);
+		final var betaBarMethodInvocationExpressionNode = new GraphNodeMethodInvocationExpression(graph);
+		betaBarExpressionStatementNode.has(betaBarMethodInvocationExpressionNode);
+		betaBarMethodInvocationExpressionNode.invokes(alphaFooOperationNode);
+		final var betaFooOperationNode =
+				new GraphNodeOperation(
+						graph,
+						"foo"
+				);
+		betaClassNode.has(betaFooOperationNode);
+		
+		// Workflow
+		final var startNode = graph.start();
+		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
+		startNode.initiates(addMethodNode);
+		addMethodNode.adds(betaFooOperationNode);
+		addMethodNode.finalises();
+		
+		final var changedNestedRelationshipRiskNode = new GraphNodeRiskChangedNestedRelationship(graph);
+		changedNestedRelationshipRiskNode.affects(alphaFooOperationNode);
+		changedNestedRelationshipRiskNode.affects(betaFooOperationNode);
+		changedNestedRelationshipRiskNode.affects(betaBarMethodInvocationExpressionNode);
+		addMethodNode.causes(changedNestedRelationshipRiskNode);
 		
 		return graph;
 	}
