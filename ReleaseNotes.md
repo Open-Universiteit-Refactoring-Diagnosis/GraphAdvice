@@ -36,3 +36,6 @@
 - Added support for risk Changed Nested Relationship.
 - Added test case for the "Move Method" refactoring, including JSON and required fixes in the model and flowchart, UML generation.
 - Added JSON Schema generation for serialisation and deserialisation of representations of Refactoring Advice Graphs in JSON.
+
+## 0.5.0
+

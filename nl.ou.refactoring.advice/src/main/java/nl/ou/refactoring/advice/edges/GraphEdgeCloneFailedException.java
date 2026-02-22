@@ -4,6 +4,9 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
+/**
+ * An exception that is thrown if cloning a Refactoring Advice Graph edge failed.
+ */
 public final class GraphEdgeCloneFailedException extends RuntimeException {
 	/**
 	 * Generated serial version unique identifier.
