@@ -16,7 +16,10 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphWriter;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
@@ -97,16 +100,28 @@ public final class GraphJsonWriter implements GraphWriter {
 		}
 		
 		switch (node) {
-			case GraphNodePackage packageNode: {
-				objectBuilder.add("packageName", packageNode.getPackageName());
+			case GraphNodeAttribute attributeNode: {
+				objectBuilder.add("attributeName", attributeNode.getAttributeName());
 				break;
 			}
 			case GraphNodeClass classNode: {
 				objectBuilder.add("className", classNode.getClassName());
 				break;
 			}
+			case GraphNodeInterface interfaceNode: {
+				objectBuilder.add("interfaceName", interfaceNode.getInterfaceName());
+				break;
+			}
 			case GraphNodeOperation operationNode: {
 				objectBuilder.add("operationName", operationNode.getOperationName());
+				break;
+			}
+			case GraphNodePackage packageNode: {
+				objectBuilder.add("packageName", packageNode.getPackageName());
+				break;
+			}
+			case GraphNodeType typeNode: {
+				objectBuilder.add("typeName", typeNode.getTypeName());
 				break;
 			}
 			default: {
