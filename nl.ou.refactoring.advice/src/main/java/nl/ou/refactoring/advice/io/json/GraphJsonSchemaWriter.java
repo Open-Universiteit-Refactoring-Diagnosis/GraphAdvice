@@ -82,7 +82,14 @@ public final class GraphJsonSchemaWriter {
 				graphNodeRequiredSchemaArrayBuilder.add(Json.createValue("type"));
 				graphNodeRequiredSchemaArrayBuilder.add(Json.createValue("edges"));
 				final var constructorParameters =
-					List.of(classType.getConstructors()[0].getParameters())
+					List.of(
+						List.of(classType.getConstructors())
+							.stream()
+							.sorted((c1, c2) -> c1.getParameterCount() - c2.getParameterCount())
+							.findFirst()
+							.get()
+							.getParameters()
+						)
 						.stream()
 						.skip(1) // skip the usual "graph" parameter, this parameter is provided implicitly.
 						.collect(Collectors.toUnmodifiableList());
