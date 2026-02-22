@@ -114,7 +114,8 @@ public class GraphJsonReader implements GraphReader {
 		final Class<TEdge> edgeClassType,
 		final GraphNode sourceNode,
 		final GraphNode destinationNode
-	) throws GraphJsonReaderEdgeConstructorNoMatchException
+	)
+		throws GraphJsonReaderEdgeConstructorNoMatchException
 	{
 		try {
 			final var edgeConstructors = List.of(edgeClassType.getConstructors());
@@ -139,6 +140,8 @@ public class GraphJsonReader implements GraphReader {
 				throw new GraphJsonReaderEdgeConstructorNoMatchException(edgeClassType, sourceNode, destinationNode);
 			}
 			return (TEdge)edgeConstructor.newInstance(sourceNode, destinationNode);
+		} catch (GraphJsonReaderEdgeConstructorNoMatchException exception) {
+			throw exception;
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
