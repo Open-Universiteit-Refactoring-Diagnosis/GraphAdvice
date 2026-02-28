@@ -5,10 +5,11 @@ import java.awt.geom.Point2D;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
  * Represents a node in a particular graph layout.
- * Wraps an actual Refactoring Advice Graph {@link GraphNode}.
+ * Wraps an actual Refactoring Advice Graph {@link GraphNodeBase}.
  */
 public class GraphLayoutNode {
 	private final GraphNode node;

@@ -1,9 +1,10 @@
 package nl.ou.refactoring.advice.nodes.code.operations.statements;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
 
 /**
@@ -40,7 +41,8 @@ public final class GraphNodeExpressionStatement extends GraphNodeStatement {
 	}
 
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeExpressionStatement(graph);
 	}
 }

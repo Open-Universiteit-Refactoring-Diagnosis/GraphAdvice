@@ -5,7 +5,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 
@@ -69,7 +69,8 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeOperationParameter(graph, this.parameterName);
 	}
 	

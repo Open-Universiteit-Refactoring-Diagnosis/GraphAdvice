@@ -2,9 +2,11 @@ package nl.ou.refactoring.advice.nodes.workflow;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
  * Represents the start node of a refactoring in a Refactoring Advice Graph.
@@ -50,7 +52,8 @@ public final class GraphNodeRefactoringStart extends GraphNodeWorkflow {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeRefactoringStart(graph);
 	}
 	

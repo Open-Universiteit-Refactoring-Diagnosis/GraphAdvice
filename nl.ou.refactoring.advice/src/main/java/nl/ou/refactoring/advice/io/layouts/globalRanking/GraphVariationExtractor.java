@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
@@ -16,6 +15,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 
 /**
@@ -45,19 +45,19 @@ public final class GraphVariationExtractor {
 		}
 		
 		return
-				sequenceCounts
-					.entrySet()
-					.stream()
-					.map(entry -> {
-						try {
-							final var segments = decodeSequence(entry.getKey(), graph);
-							return new GraphVariation(segments, entry.getValue());
-						} catch (ClassNotFoundException ex) {
-							ex.printStackTrace();
-							return new GraphVariation(new ArrayList<>(), 0);
-						}
-					})
-					.collect(Collectors.toUnmodifiableSet());
+			sequenceCounts
+				.entrySet()
+				.stream()
+				.map(entry -> {
+					try {
+						final var segments = decodeSequence(entry.getKey(), graph);
+						return new GraphVariation(segments, entry.getValue());
+					} catch (ClassNotFoundException ex) {
+						ex.printStackTrace();
+						return new GraphVariation(new ArrayList<>(), 0);
+					}
+				})
+				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	private static String getClassName(Class<? extends GraphNode> nodeClass) {
@@ -87,12 +87,12 @@ public final class GraphVariationExtractor {
 		final var segments = new ArrayList<GraphVariationSegment>();
 		final var parts = Arrays.asList(encodedSequence.split(","));
 		final var nodeClassFirst = Class.forName(parts.get(0));
-		segments.add(new GraphVariationSegment(null, (Class<? extends GraphNode>)nodeClassFirst));
+		segments.add(new GraphVariationSegment(null, (Class<? extends GraphNodeBase>)nodeClassFirst));
 		for (var i = 1; i < parts.size(); i += 2) {
 			final var edgeClassName = parts.get(i);
 			final var edgeClass = (Class<? extends GraphEdge>)Class.forName(edgeClassName);
 			final var nodeClassName = parts.get(i + 1);
-			final var nodeClass = (Class<? extends GraphNode>)Class.forName(nodeClassName);
+			final var nodeClass = (Class<? extends GraphNodeBase>)Class.forName(nodeClassName);
 			segments.add(new GraphVariationSegment(edgeClass, nodeClass));
 		}
 		return segments;

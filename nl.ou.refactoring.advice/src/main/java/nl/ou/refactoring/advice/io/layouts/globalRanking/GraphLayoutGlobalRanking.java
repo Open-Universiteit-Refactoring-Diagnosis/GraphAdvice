@@ -11,7 +11,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.layouts.GraphLayout;
 import nl.ou.refactoring.advice.io.layouts.GraphLayoutNode;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
  * A layout of a Refactoring Advice Graph using the Global Ranking algorithm.<br />

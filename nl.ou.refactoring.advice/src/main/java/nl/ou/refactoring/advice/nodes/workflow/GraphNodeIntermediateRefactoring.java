@@ -4,7 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
  * Represents an intermediate refactoring that is required to perform an encompassing refactoring.
@@ -50,7 +50,7 @@ public final class GraphNodeIntermediateRefactoring extends GraphNodeWorkflowAct
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) {
 		return new GraphNodeIntermediateRefactoring(graph, this.refactoringName, this.intermediateRefactoringGraph);
 	}
 

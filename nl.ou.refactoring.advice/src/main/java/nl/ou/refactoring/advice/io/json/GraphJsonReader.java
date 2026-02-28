@@ -16,7 +16,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.io.GraphReader;
 import nl.ou.refactoring.advice.io.GraphReaderException;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 
 /**
@@ -24,7 +24,7 @@ import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
  */
 public class GraphJsonReader implements GraphReader {
 	private final Reader reader;
-	private final Map<Class<?>, Function<Graph, GraphNode>> nodeConstructors = new HashMap<>();
+	private final Map<Class<?>, Function<Graph, GraphNodeBase>> nodeConstructors = new HashMap<>();
 
 	/**
 	 * Initialises a new instance of {@link GraphJsonReader}.
@@ -39,7 +39,7 @@ public class GraphJsonReader implements GraphReader {
 				g -> {
 		            try {
 		                var constructor = GraphNodeRefactoringStart.class.getConstructors()[0];
-		                return (GraphNode) constructor.newInstance(g, g.getRefactoringName());
+		                return (GraphNodeBase) constructor.newInstance(g, g.getRefactoringName());
 		            } catch (Exception e) {
 		                throw new RuntimeException(e);
 		            }
@@ -64,13 +64,13 @@ public class GraphJsonReader implements GraphReader {
 		
 		final var nodeJsonArray = refactoringObject.getJsonArray("nodes");
 		if (nodeJsonArray != null) {
-			List<GraphNode> nodes = new ArrayList<>();
+			List<GraphNodeBase> nodes = new ArrayList<>();
 			for (var i = 0; i < nodeJsonArray.size(); i++) {
 				final var nodeJsonObject = nodeJsonArray.getJsonObject(i);
 				final var nodeType = nodeJsonObject.getString("type");
-				final Class<? extends GraphNode> nodeClass;
+				final Class<? extends GraphNodeBase> nodeClass;
 				try {
-					nodeClass = (Class<? extends GraphNode>)Class.forName(nodeType);
+					nodeClass = (Class<? extends GraphNodeBase>)Class.forName(nodeType);
 				} catch (ClassNotFoundException exception) {
 					throw new GraphJsonReaderNodeClassNotFoundException(nodeType);
 				}
@@ -111,8 +111,8 @@ public class GraphJsonReader implements GraphReader {
 	private <TEdge extends GraphEdge> TEdge constructEdge
 	(
 		final Class<TEdge> edgeClassType,
-		final GraphNode sourceNode,
-		final GraphNode destinationNode
+		final GraphNodeBase sourceNode,
+		final GraphNodeBase destinationNode
 	)
 		throws GraphJsonReaderEdgeConstructorNoMatchException
 	{
@@ -146,7 +146,7 @@ public class GraphJsonReader implements GraphReader {
 		}
 	}
 	
-	private GraphNode constructNode(final Graph graph, final Class<?> nodeClass, final JsonObject nodeJsonObject) {
+	private GraphNodeBase constructNode(final Graph graph, final Class<?> nodeClass, final JsonObject nodeJsonObject) {
 		try {
 			final var nodeClassConstructorDefault =
 				List.of(nodeClass.getConstructors())
@@ -193,7 +193,7 @@ public class GraphJsonReader implements GraphReader {
 					break;
 				}
 			}
-			return (GraphNode)nodeClassConstructorDefault.newInstance(nodeClassConstructorArguments.toArray());
+			return (GraphNodeBase)nodeClassConstructorDefault.newInstance(nodeClassConstructorArguments.toArray());
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

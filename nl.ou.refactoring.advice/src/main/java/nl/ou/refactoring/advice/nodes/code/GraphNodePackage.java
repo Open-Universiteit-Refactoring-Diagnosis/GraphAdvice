@@ -11,6 +11,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 
 /**
@@ -50,10 +51,11 @@ public final class GraphNodePackage extends GraphNodeCode {
 	public GraphEdgeHas has(GraphNodeClass classNode)
 			throws ArgumentNullException {
 		return this.graph.getOrAddEdge(
-				this,
-				classNode,
-				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
-				GraphEdgeHas.class);
+			this,
+			classNode,
+			(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
+			GraphEdgeHas.class
+		);
 	}
 	
 	/**
@@ -65,10 +67,11 @@ public final class GraphNodePackage extends GraphNodeCode {
 	public GraphEdgeHas has(GraphNodeInterface interfaceNode)
 			throws ArgumentNullException {
 		return this.graph.getOrAddEdge(
-				this,
-				interfaceNode,
-				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
-				GraphEdgeHas.class);
+			this,
+			interfaceNode,
+			(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
+			GraphEdgeHas.class
+		);
 	}
 	
 	/**
@@ -77,13 +80,13 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 */
 	public Set<GraphNodeClass> getClassNodes() {
 		return
-				this
-					.getEdges(GraphEdgeHas.class)
-					.stream()
-					.map(edge -> edge.getDestinationNode())
-					.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
-					.map(GraphNodeClass.class::cast)
-					.collect(Collectors.toUnmodifiableSet());
+			this
+				.getEdges(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
+				.map(GraphNodeClass.class::cast)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	/**
@@ -93,22 +96,21 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 */
 	public List<GraphNodeClass> getClassNodes(SortOrder sortOrder) {
 		return
-				this
-					.getClassNodes()
-					.stream()
-					.sorted(
-							(c1, c2) -> {
-								return switch(sortOrder) {
-									case SortOrder.ASCENDING ->
-										c1.getCaption().compareTo(c2.getCaption());
-									case SortOrder.DESCENDING ->
-										c2.getCaption().compareTo(c1.getCaption());
-									default -> 0;
-								};
-							}
-					)
-					.collect(Collectors.toUnmodifiableList());
-					
+			this
+				.getClassNodes()
+				.stream()
+				.sorted(
+					(c1, c2) -> {
+						return switch(sortOrder) {
+							case SortOrder.ASCENDING ->
+								c1.getCaption().compareTo(c2.getCaption());
+							case SortOrder.DESCENDING ->
+								c2.getCaption().compareTo(c1.getCaption());
+							default -> 0;
+						};
+					}
+				)
+				.collect(Collectors.toUnmodifiableList());
 	}
 	
 	/**
@@ -119,12 +121,12 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 */
 	public GraphNodeClass computeClassNode(String className) {
 		var classNode =
-				this
-					.getClassNodes()
-					.stream()
-					.filter(node -> node.getClassName().equals(className))
-					.findFirst()
-					.orElse(null);
+			this
+				.getClassNodes()
+				.stream()
+				.filter(node -> node.getClassName().equals(className))
+				.findFirst()
+				.orElse(null);
 		if (classNode == null) {
 			classNode = new GraphNodeClass(this.graph, className);
 			this.has(classNode);
@@ -133,7 +135,8 @@ public final class GraphNodePackage extends GraphNodeCode {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodePackage(graph, this.packageName);
 	}
 	

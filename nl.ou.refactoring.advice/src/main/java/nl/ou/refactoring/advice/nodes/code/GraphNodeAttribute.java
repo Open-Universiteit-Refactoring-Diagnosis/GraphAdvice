@@ -6,6 +6,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 
 /**
@@ -71,7 +72,7 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) {
 		return new GraphNodeAttribute(graph, this.attributeName);
 	}
 	

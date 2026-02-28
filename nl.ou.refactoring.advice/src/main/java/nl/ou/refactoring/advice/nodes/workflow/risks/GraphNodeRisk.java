@@ -32,11 +32,11 @@ public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 	 */
 	public Set<GraphNode> getAffected() {
 		return
-				this
-					.getEdges(GraphEdgeAffects.class)
-					.stream()
-					.map(edge -> edge.getDestinationNode())
-					.collect(Collectors.toSet());
+			this
+				.getEdges(GraphEdgeAffects.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.collect(Collectors.toSet());
 	}
 	
 	/**
@@ -45,12 +45,12 @@ public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 	 */
 	public Set<GraphNodeWorkflowAction> getNeutralisers() {
 		final var neutralisers =
-				this
-					.graph
-					.getEdgesTo(this, GraphEdgeObsolesces.class)
-					.stream()
-					.map(edge -> edge.getSourceNode())
-					.collect(Collectors.toSet());
+			this
+				.graph
+				.getEdgesTo(this, GraphEdgeObsolesces.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.collect(Collectors.toSet());
 		if (neutralisers.size() <= 1) {
 			return Collections.unmodifiableSet(neutralisers);
 		}

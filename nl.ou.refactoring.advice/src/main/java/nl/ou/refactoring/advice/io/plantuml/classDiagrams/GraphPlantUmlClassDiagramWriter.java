@@ -9,6 +9,7 @@ import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.SortOrder;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
@@ -21,6 +22,7 @@ import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
 
@@ -62,6 +64,9 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		
 		// Notes
 		this.writeNotes(graph);
+		
+		// Invocations
+		this.writeInvocations(graph);
 		
 		this.writeEndUml();
 	}
@@ -200,14 +205,14 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	
 	private void writeNotes(Graph graph) {
 		var noteCounter = 0;
+		
+		// Analyse risks
 		final var dangerNodes =
 			graph
 				.getNodes(GraphNodeRisk.class)
 				.stream()
 				.filter(node -> node.getNeutralisers().size() == 0)
 				.collect(Collectors.toSet());
-		
-		// Analyse risks
 		for (final var dangerNode : dangerNodes) {
 			noteCounter++;
 			final var affects =
@@ -255,7 +260,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		}
 	}
 	
-	private final void writeNoteRelationship(GraphNodeCode codeNode, String noteIdentifier) {
+	private void writeNoteRelationship(GraphNodeCode codeNode, String noteIdentifier) {
 		switch (codeNode) {
 			case GraphNodeAttribute codeNodeAttribute: {
 				final var codeNodeClass = findSubject(codeNodeAttribute);
@@ -299,7 +304,27 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		}
 	}
 	
-	private final GraphNodeCode findSubject(GraphNodeCode codeNode) {
+	private void writeInvocations(Graph graph) {
+		final var methodInvocationExpressions = graph.getNodes(GraphNodeMethodInvocationExpression.class);
+		for (final var methodInvocationExpression : methodInvocationExpressions) {
+			final var invokingMethod = methodInvocationExpression.getOperationNode();
+			final var invokingMethodClass = findSubject(invokingMethod);
+			final var invokedMethod = methodInvocationExpression.getInvokedOperationNode();
+			final var invokedMethodClass = findSubject(invokedMethod);
+			this.printLine(
+				String.format(
+					"%s::%s -[dotted]-> %s::%s : %s",
+					getSanitizedName(invokingMethodClass),
+					getSanitizedName(invokingMethod),
+					getSanitizedName(invokedMethodClass),
+					getSanitizedName(invokedMethod),
+					ResourceProvider.GraphEdgeLabels.getLabel(GraphEdgeInvokes.class)
+				)
+			);
+		}
+	}
+	
+	private GraphNodeCode findSubject(GraphNodeCode codeNode) {
 		return switch(codeNode) {
 			case GraphNodePackage pkg -> pkg;
 			case GraphNodeClass cls -> cls;
@@ -309,7 +334,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		};
 	}
 	
-	private static final String getSanitizedName(GraphNodeCode codeNode) {
+	private static String getSanitizedName(GraphNodeCode codeNode) {
 		final var name = switch (codeNode) {
 			case GraphNodeClass classNode -> {
 				final var className = classNode.getClassName();
@@ -321,11 +346,11 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		return getSanitizedName(name);
 	}
 	
-	private static final String getSanitizedName(String name) {
+	private static String getSanitizedName(String name) {
 		return name.replace('*', '_');
 	}
 	
-	private static final String getStereotypeInlineStyle(GraphNodeClassStereotype stereotype) {
+	private static String getStereotypeInlineStyle(GraphNodeClassStereotype stereotype) {
 		return switch(stereotype) {
 			case GraphNodeClassStereotype.BEFORE -> "#DarkGray";
 			case GraphNodeClassStereotype.AFTER -> "#LightGray";

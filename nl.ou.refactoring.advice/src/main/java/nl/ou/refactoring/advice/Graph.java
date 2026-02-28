@@ -48,7 +48,7 @@ public final class Graph implements Cloneable {
 	}
 	
 	/**
-	 * Gets a {@link GraphNode} by its unique identifier.
+	 * Gets a {@link GraphNodeBase} by its unique identifier.
 	 * @param nodeIdentifier The unique identifier of the node.
 	 * @return The node with the specified identifier, or if not found, null.
 	 * @throws ArgumentNullException Thrown if nodeIdentifier is null.
@@ -277,16 +277,16 @@ public final class Graph implements Cloneable {
 			return Collections.unmodifiableSet(Set.of());
 		}
 		return
-				Collections.unmodifiableSet(
-					this
-						.matrix
-						.values()
-						.stream()
-						.flatMap(
-								columns ->
-								columns.getOrDefault(destinationNode, new HashSet<>()).stream())
-						.collect(Collectors.toSet())
-				);
+			Collections.unmodifiableSet(
+				this
+					.matrix
+					.values()
+					.stream()
+					.flatMap(
+						columns ->
+						columns.getOrDefault(destinationNode, new HashSet<>()).stream())
+					.collect(Collectors.toSet())
+			);
 	}
 	
 	/**
@@ -302,20 +302,20 @@ public final class Graph implements Cloneable {
 			return Collections.unmodifiableSet(Set.of());
 		}
 		return
-				Collections.unmodifiableSet(
-					this
-						.matrix
-						.values()
-						.stream()
-						.flatMap(
-								columns ->
-								columns
-									.getOrDefault(destinationNode, new HashSet<>())
-									.stream()
-									.filter(edgeType::isInstance)
-									.map(edgeType::cast))
-						.collect(Collectors.toSet())
-				);
+			Collections.unmodifiableSet(
+				this
+					.matrix
+					.values()
+					.stream()
+					.flatMap(
+						columns ->
+						columns
+							.getOrDefault(destinationNode, new HashSet<>())
+							.stream()
+							.filter(edgeType::isInstance)
+							.map(edgeType::cast))
+					.collect(Collectors.toSet())
+			);
 	}
 	
 	/**

@@ -8,7 +8,10 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignmentExpression;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignment;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeLeftHandSide;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeStatement;
 
@@ -125,5 +128,27 @@ public final class GraphEdgeHas extends GraphEdge {
 	public GraphEdgeHas(GraphNodeExpressionStatement expressionStatement, GraphNodeStatementExpression statementExpression)
 			throws ArgumentNullException {
 		super(expressionStatement, statementExpression);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param assignment A node that represents a value assignment.
+	 * @param leftHandSide The left hand side of the assignment.
+	 * @throws ArgumentNullException Thrown if assignment or leftHandSide is null.
+	 */
+	public GraphEdgeHas(GraphNodeAssignment assignment, GraphNodeLeftHandSide leftHandSide)
+			throws ArgumentNullException {
+		super(assignment, leftHandSide);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param assignment A node that represents a value assignment.
+	 * @param rightHandSide The right hand side of the assignment.
+	 * @throws ArgumentNullException Thrown if assignment or rightHandSide is null.
+	 */
+	public GraphEdgeHas(GraphNodeAssignment assignment, GraphNodeAssignmentExpression rightHandSide)
+			throws ArgumentNullException {
+		super(assignment, rightHandSide);
 	}
 }

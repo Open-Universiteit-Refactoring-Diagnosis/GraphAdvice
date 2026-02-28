@@ -5,9 +5,10 @@ import java.awt.geom.Point2D;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.layouts.GraphLayoutNode;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
- * A node in a Force-Directed Layout, wraps a {@link GraphNode}.
+ * A node in a Force-Directed Layout, wraps a {@link GraphNodeBase}.
  */
 public final class GraphLayoutForceDirectedNode extends GraphLayoutNode {
 	private Point2D.Double velocity;

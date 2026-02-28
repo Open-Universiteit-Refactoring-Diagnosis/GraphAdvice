@@ -1,7 +1,7 @@
 package nl.ou.refactoring.advice.io.json;
 
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
@@ -22,12 +22,12 @@ public final class GraphJsonReaderEdgeConstructorNoMatchException extends GraphJ
 	/**
 	 * The source node.
 	 */
-	private final GraphNode sourceNode;
+	private final GraphNodeBase sourceNode;
 	
 	/**
 	 * The destination node.
 	 */
-	private final GraphNode destinationNode;
+	private final GraphNodeBase destinationNode;
 
 	/**
 	 * Initialises a new instance of {@link GraphJsonReaderEdgeConstructorNoMatchException}.
@@ -38,8 +38,8 @@ public final class GraphJsonReaderEdgeConstructorNoMatchException extends GraphJ
 	public GraphJsonReaderEdgeConstructorNoMatchException
 	(
 		Class<? extends GraphEdge> edgeClassType,
-		GraphNode sourceNode,
-		GraphNode destinationNode
+		GraphNodeBase sourceNode,
+		GraphNodeBase destinationNode
 	)
 	{
 		this.edgeClassType = edgeClassType;
@@ -67,7 +67,7 @@ public final class GraphJsonReaderEdgeConstructorNoMatchException extends GraphJ
 	 * Gets the source node of the edge.
 	 * @return The source node of the edge.
 	 */
-	public GraphNode getSourceNode() {
+	public GraphNodeBase getSourceNode() {
 		return this.sourceNode;
 	}
 	
@@ -75,7 +75,7 @@ public final class GraphJsonReaderEdgeConstructorNoMatchException extends GraphJ
 	 * Gets the destination node of the edge.
 	 * @return The destination node of the edge.
 	 */
-	public GraphNode getDestinationNode() {
+	public GraphNodeBase getDestinationNode() {
 		return this.destinationNode;
 	}
 }

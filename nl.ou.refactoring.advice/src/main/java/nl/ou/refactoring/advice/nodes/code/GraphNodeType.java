@@ -7,6 +7,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
  * Represents a data type in a Refactoring Advice Graph.
@@ -37,7 +38,8 @@ public final class GraphNodeType extends GraphNodeCode {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeType(graph, this.typeName);
 	}
 	

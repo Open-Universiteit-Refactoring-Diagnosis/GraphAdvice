@@ -26,8 +26,8 @@ public final class GraphWorkflowExplorer {
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		return
-				graph
-					.getNodes(GraphNodeMicrostep.class);
+			graph
+				.getNodes(GraphNodeMicrostep.class);
 	}
 
 	/**
@@ -40,8 +40,8 @@ public final class GraphWorkflowExplorer {
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		return
-				graph
-					.getNodes(GraphNodeRisk.class);
+			graph
+				.getNodes(GraphNodeRisk.class);
 	}
 	
 	/**
@@ -54,9 +54,9 @@ public final class GraphWorkflowExplorer {
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		return
-				getRisks(graph)
-					.stream()
-					.filter(node -> node.getNeutralisers().size() == 0)
-					.collect(Collectors.toSet());
+			getRisks(graph)
+				.stream()
+				.filter(node -> node.getNeutralisers().size() == 0)
+				.collect(Collectors.toSet());
 	}
 }

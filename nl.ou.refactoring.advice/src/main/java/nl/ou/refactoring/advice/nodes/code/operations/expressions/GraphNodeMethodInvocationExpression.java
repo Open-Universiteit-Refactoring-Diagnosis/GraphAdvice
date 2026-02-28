@@ -4,7 +4,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
@@ -39,8 +39,9 @@ public final class GraphNodeMethodInvocationExpression extends GraphNodeStatemen
 	 * Indicates that the method invocation expression represented by this node invokes the operation represented by the {@link GraphNodeOperation} operationNode.
 	 * @param operationNode The node that represents the operation that is invoked by the method invocation expression that is represented by this node.
 	 * @return An edge that indicates that the method invocation expression invokes the operation.
+	 * @throws ArgumentNullException Thrown if operationNode is null.
 	 */
-	public GraphEdgeInvokes invokes(GraphNodeOperation operationNode) {
+	public GraphEdgeInvokes invokes(GraphNodeOperation operationNode) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(operationNode, "operation");
 		return
 			this
@@ -54,7 +55,8 @@ public final class GraphNodeMethodInvocationExpression extends GraphNodeStatemen
 	}
 
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeMethodInvocationExpression(graph);
 	}
 }

@@ -16,6 +16,7 @@ import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvok
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
@@ -46,9 +47,9 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
 		this.operationName = operationName;
 		this.operationParameters =
-				operationParameters == null
-					? new ArrayList<GraphNodeOperationParameter>()
-					: operationParameters;
+			operationParameters == null
+				? new ArrayList<GraphNodeOperationParameter>()
+				: operationParameters;
 	}
 	
 	/**
@@ -69,12 +70,12 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 */
 	public GraphNodeType getReturnType() {
 		final var edgeIs =
-				this
-					.getEdges()
-					.stream()
-					.filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
-					.findFirst()
-					.orElse(null);
+			this
+				.getEdges()
+				.stream()
+				.filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
+				.findFirst()
+				.orElse(null);
 		if (edgeIs == null) {
 			return null;
 		}
@@ -191,7 +192,8 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		// TODO include parameters
 		return new GraphNodeOperation(graph, this.operationName);
 	}

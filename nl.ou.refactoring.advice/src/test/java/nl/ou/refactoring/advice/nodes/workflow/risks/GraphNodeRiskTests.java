@@ -22,7 +22,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -41,7 +41,7 @@ public final class GraphNodeRiskTests {
 	@DisplayName("Should get nodes affected by a risk")
 	public void getAffectedTest(
 			GraphNodeRisk risk,
-			Set<GraphNode> expected
+			Set<GraphNodeBase> expected
 	) {
 		final var actual = risk.getAffected();
 		assertEquals(expected, actual);

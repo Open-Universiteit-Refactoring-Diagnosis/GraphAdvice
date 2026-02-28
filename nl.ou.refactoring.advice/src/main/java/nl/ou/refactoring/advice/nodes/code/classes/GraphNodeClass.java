@@ -12,6 +12,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
@@ -53,8 +54,8 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @throws ArgumentEmptyException Thrown if className is empty or contains only white spaces.
 	 */
 	public GraphNodeClass(
-			Graph graph,
-			String className
+		Graph graph,
+		String className
 	) throws ArgumentNullException, ArgumentEmptyException {
 		this(graph, className, null);
 	}
@@ -389,7 +390,8 @@ public final class GraphNodeClass extends GraphNodeCode {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeClass(graph, this.className);
 	}
 	
