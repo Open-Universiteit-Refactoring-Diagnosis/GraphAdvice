@@ -123,11 +123,10 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		alphaClassNode.has(alphaFooOperationNode);
 		removeMethodMicrostepNode.removes(alphaFooOperationNode);
 		final var alphaBarBlock = new GraphNodeBlock(graph);
-		final var alphaBarStatement = new GraphNodeExpressionStatement(graph);
 		final var alphaBarExpression = new GraphNodeMethodInvocationExpression(graph);
+		final var alphaBarStatement = new GraphNodeExpressionStatement(graph, alphaBarExpression);
 		alphaBarOperationNode.hasBody(alphaBarBlock);
 		alphaBarBlock.has(alphaBarStatement);
-		alphaBarStatement.has(alphaBarExpression);
 		alphaBarExpression.invokes(alphaFooOperationNode);
 		
 		final var betaClassNode = new GraphNodeClass(graph, "Beta");
@@ -192,13 +191,12 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var gammaClassNode = new GraphNodeClass(graph, "Gamma");
 		final var gammaCallerOperationNode = new GraphNodeOperation(graph, "caller");
 		final var gammaCallerBlock = new GraphNodeBlock(graph);
-		final var gammaCallerStatement = new GraphNodeExpressionStatement(graph);
 		final var gammaCallerExpression = new GraphNodeMethodInvocationExpression(graph);
+		final var gammaCallerStatement = new GraphNodeExpressionStatement(graph, gammaCallerExpression);
 		packageNode.has(gammaClassNode);
 		gammaClassNode.has(gammaCallerOperationNode);
 		gammaCallerOperationNode.hasBody(gammaCallerBlock);
 		gammaCallerBlock.has(gammaCallerStatement);
-		gammaCallerStatement.has(gammaCallerExpression);
 		gammaCallerExpression.invokes(alphaFooOperationNode);
 		
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);

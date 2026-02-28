@@ -10,7 +10,9 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 /**
  * A node in a Refactoring Advice Graph that represents a method invocation expression.
  */
-public final class GraphNodeMethodInvocationExpression extends GraphNodeStatementExpression {
+public final class GraphNodeMethodInvocationExpression
+		extends GraphNodeStatementExpression
+		implements GraphNodePrimaryNoNewArrayExpression {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMethodInvocationExpression}.
 	 * @param graph The Refactoring Advice Graph that contains the node.

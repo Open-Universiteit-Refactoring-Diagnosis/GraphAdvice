@@ -249,10 +249,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		betaClassNode.has(betaBarOperationNode);
 		final var betaBarBlockNode = new GraphNodeBlock(graph);
 		betaBarOperationNode.hasBody(betaBarBlockNode);
-		final var betaBarExpressionStatementNode = new GraphNodeExpressionStatement(graph);
-		betaBarBlockNode.has(betaBarExpressionStatementNode);
 		final var betaBarMethodInvocationExpressionNode = new GraphNodeMethodInvocationExpression(graph);
-		betaBarExpressionStatementNode.has(betaBarMethodInvocationExpressionNode);
 		betaBarMethodInvocationExpressionNode.invokes(alphaFooOperationNode);
 		final var betaFooOperationNode =
 				new GraphNodeOperation(
@@ -260,6 +257,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 						"foo"
 				);
 		betaClassNode.has(betaFooOperationNode);
+		final var betaBarExpressionStatementNode = new GraphNodeExpressionStatement(graph, betaBarMethodInvocationExpressionNode);
+		betaBarBlockNode.has(betaBarExpressionStatementNode);
 		
 		// Workflow
 		final var startNode = graph.start();

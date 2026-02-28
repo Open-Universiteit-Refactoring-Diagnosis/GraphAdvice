@@ -9,11 +9,14 @@ import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignmentExpression;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeFieldAccess;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignment;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeLeftHandSide;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodePrimaryExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeStatement;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
  * An edge that represents ownership of a code symbol.
@@ -150,5 +153,27 @@ public final class GraphEdgeHas extends GraphEdge {
 	public GraphEdgeHas(GraphNodeAssignment assignment, GraphNodeAssignmentExpression rightHandSide)
 			throws ArgumentNullException {
 		super(assignment, rightHandSide);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param fieldAccess A node that represents a field access expression.
+	 * @param primaryExpression A node that represents a primary expression.
+	 * @throws ArgumentNullException Thrown if fieldAccess or primaryExpression is null.
+	 */
+	public GraphEdgeHas(GraphNodeFieldAccess fieldAccess, GraphNodePrimaryExpression primaryExpression)
+			throws ArgumentNullException {
+		super(fieldAccess, primaryExpression);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param fieldAccess A node that represents a field access expression.
+	 * @param identifier A node that represents an identifier.
+	 * @throws ArgumentNullException Thrown if fieldAccess or identifier is null.
+	 */
+	public GraphEdgeHas(GraphNodeFieldAccess fieldAccess, GraphNodeIdentifier identifier)
+			throws ArgumentNullException {
+		super(fieldAccess, identifier);
 	}
 }
