@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 
 public final class MultipleEdgesOfSameTypeExceptionTests {
@@ -17,7 +18,8 @@ public final class MultipleEdgesOfSameTypeExceptionTests {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var doubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
-		final var method = new GraphNodeOperation(graph, "testMethod");
+		final var testMethodIdentifier = new GraphNodeIdentifier(graph, "testMethod");
+		final var method = new GraphNodeOperation(graph, testMethodIdentifier);
 		final var affects = doubleDefinition.affects(method);
 		final var exception = new MultipleEdgesOfSameTypeException(affects);
 		

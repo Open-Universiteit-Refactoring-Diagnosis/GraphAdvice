@@ -30,6 +30,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -62,7 +63,8 @@ public final class GraphPainterTests {
 		// Arrange graph code
 		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
 		final var classAlpha = new GraphNodeClass(graph, "Alpha");
-		final var operationAlphaAbc = new GraphNodeOperation(graph, "abc");
+		final var abcIdentifier = new GraphNodeIdentifier(graph, "abc");
+		final var operationAlphaAbc = new GraphNodeOperation(graph, abcIdentifier);
 		final var attributeAlphaFoo = new GraphNodeAttribute(graph, "foo");
 		final var attributeAlphaBar = new GraphNodeAttribute(graph, "bar");
 		packageRefactoring.has(classAlpha);
@@ -70,7 +72,8 @@ public final class GraphPainterTests {
 		classAlpha.has(attributeAlphaFoo);
 		classAlpha.has(attributeAlphaBar);
 		final var classBeta = new GraphNodeClass(graph, "Beta");
-		final var operationBetaAbc2 = new GraphNodeOperation(graph, "abc2");
+		final var abc2Identifier = new GraphNodeIdentifier(graph, "abc2");
+		final var operationBetaAbc2 = new GraphNodeOperation(graph, abc2Identifier);
 		final var attributeBetaMyField = new GraphNodeAttribute(graph, "myField");
 		packageRefactoring.has(classBeta);
 		classBeta.has(operationBetaAbc2);
@@ -142,7 +145,8 @@ public final class GraphPainterTests {
 		// Arrange graph code
 		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
 		final var classAlpha = new GraphNodeClass(graph, "Alpha");
-		final var operationAlphaAbc = new GraphNodeOperation(graph, "abc");
+		final var abcIdentifier = new GraphNodeIdentifier(graph, "abc");
+		final var operationAlphaAbc = new GraphNodeOperation(graph, abcIdentifier);
 		final var attributeAlphaFoo = new GraphNodeAttribute(graph, "foo");
 		final var attributeAlphaBar = new GraphNodeAttribute(graph, "bar");
 		packageRefactoring.has(classAlpha);
@@ -150,7 +154,8 @@ public final class GraphPainterTests {
 		classAlpha.has(attributeAlphaFoo);
 		classAlpha.has(attributeAlphaBar);
 		final var classBeta = new GraphNodeClass(graph, "Beta");
-		final var operationBetaAbc2 = new GraphNodeOperation(graph, "abc2");
+		final var abc2Identifier = new GraphNodeIdentifier(graph, "abc2");
+		final var operationBetaAbc2 = new GraphNodeOperation(graph, abc2Identifier);
 		final var attributeBetaMyField = new GraphNodeAttribute(graph, "myField");
 		packageRefactoring.has(classBeta);
 		classBeta.has(operationBetaAbc2);

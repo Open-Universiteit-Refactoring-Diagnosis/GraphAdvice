@@ -17,6 +17,7 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskChangedNestedRelationship;
@@ -60,10 +61,11 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 						"Alpha"
 				);
 		packageNode.has(alphaClassNode);
-		final var fooOperationNode = new GraphNodeOperation(graph, "foo");
+		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
+		final var fooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
 		alphaClassNode.has(fooOperationNode);
 
-		final var fooNewOperationNode = new GraphNodeOperation(graph, "foo");
+		final var fooNewOperationNode = new GraphNodeOperation(graph, fooIdentifier);
 		alphaClassNode.has(fooNewOperationNode);
 		
 		// Workflow
@@ -96,7 +98,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 						"Alpha"
 				);
 		packageNode.has(classNodeAlpha);
-		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, "foo");
+		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
+		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, fooIdentifier);
 		classNodeAlpha.has(operationNodeAlphaFoo);
 		
 		final var classNodeBeta =
@@ -106,7 +109,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 				);
 		packageNode.has(classNodeBeta);
 		classNodeBeta.is(classNodeAlpha);
-		final var operationNodeBetaFoo = new GraphNodeOperation(graph, "foo");
+		final var operationNodeBetaFoo = new GraphNodeOperation(graph, fooIdentifier);
 		classNodeBeta.has(operationNodeBetaFoo);
 		
 		// Workflow
@@ -139,7 +142,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 						"Alpha"
 				);
 		packageNode.has(classNodeAlpha);
-		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, "foo");
+		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
+		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, fooIdentifier);
 		classNodeAlpha.has(operationNodeAlphaFoo);
 		// Code: Beta
 		final var classNodeBeta =
@@ -149,7 +153,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 				);
 		packageNode.has(classNodeBeta);
 		classNodeBeta.is(classNodeAlpha);
-		final var operationNodeBetaFoo = new GraphNodeOperation(graph, "foo");
+		final var operationNodeBetaFoo = new GraphNodeOperation(graph, fooIdentifier);
 		classNodeBeta.has(operationNodeBetaFoo);
 		
 		// Workflow
@@ -175,32 +179,33 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var packageNode =
 				new GraphNodePackage(graph, "nl.ou.refactoring.dangers.precedingOverload");
 		final var alphaClassNode =
-				new GraphNodeClass(
-						graph,
-						"Alpha"
-				);
+			new GraphNodeClass(
+				graph,
+				"Alpha"
+			);
 		packageNode.has(alphaClassNode);
 		final var operationNodeFooIntParameters = new ArrayList<GraphNodeOperationParameter>();
 		final var operationNodeFooIntParameter = new GraphNodeOperationParameter(graph, "number");
 		operationNodeFooIntParameter.is(intType);
 		operationNodeFooIntParameters.add(operationNodeFooIntParameter);
+		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
 		final var operationNodeFooInt =
-				new GraphNodeOperation(
-						graph,
-						"foo",
-						operationNodeFooIntParameters
-				);
+			new GraphNodeOperation(
+				graph,
+				fooIdentifier,
+				operationNodeFooIntParameters
+			);
 		alphaClassNode.has(operationNodeFooInt);
 		final var operationNodeFooDoubleParameters = new ArrayList<GraphNodeOperationParameter>();
 		final var operationNodeFooDoubleParameter = new GraphNodeOperationParameter(graph, "number");
 		operationNodeFooDoubleParameter.is(doubleType);
 		operationNodeFooDoubleParameters.add(operationNodeFooDoubleParameter);
 		final var operationNodeFooDouble =
-				new GraphNodeOperation(
-						graph,
-						"foo",
-						operationNodeFooDoubleParameters
-				);
+			new GraphNodeOperation(
+				graph,
+				fooIdentifier,
+				operationNodeFooDoubleParameters
+			);
 		alphaClassNode.has(operationNodeFooDouble);
 		
 		// Workflow
@@ -222,40 +227,42 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		
 		// Code
 		final var packageNode =
-				new GraphNodePackage(graph, "nl.ou.refactoring.dangers.changedNestedRelationship");
+			new GraphNodePackage(graph, "nl.ou.refactoring.dangers.changedNestedRelationship");
 		final var alphaClassNode =
-				new GraphNodeClass(
-						graph,
-						"Alpha"
-				);
+			new GraphNodeClass(
+				graph,
+				"Alpha"
+			);
 		packageNode.has(alphaClassNode);
+		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
 		final var alphaFooOperationNode =
-				new GraphNodeOperation(
-						graph,
-						"foo"
-				);
+			new GraphNodeOperation(
+				graph,
+				fooIdentifier
+			);
 		alphaClassNode.has(alphaFooOperationNode);
 		final var betaClassNode =
-				new GraphNodeClass(
-						graph,
-						"Beta"
-				);
+			new GraphNodeClass(
+				graph,
+				"Beta"
+			);
 		alphaClassNode.has(betaClassNode);
+		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");
 		final var betaBarOperationNode =
-				new GraphNodeOperation(
-						graph,
-						"bar"
-				);
+			new GraphNodeOperation(
+				graph,
+				barIdentifier
+			);
 		betaClassNode.has(betaBarOperationNode);
 		final var betaBarBlockNode = new GraphNodeBlock(graph);
 		betaBarOperationNode.hasBody(betaBarBlockNode);
 		final var betaBarMethodInvocationExpressionNode = new GraphNodeMethodInvocationExpression(graph);
 		betaBarMethodInvocationExpressionNode.invokes(alphaFooOperationNode);
 		final var betaFooOperationNode =
-				new GraphNodeOperation(
-						graph,
-						"foo"
-				);
+			new GraphNodeOperation(
+				graph,
+				fooIdentifier
+			);
 		betaClassNode.has(betaFooOperationNode);
 		final var betaBarExpressionStatementNode = new GraphNodeExpressionStatement(graph, betaBarMethodInvocationExpressionNode);
 		betaBarBlockNode.has(betaBarExpressionStatementNode);

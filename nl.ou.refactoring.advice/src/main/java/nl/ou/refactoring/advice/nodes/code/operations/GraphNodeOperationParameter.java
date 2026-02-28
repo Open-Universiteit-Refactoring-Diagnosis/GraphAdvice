@@ -5,6 +5,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.edges.code.GraphEdgeList;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
@@ -27,6 +28,22 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 		super(graph);
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(parameterName, "parameterName");
 		this.parameterName = parameterName;
+	}
+	
+	/**
+	 * Gets the node that represents the next Operation Parameter.
+	 * @return The node that represents the next Operation Parameter, or null if there is none.
+	 */
+	public GraphNodeOperationParameter getNext() {
+		return
+			this
+				.getEdges(GraphEdgeList.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeOperationParameter)
+				.map(node -> (GraphNodeOperationParameter)node)
+				.findAny()
+				.orElse(null);
 	}
 	
 	/**
@@ -66,6 +83,21 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 				typeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
 				GraphEdgeIs.class);
+	}
+	
+	/**
+	 * Indicates that the node that represents an Operation Parameter is the next node in a list.
+	 * @param operationParameterNode The node that represents a next Operation Parameter.
+	 * @return An edge that indicates that the next node that represents an Operation Parameter follows this node in an ordered list.
+	 */
+	public GraphEdgeList hasNext(GraphNodeOperationParameter operationParameterNode) {
+		ArgumentGuard.requireNotNull(operationParameterNode, "operationParameterNode");
+		return this.graph.getOrAddEdge(
+			this,
+			operationParameterNode,
+			(source, destination) -> new GraphEdgeList(source, destination),
+			GraphEdgeList.class
+		);
 	}
 	
 	@Override

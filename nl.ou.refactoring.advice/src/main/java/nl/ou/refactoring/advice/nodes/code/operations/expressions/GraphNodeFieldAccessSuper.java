@@ -35,14 +35,6 @@ public class GraphNodeFieldAccessSuper extends GraphNodeBase implements GraphNod
 				GraphEdgeHas.class
 			);
 	}
-	
-	/**
-	 * Gets the node that represents the identifier of the field that is accessed.
-	 * @return
-	 */
-	public GraphNodeIdentifier getIdentifier() {
-		return (GraphNodeIdentifier)this.identifierEdge.getDestinationNode();
-	}
 
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
@@ -52,6 +44,11 @@ public class GraphNodeFieldAccessSuper extends GraphNodeBase implements GraphNod
 				graph,
 				(GraphNodeIdentifier)this.identifierEdge.getDestinationNode().clone(graph)
 			);
+	}
+	
+	@Override
+	public GraphNodeIdentifier getIdentifier() {
+		return (GraphNodeIdentifier)this.identifierEdge.getDestinationNode();
 	}
 	
 	@Override

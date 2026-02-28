@@ -8,6 +8,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignmentExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeFieldAccess;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignment;
@@ -98,6 +99,28 @@ public final class GraphEdgeHas extends GraphEdge {
 	public GraphEdgeHas(GraphNodeClass classNode, GraphNodeOperation operationNode)
 			throws ArgumentNullException {
 		super(classNode, operationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param operationNode The node that represents the operation.
+	 * @param operationName The node that represents the operation name.
+	 * @throws ArgumentNullException Thrown if operationNode or operationName is null.
+	 */
+	public GraphEdgeHas(GraphNodeOperation operationNode, GraphNodeIdentifier operationName)
+			throws ArgumentNullException {
+		super(operationNode, operationName);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param operationNode The node that represents the operation.
+	 * @param operationParameter The node that represents the first operation parameter.
+	 * @throws ArgumentNullException Thrown if operationNode or operationParameter is null.
+	 */
+	public GraphEdgeHas(GraphNodeOperation operationNode, GraphNodeOperationParameter operationParameter)
+			throws ArgumentNullException {
+		super(operationNode, operationParameter);
 	}
 	
 	/**

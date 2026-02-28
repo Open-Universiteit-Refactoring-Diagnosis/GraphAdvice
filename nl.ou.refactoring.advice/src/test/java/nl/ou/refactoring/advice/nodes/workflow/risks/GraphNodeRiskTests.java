@@ -24,6 +24,7 @@ import io.github.classgraph.ClassInfo;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
@@ -81,8 +82,10 @@ public final class GraphNodeRiskTests {
 		
 		final var graphTest = new Graph("Affected Test");
 		final var graphTestNodeRisk = new GraphNodeRiskDoubleDefinition(graphTest);
-		final var graphTestNodeOperation1 = new GraphNodeOperation(graphTest, "Test 1");
-		final var graphTestNodeOperation2 = new GraphNodeOperation(graphTest, "Test 2");
+		final var test1Identifier = new GraphNodeIdentifier(graphTest, "test1");
+		final var graphTestNodeOperation1 = new GraphNodeOperation(graphTest, test1Identifier);
+		final var test2Identifier = new GraphNodeIdentifier(graphTest, "test2");
+		final var graphTestNodeOperation2 = new GraphNodeOperation(graphTest, test2Identifier);
 		graphTestNodeRisk.affects(graphTestNodeOperation1);
 		graphTestNodeRisk.affects(graphTestNodeOperation2);
 		argumentsList.add(Arguments.of(graphTestNodeRisk, Set.of(graphTestNodeOperation1, graphTestNodeOperation2)));

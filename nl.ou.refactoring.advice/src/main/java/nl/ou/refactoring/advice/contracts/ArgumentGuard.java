@@ -54,8 +54,11 @@ public final class ArgumentGuard {
 	 */
 	public static void requirePattern(String value, Pattern pattern, String parameterName)
 			throws ArgumentPatternException {
+		if (value == null) {
+			throw new ArgumentPatternException(pattern, parameterName);
+		}
 		final var matcher = pattern.matcher(value);
-		if (!matcher.find()) {
+		if (!matcher.matches()) {
 			throw new ArgumentPatternException(pattern, parameterName);
 		}
 	}

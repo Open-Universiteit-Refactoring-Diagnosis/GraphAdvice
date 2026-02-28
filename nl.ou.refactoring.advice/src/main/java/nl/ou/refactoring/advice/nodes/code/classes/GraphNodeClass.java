@@ -19,6 +19,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
  * A node in a Refactoring Advice Graph that represents a Class.
@@ -330,13 +331,12 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @param operationParameters The parameters of the operation.
 	 * @return The operation with operationName and operationParameters, if found, otherwise null.
 	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
-	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
 	public GraphNodeOperation getOperationNode(
-			String operationName,
+			GraphNodeIdentifier operationName,
 			List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
+		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
 		return
 			this
@@ -344,8 +344,9 @@ public final class GraphNodeClass extends GraphNodeCode {
 				.stream()
 				.filter(
 					node ->
-					node.getOperationName().equals(operationName) &&
-					node.getOperationParameters().equals(operationParameters))
+					node.getOperationName().equals(operationName.getIdentifier()) &&
+					node.getOperationParameters().equals(operationParameters)
+				)
 				.findAny()
 				.orElse(null);
 	}
@@ -373,13 +374,12 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @param operationParameters The parameters of the operation.
 	 * @return The operation with operationName and operationParameters, if found, otherwise a newly created operation node with operationName and operationParameters.
 	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
-	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
 	public GraphNodeOperation computeOperationNode(
-			String operationName,
+			GraphNodeIdentifier operationName,
 			List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
+		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
 		var operationNode = this.getOperationNode(operationName, operationParameters);
 		if (operationNode == null) {

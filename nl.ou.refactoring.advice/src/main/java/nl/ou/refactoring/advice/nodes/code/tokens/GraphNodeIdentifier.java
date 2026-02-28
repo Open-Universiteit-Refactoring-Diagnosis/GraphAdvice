@@ -17,7 +17,10 @@ public final class GraphNodeIdentifier
 		extends GraphNodeBase
 		implements GraphNodeExpressionName
 {
-	private final static Pattern IDENTIFIER_PATTERN = Pattern.compile("^[a-zA-Z_$][a-zA-Z\\\\d_$]*");
+	/**
+	 * The pattern for a valid Java identifier.
+	 */
+	private final static Pattern IDENTIFIER_PATTERN = Pattern.compile("^[a-zA-Z_$][a-zA-Z\\d_$]*$");
 	
 	/**
 	 * The identifier value.

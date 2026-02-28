@@ -39,3 +39,6 @@
 
 ## 0.5.0
 
+- Added code nodes for representing field access.
+- Introduce formal Identifier node for code symbols such as attributes/fields and operations/methods.
+- Operation Parameters now (also) a chain of nodes.

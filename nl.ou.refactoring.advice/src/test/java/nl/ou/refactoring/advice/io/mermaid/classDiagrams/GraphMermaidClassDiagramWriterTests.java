@@ -22,6 +22,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -55,7 +56,8 @@ public final class GraphMermaidClassDiagramWriterTests {
 		final var classAlpha = new GraphNodeClass(graph, "Alpha");
 		final var attributeAlphaFoo = new GraphNodeAttribute(graph, "foo");
 		final var attributeAlphaBar = new GraphNodeAttribute(graph, "bar");
-		final var operationAlphaAbc = new GraphNodeOperation(graph, "abc");
+		final var abcIdentifier = new GraphNodeIdentifier(graph, "abc");
+		final var operationAlphaAbc = new GraphNodeOperation(graph, abcIdentifier);
 		packageRefactoring.has(classAlpha);
 		classAlpha.has(operationAlphaAbc);
 		classAlpha.has(attributeAlphaFoo);
@@ -65,7 +67,8 @@ public final class GraphMermaidClassDiagramWriterTests {
 		operationAlphaAbc.hasReturnType(typeString);
 		final var classBeta = new GraphNodeClass(graph, "Beta");
 		final var attributeBetaMyField = new GraphNodeAttribute(graph, "myField");
-		final var operationBetaAbc2 = new GraphNodeOperation(graph, "abc2");
+		final var abc2Identifier = new GraphNodeIdentifier(graph, "abc2");
+		final var operationBetaAbc2 = new GraphNodeOperation(graph, abc2Identifier);
 		packageRefactoring.has(classBeta);
 		classBeta.has(operationBetaAbc2);
 		classBeta.has(attributeBetaMyField);

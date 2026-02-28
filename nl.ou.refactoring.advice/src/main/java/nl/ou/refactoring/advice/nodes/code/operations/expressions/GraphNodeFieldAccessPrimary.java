@@ -63,14 +63,6 @@ public final class GraphNodeFieldAccessPrimary extends GraphNodeBase implements 
 		return (GraphNodePrimaryExpression)this.primaryExpressionEdge.getDestinationNode();
 	}
 	
-	/**
-	 * Gets the node that represents the identifier of the field that is accessed.
-	 * @return The node that represents the identifier of the field that is accessed.
-	 */
-	public GraphNodeIdentifier getIdentifier() {
-		return (GraphNodeIdentifier)this.identifierEdge.getDestinationNode();
-	}
-	
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
@@ -79,6 +71,11 @@ public final class GraphNodeFieldAccessPrimary extends GraphNodeBase implements 
 			(GraphNodePrimaryExpression)this.primaryExpressionEdge.getDestinationNode().clone(graph),
 			(GraphNodeIdentifier)this.identifierEdge.getDestinationNode().clone(graph)
 		);
+	}
+	
+	@Override
+	public GraphNodeIdentifier getIdentifier() {
+		return (GraphNodeIdentifier)this.identifierEdge.getDestinationNode();
 	}
 
 	@Override
