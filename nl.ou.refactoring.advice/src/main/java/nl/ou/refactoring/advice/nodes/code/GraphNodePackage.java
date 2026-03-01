@@ -242,4 +242,9 @@ public final class GraphNodePackage extends GraphNodeCode {
 	public String getCaption() {
 		return this.getPackageName();
 	}
+	
+	@Override
+	public String toString() {
+		return this.getCaption();
+	}
 }

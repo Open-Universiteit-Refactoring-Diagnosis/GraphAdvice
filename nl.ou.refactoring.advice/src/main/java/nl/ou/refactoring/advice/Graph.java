@@ -74,16 +74,29 @@ public final class Graph implements Cloneable {
 					.orElse(null);
 	}
 	
+	/**
+	 * Gets a code node based on its code path.
+	 * @param <TNode> The type of node to retrieve.
+	 * @param path The path to the code node.
+	 * @return The node at the specified path, otherwise an empty {@link Optional}.
+	 * @throws ArgumentNullException Thrown if path is null.
+	 * @throws ArgumentEmptyException Thrown if path is empty or contains only white spaces.
+	 */
 	public <TNode extends GraphNodeCode> Optional<TNode> getNode(String path)
 			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(path, "path");
-		final var pathComponents = new ArrayDeque<String>();
-		pathComponents.addAll(List.of(path.split(".")));
+		final var pathComponents = new ArrayDeque<String>(List.of(path.split("\\.")));
+		String pathComponentName = pathComponents.pop();
 		GraphNodeCode nodeCurrent =
 			this
-				.getNodes(GraphNodePackage.class)
+				.matrix
+				.keySet()
 				.stream()
-				.filter(node -> node.getPackageName() == pathComponents.pop())
+				.filter(
+					node -> node instanceof GraphNodePackage &&
+					((GraphNodePackage)node).getPackageName().equals(pathComponentName)
+				)
+				.map(node -> (GraphNodeCode)node)
 				.findAny()
 				.orElse(null);
 		while (pathComponents.size() > 0 && nodeCurrent != null) {
@@ -94,9 +107,9 @@ public final class Graph implements Cloneable {
 					.stream()
 					.map(edge -> edge.getDestinationNode())
 					.filter(node -> switch (node) {
-						case GraphNodePackage packageNode -> packageNode.getPackageName() == pathComponent;
-						case GraphNodeClass classNode -> classNode.getClassName() == pathComponent;
-						case GraphNodeInterface interfaceNode -> interfaceNode.getInterfaceName() == pathComponent;
+						case GraphNodePackage packageNode -> packageNode.getPackageName().equals(pathComponent);
+						case GraphNodeClass classNode -> classNode.getClassName().equals(pathComponent);
+						case GraphNodeInterface interfaceNode -> interfaceNode.getInterfaceName().equals(pathComponent);
 						default -> false;
 					})
 					.findAny()

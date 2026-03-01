@@ -42,3 +42,5 @@
 - Added code nodes for representing field access.
 - Introduce formal Identifier node for code symbols such as attributes/fields and operations/methods.
 - Operation Parameters now (also) a chain of nodes.
+- Packages are now trees within the Refactoring Advice Graph.
+- Get nodes from a graph by a path specification.
