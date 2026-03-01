@@ -59,7 +59,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 					.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNode = new GraphNodePackage(graph, "nl.ou.refactoring.moveField.classToClass");
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveField.classToClass");
 		
 		final var alphaClassNode = new GraphNodeClass(graph, "Alpha");
 		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
@@ -112,7 +112,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 				.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNode = new GraphNodePackage(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
 		
 		final var alphaClassNode = new GraphNodeClass(graph, "Alpha");
 		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
@@ -169,7 +169,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 				.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNode = new GraphNodePackage(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
 		
 		final var alphaClassNode = new GraphNodeClass(graph, "Alpha");
 		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");

@@ -74,7 +74,7 @@ public class GraphTextConcatenationWriterWriteTests {
 	private static Graph createGraphMoveMethod() {
 		final var graph = new Graph("Move method");
 		
-		final var packageTest = new GraphNodePackage(graph, "nl.ou.refactoring.test");
+		final var packageTest = GraphNodePackage.parse(graph, "nl.ou.refactoring.test");
 		final var classAlphaBefore =
 			new GraphNodeClass(
 				graph,

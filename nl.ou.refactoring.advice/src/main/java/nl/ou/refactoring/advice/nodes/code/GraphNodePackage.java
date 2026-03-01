@@ -1,6 +1,8 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,25 +15,60 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
  * Represents a node in a Refactoring Advice Graph that represents a programme code package that is affected by a refactoring.
  */
 public final class GraphNodePackage extends GraphNodeCode {
-	private final String packageName;
+	/**
+	 * The edge to the package name.
+	 */
+	private final GraphEdgeHas packageNameEdge;
 	
 	/**
 	 * Initialises a new instance of {@link GraphNodePackage}.
 	 * @param graph The graph that contains the node.
 	 * @param packageName The name of the package that is affected by a refactoring.
 	 * @throws ArgumentNullException Thrown if graph or packageName is null.
-	 * @throws ArgumentEmptyException Thrown if packageName is empty or contains only white spaces.
 	 */
-	public GraphNodePackage(Graph graph, String packageName)
+	public GraphNodePackage(Graph graph, GraphNodeIdentifier packageName)
 			throws ArgumentNullException, ArgumentEmptyException {
 		super(graph);
+		ArgumentGuard.requireNotNull(packageName, "packageName");
+		this.packageNameEdge =
+			this
+				.graph
+				.getOrAddEdge(
+					this,
+					packageName,
+					(source, destination) -> new GraphEdgeHas(source, destination),
+					GraphEdgeHas.class
+				);
+	}
+	
+	/**
+	 * Parses a tree of package nodes from a package's name.
+	 * @param graph The graph that contains the packages.
+	 * @param packageName The name of the package.
+	 * @return The node that represents the package root.
+	 * @throws ArgumentNullException Thrown if graph or packageName is null.
+	 * @throws ArgumentEmptyException Thrown if packageName is empty or contains only white spaces.
+	 */
+	public static GraphNodePackage parse(Graph graph, String packageName)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(packageName, "packageName");
-		this.packageName = packageName;
+		final var pathComponents = new ArrayDeque<String>(List.of(packageName.split("\\.")));
+		final var packageNodeRoot = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, pathComponents.pop()));
+		var packageNode = packageNodeRoot;
+		while (pathComponents.size() > 0) {
+			final var packageNameComponent = new GraphNodeIdentifier(graph, pathComponents.pop());
+			final var packageNodeNext = new GraphNodePackage(graph, packageNameComponent);
+			packageNode.has(packageNodeNext);
+			packageNode = packageNodeNext;
+		}
+		return packageNodeRoot;
 	}
 	
 	/**
@@ -39,7 +76,37 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 * @return The name of the package that is affected by a refactoring.
 	 */
 	public String getPackageName() {
-		return this.packageName;
+		return this.packageNameEdge.getDestinationNode().toString();
+	}
+	
+	/**
+	 * Gets the full package name, including the ancestor packages.
+	 * @return The full package name, including the ancestor packages.
+	 */
+	public String getPackageNameFull() {
+		Optional<GraphNodePackage> packageNodeCurrent = Optional.of(this);
+		final var packageNameStack = new ArrayDeque<String>();
+		while (packageNodeCurrent.isPresent()) {
+			packageNameStack.push(packageNodeCurrent.get().getPackageName());
+			packageNodeCurrent = packageNodeCurrent.get().getParent();
+		}
+		return String.join(".", packageNameStack);
+	}
+	
+	/**
+	 * Indicates that the Package contains a child Package.
+	 * @param packageNode The node that represents the child package.
+	 * @return The edge that indicates that the specified node represents a child package.
+	 * @throws ArgumentNullException Thrown if packageNode is null.
+	 */
+	public GraphEdgeHas has(GraphNodePackage packageNode)
+			throws ArgumentNullException {
+		return this.graph.getOrAddEdge(
+			this,
+			packageNode,
+			(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
+			GraphEdgeHas.class
+		);
 	}
 	
 	/**
@@ -134,10 +201,28 @@ public final class GraphNodePackage extends GraphNodeCode {
 		return classNode;
 	}
 	
+	/**
+	 * Gets the node that represents the parent package.
+	 * @return The node that represents the parent package, or an empty {@link Optional<GraphNodePackage>} if this is the root package.
+	 */
+	public Optional<GraphNodePackage> getParent() {
+		return
+			this
+				.getEdgesIncoming(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.filter(node -> node instanceof GraphNodePackage)
+				.map(node -> (GraphNodePackage)node)
+				.findAny();
+	}
+	
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		return new GraphNodePackage(graph, this.packageName);
+		return new GraphNodePackage(
+			graph,
+			(GraphNodeIdentifier)this.packageNameEdge.getDestinationNode().clone(graph)
+		);
 	}
 	
 	@Override
@@ -155,6 +240,6 @@ public final class GraphNodePackage extends GraphNodeCode {
 
 	@Override
 	public String getCaption() {
-		return this.packageName;
+		return this.getPackageName();
 	}
 }

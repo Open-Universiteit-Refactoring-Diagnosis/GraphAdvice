@@ -50,11 +50,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("AM-1 Double Definition");
 		
 		// Code
-		final var packageNode =
-				new GraphNodePackage(
-						graph,
-						"nl.ou.refactoring.doubleDefinition"
-				);
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.doubleDefinition");
 		final var alphaClassNode =
 				new GraphNodeClass(
 						graph,
@@ -86,11 +82,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("AM-2 Forced Override");
 		
 		// Code
-		final var packageNode =
-				new GraphNodePackage(
-						graph,
-						"nl.ou.refactoring.dangers.forcedOverride"
-				);
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.forcedOverride");
 		
 		final var classNodeAlpha =
 				new GraphNodeClass(
@@ -130,11 +122,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("AM-3 Imposed Specification");
 		
 		// Code
-		final var packageNode =
-				new GraphNodePackage(
-						graph,
-						"nl.ou.refactoring.dangers.imposedSpecification"
-				);
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.imposedSpecification");
+
 		// Code: Alpha
 		final var classNodeAlpha =
 				new GraphNodeClass(
@@ -176,8 +165,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		// Code
 		final var intType = new GraphNodeType(graph, "int");
 		final var doubleType = new GraphNodeType(graph, "double");
-		final var packageNode =
-				new GraphNodePackage(graph, "nl.ou.refactoring.dangers.precedingOverload");
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.precedingOverload");
 		final var alphaClassNode =
 			new GraphNodeClass(
 				graph,
@@ -226,8 +214,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("AM-5 Changed Nested Relationship");
 		
 		// Code
-		final var packageNode =
-			new GraphNodePackage(graph, "nl.ou.refactoring.dangers.changedNestedRelationship");
+		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.changedNestedRelationship");
 		final var alphaClassNode =
 			new GraphNodeClass(
 				graph,

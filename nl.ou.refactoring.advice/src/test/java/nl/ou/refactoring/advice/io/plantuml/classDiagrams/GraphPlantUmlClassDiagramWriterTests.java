@@ -56,7 +56,7 @@ public final class GraphPlantUmlClassDiagramWriterTests {
 		final var graph = new Graph("Move Method");
 		
 		// Arrange graph code
-		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
+		final var packageRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
 		final var typeInt = new GraphNodeType(graph, "int");
 		final var typeString = new GraphNodeType(graph, "String");
 		final var classAlpha = new GraphNodeClass(graph, "Alpha");

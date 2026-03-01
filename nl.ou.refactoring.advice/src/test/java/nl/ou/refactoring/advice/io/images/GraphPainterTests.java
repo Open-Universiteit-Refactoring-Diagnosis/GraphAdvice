@@ -61,7 +61,7 @@ public final class GraphPainterTests {
 		final var graph = new Graph("Move Method");
 		
 		// Arrange graph code
-		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
+		final var packageRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
 		final var classAlpha = new GraphNodeClass(graph, "Alpha");
 		final var abcIdentifier = new GraphNodeIdentifier(graph, "abc");
 		final var operationAlphaAbc = new GraphNodeOperation(graph, abcIdentifier);
@@ -143,7 +143,7 @@ public final class GraphPainterTests {
 		final var graph = new Graph("Move Method");
 		
 		// Arrange graph code
-		final var packageRefactoring = new GraphNodePackage(graph, "ou.refactoring");
+		final var packageRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
 		final var classAlpha = new GraphNodeClass(graph, "Alpha");
 		final var abcIdentifier = new GraphNodeIdentifier(graph, "abc");
 		final var operationAlphaAbc = new GraphNodeOperation(graph, abcIdentifier);

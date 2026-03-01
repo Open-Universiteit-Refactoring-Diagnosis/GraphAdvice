@@ -26,6 +26,28 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 public final class GraphEdgeHas extends GraphEdge {
 	/**
 	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param packageNode The node that represents a package.
+	 * @param identifierNode The identifier of the package.
+	 * @throws ArgumentNullException Thrown if packageNode or identifierNode is null.
+	 */
+	public GraphEdgeHas(GraphNodePackage packageNode, GraphNodeIdentifier identifierNode)
+			throws ArgumentNullException {
+		super(packageNode, identifierNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param packageNodeParent The node that represents the parent package.
+	 * @param packageNodeChild The node that represents the child package.
+	 * @throws ArgumentNullException Thrown if packageNodeParent or packageNodeChild is null.
+	 */
+	public GraphEdgeHas(GraphNodePackage packageNodeParent, GraphNodePackage packageNodeChild)
+			throws ArgumentNullException {
+		super(packageNodeParent, packageNodeChild);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
 	 * @param packageNode A Package node that owns the Interface node.
 	 * @param interfaceNode An Interface node that is owned by the Package node.
 	 * @throws ArgumentNullException Thrown if packageNode or interfaceNode is null.

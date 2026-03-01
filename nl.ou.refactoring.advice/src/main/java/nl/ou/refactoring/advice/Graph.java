@@ -1,9 +1,12 @@
 package nl.ou.refactoring.advice;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,7 +16,12 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
+import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
@@ -64,6 +72,40 @@ public final class Graph implements Cloneable {
 					.filter(node -> node.getId() == nodeIdentifier)
 					.findFirst()
 					.orElse(null);
+	}
+	
+	public <TNode extends GraphNodeCode> Optional<TNode> getNode(String path)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(path, "path");
+		final var pathComponents = new ArrayDeque<String>();
+		pathComponents.addAll(List.of(path.split(".")));
+		GraphNodeCode nodeCurrent =
+			this
+				.getNodes(GraphNodePackage.class)
+				.stream()
+				.filter(node -> node.getPackageName() == pathComponents.pop())
+				.findAny()
+				.orElse(null);
+		while (pathComponents.size() > 0 && nodeCurrent != null) {
+			final var pathComponent = pathComponents.pop();
+			nodeCurrent =
+				(GraphNodeCode)nodeCurrent
+					.getEdges(GraphEdgeHas.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> switch (node) {
+						case GraphNodePackage packageNode -> packageNode.getPackageName() == pathComponent;
+						case GraphNodeClass classNode -> classNode.getClassName() == pathComponent;
+						case GraphNodeInterface interfaceNode -> interfaceNode.getInterfaceName() == pathComponent;
+						default -> false;
+					})
+					.findAny()
+					.orElse(null);
+			if (pathComponents.size() == 0 && nodeCurrent != null) {
+				return Optional.of((TNode)nodeCurrent);
+			}
+		}
+		return Optional.ofNullable(null); // not found
 	}
 	
 	/**

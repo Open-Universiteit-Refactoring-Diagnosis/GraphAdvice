@@ -1,5 +1,10 @@
 package nl.ou.refactoring.advice.contracts;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.regex.Pattern;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +69,36 @@ public class ArgumentGuardTests {
 		final String valueValid = "valid";
 		Assertions.assertDoesNotThrow(() -> {
 			ArgumentGuard.requireNotNullEmptyOrWhiteSpace(valueValid, "valueValid");
+		});
+	}
+	
+	@Test
+	@DisplayName("Should require a pattern for a parameter value and succeed with a valid value")
+	public void requirePatternSucceedsTest() {
+		final var value = "abc123";
+		final var pattern = Pattern.compile("^[a-z0-9]*$");
+		assertDoesNotThrow(() -> {
+			ArgumentGuard.requirePattern(value, pattern, "test");
+		});
+	}
+	
+	@Test
+	@DisplayName("Should require a pattern for a parameter value and fail with an invalid value")
+	public void requirePatternFailsTest() {
+		final var value = "abc 123";
+		final var pattern = Pattern.compile("^[a-z0-9]*$");
+		assertThrows(ArgumentPatternException.class, () -> {
+			ArgumentGuard.requirePattern(value, pattern, "test");
+		});
+	}
+	
+	@Test
+	@DisplayName("Should require a pattern for a parameter value and fail with a null value")
+	public void requirePatternFailsWithNullTest() {
+		final String value = null;
+		final var pattern = Pattern.compile("^[a-z0-9]*$");
+		assertThrows(ArgumentPatternException.class, () -> {
+			ArgumentGuard.requirePattern(value, pattern, "test");
 		});
 	}
 }

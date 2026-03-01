@@ -5,12 +5,15 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
  * A node in a Refactoring Advice Graph that represents a field access expression.
  */
-public final class GraphNodeFieldAccessPrimary extends GraphNodeBase implements GraphNodeFieldAccess {
+public final class GraphNodeFieldAccessPrimary
+		extends GraphNodeCode
+		implements GraphNodeFieldAccess {
 	/**
 	 * The "has" relationship with the node that represents the primary expression.
 	 */
