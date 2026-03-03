@@ -1,19 +1,62 @@
 package nl.ou.refactoring.advice.io.javaParser;
 
-import java.io.StringReader;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
+import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 
 public final class GraphJavaReaderTests {
-	@Test
-	@DisplayName("Should read Java code to a graph")
-	public void readTest() {
+	private static Path OUTPUT_DIR;
+
+	@BeforeAll
+	static void setUp() throws IOException {
+		OUTPUT_DIR = Paths.get("target", "test-output", "javaReader");
+		Files.createDirectories(OUTPUT_DIR);
+	}
+	
+	@DisplayName("Should read Java code and convert it to code nodes")
+	@ParameterizedTest
+	@ArgumentsSource(GraphJavaReaderTestsArgumentsProvider.class)
+	public void readTest(String javaCode) throws ArgumentNullException, GraphPathSegmentInvalidException {
 		final var graph = new Graph("Refactoring test");
-		final var reader = new StringReader("package nl.ou.refactoring;\r\npublic class Test { }");
+		final var reader = new StringReader(javaCode);
 		final var javaReader = new GraphJavaReader(graph, reader);
 		javaReader.read();
+		
+	    final var refactoringName = graph.getRefactoringName();
+	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");
+	    
+	    // Flowchart (graph)
+	    try (
+	    	final var mermaidFlowchartStringWriter =
+	    		new StringWriter();
+	    	final var mermaidFlowchartBufferedWriter =
+	    		new BufferedWriter(new FileWriter(mermaidFlowchartFilePath.toFile()));
+	    ) {
+	    	new GraphMermaidFlowchartWriter(
+	    		mermaidFlowchartStringWriter,
+	    		GraphMermaidFlowchartDirection.LeftToRight
+	    	).write(graph);
+	    	mermaidFlowchartBufferedWriter.write(mermaidFlowchartStringWriter.toString());
+	    } catch (IOException exception) {
+	    	fail(String.format("Failed to write Mermaid Flowchart for graph '%s'", refactoringName));
+	    }
 	}
 }

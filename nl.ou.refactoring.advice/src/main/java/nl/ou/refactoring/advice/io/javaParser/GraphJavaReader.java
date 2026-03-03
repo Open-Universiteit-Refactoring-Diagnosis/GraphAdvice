@@ -1,6 +1,8 @@
 package nl.ou.refactoring.advice.io.javaParser;
 
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ParseProblemException;
@@ -14,7 +16,10 @@ import nl.ou.refactoring.advice.io.GraphReader;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
@@ -70,13 +75,21 @@ public final class GraphJavaReader implements GraphReader {
 			throw new GraphJavaReaderParseFailedException(exception);
 		}
 		
+		final var typeMap = new HashMap<String, GraphNodeType>();
+		
 		// Package
 		final var packageDeclaration = compilationUnit.getPackageDeclaration();
 		final var packageNameString =
 			packageDeclaration.isPresent()
 				? packageDeclaration.get().getNameAsString()
 				: "default";
-		final var packageNode = GraphNodePackage.parse(graph, packageNameString);
+		final var packageNodeRoot = GraphNodePackage.parse(graph, packageNameString);
+		final var packageNodeLeaf =
+			packageNodeRoot
+				.getPackageNodeLeafs()
+				.stream()
+				.findFirst()
+				.get();
 		
 		// Classes and interfaces
 		final var classesAndInterfaces =
@@ -92,13 +105,53 @@ public final class GraphJavaReader implements GraphReader {
 			} else {
 				final var classNodeIdentifier = new GraphNodeIdentifier(graph, classOrInterfaceDeclaration.getNameAsString());
 				final var classNode = new GraphNodeClass(graph, classNodeIdentifier);
-				packageNode.has(classNode);
+				packageNodeLeaf.has(classNode);
 				for (final var member : classOrInterfaceDeclaration.getMembers()) {
 					if (member.isFieldDeclaration()) {
-						for (final var variableDeclaration : member.asFieldDeclaration().getVariables()) {
-							final var fieldNode = new GraphNodeAttribute(graph, variableDeclaration.getNameAsString());
-							classNode.has(fieldNode);
+						final var fieldDeclaration = member.asFieldDeclaration();
+						for (final var variableDeclaration : fieldDeclaration.getVariables()) {
+							final var attributeNode = new GraphNodeAttribute(graph, variableDeclaration.getNameAsString());
+							final var attributeTypeName = variableDeclaration.getTypeAsString();
+							final var attributeType =
+								typeMap
+									.computeIfAbsent(
+										attributeTypeName,
+										_ -> new GraphNodeType(graph, attributeTypeName)
+									);
+							attributeNode.is(attributeType);
+							classNode.has(attributeNode);
 						}
+					}
+					if (member.isMethodDeclaration()) {
+						final var methodDeclaration = member.asMethodDeclaration();
+						final var operationIdentifier = new GraphNodeIdentifier(graph, methodDeclaration.getNameAsString());
+						final var operationReturnTypeName = methodDeclaration.getTypeAsString();
+						final var operationReturnType =
+							typeMap
+								.computeIfAbsent(
+									operationReturnTypeName,
+									_ -> new GraphNodeType(graph, operationReturnTypeName)
+								);
+
+						
+						final var operationParameters = new ArrayList<GraphNodeOperationParameter>();
+						for (final var methodParameter : methodDeclaration.getParameters()) {
+							final var operationParameterName = methodParameter.getNameAsString();
+							final var operationParameterTypeName = methodParameter.getTypeAsString();
+							final var operationParameterType =
+								typeMap
+									.computeIfAbsent(
+											operationParameterTypeName,
+										_ -> new GraphNodeType(graph, operationParameterTypeName)
+									);
+							final var operationParameter = new GraphNodeOperationParameter(graph, operationParameterName);
+							operationParameter.is(operationParameterType);
+							operationParameters.add(operationParameter);
+						}
+						
+						final var operationNode = new GraphNodeOperation(graph, operationIdentifier, operationParameters);
+						operationNode.hasReturnType(operationReturnType);
+						classNode.has(operationNode);
 					}
 				}
 			}

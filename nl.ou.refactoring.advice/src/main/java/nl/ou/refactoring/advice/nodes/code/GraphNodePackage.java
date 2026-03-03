@@ -1,9 +1,13 @@
 package nl.ou.refactoring.advice.nodes.code;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
@@ -142,6 +146,60 @@ public final class GraphNodePackage extends GraphNodeCode {
 	}
 	
 	/**
+	 * Gets the node that represents the parent package.
+	 * @return The node that represents the parent package, or an empty {@link Optional<GraphNodePackage>} if this is a root package.
+	 */
+	public Optional<GraphNodePackage> getParent() {
+		return
+			this
+				.getEdgesIncoming(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.filter(node -> node instanceof GraphNodePackage)
+				.map(GraphNodePackage.class::cast)
+				.findAny();
+	}
+	
+	/**
+	 * Gets the nodes that represent the child packages.
+	 * @return An unmodifiable set of child packages.
+	 */
+	public Set<GraphNodePackage> getPackageNodes() {
+		return
+			this
+				.getEdges(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodePackage)
+				.map(GraphNodePackage.class::cast)
+				.collect(Collectors.toUnmodifiableSet());
+	}
+	
+	/**
+	 * Gets the package nodes in a package tree that do not have any child nodes (the leafs of the tree).
+	 * @return An unmodifiable set of package nodes at the extremes of the package tree.
+	 */
+	public Set<GraphNodePackage> getPackageNodeLeafs() {
+		final var packageNodeTreeStack = new Stack<GraphNodePackage>();
+		final var packageNodeLeafList = new ArrayList<GraphNodePackage>();
+		packageNodeTreeStack.push(this);
+		
+		while (!packageNodeTreeStack.isEmpty()) {
+			final var packageNodeCurrent = packageNodeTreeStack.pop();
+			final var packageNodeChildren = packageNodeCurrent.getPackageNodes();
+			if (packageNodeChildren.isEmpty()) {
+				packageNodeLeafList.add(packageNodeCurrent);
+			} else {
+				for (final var packageNodeChild : packageNodeChildren) {
+					packageNodeTreeStack.push(packageNodeChild);
+				}
+			}
+		}
+		
+		return Collections.unmodifiableSet(new HashSet<>(packageNodeLeafList));
+	}
+	
+	/**
 	 * Gets all class nodes that are included in the package.
 	 * @return All class nodes that are included in the package.
 	 */
@@ -199,36 +257,6 @@ public final class GraphNodePackage extends GraphNodeCode {
 			this.has(classNode);
 		}
 		return classNode;
-	}
-	
-	/**
-	 * Gets the node that represents the parent package.
-	 * @return The node that represents the parent package, or an empty {@link Optional<GraphNodePackage>} if this is a root package.
-	 */
-	public Optional<GraphNodePackage> getParent() {
-		return
-			this
-				.getEdgesIncoming(GraphEdgeHas.class)
-				.stream()
-				.map(edge -> edge.getSourceNode())
-				.filter(node -> node instanceof GraphNodePackage)
-				.map(GraphNodePackage.class::cast)
-				.findAny();
-	}
-	
-	/**
-	 * Gets the nodes that represent the child packages.
-	 * @return An unmodifiable set of child packages.
-	 */
-	public Set<GraphNodePackage> getPackageNodes() {
-		return
-			this
-				.getEdges(GraphEdgeHas.class)
-				.stream()
-				.map(edge -> edge.getDestinationNode())
-				.filter(node -> node instanceof GraphNodePackage)
-				.map(GraphNodePackage.class::cast)
-				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	@Override

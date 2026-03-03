@@ -59,7 +59,11 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 					.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveField.classToClass");
+		GraphNodePackage.parse(graph, "nl.ou.refactoring.moveField.classToClass");
+		final var packageNodeLeaf =
+			graph
+				.getNode("nl.ou.refactoring.moveField.classToClass", GraphNodePackage.class)
+				.get();
 		
 		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var alphaClassNode = new GraphNodeClass(graph, alphaIdentifier);
@@ -69,7 +73,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var alphaBarOperationNode = new GraphNodeOperation(graph, barIdentifier);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
 		final var alphaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNode.has(alphaClassNode);
+		packageNodeLeaf.has(alphaClassNode);
 		alphaClassNode.has(alphaOneAttributeNode);
 		alphaClassNode.has(alphaTwoAttributeNode);
 		alphaClassNode.has(alphaBarOperationNode);
@@ -82,7 +86,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
 		final var betaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
 		final var betaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNode.has(betaClassNode);
+		packageNodeLeaf.has(betaClassNode);
 		betaClassNode.has(betaField1AttributeNode);
 		betaClassNode.has(betaField2AttributeNode);
 		betaClassNode.has(betaTwoAttributeNode);
@@ -114,7 +118,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 				.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNodeRoot = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
 		final var packageNodeLeaf =
 			graph
 				.getNode("nl.ou.refactoring.moveMethod.classToClass", GraphNodePackage.class)
@@ -177,7 +181,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 				.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNodeRoot = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
 		final var packageNodeLeaf =
 			graph
 				.getNode("nl.ou.refactoring.moveMethod.classToClass", GraphNodePackage.class)
