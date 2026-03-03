@@ -78,13 +78,15 @@ public final class Graph implements Cloneable {
 	 * Gets a code node based on its code path.
 	 * @param <TNode> The type of node to retrieve.
 	 * @param path The path to the code node.
+	 * @param classType The type of Class of the node.
 	 * @return The node at the specified path, otherwise an empty {@link Optional}.
-	 * @throws ArgumentNullException Thrown if path is null.
+	 * @throws ArgumentNullException Thrown if path or classType is null.
 	 * @throws ArgumentEmptyException Thrown if path is empty or contains only white spaces.
 	 */
-	public <TNode extends GraphNodeCode> Optional<TNode> getNode(String path)
+	public <TNode extends GraphNodeCode> Optional<TNode> getNode(String path, Class<TNode> classType)
 			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(path, "path");
+		ArgumentGuard.requireNotNull(classType, "classType");
 		final var pathComponents = new ArrayDeque<String>(List.of(path.split("\\.")));
 		String pathComponentName = pathComponents.pop();
 		GraphNodeCode nodeCurrent =
@@ -93,7 +95,8 @@ public final class Graph implements Cloneable {
 				.keySet()
 				.stream()
 				.filter(
-					node -> node instanceof GraphNodePackage &&
+					node ->
+					node instanceof GraphNodePackage &&
 					((GraphNodePackage)node).getPackageName().equals(pathComponentName)
 				)
 				.map(node -> (GraphNodeCode)node)

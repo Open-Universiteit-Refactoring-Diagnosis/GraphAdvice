@@ -61,7 +61,8 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		/* Introduce code nodes and edges. */
 		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveField.classToClass");
 		
-		final var alphaClassNode = new GraphNodeClass(graph, "Alpha");
+		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
+		final var alphaClassNode = new GraphNodeClass(graph, alphaIdentifier);
 		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
 		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
 		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");
@@ -75,7 +76,8 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		alphaClassNode.has(alphaFooOperationNode);
 		removeFieldMicrostepNode.removes(alphaTwoAttributeNode);
 		
-		final var betaClassNode = new GraphNodeClass(graph, "Beta");
+		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
+		final var betaClassNode = new GraphNodeClass(graph, betaIdentifier);
 		final var betaField1AttributeNode = new GraphNodeAttribute(graph, "field1");
 		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
 		final var betaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
@@ -112,16 +114,21 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 				.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		final var packageNodeRoot = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		final var packageNodeLeaf =
+			graph
+				.getNode("nl.ou.refactoring.moveMethod.classToClass", GraphNodePackage.class)
+				.get();
 		
-		final var alphaClassNode = new GraphNodeClass(graph, "Alpha");
+		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
+		final var alphaClassNode = new GraphNodeClass(graph, alphaIdentifier);
 		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
 		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
 		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");
 		final var alphaBarOperationNode = new GraphNodeOperation(graph, barIdentifier);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
 		final var alphaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNode.has(alphaClassNode);
+		packageNodeLeaf.has(alphaClassNode);
 		alphaClassNode.has(alphaOneAttributeNode);
 		alphaClassNode.has(alphaTwoAttributeNode);
 		alphaClassNode.has(alphaBarOperationNode);
@@ -134,11 +141,12 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		alphaBarBlock.has(alphaBarStatement);
 		alphaBarExpression.invokes(alphaFooOperationNode);
 		
-		final var betaClassNode = new GraphNodeClass(graph, "Beta");
+		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
+		final var betaClassNode = new GraphNodeClass(graph, betaIdentifier);
 		final var betaField1AttributeNode = new GraphNodeAttribute(graph, "field1");
 		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
 		final var betaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNode.has(betaClassNode);
+		packageNodeLeaf.has(betaClassNode);
 		betaClassNode.has(betaField1AttributeNode);
 		betaClassNode.has(betaField2AttributeNode);
 		betaClassNode.has(betaFooOperationNode);
@@ -169,39 +177,46 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 				.get();
 		
 		/* Introduce code nodes and edges. */
-		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		final var packageNodeRoot = GraphNodePackage.parse(graph, "nl.ou.refactoring.moveMethod.classToClass");
+		final var packageNodeLeaf =
+			graph
+				.getNode("nl.ou.refactoring.moveMethod.classToClass", GraphNodePackage.class)
+				.get();
 		
-		final var alphaClassNode = new GraphNodeClass(graph, "Alpha");
+		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
+		final var alphaClassNode = new GraphNodeClass(graph, alphaIdentifier);
 		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
 		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
 		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");
 		final var alphaBarOperationNode = new GraphNodeOperation(graph, barIdentifier);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
 		final var alphaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNode.has(alphaClassNode);
+		packageNodeLeaf.has(alphaClassNode);
 		alphaClassNode.has(alphaOneAttributeNode);
 		alphaClassNode.has(alphaTwoAttributeNode);
 		alphaClassNode.has(alphaBarOperationNode);
 		alphaClassNode.has(alphaFooOperationNode);
 		removeMethodMicrostepNode.removes(alphaFooOperationNode);
 		
-		final var betaClassNode = new GraphNodeClass(graph, "Beta");
+		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
+		final var betaClassNode = new GraphNodeClass(graph, betaIdentifier);
 		final var betaField1AttributeNode = new GraphNodeAttribute(graph, "field1");
 		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
 		final var betaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNode.has(betaClassNode);
+		packageNodeLeaf.has(betaClassNode);
 		betaClassNode.has(betaField1AttributeNode);
 		betaClassNode.has(betaField2AttributeNode);
 		betaClassNode.has(betaFooOperationNode);
 		addMethodMicrostepNode.adds(betaFooOperationNode);
 		
-		final var gammaClassNode = new GraphNodeClass(graph, "Gamma");
+		final var gammaIdentifier = new GraphNodeIdentifier(graph, "Gamma");
+		final var gammaClassNode = new GraphNodeClass(graph, gammaIdentifier);
 		final var callerIdentifier = new GraphNodeIdentifier(graph, "caller");
 		final var gammaCallerOperationNode = new GraphNodeOperation(graph, callerIdentifier);
 		final var gammaCallerBlock = new GraphNodeBlock(graph);
 		final var gammaCallerExpression = new GraphNodeMethodInvocationExpression(graph);
 		final var gammaCallerStatement = new GraphNodeExpressionStatement(graph, gammaCallerExpression);
-		packageNode.has(gammaClassNode);
+		packageNodeLeaf.has(gammaClassNode);
 		gammaClassNode.has(gammaCallerOperationNode);
 		gammaCallerOperationNode.hasBody(gammaCallerBlock);
 		gammaCallerBlock.has(gammaCallerStatement);

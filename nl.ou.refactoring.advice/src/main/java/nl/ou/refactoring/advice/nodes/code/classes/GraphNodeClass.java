@@ -25,7 +25,7 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
  * A node in a Refactoring Advice Graph that represents a Class.
  */
 public final class GraphNodeClass extends GraphNodeCode {
-	private final String className;
+	private final GraphEdgeHas classNameEdge;
 	private final GraphNodeClassStereotype stereotype;
 	
 	/**
@@ -34,16 +34,22 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @param className The name of the affected Class.
 	 * @param stereotype The stereotype of the affected Class.
 	 * @throws ArgumentNullException Thrown if graph or className is null.
-	 * @throws ArgumentEmptyException Thrown if className is empty or contains only white spaces.
 	 */
 	public GraphNodeClass(
 		Graph graph,
-		String className,
+		GraphNodeIdentifier className,
 		GraphNodeClassStereotype stereotype
 	) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		ArgumentGuard.requireNotNull(className, "className");
 		super(graph);
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(className, "className");
-		this.className = className;
+		this.classNameEdge =
+			this.graph.getOrAddEdge(
+				this,
+				className,
+				(source, destination) -> new GraphEdgeHas(source, destination),
+				GraphEdgeHas.class
+			);
 		this.stereotype = stereotype;
 	}
 	
@@ -56,7 +62,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 */
 	public GraphNodeClass(
 		Graph graph,
-		String className
+		GraphNodeIdentifier className
 	) throws ArgumentNullException, ArgumentEmptyException {
 		this(graph, className, null);
 	}
@@ -66,7 +72,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @return The name of the affected Class.
 	 */
 	public String getClassName() {
-		return this.className;
+		return ((GraphNodeIdentifier)this.classNameEdge.getDestinationNode()).getIdentifier();
 	}
 	
 	/**
@@ -392,7 +398,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		return new GraphNodeClass(graph, this.className);
+		return new GraphNodeClass(graph, (GraphNodeIdentifier)this.classNameEdge.getDestinationNode().clone(graph));
 	}
 	
 	@Override
@@ -412,6 +418,6 @@ public final class GraphNodeClass extends GraphNodeCode {
 
 	@Override
 	public String getCaption() {
-		return this.className;
+		return ((GraphNodeIdentifier)this.classNameEdge.getDestinationNode()).getIdentifier();
 	}
 }

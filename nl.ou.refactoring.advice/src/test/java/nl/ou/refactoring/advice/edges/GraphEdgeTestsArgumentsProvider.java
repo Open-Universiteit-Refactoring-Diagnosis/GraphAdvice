@@ -13,6 +13,7 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 public final class GraphEdgeTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
@@ -27,13 +28,15 @@ public final class GraphEdgeTestsArgumentsProvider implements ArgumentsProvider 
 		final var graphCloned = new Graph("Graph Cloned");
 		
 		final var graphNodePackageOriginal = GraphNodePackage.parse(graphOriginal, "nl.ou.refactoring");
-		final var graphNodeClassOriginal = new GraphNodeClass(graphOriginal, "Alpha");
+		final var alphaIdentifierOriginal = new GraphNodeIdentifier(graphOriginal, "Alpha");
+		final var alphaIdentifierCloned = new GraphNodeIdentifier(graphCloned, "Alpha");
+		final var graphNodeClassOriginal = new GraphNodeClass(graphOriginal, alphaIdentifierOriginal);
 		final var graphEdgePackageHasClass = new GraphEdgeHas(graphNodePackageOriginal, graphNodeClassOriginal);
 		argumentsList.add(
 			Arguments.of(
 				graphEdgePackageHasClass,
 				GraphNodePackage.parse(graphCloned, "nl.ou.refactoring"),
-				new GraphNodeClass(graphCloned, "Alpha")
+				new GraphNodeClass(graphCloned, alphaIdentifierCloned)
 			)
 		);
 		
@@ -42,7 +45,7 @@ public final class GraphEdgeTestsArgumentsProvider implements ArgumentsProvider 
 		argumentsList.add(
 			Arguments.of(
 				graphEdgeClassHasAttribute,
-				new GraphNodeClass(graphCloned, "Alpha"),
+				new GraphNodeClass(graphCloned, alphaIdentifierCloned),
 				new GraphNodeAttribute(graphCloned, "foo")
 			)
 		);

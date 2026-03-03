@@ -186,12 +186,12 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 * @param className The name of the class to get or add.
 	 * @return The existing or newly created {@link GraphNodeClass}.
 	 */
-	public GraphNodeClass computeClassNode(String className) {
+	public GraphNodeClass computeClassNode(GraphNodeIdentifier className) {
 		var classNode =
 			this
 				.getClassNodes()
 				.stream()
-				.filter(node -> node.getClassName().equals(className))
+				.filter(node -> node.getClassName().equals(className.getIdentifier()))
 				.findFirst()
 				.orElse(null);
 		if (classNode == null) {
@@ -203,7 +203,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 	
 	/**
 	 * Gets the node that represents the parent package.
-	 * @return The node that represents the parent package, or an empty {@link Optional<GraphNodePackage>} if this is the root package.
+	 * @return The node that represents the parent package, or an empty {@link Optional<GraphNodePackage>} if this is a root package.
 	 */
 	public Optional<GraphNodePackage> getParent() {
 		return
@@ -212,8 +212,23 @@ public final class GraphNodePackage extends GraphNodeCode {
 				.stream()
 				.map(edge -> edge.getSourceNode())
 				.filter(node -> node instanceof GraphNodePackage)
-				.map(node -> (GraphNodePackage)node)
+				.map(GraphNodePackage.class::cast)
 				.findAny();
+	}
+	
+	/**
+	 * Gets the nodes that represent the child packages.
+	 * @return An unmodifiable set of child packages.
+	 */
+	public Set<GraphNodePackage> getPackageNodes() {
+		return
+			this
+				.getEdges(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodePackage)
+				.map(GraphNodePackage.class::cast)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	@Override

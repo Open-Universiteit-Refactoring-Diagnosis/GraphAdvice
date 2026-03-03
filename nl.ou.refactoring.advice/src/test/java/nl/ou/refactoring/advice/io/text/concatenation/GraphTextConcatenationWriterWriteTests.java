@@ -74,42 +74,44 @@ public class GraphTextConcatenationWriterWriteTests {
 	private static Graph createGraphMoveMethod() {
 		final var graph = new Graph("Move method");
 		
-		final var packageTest = GraphNodePackage.parse(graph, "nl.ou.refactoring.test");
-		final var classAlphaBefore =
+		final var packageNodeTest = GraphNodePackage.parse(graph, "nl.ou.refactoring.test");
+		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
+		final var classNodeAlphaBefore =
 			new GraphNodeClass(
 				graph,
-				"Alpha",
+				identifierNodeAlpha,
 				GraphNodeClassStereotype.BEFORE
 			);
-		packageTest.has(classAlphaBefore);
+		packageNodeTest.has(classNodeAlphaBefore);
 		final var helloWorldIdentifier = new GraphNodeIdentifier(graph, "helloWorld");
 		final var operationBefore =
 			new GraphNodeOperation(
 				graph,
 				helloWorldIdentifier
 			);
-		classAlphaBefore.has(operationBefore);
+		classNodeAlphaBefore.has(operationBefore);
+		final var identifierNodeBeta = new GraphNodeIdentifier(graph, "Beta");
 		final var classBetaBefore =
 			new GraphNodeClass(
 				graph,
-				"Beta",
+				identifierNodeBeta,
 				GraphNodeClassStereotype.BEFORE
 			);
-		packageTest.has(classBetaBefore);
+		packageNodeTest.has(classBetaBefore);
 		final var classAlphaAfter =
 			new GraphNodeClass(
 				graph,
-				"Alpha",
+				identifierNodeAlpha,
 				GraphNodeClassStereotype.AFTER
 			);
-		packageTest.has(classAlphaAfter);
+		packageNodeTest.has(classAlphaAfter);
 		final var classBetaAfter =
 			new GraphNodeClass(
 				graph,
-				"Beta",
+				identifierNodeBeta,
 				GraphNodeClassStereotype.AFTER
 			);
-		packageTest.has(classBetaAfter);
+		packageNodeTest.has(classBetaAfter);
 		final var operationAfter =
 			new GraphNodeOperation(
 				graph,

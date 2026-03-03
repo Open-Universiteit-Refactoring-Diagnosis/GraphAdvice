@@ -6,14 +6,15 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReader;
 import nl.ou.refactoring.advice.io.GraphReaderException;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
@@ -77,13 +78,31 @@ public final class GraphJavaReader implements GraphReader {
 				: "default";
 		final var packageNode = GraphNodePackage.parse(graph, packageNameString);
 		
-		// Class
-		final var classes =
+		// Classes and interfaces
+		final var classesAndInterfaces =
 			compilationUnit
 				.getTypes()
 				.stream()
 				.filter(typeDeclaration -> typeDeclaration.isClassOrInterfaceDeclaration())
-				.collect(Collectors.toUnmodifiableList());				
+				.map(typeDeclaration -> typeDeclaration.asClassOrInterfaceDeclaration())
+				.collect(Collectors.toUnmodifiableList());		
+		for (final var classOrInterfaceDeclaration : classesAndInterfaces) {
+			if (classOrInterfaceDeclaration.isInterface()) {
+				// TODO implement
+			} else {
+				final var classNodeIdentifier = new GraphNodeIdentifier(graph, classOrInterfaceDeclaration.getNameAsString());
+				final var classNode = new GraphNodeClass(graph, classNodeIdentifier);
+				packageNode.has(classNode);
+				for (final var member : classOrInterfaceDeclaration.getMembers()) {
+					if (member.isFieldDeclaration()) {
+						for (final var variableDeclaration : member.asFieldDeclaration().getVariables()) {
+							final var fieldNode = new GraphNodeAttribute(graph, variableDeclaration.getNameAsString());
+							classNode.has(fieldNode);
+						}
+					}
+				}
+			}
+		}
 		
 		return this.graph;
 	}

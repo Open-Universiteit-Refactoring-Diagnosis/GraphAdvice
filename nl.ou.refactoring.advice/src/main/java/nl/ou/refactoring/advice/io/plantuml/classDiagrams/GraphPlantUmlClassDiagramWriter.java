@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.io.plantuml.classDiagrams;
 
 import java.awt.Color;
 import java.io.StringWriter;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
@@ -57,7 +58,12 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		this.writeSpritePlus(SPRITE_NAME_NEW);
 		
 		// Domain model
-		final var packageNodes = graph.getNodes(GraphNodePackage.class);
+		final var packageNodes =
+			graph
+				.getNodes(GraphNodePackage.class)
+				.stream()
+				.filter(packageNode -> packageNode.getParent().isEmpty())
+				.collect(Collectors.toUnmodifiableSet());
 		for (final var packageNode : packageNodes) {
 			this.writePackage(packageNode);
 		}
@@ -73,16 +79,44 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 
 	private void writePackage(GraphNodePackage packageNode)
 			throws GraphNodeClassHasMultipleGeneralisationsException {
-		this.printLine(String.format("namespace %s {", packageNode.getCaption()));
-		this.indentIndex++;
+		final var packageNodesPathStack = new Stack<GraphNodePackagePath>();
+		packageNodesPathStack.push(new GraphNodePackagePath(packageNode, packageNode.getPackageName())); // root node
 		
-		final var classNodes = packageNode.getClassNodes(SortOrder.ASCENDING);
-		for (final var classNode : classNodes) {
-			this.writeClass(classNode);
+		while (!packageNodesPathStack.isEmpty()) {
+			final var packageNodePathCurrent = packageNodesPathStack.pop();
+			final var packageNodeCurrent = packageNodePathCurrent.getPackageNode();
+			final var packagePathCurrent = packageNodePathCurrent.getPath();
+			
+			final var classNodes = packageNodeCurrent.getClassNodes();
+			final var isLeaf = !classNodes.isEmpty();
+			
+			if (isLeaf) {
+				this.printLine(String.format("namespace %s {", packagePathCurrent));
+				this.indentIndex++;
+				
+				for (final var classNode : classNodes) {
+					this.writeClass(classNode);
+				}
+				
+				pushPackageChildren(packageNodeCurrent, packageNodesPathStack, packagePathCurrent);
+				
+				this.indentIndex--;
+				this.printLine("}");
+			} else {
+				pushPackageChildren(packageNodeCurrent, packageNodesPathStack, packagePathCurrent);
+			}
 		}
-		
-		this.indentIndex--;
-		this.printLine("}");
+	}
+	
+	private static void pushPackageChildren(
+			GraphNodePackage packageNode,
+			Stack<GraphNodePackagePath> packageNodesPathStack,
+			String packageNodePathCurrent
+	) {
+		for (final var packageNodeChild : packageNode.getPackageNodes()) {
+			final var packageNodeChildPath = packageNodePathCurrent + "." + packageNodeChild.getPackageName();
+			packageNodesPathStack.push(new GraphNodePackagePath(packageNodeChild, packageNodeChildPath));
+		}
 	}
 	
 	private void writeClass(GraphNodeClass classNode)

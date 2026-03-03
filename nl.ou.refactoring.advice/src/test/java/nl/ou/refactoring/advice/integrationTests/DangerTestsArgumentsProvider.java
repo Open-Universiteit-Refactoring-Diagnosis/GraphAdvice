@@ -51,10 +51,11 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		
 		// Code
 		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.doubleDefinition");
+		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var alphaClassNode =
 				new GraphNodeClass(
 						graph,
-						"Alpha"
+						alphaIdentifier
 				);
 		packageNode.has(alphaClassNode);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
@@ -84,20 +85,22 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		// Code
 		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.forcedOverride");
 		
+		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var classNodeAlpha =
 				new GraphNodeClass(
 						graph,
-						"Alpha"
+						alphaIdentifier
 				);
 		packageNode.has(classNodeAlpha);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
 		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, fooIdentifier);
 		classNodeAlpha.has(operationNodeAlphaFoo);
 		
+		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
 		final var classNodeBeta =
 				new GraphNodeClass(
 						graph,
-						"Beta"
+						betaIdentifier
 				);
 		packageNode.has(classNodeBeta);
 		classNodeBeta.is(classNodeAlpha);
@@ -125,21 +128,23 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.imposedSpecification");
 
 		// Code: Alpha
+		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var classNodeAlpha =
-				new GraphNodeClass(
-						graph,
-						"Alpha"
-				);
+			new GraphNodeClass(
+				graph,
+				alphaIdentifier
+			);
 		packageNode.has(classNodeAlpha);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
 		final var operationNodeAlphaFoo = new GraphNodeOperation(graph, fooIdentifier);
 		classNodeAlpha.has(operationNodeAlphaFoo);
 		// Code: Beta
+		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
 		final var classNodeBeta =
-				new GraphNodeClass(
-						graph,
-						"Beta"
-				);
+			new GraphNodeClass(
+				graph,
+				betaIdentifier
+			);
 		packageNode.has(classNodeBeta);
 		classNodeBeta.is(classNodeAlpha);
 		final var operationNodeBetaFoo = new GraphNodeOperation(graph, fooIdentifier);
@@ -166,10 +171,11 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var intType = new GraphNodeType(graph, "int");
 		final var doubleType = new GraphNodeType(graph, "double");
 		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.precedingOverload");
+		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var alphaClassNode =
 			new GraphNodeClass(
 				graph,
-				"Alpha"
+				alphaIdentifier
 			);
 		packageNode.has(alphaClassNode);
 		final var operationNodeFooIntParameters = new ArrayList<GraphNodeOperationParameter>();
@@ -215,10 +221,11 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		
 		// Code
 		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.changedNestedRelationship");
+		final var alphaIdentifierNode = new GraphNodeIdentifier(graph, "Alpha");
 		final var alphaClassNode =
 			new GraphNodeClass(
 				graph,
-				"Alpha"
+				alphaIdentifierNode
 			);
 		packageNode.has(alphaClassNode);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
@@ -228,10 +235,11 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 				fooIdentifier
 			);
 		alphaClassNode.has(alphaFooOperationNode);
+		final var betaIdentifierNode = new GraphNodeIdentifier(graph, "Beta");
 		final var betaClassNode =
 			new GraphNodeClass(
 				graph,
-				"Beta"
+				betaIdentifierNode
 			);
 		alphaClassNode.has(betaClassNode);
 		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");

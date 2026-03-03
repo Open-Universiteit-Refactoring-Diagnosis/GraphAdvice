@@ -103,6 +103,17 @@ public final class GraphEdgeHas extends GraphEdge {
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param classNode A node that represents a Class.
+	 * @param classNameIdentifierNode A node that represents the identifier that serves as the name of a Class.
+	 * @throws ArgumentNullException Thrown if classNode or classNameIdentifierNode is null.
+	 */
+	public GraphEdgeHas(GraphNodeClass classNode, GraphNodeIdentifier classNameIdentifierNode)
+			throws ArgumentNullException {
+		super(classNode, classNameIdentifierNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
 	 * @param classNode A Class node that owns the Attribute node.
 	 * @param attributeNode An Attribute node that is owned by the Class node.
 	 * @throws ArgumentNullException Thrown if classNode or attributeNode is null.

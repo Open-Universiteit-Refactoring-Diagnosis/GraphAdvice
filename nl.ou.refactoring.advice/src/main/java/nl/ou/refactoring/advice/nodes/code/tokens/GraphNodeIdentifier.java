@@ -7,6 +7,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.contracts.ArgumentPatternException;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeReferences;
+import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 
@@ -40,6 +41,15 @@ public final class GraphNodeIdentifier
 		super(graph);
 		this.identifier = identifier;
 	}
+	
+	
+	/**
+	 * Gets the identifier value.
+	 * @return The identifier value.
+	 */
+	public String getIdentifier() {
+		return this.identifier;
+	}
 
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
@@ -48,15 +58,20 @@ public final class GraphNodeIdentifier
 	}
 	
 	@Override
+	public boolean equals(GraphNode other) {
+		if (!(other instanceof GraphNodeIdentifier)) {
+			return false;
+		}
+		return this.getIdentifier().equals(((GraphNodeIdentifier)other).getIdentifier());
+	}
+	
+	@Override
 	public String getLabel() {
 		return "Identifier";
 	}
 	
-	/**
-	 * Gets the identifier value.
-	 * @return The identifier value.
-	 */
-	public String getIdentifier() {
+	@Override
+	public String getCaption() {
 		return this.identifier;
 	}
 	

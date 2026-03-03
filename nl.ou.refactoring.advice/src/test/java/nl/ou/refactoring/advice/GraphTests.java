@@ -77,14 +77,14 @@ public final class GraphTests {
 		final var nlPackage = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, "nl"));
 		final var ouPackage = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, "ou"));
 		final var refactoringPackage = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, "refactoring"));
-		final var mockClass = new GraphNodeClass(graph, "Mock");
+		final var mockClass = new GraphNodeClass(graph, new GraphNodeIdentifier(graph, "Mock"));
 		nlPackage.has(ouPackage);
 		ouPackage.has(refactoringPackage);
 		refactoringPackage.has(mockClass);
 		
 		// Act
-		final var packageNode = graph.getNode("nl.ou.refactoring").get();
-		final var classNode = graph.getNode("nl.ou.refactoring.Mock").get();
+		final var packageNode = graph.getNode("nl.ou.refactoring", GraphNodePackage.class).get();
+		final var classNode = graph.getNode("nl.ou.refactoring.Mock", GraphNodeClass.class).get();
 		
 		// Assert
 		assertEquals(refactoringPackage, packageNode);
