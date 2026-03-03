@@ -1,6 +1,5 @@
 package nl.ou.refactoring.advice.io.javaParser;
 
-import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.ExtensionContext;

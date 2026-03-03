@@ -21,6 +21,7 @@ import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
+import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 
 public final class GraphJavaReaderTests {
 	private static Path OUTPUT_DIR;
@@ -42,6 +43,7 @@ public final class GraphJavaReaderTests {
 		
 	    final var refactoringName = graph.getRefactoringName();
 	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");
+	    final var plantUmlClassDiagramFilePath = OUTPUT_DIR.resolve(refactoringName + ".puml");
 	    
 	    // Flowchart (graph)
 	    try (
@@ -57,6 +59,19 @@ public final class GraphJavaReaderTests {
 	    	mermaidFlowchartBufferedWriter.write(mermaidFlowchartStringWriter.toString());
 	    } catch (IOException exception) {
 	    	fail(String.format("Failed to write Mermaid Flowchart for graph '%s'", refactoringName));
+	    }
+	    
+	    // UML Class Diagram
+	    try (
+	    	final var plantUmlClassDiagramStringWriter =
+	    		new StringWriter();
+	    	final var plantUmlClassDiagramBufferedWriter =
+	    		new BufferedWriter(new FileWriter(plantUmlClassDiagramFilePath.toFile()));
+	    ) {
+	        new GraphPlantUmlClassDiagramWriter(plantUmlClassDiagramStringWriter).write(graph);
+	        plantUmlClassDiagramBufferedWriter.write(plantUmlClassDiagramStringWriter.toString());
+	    } catch (IOException exception) {
+	        fail(String.format("Failed to write PlantUML Class Diagram for graph '%s'", refactoringName));
 	    }
 	}
 }
