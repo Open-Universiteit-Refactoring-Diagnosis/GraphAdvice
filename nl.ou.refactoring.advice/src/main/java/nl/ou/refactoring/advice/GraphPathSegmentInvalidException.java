@@ -11,7 +11,7 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
  * An exception that is thrown if an attempt was made to add a segment to a graph path that is not valid
  * when appended to the previous segments of the path.
  */
-public final class GraphPathSegmentInvalidException extends Exception {
+public final class GraphPathSegmentInvalidException extends GraphValidationException {
 	/**
 	 * Generates serial version unique identifier.
 	 */
@@ -63,9 +63,10 @@ public final class GraphPathSegmentInvalidException extends Exception {
 		final var nodeIdentifier = this.node.getId().toString();
 		final var edgeIdentifier = this.edge.getId().toString();	
 		return
-				MessageFormat.format(
-						"Node '{0}' and edge '{1}' are invalid in the path.",
-						nodeIdentifier,
-						edgeIdentifier);
+			MessageFormat.format(
+				"Node '{0}' and edge '{1}' are invalid in the path.",
+				nodeIdentifier,
+				edgeIdentifier
+			);
 	}
 }

@@ -1,10 +1,12 @@
 package nl.ou.refactoring.advice.nodes.code.tokens;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -21,7 +23,7 @@ public final class GraphNodeIdentifierTests {
 		assertNotNull(identifierNode);
 	}
 	
-	@DisplayName("Should properly construct an identifier node")
+	@DisplayName("Should properly construct an identifier node (invalid examples)")
 	@ParameterizedTest
 	@NullAndEmptySource
 	@ValueSource(strings = {"1","@","abc def"})
@@ -30,5 +32,12 @@ public final class GraphNodeIdentifierTests {
 		assertThrows(ArgumentPatternException.class, () -> {
 			new GraphNodeIdentifier(graph, input);
 		});
+	}
+	
+	@DisplayName("Should compare two identifier nodes and indicate whether they are equal")
+	@ParameterizedTest
+	@ArgumentsSource(GraphNodeIdentifierTestsEqualsArgumentsProvider.class)
+	public void equalsTests(GraphNodeIdentifier left, GraphNodeIdentifier right, boolean expected) {
+		assertEquals(expected, left.equals(right));
 	}
 }

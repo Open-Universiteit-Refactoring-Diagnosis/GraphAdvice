@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.io.GraphWriterException;
 import nl.ou.refactoring.advice.io.text.GraphTextWriter;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.GraphWorkflowExplorer;
@@ -31,7 +33,10 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 
 	@Override
 	public void write(Graph graph)
-			throws ArgumentNullException, RefactoringMustContainStartNodeException {
+			throws
+				ArgumentNullException,
+				GraphValidationException,
+				GraphWriterException {
 		final var startNode = graph.getStart();
 		if (startNode == null) {
 			throw new RefactoringMustContainStartNodeException();
