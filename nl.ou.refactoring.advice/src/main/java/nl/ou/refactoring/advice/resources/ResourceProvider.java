@@ -1,5 +1,9 @@
 package nl.ou.refactoring.advice.resources;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -119,5 +123,19 @@ public final class ResourceProvider {
 		public static String getDisplayName(GraphNodeClassStereotype stereotype, Locale locale) {
 			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(stereotype.getDisplayName());
 		}
+	}
+	
+	/**
+	 * Gets a reader for a resource file.
+	 * @param classLoader The class loader that is aware of resources.
+	 * @param fileName The file name of the resource file.
+	 * @return A reader for a resource file.
+	 */
+	public static Reader getReader(ClassLoader classLoader, String fileName) {
+		final var inputStream = classLoader.getResourceAsStream(fileName);
+		if (inputStream == null) {
+			throw new IllegalArgumentException(String.format("Resource file '%s' not found", fileName));
+		}
+		return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 	}
 }

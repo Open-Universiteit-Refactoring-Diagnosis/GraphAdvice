@@ -83,12 +83,10 @@ public final class GraphJavaReader implements GraphReader {
 			packageDeclaration.isPresent()
 				? packageDeclaration.get().getNameAsString()
 				: "default";
-		final var packageNodeRoot = GraphNodePackage.parse(graph, packageNameString);
-		final var packageNodeLeaf =
-			packageNodeRoot
-				.getPackageNodeLeafs()
-				.stream()
-				.findFirst()
+		GraphNodePackage.parse(graph, packageNameString);
+		final var packageNode =
+			graph
+				.getNode(packageNameString, GraphNodePackage.class)
 				.get();
 		
 		// Classes and interfaces
@@ -105,7 +103,7 @@ public final class GraphJavaReader implements GraphReader {
 			} else {
 				final var classNodeIdentifier = new GraphNodeIdentifier(graph, classOrInterfaceDeclaration.getNameAsString());
 				final var classNode = new GraphNodeClass(graph, classNodeIdentifier);
-				packageNodeLeaf.has(classNode);
+				packageNode.has(classNode);
 				for (final var member : classOrInterfaceDeclaration.getMembers()) {
 					if (member.isFieldDeclaration()) {
 						final var fieldDeclaration = member.asFieldDeclaration();

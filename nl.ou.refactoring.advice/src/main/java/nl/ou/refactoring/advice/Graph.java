@@ -102,7 +102,7 @@ public final class Graph implements Cloneable {
 				.map(node -> (GraphNodeCode)node)
 				.findAny()
 				.orElse(null);
-		while (pathComponents.size() > 0 && nodeCurrent != null) {
+		while (!pathComponents.isEmpty() && nodeCurrent != null) {
 			final var pathComponent = pathComponents.pop();
 			nodeCurrent =
 				(GraphNodeCode)nodeCurrent
@@ -117,11 +117,11 @@ public final class Graph implements Cloneable {
 					})
 					.findAny()
 					.orElse(null);
-			if (pathComponents.size() == 0 && nodeCurrent != null) {
+			if (pathComponents.isEmpty() && nodeCurrent != null) {
 				return Optional.of((TNode)nodeCurrent);
 			}
 		}
-		return Optional.ofNullable(null); // not found
+		return Optional.ofNullable((TNode)nodeCurrent);
 	}
 	
 	/**

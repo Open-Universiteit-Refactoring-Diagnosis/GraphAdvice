@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code.classes;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -221,11 +222,11 @@ public final class GraphNodeClass extends GraphNodeCode {
 	/**
 	 * Gets the {@link GraphNodeAttribute} with attributeName.
 	 * @param attributeName The name of the attribute.
-	 * @return The {@link GraphNodeAttribute} with attributeName or null if not found.
+	 * @return The {@link GraphNodeAttribute} with attributeName or empty if not found.
 	 * @throws ArgumentNullException Thrown if attributeName is null.
 	 * @throws ArgumentEmptyException Thrown if attributeName is empty or contains only white spaces.
 	 */
-	public GraphNodeAttribute getAttributeNode(String attributeName)
+	public Optional<GraphNodeAttribute> getAttributeNode(String attributeName)
 			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(attributeName, "attributeName");
 		return
@@ -233,8 +234,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 				.getAttributeNodes()
 				.stream()
 				.filter(node -> node.getAttributeName().equals(attributeName))
-				.findAny()
-				.orElse(null);
+				.findAny();
 	}
 	
 	/**
@@ -247,12 +247,15 @@ public final class GraphNodeClass extends GraphNodeCode {
 	public GraphNodeAttribute computeAttributeNode(String attributeName)
 			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(attributeName, "attributeName");
-		var attributeNode = this.getAttributeNode(attributeName);
-		if (attributeNode == null) {
-			attributeNode = new GraphNodeAttribute(this.graph, attributeName);
-			this.has(attributeNode);
-		}
-		return attributeNode;
+		return
+			this
+				.getAttributeNode(attributeName)
+				.or(() -> {
+					final var node = new GraphNodeAttribute(this.graph, attributeName);
+					this.has(node);
+					return Optional.of(node);
+				})
+				.get();
 	}
 	
 	/**
@@ -335,12 +338,12 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * Gets the operation node associated with this class, with operationName and operationParameters as its signature.
 	 * @param operationName The name of the operation.
 	 * @param operationParameters The parameters of the operation.
-	 * @return The operation with operationName and operationParameters, if found, otherwise null.
+	 * @return The operation with operationName and operationParameters, if found, otherwise empty.
 	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
 	 */
-	public GraphNodeOperation getOperationNode(
-			GraphNodeIdentifier operationName,
-			List<GraphNodeOperationParameter> operationParameters
+	public Optional<GraphNodeOperation> getOperationNode(
+		String operationName,
+		List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
@@ -350,11 +353,10 @@ public final class GraphNodeClass extends GraphNodeCode {
 				.stream()
 				.filter(
 					node ->
-					node.getOperationName().equals(operationName.getIdentifier()) &&
+					node.getOperationName().equals(operationName) &&
 					node.getOperationParameters().equals(operationParameters)
 				)
-				.findAny()
-				.orElse(null);
+				.findAny();
 	}
 	
 	/**
@@ -382,17 +384,20 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
 	 */
 	public GraphNodeOperation computeOperationNode(
-			GraphNodeIdentifier operationName,
-			List<GraphNodeOperationParameter> operationParameters
+		String operationName,
+		List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
-		var operationNode = this.getOperationNode(operationName, operationParameters);
-		if (operationNode == null) {
-			operationNode = new GraphNodeOperation(this.graph, operationName, operationParameters);
-			this.has(operationNode);
-		}
-		return operationNode;
+		return
+			this
+				.getOperationNode(operationName, operationParameters)
+				.or(() -> {
+					final var node = new GraphNodeOperation(this.graph, new GraphNodeIdentifier(graph, operationName), operationParameters);
+					this.has(node);
+					return Optional.of(node);
+				})
+				.get();
 	}
 	
 	@Override

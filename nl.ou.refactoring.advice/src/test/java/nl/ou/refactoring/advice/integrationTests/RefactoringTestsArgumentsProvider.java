@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.integrationTests;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -11,6 +12,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphTemplates;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
+import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
@@ -25,6 +27,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddM
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 public final class RefactoringTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
@@ -59,38 +62,29 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 					.get();
 		
 		/* Introduce code nodes and edges. */
-		GraphNodePackage.parse(graph, "nl.ou.refactoring.moveField.classToClass");
-		final var packageNodeLeaf =
-			graph
-				.getNode("nl.ou.refactoring.moveField.classToClass", GraphNodePackage.class)
-				.get();
+		final var classLoader = RefactoringTestsArgumentsProvider.class.getClassLoader();
+		final var alphaReader = ResourceProvider.getReader(classLoader, "refactorings/moveField/Alpha.java");
+		final var betaReader = ResourceProvider.getReader(classLoader, "refactorings/moveField/Beta.java"); 
+		var graphJavaReader = new GraphJavaReader(graph, alphaReader);
+		graphJavaReader.read();
+		graphJavaReader = new GraphJavaReader(graph, betaReader);
+		graphJavaReader.read();
 		
-		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
-		final var alphaClassNode = new GraphNodeClass(graph, alphaIdentifier);
-		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
-		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
-		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");
-		final var alphaBarOperationNode = new GraphNodeOperation(graph, barIdentifier);
-		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
-		final var alphaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNodeLeaf.has(alphaClassNode);
-		alphaClassNode.has(alphaOneAttributeNode);
-		alphaClassNode.has(alphaTwoAttributeNode);
-		alphaClassNode.has(alphaBarOperationNode);
-		alphaClassNode.has(alphaFooOperationNode);
+		final var alphaClassNode =
+			graph
+				.getNode("nl.ou.refactorings.moveField.classToClass.Alpha", GraphNodeClass.class)
+				.get();
+		final var betaClassNode =
+			graph
+				.getNode("nl.ou.refactorings.moveField.classToClass.Beta", GraphNodeClass.class)
+				.get();
+
+		final var alphaTwoAttributeNode = alphaClassNode.getAttributeNode("two").get();
+		final var alphaBarOperationNode = alphaClassNode.getOperationNode("bar", List.of()).get();
 		removeFieldMicrostepNode.removes(alphaTwoAttributeNode);
 		
-		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
-		final var betaClassNode = new GraphNodeClass(graph, betaIdentifier);
-		final var betaField1AttributeNode = new GraphNodeAttribute(graph, "field1");
-		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
 		final var betaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
-		final var betaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
-		packageNodeLeaf.has(betaClassNode);
-		betaClassNode.has(betaField1AttributeNode);
-		betaClassNode.has(betaField2AttributeNode);
 		betaClassNode.has(betaTwoAttributeNode);
-		betaClassNode.has(betaFooOperationNode);
 		addFieldMicrostepNode.adds(betaTwoAttributeNode);
 		
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);

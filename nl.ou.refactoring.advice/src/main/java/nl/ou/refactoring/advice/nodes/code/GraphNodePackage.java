@@ -64,13 +64,27 @@ public final class GraphNodePackage extends GraphNodeCode {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(packageName, "packageName");
 		final var pathComponents = new ArrayDeque<String>(List.of(packageName.split("\\.")));
-		final var packageNodeRoot = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, pathComponents.pop()));
+		final var pathComponentRoot = pathComponents.pop();
+		final var packageNodeRootOptional = graph.getNode(pathComponentRoot, GraphNodePackage.class);
+		GraphNodePackage packageNodeRoot;
+		if (packageNodeRootOptional.isPresent()) {
+			packageNodeRoot = packageNodeRootOptional.get();
+		} else {
+			packageNodeRoot = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, pathComponentRoot));
+		}
 		var packageNode = packageNodeRoot;
 		while (pathComponents.size() > 0) {
-			final var packageNameComponent = new GraphNodeIdentifier(graph, pathComponents.pop());
-			final var packageNodeNext = new GraphNodePackage(graph, packageNameComponent);
-			packageNode.has(packageNodeNext);
-			packageNode = packageNodeNext;
+			final var pathComponent = pathComponents.pop();
+			final var packageNodeCurrent = packageNode;
+			final var packageNodeNextOptional = packageNodeCurrent.getPackage(pathComponent);
+			if (packageNodeNextOptional.isPresent()) {
+				packageNode = packageNodeNextOptional.get();
+				continue;
+			}
+			final var packageNameComponent = new GraphNodeIdentifier(graph, pathComponent);
+			final var packageNodeComponent = new GraphNodePackage(graph, packageNameComponent);
+			packageNodeCurrent.has(packageNodeComponent);
+			packageNode = packageNodeComponent;
 		}
 		return packageNodeRoot;
 	}
@@ -197,6 +211,24 @@ public final class GraphNodePackage extends GraphNodeCode {
 		}
 		
 		return Collections.unmodifiableSet(new HashSet<>(packageNodeLeafList));
+	}
+	
+	/**
+	 * Gets the associated node that represents the child package with the specified package name.
+	 * If not found, returns an empty {@link Optional<GraphNodePackage>}.
+	 * @param packageName The name of the requested child package.
+	 * @return The node that represents the requested child package wrapped in {@link Optional<GraphNodePackage>}, otherwise an empty {@link Optional<GraphNodePackage>}.
+	 */
+	public Optional<GraphNodePackage> getPackage(String packageName) {
+		return
+			this
+				.getPackageNodes()
+				.stream()
+				.filter(
+					packageNode ->
+					packageNode.getPackageName().equals(packageName)
+				)
+				.findAny();
 	}
 	
 	/**

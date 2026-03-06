@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -21,14 +22,14 @@ public final class GraphNodeClassTests {
 
 	@ParameterizedTest
 	@MethodSource("getOperationNodeTestCases")
-	@DisplayName("Should get the requested operation node if present, otherwise return null")
+	@DisplayName("Should get the requested operation node if present, otherwise return empty")
 	public void getOperationNodeTest(
 		GraphNodeClass classNode,
 		GraphNodeIdentifier operationName,
 		List<GraphNodeOperationParameter> operationParameters,
-		GraphNodeOperation expectedOperationNode
+		Optional<GraphNodeOperation> expectedOperationNode
 	) {
-		final var actualOperationNode = classNode.getOperationNode(operationName, operationParameters);
+		final var actualOperationNode = classNode.getOperationNode(operationName.getIdentifier(), operationParameters);
 		assertEquals(expectedOperationNode, actualOperationNode);
 	}
 	
@@ -47,7 +48,7 @@ public final class GraphNodeClassTests {
 				graph1ClassNode,
 				graph1OperationNodeName,
 				graph1OperationNodeParameters,
-				graph1OperationNode
+				Optional.ofNullable(graph1OperationNode)
 			)
 		);
 		
@@ -71,7 +72,7 @@ public final class GraphNodeClassTests {
 				graph2ClassNode,
 				graph2OperationNodeName,
 				graph2OperationNodeParametersInput,
-				graph2OperationNode
+				Optional.ofNullable(graph2OperationNode)
 			)
 		);
 		
@@ -86,7 +87,7 @@ public final class GraphNodeClassTests {
 				graph3ClassNode,
 				graph3OperationNodeName,
 				graph3OperationNodeParameters,
-				graph3OperationNode
+				Optional.ofNullable(graph3OperationNode)
 			)
 		);
 		
@@ -111,7 +112,7 @@ public final class GraphNodeClassTests {
 				graph4ClassNode,
 				graph4OperationNodeName,
 				graph4OperationNodeParametersInput,
-				graph4OperationNodeExpected
+				Optional.ofNullable(graph4OperationNodeExpected)
 			)
 		);
 		
