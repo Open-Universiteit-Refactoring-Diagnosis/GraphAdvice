@@ -44,3 +44,4 @@
 - Operation Parameters now (also) a chain of nodes.
 - Packages are now trees within the Refactoring Advice Graph.
 - Get nodes from a graph by a path specification.
+- Several fixes and enhancements in Mermaid Flowcharts and PlantUML Class Diagram writing.
