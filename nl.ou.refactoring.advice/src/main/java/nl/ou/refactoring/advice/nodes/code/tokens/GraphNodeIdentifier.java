@@ -30,6 +30,7 @@ public final class GraphNodeIdentifier
 
 	/**
 	 * Initialises a new instance of {@link GraphNodeIdentifier}.
+	 * @param graph The Refactoring Advice Graph to which the identifier belongs.
 	 * @param identifier The identifier value.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 * @throws ArgumentPatternException Thrown if identifier does not contain a valid value.

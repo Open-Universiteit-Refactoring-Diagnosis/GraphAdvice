@@ -35,17 +35,17 @@ public enum AssignmentOperator {
 	SET_SUBTRACTION,
 	
 	/**
-	 * <<=
+	 * &lt;&lt;=
 	 */
 	SET_BITSHIFT_LEFT_SIGNED,
 	
 	/**
-	 * >>=
+	 * &gt;&gt;=
 	 */
 	SET_BITSHIFT_RIGHT_SIGNED,
 	
 	/**
-	 * >>>=
+	 * &gt;&gt;&gt;=
 	 */
 	SET_BITSHIFT_RIGHT_UNSIGNED
 }

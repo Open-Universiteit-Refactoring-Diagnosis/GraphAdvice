@@ -18,6 +18,7 @@ import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;

@@ -21,6 +21,11 @@ public final class ArgumentPatternException extends IllegalArgumentException {
 	 */
 	private final String parameterName;
 
+	/**
+	 * Initialises a new instance of {@link ArgumentPatternException}.
+	 * @param pattern The pattern that must be valid on the argument value.
+	 * @param parameterName The name of the parameter that supplies the argument value.
+	 */
 	public ArgumentPatternException(Pattern pattern, String parameterName) {
 		this.pattern = pattern;
 		this.parameterName = parameterName;

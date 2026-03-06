@@ -23,6 +23,12 @@ public final class GraphNodeRiskMissingDefinition extends GraphNodeRisk {
 		super(graph);
 	}
 	
+	/**
+	 * Indicates that the Missing Definition risk affects the attribute that is represented by the specified {@link GraphNodeAttribute} attribute node.
+	 * @param attributeNode {@link GraphNodeAttribute} The node that represents the affected attribute.
+	 * @return The edge that indicates that the Missing Definition risk affects an attribute.
+	 * @throws ArgumentNullException Thrown if attributeNode is null.
+	 */
 	public GraphEdgeAffects affects(GraphNodeAttribute attributeNode)
 			throws ArgumentNullException {
 		return this.graph.getOrAddEdge(
