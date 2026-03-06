@@ -8,10 +8,10 @@ public final class Alpha {
 	}
 
 	public int foo() {
-		return this.foo;
+		return this.one;
 	}
 	
 	public String bar() {
-		return this.bar;
+		return this.two;
 	}
 }

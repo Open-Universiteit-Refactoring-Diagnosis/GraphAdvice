@@ -3,7 +3,7 @@ package nl.ou.refactoring.advice.io.javaParser;
 import nl.ou.refactoring.advice.io.json.GraphJsonReaderException;
 
 /**
- * An exception that is thrown if the {@link GraphJavaReader} fails to read a graph from Java code.s
+ * An exception that is thrown if the {@link GraphJavaReader} fails to read a graph from Java code.
  */
 public abstract class GraphJavaReaderException extends GraphJsonReaderException {
 	/**

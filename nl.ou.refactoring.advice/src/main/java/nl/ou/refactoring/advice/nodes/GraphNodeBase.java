@@ -204,6 +204,6 @@ public abstract class GraphNodeBase implements GraphNode {
 		if (other == null) {
 			return false;
 		}
-		return this.id == other.getId();
+		return this.id.equals(other.getId());
 	}
 }

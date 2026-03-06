@@ -22,7 +22,7 @@ public final class GraphNodeMicrostepRemoveClass extends GraphNodeMicrostep {
 	}
 	
 	/**
-	 * Indicates that the "Remove Field" microstep removes the operation represented by classNode.
+	 * Indicates that the "Remove Class" microstep removes the class represented by classNode.
 	 * @param classNode The class that is removed by this microstep.
 	 * @return The edge that indicates that the "Remove Class" microstep removes the operation represented by classNode.
 	 * @throws ArgumentNullException Thrown if classNode is null.

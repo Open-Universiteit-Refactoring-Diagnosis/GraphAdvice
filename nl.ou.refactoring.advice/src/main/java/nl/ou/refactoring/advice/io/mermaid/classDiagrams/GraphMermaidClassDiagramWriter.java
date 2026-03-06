@@ -53,12 +53,16 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		this.printLine("classDiagram");
 		this.indentIndex++;
 		
-		final var packageNodes = graph.getNodes(GraphNodePackage.class);
+		final var packageNodes =
+			graph
+				.getNodes(GraphNodePackage.class)
+				.stream()
+				.filter(packageNode -> packageNode.getParent().isEmpty())
+				.collect(Collectors.toUnmodifiableSet());
 		for (final var packageNode : packageNodes) {
 			this.writePackage(packageNode);
 		}
-		// do we forgive and include classes that do not have a package?
-		
+
 		this.writeNotes(graph);
 	}
 	
@@ -108,8 +112,8 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 								.collect(Collectors.toList()))
 			);
 			stringBuilder.append(")");
-			if (returnType != null) {
-				stringBuilder.append(" " + returnType.getCaption());
+			if (returnType.isPresent()) {
+				stringBuilder.append(" " + returnType.get().getCaption());
 			}
 			this.printLine(stringBuilder.toString());
 		}

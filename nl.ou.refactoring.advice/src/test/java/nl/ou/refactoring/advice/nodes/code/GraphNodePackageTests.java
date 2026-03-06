@@ -10,7 +10,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 public final class GraphNodePackageTests {
-	@DisplayName("Should parse a package name and construct a package tree accordingly")
+	@DisplayName("Should get the full package name")
 	@Test
 	public void getPackageNameFullTest() {
 		// Arrange

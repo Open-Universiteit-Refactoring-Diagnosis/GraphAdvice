@@ -10,6 +10,7 @@ import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeRefer
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * Represents an identifier in code syntax.
@@ -37,9 +38,8 @@ public final class GraphNodeIdentifier
 	 */
 	public GraphNodeIdentifier(Graph graph, String identifier)
 			throws ArgumentNullException, ArgumentPatternException {
-		ArgumentGuard.requireNotNull(graph, "graph");
-		ArgumentGuard.requirePattern(identifier, IDENTIFIER_PATTERN, "identifier");
 		super(graph);
+		ArgumentGuard.requirePattern(identifier, IDENTIFIER_PATTERN, "identifier");
 		this.identifier = identifier;
 	}
 	
@@ -68,7 +68,7 @@ public final class GraphNodeIdentifier
 	
 	@Override
 	public String getLabel() {
-		return "Identifier";
+		return ResourceProvider.GraphNodeLabels.getLabel(this.getClass());
 	}
 	
 	@Override

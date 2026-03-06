@@ -1,6 +1,6 @@
 {
 	"$schema": "./RefactoringAdviceGraph.schema.json",
-    "refactoringName": "Move Method",
+    "refactoringName": "Move Field",
     "nodes": [
         {
             "type": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart",

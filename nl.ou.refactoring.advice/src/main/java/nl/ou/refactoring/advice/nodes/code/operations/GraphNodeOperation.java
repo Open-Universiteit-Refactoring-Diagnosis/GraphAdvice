@@ -40,9 +40,9 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
 	public GraphNodeOperation(
-			Graph graph,
-			GraphNodeIdentifier operationName,
-			List<GraphNodeOperationParameter> operationParameters
+		Graph graph,
+		GraphNodeIdentifier operationName,
+		List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(operationName, "operationName");
@@ -77,7 +77,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 					throw new GraphNodeOperationParameterNullReferenceException(this, i);
 				}
 				node.hasNext(nodeNext);
-				nodeNext = node;
+				node = nodeNext;
 			}
 		}
 	}
@@ -98,19 +98,18 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 * Gets the return Type of the Operation, if defined. If not, returns null.
 	 * @return The return Type of the Operation, if defined. If not, returns null.
 	 */
-	public GraphNodeType getReturnType() {
+	public Optional<GraphNodeType> getReturnType() {
 		final var edgeIs =
 			this
 				.getEdges()
 				.stream()
 				.filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
-				.findFirst()
-				.orElse(null);
-		if (edgeIs == null) {
-			return null;
+				.findFirst();
+		if (edgeIs.isPresent()) {
+			return Optional.of((GraphNodeType)edgeIs.get().getDestinationNode());
+		} else {
+			return Optional.empty();
 		}
-		
-		return (GraphNodeType)edgeIs.getDestinationNode();
 	}
 	
 	/**
@@ -131,6 +130,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 				.getEdgesIncoming(GraphEdgeAdds.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
+				.filter(GraphNodeMicrostepAddMethod.class::isInstance)
 				.map(GraphNodeMicrostepAddMethod.class::cast)
 				.findFirst();
 	}
@@ -145,6 +145,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 				.getEdgesIncoming(GraphEdgeRemoves.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
+				.filter(GraphNodeMicrostepRemoveMethod.class::isInstance)
 				.map(GraphNodeMicrostepRemoveMethod.class::cast)
 				.findFirst();
 	}

@@ -46,7 +46,7 @@ public final class GraphNodeExpressionStatement extends GraphNodeStatement {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeExpressionStatement(
 			graph,
-			(GraphNodeStatementExpression)this.statementExpressionEdge.getDestinationNode()
+			(GraphNodeStatementExpression)this.statementExpressionEdge.getDestinationNode().clone(graph)
 		);
 	}
 }

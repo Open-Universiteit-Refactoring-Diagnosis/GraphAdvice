@@ -88,9 +88,9 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			final var packagePathCurrent = packageNodePathCurrent.getPath();
 			
 			final var classNodes = packageNodeCurrent.getClassNodes();
-			final var isLeaf = !classNodes.isEmpty();
+			final var hasContents = !classNodes.isEmpty();
 			
-			if (isLeaf) {
+			if (hasContents) {
 				this.printLine(String.format("namespace %s {", packagePathCurrent));
 				this.indentIndex++;
 				
@@ -233,8 +233,8 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 								.collect(Collectors.toList()))
 			);
 			stringBuilder.append(")");
-			if (returnType != null) {
-				stringBuilder.append(" " + returnType.getCaption());
+			if (returnType.isPresent()) {
+				stringBuilder.append(" " + returnType.get().getCaption());
 			}
 			this.printLine(stringBuilder.toString());
 		}

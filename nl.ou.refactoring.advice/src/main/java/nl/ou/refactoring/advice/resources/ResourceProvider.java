@@ -126,6 +126,33 @@ public final class ResourceProvider {
 	}
 	
 	/**
+	 * Retrieves localised labels for Refactoring Advice Graph nodes.
+	 */
+	public static final class GraphNodeLabels {
+		private static final String BUNDLE_NAME = "GraphNodeLabels";
+		private GraphNodeLabels() { }
+		
+		/**
+		 * Gets the localised label for the specified node class, in the specified locale.
+		 * @param classType The class type of Refactoring Advice Graph node.
+		 * @param locale The locale for which to get the label.
+		 * @return The label for the specified node class in the specified locale.
+		 */
+		public static String getLabel(Class<? extends GraphNodeBase> classType, Locale locale) {
+			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(classType.getSimpleName());
+		}
+		
+		/**
+		 * Gets the localised label for the specified node class, in the default locale.
+		 * @param classType The class type of Refactoring Advice Graph node.
+		 * @return The label for the specified node class in the default locale.
+		 */
+		public static String getLabel(Class<? extends GraphNodeBase> classType) {
+			return ResourceBundle.getBundle(BUNDLE_NAME).getString(classType.getSimpleName());
+		}
+	}
+	
+	/**
 	 * Gets a reader for a resource file.
 	 * @param classLoader The class loader that is aware of resources.
 	 * @param fileName The file name of the resource file.

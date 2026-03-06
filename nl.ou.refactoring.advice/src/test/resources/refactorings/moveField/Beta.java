@@ -8,6 +8,6 @@ public final class Beta {
 	}
 
 	public int foo() {
-		return this.foo;
+		return this.field1;
 	}
 }

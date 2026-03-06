@@ -27,9 +27,8 @@ public class GraphNodeFieldAccessSuper
 	 */
 	public GraphNodeFieldAccessSuper(Graph graph, GraphNodeIdentifier identifier)
 			throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(graph, "graph");
-		ArgumentGuard.requireNotNull(identifier, "identifier");
 		super(graph);
+		ArgumentGuard.requireNotNull(identifier, "identifier");
 		this.identifierEdge =
 			this.graph.getOrAddEdge(
 				this,

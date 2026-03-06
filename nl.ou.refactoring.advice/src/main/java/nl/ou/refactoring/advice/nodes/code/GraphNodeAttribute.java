@@ -72,6 +72,7 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 				.getEdgesIncoming(GraphEdgeAdds.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
+				.filter(GraphNodeMicrostepAddField.class::isInstance)
 				.map(GraphNodeMicrostepAddField.class::cast)
 				.findFirst();
 	}
@@ -86,6 +87,7 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 				.getEdgesIncoming(GraphEdgeRemoves.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
+				.filter(GraphNodeMicrostepRemoveField.class::isInstance)
 				.map(GraphNodeMicrostepRemoveField.class::cast)
 				.findFirst();
 	}

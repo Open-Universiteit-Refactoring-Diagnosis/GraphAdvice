@@ -119,10 +119,16 @@ public final class Graph implements Cloneable {
 					.findAny()
 					.orElse(null);
 			if (pathComponents.isEmpty() && nodeCurrent != null) {
-				return Optional.of((TNode)nodeCurrent);
+				if (classType.isInstance(nodeCurrent)) {
+					return Optional.of(classType.cast(nodeCurrent));
+				}
+				return Optional.empty();
 			}
 		}
-		return Optional.ofNullable((TNode)nodeCurrent);
+		if (nodeCurrent != null && classType.isInstance(nodeCurrent)) {
+			return Optional.of(classType.cast(nodeCurrent));
+		}
+		return Optional.empty();
 	}
 	
 	/**
