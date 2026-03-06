@@ -15,6 +15,7 @@ import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
@@ -83,7 +84,15 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var alphaBarOperationNode = alphaClassNode.getOperationNode("bar", List.of()).get();
 		removeFieldMicrostepNode.removes(alphaTwoAttributeNode);
 		
+		final var stringType =
+			graph
+				.getNodes(GraphNodeType.class)
+				.stream()
+				.filter(node -> node.getTypeName().equals("String"))
+				.findAny()
+				.get();
 		final var betaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
+		betaTwoAttributeNode.is(stringType);
 		betaClassNode.has(betaTwoAttributeNode);
 		addFieldMicrostepNode.adds(betaTwoAttributeNode);
 		

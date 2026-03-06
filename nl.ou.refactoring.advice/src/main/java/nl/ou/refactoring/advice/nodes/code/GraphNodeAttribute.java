@@ -1,13 +1,19 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Attribute of a Class that is affected by a refactoring.
@@ -54,6 +60,34 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 		}
 		
 		return (GraphNodeType)edgeIs.getDestinationNode();
+	}
+	
+	/**
+	 * Gets the {@link GraphNodeMicrostepAddField} microstep node that added this {@link GraphNodeAttribute}.
+	 * @return The {@link GraphNodeMicrostepAddField} microstep node that added this {@link GraphNodeAttribute}, if any, otherwise empty.
+	 */
+	public Optional<GraphNodeMicrostepAddField> getAddedBy() {
+		return
+			this
+				.getEdgesIncoming(GraphEdgeAdds.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.map(GraphNodeMicrostepAddField.class::cast)
+				.findFirst();
+	}
+	
+	/**
+	 * Gets the {@link GraphNodeMicrostepRemoveField} microstep node that removed this {@link GraphNodeAttribute}.
+	 * @return The {@link GraphNodeMicrostepRemoveField} microstep node that removed this {@link GraphNodeAttribute}, if any, otherwise empty.
+	 */
+	public Optional<GraphNodeMicrostepRemoveField> getRemovedBy() {
+		return
+			this
+				.getEdgesIncoming(GraphEdgeRemoves.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.map(GraphNodeMicrostepRemoveField.class::cast)
+				.findFirst();
 	}
 	
 	/**

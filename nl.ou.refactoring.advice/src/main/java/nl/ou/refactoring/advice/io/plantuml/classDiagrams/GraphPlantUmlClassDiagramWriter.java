@@ -139,6 +139,38 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		for (final var attributeNode : attributeNodes) {
 			final var attributeTypeNode = attributeNode.getType();
 			final var stringBuilder = new StringBuilder();
+			
+			final var attributeIsNew = attributeNode.getAddedBy().isPresent();
+			if (attributeIsNew) {
+				stringBuilder.append(
+					String.format(
+						"<%s> ",
+						SPRITE_NAME_NEW
+					)
+				);
+			}
+			
+			final var attributeIsRemoved = attributeNode.getRemovedBy().isPresent();
+			if (attributeIsRemoved) {
+				stringBuilder.append(
+					String.format(
+						"<%s> ",
+						SPRITE_NAME_REMOVED
+					)
+				);
+			}
+			
+			final var attributeHasDangers = !attributeNode.getDangers().isEmpty();
+			if (attributeHasDangers) {
+				stringBuilder.append(
+					String.format(
+						"<color:%s><%s></color> ",
+						toHexadecimal(Color.red),
+						SPRITE_NAME_DANGER
+					)
+				);
+			}
+			
 			if (attributeTypeNode != null) {
 				stringBuilder.append(attributeTypeNode.getCaption() + " ");
 			}
@@ -152,7 +184,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			final var returnType = operationNode.getReturnType();
 			final var stringBuilder = new StringBuilder();
 			
-			final var operationIsNew = operationNode.getAddedBy() != null;
+			final var operationIsNew = operationNode.getAddedBy().isPresent();
 			if (operationIsNew) {
 				stringBuilder.append(
 					String.format(
@@ -162,7 +194,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 				);
 			}
 			
-			final var operationIsRemoved = operationNode.getRemovedBy() != null;
+			final var operationIsRemoved = operationNode.getRemovedBy().isPresent();
 			if (operationIsRemoved) {
 				stringBuilder.append(
 					String.format(

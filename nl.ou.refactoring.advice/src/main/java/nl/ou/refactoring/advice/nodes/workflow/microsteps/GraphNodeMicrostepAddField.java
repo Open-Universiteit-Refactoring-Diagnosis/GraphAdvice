@@ -30,7 +30,15 @@ public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
 	public GraphEdgeAdds adds(GraphNodeAttribute attributeNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(attributeNode, "attributeNode");
-		return new GraphEdgeAdds(this, attributeNode);
+		return
+			this
+				.graph
+				.getOrAddEdge(
+					this,
+					attributeNode,
+					(source, destination) -> new GraphEdgeAdds(source, destination),
+					GraphEdgeAdds.class
+				);
 	}
 	
 	/**

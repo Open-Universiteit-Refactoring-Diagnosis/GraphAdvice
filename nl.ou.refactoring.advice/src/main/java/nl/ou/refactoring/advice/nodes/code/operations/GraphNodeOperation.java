@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.nodes.code.operations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -122,32 +123,30 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	
 	/**
 	 * Gets the {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}.
-	 * @return The {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}, if any, otherwise null.
+	 * @return The {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}, if any, otherwise empty.
 	 */
-	public GraphNodeMicrostepAddMethod getAddedBy() {
+	public Optional<GraphNodeMicrostepAddMethod> getAddedBy() {
 		return
 			this
 				.getEdgesIncoming(GraphEdgeAdds.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
 				.map(GraphNodeMicrostepAddMethod.class::cast)
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 	}
 	
 	/**
 	 * Gets the {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}.
-	 * @return The {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}, if any, otherwise null.
+	 * @return The {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}, if any, otherwise empty.
 	 */
-	public GraphNodeMicrostepRemoveMethod getRemovedBy() {
+	public Optional<GraphNodeMicrostepRemoveMethod> getRemovedBy() {
 		return
 			this
 				.getEdgesIncoming(GraphEdgeRemoves.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
 				.map(GraphNodeMicrostepRemoveMethod.class::cast)
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 	}
 	
 	/**
