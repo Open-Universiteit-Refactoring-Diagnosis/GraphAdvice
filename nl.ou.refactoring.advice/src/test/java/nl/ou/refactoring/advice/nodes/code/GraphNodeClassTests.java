@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,19 +16,20 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 public final class GraphNodeClassTests {
 
 	@ParameterizedTest
 	@MethodSource("getOperationNodeTestCases")
-	@DisplayName("Should get the requested operation node if present, otherwise return null")
+	@DisplayName("Should get the requested operation node if present, otherwise return empty")
 	public void getOperationNodeTest(
-			GraphNodeClass classNode,
-			String operationName,
-			List<GraphNodeOperationParameter> operationParameters,
-			GraphNodeOperation expectedOperationNode
+		GraphNodeClass classNode,
+		GraphNodeIdentifier operationName,
+		List<GraphNodeOperationParameter> operationParameters,
+		Optional<GraphNodeOperation> expectedOperationNode
 	) {
-		final var actualOperationNode = classNode.getOperationNode(operationName, operationParameters);
+		final var actualOperationNode = classNode.getOperationNode(operationName.getIdentifier(), operationParameters);
 		assertEquals(expectedOperationNode, actualOperationNode);
 	}
 	
@@ -35,8 +37,9 @@ public final class GraphNodeClassTests {
 		final var argumentsList = new ArrayList<Arguments>();
 		
 		final var graph1 = new Graph("Graph test simple operation");
-		final var graph1ClassNode = new GraphNodeClass(graph1, "Class 1");
-		final var graph1OperationNodeName = "Operation 1";
+		final var graph1IdentifierNode = new GraphNodeIdentifier(graph1, "Class1");
+		final var graph1ClassNode = new GraphNodeClass(graph1, graph1IdentifierNode);
+		final var graph1OperationNodeName = new GraphNodeIdentifier(graph1, "operation1");
 		final var graph1OperationNodeParameters = new ArrayList<GraphNodeOperationParameter>();
 		final var graph1OperationNode = new GraphNodeOperation(graph1, graph1OperationNodeName);
 		graph1ClassNode.has(graph1OperationNode);
@@ -45,13 +48,14 @@ public final class GraphNodeClassTests {
 				graph1ClassNode,
 				graph1OperationNodeName,
 				graph1OperationNodeParameters,
-				graph1OperationNode
+				Optional.ofNullable(graph1OperationNode)
 			)
 		);
 		
 		final var graph2 = new Graph("Graph test operation with parameters");
-		final var graph2ClassNode = new GraphNodeClass(graph2, "Class 2");
-		final var graph2OperationNodeName = "Operation 2";
+		final var graph2IdentifierNode = new GraphNodeIdentifier(graph2, "Class2");
+		final var graph2ClassNode = new GraphNodeClass(graph2, graph2IdentifierNode);
+		final var graph2OperationNodeName = new GraphNodeIdentifier(graph2, "operation2");
 		final var graph2OperationNodeParametersInput = new ArrayList<GraphNodeOperationParameter>();
 		graph2OperationNodeParametersInput.add(new GraphNodeOperationParameter(graph2, "test"));
 		final var graph2OperationNodeParametersModel = new ArrayList<GraphNodeOperationParameter>();
@@ -68,13 +72,14 @@ public final class GraphNodeClassTests {
 				graph2ClassNode,
 				graph2OperationNodeName,
 				graph2OperationNodeParametersInput,
-				graph2OperationNode
+				Optional.ofNullable(graph2OperationNode)
 			)
 		);
 		
 		final var graph3 = new Graph("Graph test operation not found");
-		final var graph3ClassNode = new GraphNodeClass(graph3, "Class 3");
-		final var graph3OperationNodeName = "Operation 3";
+		final var graph3IdentifierNode = new GraphNodeIdentifier(graph3, "Class3");
+		final var graph3ClassNode = new GraphNodeClass(graph3, graph3IdentifierNode);
+		final var graph3OperationNodeName = new GraphNodeIdentifier(graph3, "operation3");
 		final var graph3OperationNodeParameters = new ArrayList<GraphNodeOperationParameter>();
 		final GraphNodeOperation graph3OperationNode = null;
 		argumentsList.add(
@@ -82,13 +87,14 @@ public final class GraphNodeClassTests {
 				graph3ClassNode,
 				graph3OperationNodeName,
 				graph3OperationNodeParameters,
-				graph3OperationNode
+				Optional.ofNullable(graph3OperationNode)
 			)
 		);
 		
 		final var graph4 = new Graph("Graph test operation parameters mismatch");
-		final var graph4ClassNode = new GraphNodeClass(graph4, "Class 4");
-		final var graph4OperationNodeName = "Operation 4";
+		final var graph4IdentifierNode = new GraphNodeIdentifier(graph4, "Class4");
+		final var graph4ClassNode = new GraphNodeClass(graph4, graph4IdentifierNode);
+		final var graph4OperationNodeName = new GraphNodeIdentifier(graph4, "operation4");
 		final var graph4OperationNodeParametersInput = new ArrayList<GraphNodeOperationParameter>();
 		graph4OperationNodeParametersInput.add(new GraphNodeOperationParameter(graph4, "test"));
 		final var graph4OperationNodeParametersModel = new ArrayList<GraphNodeOperationParameter>();
@@ -106,7 +112,7 @@ public final class GraphNodeClassTests {
 				graph4ClassNode,
 				graph4OperationNodeName,
 				graph4OperationNodeParametersInput,
-				graph4OperationNodeExpected
+				Optional.ofNullable(graph4OperationNodeExpected)
 			)
 		);
 		

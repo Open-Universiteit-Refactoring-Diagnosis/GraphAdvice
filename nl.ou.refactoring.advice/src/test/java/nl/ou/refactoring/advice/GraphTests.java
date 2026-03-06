@@ -19,6 +19,9 @@ import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
@@ -64,6 +67,28 @@ public final class GraphTests {
 		
 		// Assert
 		assertEquals(2, nodes.size());
+	}
+	
+	@Test
+	@DisplayName("Should correctly find a node by its path")
+	public void getNodeFoundTest() {
+		// Arrange
+		final var graph = new Graph("Find Node Test");
+		final var nlPackage = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, "nl"));
+		final var ouPackage = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, "ou"));
+		final var refactoringPackage = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, "refactoring"));
+		final var mockClass = new GraphNodeClass(graph, new GraphNodeIdentifier(graph, "Mock"));
+		nlPackage.has(ouPackage);
+		ouPackage.has(refactoringPackage);
+		refactoringPackage.has(mockClass);
+		
+		// Act
+		final var packageNode = graph.getNode("nl.ou.refactoring", GraphNodePackage.class).get();
+		final var classNode = graph.getNode("nl.ou.refactoring.Mock", GraphNodeClass.class).get();
+		
+		// Assert
+		assertEquals(refactoringPackage, packageNode);
+		assertEquals(mockClass, classNode);
 	}
 	
 	@Test

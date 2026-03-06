@@ -6,13 +6,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 public final class GraphEdgeTests {
 	@DisplayName("Should properly clone a graph edge")
 	@ParameterizedTest
 	@ArgumentsSource(GraphEdgeTestsArgumentsProvider.class)
-	public void cloneTests(GraphEdge original, GraphNode sourceCloned, GraphNode destinationCloned) {
+	public void cloneTests(GraphEdge original, GraphNodeBase sourceCloned, GraphNodeBase destinationCloned) {
 		final var clone = original.clone(sourceCloned, destinationCloned);
 		assertNotNull(clone);
 	}

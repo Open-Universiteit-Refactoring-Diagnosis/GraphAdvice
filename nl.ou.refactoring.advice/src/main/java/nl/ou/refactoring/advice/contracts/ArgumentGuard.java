@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.contracts;
 
 import java.text.MessageFormat;
+import java.util.regex.Pattern;
 
 /**
  * Enforces contracts on parameter arguments in methods.
@@ -41,6 +42,24 @@ public final class ArgumentGuard {
 		}
 		if (value.trim().isEmpty()) {
 			throw new ArgumentEmptyException(parameterName);
+		}
+	}
+	
+	/**
+	 * Requires that a {@link String} argument matches the specified pattern.
+	 * @param value The value that should match the specified pattern.
+	 * @param pattern The pattern that should be matched.
+	 * @param parameterName The name of the parameter that provides the value.
+	 * @throws ArgumentPatternException Thrown if the value does not match the pattern.
+	 */
+	public static void requirePattern(String value, Pattern pattern, String parameterName)
+			throws ArgumentPatternException {
+		if (value == null) {
+			throw new ArgumentPatternException(pattern, parameterName);
+		}
+		final var matcher = pattern.matcher(value);
+		if (!matcher.matches()) {
+			throw new ArgumentPatternException(pattern, parameterName);
 		}
 	}
 	

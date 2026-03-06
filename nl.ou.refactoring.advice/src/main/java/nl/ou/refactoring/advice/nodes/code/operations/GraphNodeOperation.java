@@ -1,8 +1,8 @@
 package nl.ou.refactoring.advice.nodes.code.operations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,9 +16,11 @@ import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvok
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
@@ -26,39 +28,68 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemo
  * Represents a node in a Refactoring Advice Graph that describes an Operation of a Class that is affected by a refactoring.
  */
 public final class GraphNodeOperation extends GraphNodeClassMember {
-	private final String operationName;
-	private final List<GraphNodeOperationParameter> operationParameters;
+	private final GraphEdgeHas operationNameEdge;
+	private final GraphEdgeHas operationParameterHead;
 	
 	/**
 	 * Initialises a new instance of {@link GraphNodeOperation}.
 	 * @param graph The graph that contains the node.
-	 * @param operationName The name of the operation.
+	 * @param operationName The node that represents the name of the operation.
 	 * @param operationParameters The parameters of the operation. If null, an empty list will be created.
-	 * @throws ArgumentNullException Thrown if graph or operationName are null.
+	 * @throws ArgumentNullException Thrown if graph, operationName or operationParameters are null.
 	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
 	public GraphNodeOperation(
-			Graph graph,
-			String operationName,
-			List<GraphNodeOperationParameter> operationParameters
+		Graph graph,
+		GraphNodeIdentifier operationName,
+		List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		ArgumentGuard.requireNotNull(operationName, "operationName");
+		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
 		super(graph);
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
-		this.operationName = operationName;
-		this.operationParameters =
-				operationParameters == null
-					? new ArrayList<GraphNodeOperationParameter>()
-					: operationParameters;
+		this.operationNameEdge =
+			this.graph.getOrAddEdge(
+				this,
+				operationName,
+				(source, destination) -> new GraphEdgeHas(source, destination),
+				GraphEdgeHas.class
+			);
+		
+		if (operationParameters.size() == 0) {
+			this.operationParameterHead = null;
+		} else {
+			var node = operationParameters.get(0);
+			if (node == null) {
+				throw new GraphNodeOperationParameterNullReferenceException(this, 0);
+			}
+			this.operationParameterHead =
+				this.graph.getOrAddEdge(
+					this,
+					operationParameters.get(0),
+					(source, destination) -> new GraphEdgeHas(source, destination),
+					GraphEdgeHas.class
+				);
+			GraphNodeOperationParameter nodeNext;
+			for (var i = 1; i < operationParameters.size(); i++) {
+				nodeNext = operationParameters.get(i);
+				if (nodeNext == null) {
+					throw new GraphNodeOperationParameterNullReferenceException(this, i);
+				}
+				node.hasNext(nodeNext);
+				node = nodeNext;
+			}
+		}
 	}
 	
 	/**
 	 * Initialises a new instance of {@link GraphNodeOperation}.
 	 * @param graph The graph that contains the node.
-	 * @param operationName The name of the operation.
+	 * @param operationName The node that represents the name of the operation.
 	 * @throws ArgumentNullException Thrown if graph or operationName are null.
 	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
-	public GraphNodeOperation(Graph graph, String operationName)
+	public GraphNodeOperation(Graph graph, GraphNodeIdentifier operationName)
 			throws ArgumentNullException, ArgumentEmptyException {
 		this(graph, operationName, new ArrayList<GraphNodeOperationParameter>());
 	}
@@ -67,19 +98,18 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 * Gets the return Type of the Operation, if defined. If not, returns null.
 	 * @return The return Type of the Operation, if defined. If not, returns null.
 	 */
-	public GraphNodeType getReturnType() {
+	public Optional<GraphNodeType> getReturnType() {
 		final var edgeIs =
-				this
-					.getEdges()
-					.stream()
-					.filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
-					.findFirst()
-					.orElse(null);
-		if (edgeIs == null) {
-			return null;
+			this
+				.getEdges()
+				.stream()
+				.filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
+				.findFirst();
+		if (edgeIs.isPresent()) {
+			return Optional.of((GraphNodeType)edgeIs.get().getDestinationNode());
+		} else {
+			return Optional.empty();
 		}
-		
-		return (GraphNodeType)edgeIs.getDestinationNode();
 	}
 	
 	/**
@@ -87,37 +117,37 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 * @return The name of the Operation affected by a refactoring.
 	 */
 	public String getOperationName() {
-		return this.operationName;
+		return this.operationNameEdge.getDestinationNode().toString();
 	}
 	
 	/**
 	 * Gets the {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}.
-	 * @return The {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}, if any, otherwise null.
+	 * @return The {@link GraphNodeMicrostepAddMethod} microstep node that added this {@link GraphNodeOperation}, if any, otherwise empty.
 	 */
-	public GraphNodeMicrostepAddMethod getAddedBy() {
+	public Optional<GraphNodeMicrostepAddMethod> getAddedBy() {
 		return
 			this
 				.getEdgesIncoming(GraphEdgeAdds.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
+				.filter(GraphNodeMicrostepAddMethod.class::isInstance)
 				.map(GraphNodeMicrostepAddMethod.class::cast)
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 	}
 	
 	/**
 	 * Gets the {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}.
-	 * @return The {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}, if any, otherwise null.
+	 * @return The {@link GraphNodeMicrostepRemoveMethod} microstep node that removed this {@link GraphNodeOperation}, if any, otherwise empty.
 	 */
-	public GraphNodeMicrostepRemoveMethod getRemovedBy() {
+	public Optional<GraphNodeMicrostepRemoveMethod> getRemovedBy() {
 		return
 			this
 				.getEdgesIncoming(GraphEdgeRemoves.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
+				.filter(GraphNodeMicrostepRemoveMethod.class::isInstance)
 				.map(GraphNodeMicrostepRemoveMethod.class::cast)
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 	}
 	
 	/**
@@ -126,7 +156,16 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 * @return The Operation Parameters of this Operation.
 	 */
 	public List<GraphNodeOperationParameter> getOperationParameters() {
-		return Collections.unmodifiableList(this.operationParameters);
+		if (this.operationParameterHead == null) {
+			return List.of();
+		}
+		final var operationParameterList = new ArrayList<GraphNodeOperationParameter>();
+		var node = (GraphNodeOperationParameter)this.operationParameterHead.getDestinationNode();
+		while (node != null) {
+			operationParameterList.add(node);
+			node = node.getNext();
+		}
+		return operationParameterList;
 	}
 	
 	/**
@@ -191,9 +230,20 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
-		// TODO include parameters
-		return new GraphNodeOperation(graph, this.operationName);
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		final var operationNameClone = (GraphNodeIdentifier)this.operationNameEdge.getDestinationNode().clone(graph);
+		final var operationParameterClones =
+			this
+				.getOperationParameters()
+				.stream()
+				.map(node -> (GraphNodeOperationParameter)node.clone(graph))
+				.collect(Collectors.toUnmodifiableList());
+		return new GraphNodeOperation(
+			graph,
+			operationNameClone,
+			operationParameterClones
+		);
 	}
 	
 	@Override
@@ -232,6 +282,6 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 
 	@Override
 	public String getCaption() {
-		return this.operationName;
+		return this.getOperationName();
 	}
 }

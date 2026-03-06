@@ -8,15 +8,44 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignmentExpression;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeFieldAccess;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeAssignment;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeStatementExpression;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeLeftHandSide;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodePrimaryExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeStatement;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
  * An edge that represents ownership of a code symbol.
  * Code edges follow Object Constraint Language (OCL) standards.
  */
 public final class GraphEdgeHas extends GraphEdge {
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param packageNode The node that represents a package.
+	 * @param identifierNode The identifier of the package.
+	 * @throws ArgumentNullException Thrown if packageNode or identifierNode is null.
+	 */
+	public GraphEdgeHas(GraphNodePackage packageNode, GraphNodeIdentifier identifierNode)
+			throws ArgumentNullException {
+		super(packageNode, identifierNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param packageNodeParent The node that represents the parent package.
+	 * @param packageNodeChild The node that represents the child package.
+	 * @throws ArgumentNullException Thrown if packageNodeParent or packageNodeChild is null.
+	 */
+	public GraphEdgeHas(GraphNodePackage packageNodeParent, GraphNodePackage packageNodeChild)
+			throws ArgumentNullException {
+		super(packageNodeParent, packageNodeChild);
+	}
+	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeHas}.
 	 * @param packageNode A Package node that owns the Interface node.
@@ -74,6 +103,17 @@ public final class GraphEdgeHas extends GraphEdge {
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param classNode A node that represents a Class.
+	 * @param classNameIdentifierNode A node that represents the identifier that serves as the name of a Class.
+	 * @throws ArgumentNullException Thrown if classNode or classNameIdentifierNode is null.
+	 */
+	public GraphEdgeHas(GraphNodeClass classNode, GraphNodeIdentifier classNameIdentifierNode)
+			throws ArgumentNullException {
+		super(classNode, classNameIdentifierNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
 	 * @param classNode A Class node that owns the Attribute node.
 	 * @param attributeNode An Attribute node that is owned by the Class node.
 	 * @throws ArgumentNullException Thrown if classNode or attributeNode is null.
@@ -92,6 +132,28 @@ public final class GraphEdgeHas extends GraphEdge {
 	public GraphEdgeHas(GraphNodeClass classNode, GraphNodeOperation operationNode)
 			throws ArgumentNullException {
 		super(classNode, operationNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param operationNode The node that represents the operation.
+	 * @param operationName The node that represents the operation name.
+	 * @throws ArgumentNullException Thrown if operationNode or operationName is null.
+	 */
+	public GraphEdgeHas(GraphNodeOperation operationNode, GraphNodeIdentifier operationName)
+			throws ArgumentNullException {
+		super(operationNode, operationName);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param operationNode The node that represents the operation.
+	 * @param operationParameter The node that represents the first operation parameter.
+	 * @throws ArgumentNullException Thrown if operationNode or operationParameter is null.
+	 */
+	public GraphEdgeHas(GraphNodeOperation operationNode, GraphNodeOperationParameter operationParameter)
+			throws ArgumentNullException {
+		super(operationNode, operationParameter);
 	}
 	
 	/**
@@ -125,5 +187,49 @@ public final class GraphEdgeHas extends GraphEdge {
 	public GraphEdgeHas(GraphNodeExpressionStatement expressionStatement, GraphNodeStatementExpression statementExpression)
 			throws ArgumentNullException {
 		super(expressionStatement, statementExpression);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param assignment A node that represents a value assignment.
+	 * @param leftHandSide The left hand side of the assignment.
+	 * @throws ArgumentNullException Thrown if assignment or leftHandSide is null.
+	 */
+	public GraphEdgeHas(GraphNodeAssignment assignment, GraphNodeLeftHandSide leftHandSide)
+			throws ArgumentNullException {
+		super(assignment, leftHandSide);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param assignment A node that represents a value assignment.
+	 * @param rightHandSide The right hand side of the assignment.
+	 * @throws ArgumentNullException Thrown if assignment or rightHandSide is null.
+	 */
+	public GraphEdgeHas(GraphNodeAssignment assignment, GraphNodeAssignmentExpression rightHandSide)
+			throws ArgumentNullException {
+		super(assignment, rightHandSide);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param fieldAccess A node that represents a field access expression.
+	 * @param primaryExpression A node that represents a primary expression.
+	 * @throws ArgumentNullException Thrown if fieldAccess or primaryExpression is null.
+	 */
+	public GraphEdgeHas(GraphNodeFieldAccess fieldAccess, GraphNodePrimaryExpression primaryExpression)
+			throws ArgumentNullException {
+		super(fieldAccess, primaryExpression);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param fieldAccess A node that represents a field access expression.
+	 * @param identifier A node that represents an identifier.
+	 * @throws ArgumentNullException Thrown if fieldAccess or identifier is null.
+	 */
+	public GraphEdgeHas(GraphNodeFieldAccess fieldAccess, GraphNodeIdentifier identifier)
+			throws ArgumentNullException {
+		super(fieldAccess, identifier);
 	}
 }

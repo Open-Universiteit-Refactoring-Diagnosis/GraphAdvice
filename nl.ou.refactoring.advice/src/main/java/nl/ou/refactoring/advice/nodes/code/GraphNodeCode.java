@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes the affected programme code.
  */
-public abstract class GraphNodeCode extends GraphNode {
+public abstract class GraphNodeCode extends GraphNodeBase {
 	/**
 	 * Initialises a new instance of {@link GraphNodeCode}.
 	 * @param graph The graph that contains the node.

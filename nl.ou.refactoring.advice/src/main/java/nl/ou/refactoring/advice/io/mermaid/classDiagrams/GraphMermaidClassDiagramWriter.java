@@ -5,10 +5,11 @@ import java.text.MessageFormat;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.io.GraphWriterException;
 import nl.ou.refactoring.advice.io.mermaid.GraphMermaidWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
@@ -44,17 +45,24 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 
 	@Override
 	public void write(Graph graph)
-			throws ArgumentNullException, GraphPathSegmentInvalidException {
+			throws
+				ArgumentNullException,
+				GraphValidationException,
+				GraphWriterException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		this.printLine("classDiagram");
 		this.indentIndex++;
 		
-		final var packageNodes = graph.getNodes(GraphNodePackage.class);
+		final var packageNodes =
+			graph
+				.getNodes(GraphNodePackage.class)
+				.stream()
+				.filter(packageNode -> packageNode.getParent().isEmpty())
+				.collect(Collectors.toUnmodifiableSet());
 		for (final var packageNode : packageNodes) {
 			this.writePackage(packageNode);
 		}
-		// do we forgive and include classes that do not have a package?
-		
+
 		this.writeNotes(graph);
 	}
 	
@@ -104,8 +112,8 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 								.collect(Collectors.toList()))
 			);
 			stringBuilder.append(")");
-			if (returnType != null) {
-				stringBuilder.append(" " + returnType.getCaption());
+			if (returnType.isPresent()) {
+				stringBuilder.append(" " + returnType.get().getCaption());
 			}
 			this.printLine(stringBuilder.toString());
 		}

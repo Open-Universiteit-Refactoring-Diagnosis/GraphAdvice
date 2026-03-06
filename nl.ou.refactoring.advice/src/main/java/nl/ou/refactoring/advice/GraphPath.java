@@ -9,6 +9,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
  * A path in a graph.
@@ -73,7 +74,7 @@ public final class GraphPath implements Cloneable {
 	 * @return An unmodifiable list of nodes that are an instance of classType or an instance of a specialisation of classType, in the same order as the path.
 	 * @throws ArgumentNullException Thrown if classType is null.
 	 */
-	public <TNode extends GraphNode> List<TNode> getNodes(Class<TNode> classType)
+	public <TNode extends GraphNodeBase> List<TNode> getNodes(Class<TNode> classType)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(classType, "classType");
 		return

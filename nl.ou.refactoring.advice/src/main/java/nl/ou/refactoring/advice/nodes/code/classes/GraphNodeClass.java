@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code.classes;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,18 +13,20 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
  * A node in a Refactoring Advice Graph that represents a Class.
  */
 public final class GraphNodeClass extends GraphNodeCode {
-	private final String className;
+	private final GraphEdgeHas classNameEdge;
 	private final GraphNodeClassStereotype stereotype;
 	
 	/**
@@ -32,16 +35,22 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @param className The name of the affected Class.
 	 * @param stereotype The stereotype of the affected Class.
 	 * @throws ArgumentNullException Thrown if graph or className is null.
-	 * @throws ArgumentEmptyException Thrown if className is empty or contains only white spaces.
 	 */
 	public GraphNodeClass(
 		Graph graph,
-		String className,
+		GraphNodeIdentifier className,
 		GraphNodeClassStereotype stereotype
 	) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		ArgumentGuard.requireNotNull(className, "className");
 		super(graph);
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(className, "className");
-		this.className = className;
+		this.classNameEdge =
+			this.graph.getOrAddEdge(
+				this,
+				className,
+				(source, destination) -> new GraphEdgeHas(source, destination),
+				GraphEdgeHas.class
+			);
 		this.stereotype = stereotype;
 	}
 	
@@ -53,8 +62,8 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @throws ArgumentEmptyException Thrown if className is empty or contains only white spaces.
 	 */
 	public GraphNodeClass(
-			Graph graph,
-			String className
+		Graph graph,
+		GraphNodeIdentifier className
 	) throws ArgumentNullException, ArgumentEmptyException {
 		this(graph, className, null);
 	}
@@ -64,7 +73,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @return The name of the affected Class.
 	 */
 	public String getClassName() {
-		return this.className;
+		return ((GraphNodeIdentifier)this.classNameEdge.getDestinationNode()).getIdentifier();
 	}
 	
 	/**
@@ -213,11 +222,11 @@ public final class GraphNodeClass extends GraphNodeCode {
 	/**
 	 * Gets the {@link GraphNodeAttribute} with attributeName.
 	 * @param attributeName The name of the attribute.
-	 * @return The {@link GraphNodeAttribute} with attributeName or null if not found.
+	 * @return The {@link GraphNodeAttribute} with attributeName or empty if not found.
 	 * @throws ArgumentNullException Thrown if attributeName is null.
 	 * @throws ArgumentEmptyException Thrown if attributeName is empty or contains only white spaces.
 	 */
-	public GraphNodeAttribute getAttributeNode(String attributeName)
+	public Optional<GraphNodeAttribute> getAttributeNode(String attributeName)
 			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(attributeName, "attributeName");
 		return
@@ -225,8 +234,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 				.getAttributeNodes()
 				.stream()
 				.filter(node -> node.getAttributeName().equals(attributeName))
-				.findAny()
-				.orElse(null);
+				.findAny();
 	}
 	
 	/**
@@ -239,12 +247,15 @@ public final class GraphNodeClass extends GraphNodeCode {
 	public GraphNodeAttribute computeAttributeNode(String attributeName)
 			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(attributeName, "attributeName");
-		var attributeNode = this.getAttributeNode(attributeName);
-		if (attributeNode == null) {
-			attributeNode = new GraphNodeAttribute(this.graph, attributeName);
-			this.has(attributeNode);
-		}
-		return attributeNode;
+		return
+			this
+				.getAttributeNode(attributeName)
+				.or(() -> {
+					final var node = new GraphNodeAttribute(this.graph, attributeName);
+					this.has(node);
+					return Optional.of(node);
+				})
+				.get();
 	}
 	
 	/**
@@ -327,15 +338,14 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * Gets the operation node associated with this class, with operationName and operationParameters as its signature.
 	 * @param operationName The name of the operation.
 	 * @param operationParameters The parameters of the operation.
-	 * @return The operation with operationName and operationParameters, if found, otherwise null.
+	 * @return The operation with operationName and operationParameters, if found, otherwise empty.
 	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
-	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
-	public GraphNodeOperation getOperationNode(
-			String operationName,
-			List<GraphNodeOperationParameter> operationParameters
+	public Optional<GraphNodeOperation> getOperationNode(
+		String operationName,
+		List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
+		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
 		return
 			this
@@ -344,9 +354,9 @@ public final class GraphNodeClass extends GraphNodeCode {
 				.filter(
 					node ->
 					node.getOperationName().equals(operationName) &&
-					node.getOperationParameters().equals(operationParameters))
-				.findAny()
-				.orElse(null);
+					node.getOperationParameters().equals(operationParameters)
+				)
+				.findAny();
 	}
 	
 	/**
@@ -372,25 +382,28 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @param operationParameters The parameters of the operation.
 	 * @return The operation with operationName and operationParameters, if found, otherwise a newly created operation node with operationName and operationParameters.
 	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
-	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains only white spaces.
 	 */
 	public GraphNodeOperation computeOperationNode(
-			String operationName,
-			List<GraphNodeOperationParameter> operationParameters
+		String operationName,
+		List<GraphNodeOperationParameter> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(operationName, "operationName");
+		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
-		var operationNode = this.getOperationNode(operationName, operationParameters);
-		if (operationNode == null) {
-			operationNode = new GraphNodeOperation(this.graph, operationName, operationParameters);
-			this.has(operationNode);
-		}
-		return operationNode;
+		return
+			this
+				.getOperationNode(operationName, operationParameters)
+				.or(() -> {
+					final var node = new GraphNodeOperation(this.graph, new GraphNodeIdentifier(graph, operationName), operationParameters);
+					this.has(node);
+					return Optional.of(node);
+				})
+				.get();
 	}
 	
 	@Override
-	public GraphNode clone(Graph graph) {
-		return new GraphNodeClass(graph, this.className);
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		return new GraphNodeClass(graph, (GraphNodeIdentifier)this.classNameEdge.getDestinationNode().clone(graph));
 	}
 	
 	@Override
@@ -410,6 +423,6 @@ public final class GraphNodeClass extends GraphNodeCode {
 
 	@Override
 	public String getCaption() {
-		return this.className;
+		return ((GraphNodeIdentifier)this.classNameEdge.getDestinationNode()).getIdentifier();
 	}
 }

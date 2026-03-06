@@ -1,9 +1,10 @@
 package nl.ou.refactoring.advice.nodes.workflow.remedies;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeMitigates;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
 /**
@@ -36,7 +37,8 @@ public final class GraphNodeRemedyUpdateReferences extends GraphNodeRemedy {
 	}
 
 	@Override
-	public GraphNode clone(Graph graph) {
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
 		return new GraphNodeRemedyUpdateReferences(graph);
 	}
 }

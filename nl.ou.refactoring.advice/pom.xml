@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.ou.refactoring</groupId>
 	<artifactId>nl.ou.refactoring.advice</artifactId>
-	<version>0.4.0</version>
+	<version>0.5.0</version>
 	<name>Open Universiteit Refactoring Advice through Knowledge Graphs</name>
 	<description>A software component for generating refactoring advices by assembling a refactoring in a graph and converting it to a human-readable advice.</description>
 	<dependencies>
@@ -13,6 +13,11 @@
 			<groupId>ai.djl</groupId>
 			<artifactId>api</artifactId>
 			<version>0.34.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-symbol-solver-core</artifactId>
+			<version>3.28.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>io.github.classgraph</groupId>
@@ -36,14 +41,19 @@
 		    <type>pom</type>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>org.eclipse.emf.ecore</artifactId>
-			<version>2.40.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.eclipse.uml2</groupId>
-		    <artifactId>org.eclipse.uml2.uml</artifactId>
-		    <version>3.1.0.v201006071150</version>
+  			<groupId>org.apache.xmlgraphics</groupId>
+  			<artifactId>batik-all</artifactId>
+  			<version>1.19</version>
+  			<exclusions>
+  				<exclusion>
+  					<groupId>xml-apis</groupId>
+  					<artifactId>xml-apis</artifactId>
+  				</exclusion>
+  				<exclusion>
+  					<groupId>xml-apis</groupId>
+  					<artifactId>xml-apis-ext</artifactId>
+  				</exclusion>
+  			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>
@@ -106,6 +116,10 @@
 		<profile>
 			<id>github</id>
 			<repositories>
+				<repository>
+					<id>maven</id>
+					<url>https://repo1.maven.org/maven2</url>
+				</repository>
 				<repository>
 					<id>central</id>
 					<url>https://repo.maven.apache.org/maven2</url>

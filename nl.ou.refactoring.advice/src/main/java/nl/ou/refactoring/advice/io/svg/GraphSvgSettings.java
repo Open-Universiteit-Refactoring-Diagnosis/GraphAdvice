@@ -11,7 +11,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  */
 public final class GraphSvgSettings {
 	/**
-	 * The Scalable Vector Graphics (SVGs) XML namespace.
+	 * The Scalable Vector Graphics (SVGs) XML name space.
 	 */
 	public static final QName SVG_NAMESPACE = new QName("http://www.w3.org/2000/svg");
 	private int width = 1024;

@@ -1,10 +1,14 @@
 package nl.ou.refactoring.advice.resources;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
 
 /**
@@ -76,20 +80,20 @@ public final class ResourceProvider {
 		
 		/**
 		 * Gets the localised caption for the specified classType, in the default {@link Locale}.
-		 * @param classType The type of the class of {@link GraphNode}.
+		 * @param classType The type of the class of {@link GraphNodeBase}.
 		 * @return The localised caption for the specified classType.
 		 */
-		public static String getCaption(Class<? extends GraphNode> classType) {
+		public static String getCaption(Class<? extends GraphNodeBase> classType) {
 			return ResourceBundle.getBundle(BUNDLE_NAME).getString(classType.getSimpleName());
 		}
 		
 		/**
 		 * Gets the localised caption for the specified classType, in the specified locale.
-		 * @param classType The type of the class of {@link GraphNode}.
+		 * @param classType The type of the class of {@link GraphNodeBase}.
 		 * @param locale The {@link Locale} for which to get the caption.
 		 * @return The localised caption for the specified classType, in the specified locale.
 		 */
-		public static String getCaption(Class<? extends GraphNode> classType, Locale locale) {
+		public static String getCaption(Class<? extends GraphNodeBase> classType, Locale locale) {
 			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(classType.getSimpleName());
 		}
 	}
@@ -119,5 +123,46 @@ public final class ResourceProvider {
 		public static String getDisplayName(GraphNodeClassStereotype stereotype, Locale locale) {
 			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(stereotype.getDisplayName());
 		}
+	}
+	
+	/**
+	 * Retrieves localised labels for Refactoring Advice Graph nodes.
+	 */
+	public static final class GraphNodeLabels {
+		private static final String BUNDLE_NAME = "GraphNodeLabels";
+		private GraphNodeLabels() { }
+		
+		/**
+		 * Gets the localised label for the specified node class, in the specified locale.
+		 * @param classType The class type of Refactoring Advice Graph node.
+		 * @param locale The locale for which to get the label.
+		 * @return The label for the specified node class in the specified locale.
+		 */
+		public static String getLabel(Class<? extends GraphNodeBase> classType, Locale locale) {
+			return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(classType.getSimpleName());
+		}
+		
+		/**
+		 * Gets the localised label for the specified node class, in the default locale.
+		 * @param classType The class type of Refactoring Advice Graph node.
+		 * @return The label for the specified node class in the default locale.
+		 */
+		public static String getLabel(Class<? extends GraphNodeBase> classType) {
+			return ResourceBundle.getBundle(BUNDLE_NAME).getString(classType.getSimpleName());
+		}
+	}
+	
+	/**
+	 * Gets a reader for a resource file.
+	 * @param classLoader The class loader that is aware of resources.
+	 * @param fileName The file name of the resource file.
+	 * @return A reader for a resource file.
+	 */
+	public static Reader getReader(ClassLoader classLoader, String fileName) {
+		final var inputStream = classLoader.getResourceAsStream(fileName);
+		if (inputStream == null) {
+			throw new IllegalArgumentException(String.format("Resource file '%s' not found", fileName));
+		}
+		return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 	}
 }

@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
@@ -33,7 +33,10 @@ public abstract class GraphStringWriter implements GraphWriter {
 
 	@Override
 	public abstract void write(Graph graph)
-			throws ArgumentNullException, GraphPathSegmentInvalidException;
+		throws
+			ArgumentNullException,
+			GraphValidationException,
+			GraphWriterException;
 
 	/**
 	 * Prints text to the output {@link StringWriter}.

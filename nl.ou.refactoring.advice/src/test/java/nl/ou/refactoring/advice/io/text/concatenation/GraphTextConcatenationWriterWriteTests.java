@@ -24,6 +24,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
@@ -73,46 +74,49 @@ public class GraphTextConcatenationWriterWriteTests {
 	private static Graph createGraphMoveMethod() {
 		final var graph = new Graph("Move method");
 		
-		final var packageTest = new GraphNodePackage(graph, "nl.ou.refactoring.test");
-		final var classAlphaBefore =
-				new GraphNodeClass(
-						graph,
-						"Alpha",
-						GraphNodeClassStereotype.BEFORE
-				);
-		packageTest.has(classAlphaBefore);
+		final var packageNodeTest = GraphNodePackage.parse(graph, "nl.ou.refactoring.test");
+		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
+		final var classNodeAlphaBefore =
+			new GraphNodeClass(
+				graph,
+				identifierNodeAlpha,
+				GraphNodeClassStereotype.BEFORE
+			);
+		packageNodeTest.has(classNodeAlphaBefore);
+		final var helloWorldIdentifier = new GraphNodeIdentifier(graph, "helloWorld");
 		final var operationBefore =
-				new GraphNodeOperation(
-						graph,
-						"helloWorld"
-				);
-		classAlphaBefore.has(operationBefore);
+			new GraphNodeOperation(
+				graph,
+				helloWorldIdentifier
+			);
+		classNodeAlphaBefore.has(operationBefore);
+		final var identifierNodeBeta = new GraphNodeIdentifier(graph, "Beta");
 		final var classBetaBefore =
-				new GraphNodeClass(
-						graph,
-						"Beta",
-						GraphNodeClassStereotype.BEFORE
-				);
-		packageTest.has(classBetaBefore);
+			new GraphNodeClass(
+				graph,
+				identifierNodeBeta,
+				GraphNodeClassStereotype.BEFORE
+			);
+		packageNodeTest.has(classBetaBefore);
 		final var classAlphaAfter =
-				new GraphNodeClass(
-						graph,
-						"Alpha",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageTest.has(classAlphaAfter);
+			new GraphNodeClass(
+				graph,
+				identifierNodeAlpha,
+				GraphNodeClassStereotype.AFTER
+			);
+		packageNodeTest.has(classAlphaAfter);
 		final var classBetaAfter =
-				new GraphNodeClass(
-						graph,
-						"Beta",
-						GraphNodeClassStereotype.AFTER
-				);
-		packageTest.has(classBetaAfter);
+			new GraphNodeClass(
+				graph,
+				identifierNodeBeta,
+				GraphNodeClassStereotype.AFTER
+			);
+		packageNodeTest.has(classBetaAfter);
 		final var operationAfter =
-				new GraphNodeOperation(
-						graph,
-						"helloWorld"
-				);
+			new GraphNodeOperation(
+				graph,
+				helloWorldIdentifier
+			);
 		classBetaAfter.has(operationAfter);
 		
 		final var startNode = graph.start();

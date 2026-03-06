@@ -1,9 +1,12 @@
 package nl.ou.refactoring.advice;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,7 +16,13 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
+import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
@@ -48,7 +57,7 @@ public final class Graph implements Cloneable {
 	}
 	
 	/**
-	 * Gets a {@link GraphNode} by its unique identifier.
+	 * Gets a {@link GraphNodeBase} by its unique identifier.
 	 * @param nodeIdentifier The unique identifier of the node.
 	 * @return The node with the specified identifier, or if not found, null.
 	 * @throws ArgumentNullException Thrown if nodeIdentifier is null.
@@ -64,6 +73,62 @@ public final class Graph implements Cloneable {
 					.filter(node -> node.getId() == nodeIdentifier)
 					.findFirst()
 					.orElse(null);
+	}
+	
+	/**
+	 * Gets a code node based on its code path.
+	 * @param <TNode> The type of node to retrieve.
+	 * @param path The path to the code node.
+	 * @param classType The type of Class of the node.
+	 * @return The node at the specified path, otherwise an empty {@link Optional}.
+	 * @throws ArgumentNullException Thrown if path or classType is null.
+	 * @throws ArgumentEmptyException Thrown if path is empty or contains only white spaces.
+	 */
+	public <TNode extends GraphNodeCode> Optional<TNode> getNode(String path, Class<TNode> classType)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(path, "path");
+		ArgumentGuard.requireNotNull(classType, "classType");
+		final var pathComponents = new ArrayDeque<String>(List.of(path.split("\\.")));
+		String pathComponentName = pathComponents.pop();
+		GraphNodeCode nodeCurrent =
+			this
+				.matrix
+				.keySet()
+				.stream()
+				.filter(
+					node ->
+					node instanceof GraphNodePackage &&
+					((GraphNodePackage)node).getPackageName().equals(pathComponentName)
+				)
+				.map(node -> (GraphNodeCode)node)
+				.findAny()
+				.orElse(null);
+		while (!pathComponents.isEmpty() && nodeCurrent != null) {
+			final var pathComponent = pathComponents.pop();
+			nodeCurrent =
+				(GraphNodeCode)nodeCurrent
+					.getEdges(GraphEdgeHas.class)
+					.stream()
+					.map(edge -> edge.getDestinationNode())
+					.filter(node -> switch (node) {
+						case GraphNodePackage packageNode -> packageNode.getPackageName().equals(pathComponent);
+						case GraphNodeClass classNode -> classNode.getClassName().equals(pathComponent);
+						case GraphNodeInterface interfaceNode -> interfaceNode.getInterfaceName().equals(pathComponent);
+						default -> false;
+					})
+					.findAny()
+					.orElse(null);
+			if (pathComponents.isEmpty() && nodeCurrent != null) {
+				if (classType.isInstance(nodeCurrent)) {
+					return Optional.of(classType.cast(nodeCurrent));
+				}
+				return Optional.empty();
+			}
+		}
+		if (nodeCurrent != null && classType.isInstance(nodeCurrent)) {
+			return Optional.of(classType.cast(nodeCurrent));
+		}
+		return Optional.empty();
 	}
 	
 	/**
@@ -277,16 +342,16 @@ public final class Graph implements Cloneable {
 			return Collections.unmodifiableSet(Set.of());
 		}
 		return
-				Collections.unmodifiableSet(
-					this
-						.matrix
-						.values()
-						.stream()
-						.flatMap(
-								columns ->
-								columns.getOrDefault(destinationNode, new HashSet<>()).stream())
-						.collect(Collectors.toSet())
-				);
+			Collections.unmodifiableSet(
+				this
+					.matrix
+					.values()
+					.stream()
+					.flatMap(
+						columns ->
+						columns.getOrDefault(destinationNode, new HashSet<>()).stream())
+					.collect(Collectors.toSet())
+			);
 	}
 	
 	/**
@@ -302,20 +367,20 @@ public final class Graph implements Cloneable {
 			return Collections.unmodifiableSet(Set.of());
 		}
 		return
-				Collections.unmodifiableSet(
-					this
-						.matrix
-						.values()
-						.stream()
-						.flatMap(
-								columns ->
-								columns
-									.getOrDefault(destinationNode, new HashSet<>())
-									.stream()
-									.filter(edgeType::isInstance)
-									.map(edgeType::cast))
-						.collect(Collectors.toSet())
-				);
+			Collections.unmodifiableSet(
+				this
+					.matrix
+					.values()
+					.stream()
+					.flatMap(
+						columns ->
+						columns
+							.getOrDefault(destinationNode, new HashSet<>())
+							.stream()
+							.filter(edgeType::isInstance)
+							.map(edgeType::cast))
+					.collect(Collectors.toSet())
+			);
 	}
 	
 	/**

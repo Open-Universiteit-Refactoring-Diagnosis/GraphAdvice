@@ -22,8 +22,8 @@ public final class GraphNodeTests {
 	@MethodSource("findPathsToDestinationNodeTestProvider")
 	@DisplayName("Should find paths to a destination node")
 	public void findPathsToDestinationNodeTest(
-			GraphNode sourceNode,
-			GraphNode destinationNode,
+			GraphNodeBase sourceNode,
+			GraphNodeBase destinationNode,
 			int maximumDepth,
 			List<GraphPath> expected) {
 		final var actual = sourceNode.findPaths(destinationNode, maximumDepth);

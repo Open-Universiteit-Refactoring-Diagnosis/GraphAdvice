@@ -36,3 +36,12 @@
 - Added support for risk Changed Nested Relationship.
 - Added test case for the "Move Method" refactoring, including JSON and required fixes in the model and flowchart, UML generation.
 - Added JSON Schema generation for serialisation and deserialisation of representations of Refactoring Advice Graphs in JSON.
+
+## 0.5.0
+
+- Added code nodes for representing field access.
+- Introduce formal Identifier node for code symbols such as attributes/fields and operations/methods.
+- Operation Parameters now (also) a chain of nodes.
+- Packages are now trees within the Refactoring Advice Graph.
+- Get nodes from a graph by a path specification.
+- Several fixes and enhancements in Mermaid Flowcharts and PlantUML Class Diagram writing.

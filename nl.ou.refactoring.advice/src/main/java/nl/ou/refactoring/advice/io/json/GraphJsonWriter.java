@@ -11,10 +11,11 @@ import jakarta.json.JsonObject;
 import jakarta.json.spi.JsonProvider;
 import jakarta.json.stream.JsonGenerator;
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphWriter;
+import nl.ou.refactoring.advice.io.GraphWriterException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
@@ -41,7 +42,11 @@ public final class GraphJsonWriter implements GraphWriter {
 	}
 
 	@Override
-	public void write(Graph graph) throws ArgumentNullException, GraphPathSegmentInvalidException {
+	public void write(Graph graph)
+			throws
+				ArgumentNullException,
+				GraphValidationException,
+				GraphWriterException {
 		Map<String, Boolean> configuration = new HashMap<>();
 		configuration.put(JsonGenerator.PRETTY_PRINTING, true);
 		final var jsonProvider = JsonProvider.provider();

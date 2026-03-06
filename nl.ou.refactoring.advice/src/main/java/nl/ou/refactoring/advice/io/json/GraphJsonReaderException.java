@@ -1,7 +1,5 @@
 package nl.ou.refactoring.advice.io.json;
 
-import java.io.IOException;
-
 import nl.ou.refactoring.advice.io.GraphReaderException;
 
 /**
@@ -22,7 +20,7 @@ public class GraphJsonReaderException extends GraphReaderException {
 	 * Initialises a new instance of {@link GraphJsonReaderException}.
 	 * @param cause The cause of the exception.
 	 */
-	protected GraphJsonReaderException(IOException cause) {
+	protected GraphJsonReaderException(Throwable cause) {
 		super(cause);
 	}
 }

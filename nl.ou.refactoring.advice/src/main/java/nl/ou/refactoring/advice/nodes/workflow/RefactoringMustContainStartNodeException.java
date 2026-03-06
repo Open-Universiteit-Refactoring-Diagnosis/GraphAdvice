@@ -1,11 +1,12 @@
 package nl.ou.refactoring.advice.nodes.workflow;
 
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * An exception that is thrown if a graph does not contain a start node.
  */
-public final class RefactoringMustContainStartNodeException extends RuntimeException {
+public final class RefactoringMustContainStartNodeException extends GraphValidationException {
 	/**
 	 * Generated serial version UID.
 	 */

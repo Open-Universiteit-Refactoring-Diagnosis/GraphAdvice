@@ -25,13 +25,13 @@ public abstract class GraphNodeClassMember extends GraphNodeCode {
 	 */
 	public GraphNodeClass getClassNode() {
 		return
-				this
-					.getEdgesIncoming(GraphEdgeHas.class)
-					.stream()
-					.map(edge -> edge.getSourceNode())
-					.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
-					.map(GraphNodeClass.class::cast)
-					.findFirst()
-					.orElse(null);
+			this
+				.getEdgesIncoming(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
+				.map(GraphNodeClass.class::cast)
+				.findFirst()
+				.orElse(null);
 	}
 }

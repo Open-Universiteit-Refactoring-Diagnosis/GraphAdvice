@@ -2,12 +2,13 @@ package nl.ou.refactoring.advice.io.mermaid.flowcharts;
 
 import java.io.StringWriter;
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
+import nl.ou.refactoring.advice.io.GraphWriterException;
 import nl.ou.refactoring.advice.io.mermaid.GraphMermaidWriter;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
@@ -50,7 +51,10 @@ public final class GraphMermaidFlowchartWriter extends GraphMermaidWriter {
 
 	@Override
 	public void write(Graph graph)
-			throws ArgumentNullException, GraphPathSegmentInvalidException {
+			throws
+				ArgumentNullException,
+				GraphValidationException,
+				GraphWriterException {
 		this.printLine("flowchart " + getDirectionString(this.direction));
 		this.indentIndex++;
 		final var nodes = graph.getNodes();
