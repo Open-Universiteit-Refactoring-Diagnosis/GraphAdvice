@@ -96,7 +96,7 @@ public class GraphJsonReader implements GraphReader {
 						throw new RuntimeException(exception);
 					}
 					
-					graph.getOrAddEdge(
+					graph.computeEdge(
 							node,
 							nodeTo,
 							(_, _) -> this.constructEdge(edgeClass, node, nodeTo),

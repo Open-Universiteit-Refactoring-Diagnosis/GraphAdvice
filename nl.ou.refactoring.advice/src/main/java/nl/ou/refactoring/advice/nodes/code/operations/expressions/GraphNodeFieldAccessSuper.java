@@ -30,7 +30,7 @@ public class GraphNodeFieldAccessSuper
 		super(graph);
 		ArgumentGuard.requireNotNull(identifier, "identifier");
 		this.identifierEdge =
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				identifier,
 				(source, destination) -> new GraphEdgeHas(source, destination),

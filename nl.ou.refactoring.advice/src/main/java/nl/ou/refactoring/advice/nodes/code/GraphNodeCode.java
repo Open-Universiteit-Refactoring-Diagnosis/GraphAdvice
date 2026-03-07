@@ -34,7 +34,7 @@ public abstract class GraphNodeCode extends GraphNodeBase {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					programLocationNode,
 					(source, destination) -> new GraphEdgeHas(source, destination),

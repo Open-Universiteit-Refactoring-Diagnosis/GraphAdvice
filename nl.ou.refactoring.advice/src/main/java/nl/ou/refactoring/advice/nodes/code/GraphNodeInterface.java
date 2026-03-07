@@ -46,7 +46,7 @@ public final class GraphNodeInterface extends GraphNodeCode {
 	 */
 	public GraphEdgeHas has(GraphNodeAttribute attributeNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				attributeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -62,7 +62,7 @@ public final class GraphNodeInterface extends GraphNodeCode {
 	 */
 	public GraphEdgeHas has(GraphNodeOperation operationNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				operationNode,
 				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -77,7 +77,7 @@ public final class GraphNodeInterface extends GraphNodeCode {
 	 */
 	public GraphEdgeIs is(GraphNodeInterface baseInterfaceNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				baseInterfaceNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),

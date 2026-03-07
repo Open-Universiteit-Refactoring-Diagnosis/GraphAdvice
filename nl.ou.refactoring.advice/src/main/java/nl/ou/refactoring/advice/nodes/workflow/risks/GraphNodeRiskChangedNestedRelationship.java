@@ -36,7 +36,7 @@ public class GraphNodeRiskChangedNestedRelationship extends GraphNodeRisk {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					operationNode,
 					(sourceNode, destinationNode) -> new GraphEdgeAffects(sourceNode, destinationNode),
@@ -57,7 +57,7 @@ public class GraphNodeRiskChangedNestedRelationship extends GraphNodeRisk {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					methodInvocationExpressionNode,
 					(sourceNode, destinationNode) -> new GraphEdgeAffects(sourceNode, destinationNode),

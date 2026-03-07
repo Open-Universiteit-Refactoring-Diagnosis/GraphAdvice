@@ -29,7 +29,7 @@ public final class GraphNodeRemedyChooseDifferentName extends GraphNodeRemedy {
 	 */
 	public GraphEdgeMitigates mitigates(GraphNodeRiskDoubleDefinition doubleDefinition)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				doubleDefinition,
 				(source, destination) -> new GraphEdgeMitigates(source, destination),

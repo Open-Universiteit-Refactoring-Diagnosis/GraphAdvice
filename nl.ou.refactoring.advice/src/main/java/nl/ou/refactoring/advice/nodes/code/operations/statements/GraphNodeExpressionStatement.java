@@ -25,7 +25,7 @@ public final class GraphNodeExpressionStatement extends GraphNodeStatement {
 		ArgumentGuard.requireNotNull(statementExpressionNode, "statementExpressionNode");
 		super(graph);
 		this.statementExpressionEdge =
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				statementExpressionNode,
 				(source, destination) -> new GraphEdgeHas(source, destination),

@@ -71,7 +71,7 @@ public abstract class GraphNodeWorkflowAction extends GraphNodeWorkflow {
 	 */
 	public GraphEdgePrecedes precedes(GraphNodeWorkflowAction next)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				next,
 				(sourceNode, destinationNode) -> new GraphEdgePrecedes(sourceNode, destinationNode),

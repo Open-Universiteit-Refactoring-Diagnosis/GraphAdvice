@@ -1,8 +1,6 @@
 package nl.ou.refactoring.advice.io.layouts.globalRanking;
 
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.Set;
 
 import nl.ou.refactoring.advice.Graph;
@@ -11,7 +9,6 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.layouts.GraphLayout;
 import nl.ou.refactoring.advice.io.layouts.GraphLayoutNode;
-import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 
 /**
  * A layout of a Refactoring Advice Graph using the Global Ranking algorithm.<br />

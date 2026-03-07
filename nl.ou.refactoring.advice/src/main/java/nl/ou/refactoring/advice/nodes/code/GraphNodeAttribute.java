@@ -100,7 +100,7 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 	 */
 	public GraphEdgeIs is(GraphNodeType typeNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				typeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),

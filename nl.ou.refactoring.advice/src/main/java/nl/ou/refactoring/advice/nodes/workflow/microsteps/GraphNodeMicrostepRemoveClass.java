@@ -31,7 +31,7 @@ public final class GraphNodeMicrostepRemoveClass extends GraphNodeMicrostep {
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(classNode, "classNode");
 		return
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				classNode,
 				(source, destination) -> new GraphEdgeRemoves(source, destination),

@@ -31,7 +31,7 @@ public final class GraphNodeRiskScopeShadowing extends GraphNodeRisk {
 	 */
 	public GraphEdgeAffects affects(GraphNodeAttribute attributeNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				attributeNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),

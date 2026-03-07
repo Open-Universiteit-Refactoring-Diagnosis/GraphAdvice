@@ -37,10 +37,11 @@ public final class GraphTextConcatenationWriter extends GraphTextWriter {
 				ArgumentNullException,
 				GraphValidationException,
 				GraphWriterException {
-		final var startNode = graph.getStart();
-		if (startNode == null) {
+		final var startNodeOptional = graph.getStart();
+		if (startNodeOptional.isEmpty()) {
 			throw new RefactoringMustContainStartNodeException();
 		}
+		final var startNode = startNodeOptional.get();
 		
 		final var dangerNodes = GraphWorkflowExplorer.getDangers(graph);
 		for (final var dangerNode : dangerNodes) {

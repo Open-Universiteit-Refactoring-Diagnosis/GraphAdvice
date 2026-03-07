@@ -36,7 +36,7 @@ public class GraphNodeBlock extends GraphNodeCode {
 	public GraphEdgeHas has(GraphNodeStatement statementNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(statementNode, "statementNode");
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				statementNode,
 				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),

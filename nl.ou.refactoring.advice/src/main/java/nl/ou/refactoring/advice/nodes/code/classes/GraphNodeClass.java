@@ -45,7 +45,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		ArgumentGuard.requireNotNull(className, "className");
 		super(graph);
 		this.classNameEdge =
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				className,
 				(source, destination) -> new GraphEdgeHas(source, destination),
@@ -95,7 +95,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					classNode,
 					(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -114,7 +114,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					attributeNode,
 					(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -134,7 +134,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					operationNode,
 					(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -153,7 +153,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					generalisedClassNode,
 					(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
@@ -172,7 +172,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					interfaceNode,
 					(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),

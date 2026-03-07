@@ -35,7 +35,7 @@ public final class GraphNodeAssignment
 		ArgumentGuard.requireNotNull(assignmentExpression, "assignmentExpression");
 		this.leftHandSide =
 			graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					leftHandSide,
 					(source, destination) -> new GraphEdgeHas(source, destination),
@@ -44,7 +44,7 @@ public final class GraphNodeAssignment
 		this.assignmentOperator = assignmentOperator;
 		this.assignmentExpression =
 			graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					assignmentExpression,
 					(source, destination) -> new GraphEdgeHas(source, destination),

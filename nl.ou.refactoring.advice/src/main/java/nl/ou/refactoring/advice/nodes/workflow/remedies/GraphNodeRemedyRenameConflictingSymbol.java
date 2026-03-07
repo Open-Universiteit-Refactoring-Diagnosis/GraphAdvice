@@ -29,7 +29,7 @@ public final class GraphNodeRemedyRenameConflictingSymbol extends GraphNodeRemed
 	 */
 	public GraphEdgeMitigates mitigates(GraphNodeRiskDoubleDefinition doubleDefinition)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				doubleDefinition,
 				(source, destination) -> new GraphEdgeMitigates(source, destination),

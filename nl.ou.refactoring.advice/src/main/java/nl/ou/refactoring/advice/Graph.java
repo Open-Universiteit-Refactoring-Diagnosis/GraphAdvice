@@ -225,10 +225,10 @@ public final class Graph implements Cloneable {
 	/**
 	 * Gets a {@link GraphEdge} by its unique identifier.
 	 * @param edgeIdentifier The unique identifier of the edge.
-	 * @return The edge with the specified identifier, or if not found, null.
+	 * @return The edge with the specified identifier wrapped in {@link Optional<GraphEdge>}, or if not found, an empty {@link Optional<GraphEdge>}.
 	 * @throws ArgumentNullException Thrown if edgeIdentifier is null.
 	 */
-	public GraphEdge getEdge(UUID edgeIdentifier)
+	public Optional<GraphEdge> getEdge(UUID edgeIdentifier)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(edgeIdentifier, "edgeIdentifier");
 		return
@@ -238,9 +238,8 @@ public final class Graph implements Cloneable {
 					.stream()
 					.flatMap(column -> column.values().stream())
 					.flatMap(edges -> edges.stream())
-					.filter(edge -> edge.getId() == edgeIdentifier)
-					.findFirst()
-					.orElse(null);
+					.filter(edge -> edge.getId().equals(edgeIdentifier))
+					.findFirst();
 	}
 	
 	/**
@@ -397,29 +396,29 @@ public final class Graph implements Cloneable {
 	 * @throws ArgumentNullException Thrown if sourceNode, destinationNode, edgeFactory or edgeClass is null.
 	 */
 	public <TEdge extends GraphEdge, TNodeSource extends GraphNode, TNodeDestination extends GraphNode>
-		TEdge getOrAddEdge(
-				TNodeSource sourceNode,
-				TNodeDestination destinationNode,
-				GraphEdgeFactoryFunction<TEdge, TNodeSource, TNodeDestination> edgeFactory,
-				Class<TEdge> edgeClass)
-						throws ArgumentNullException {
+		TEdge computeEdge(
+			TNodeSource sourceNode,
+			TNodeDestination destinationNode,
+			GraphEdgeFactoryFunction<TEdge, TNodeSource, TNodeDestination> edgeFactory,
+			Class<TEdge> edgeClass
+		) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(sourceNode, "sourceNode");
 		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
 		ArgumentGuard.requireNotNull(edgeFactory, "edgeFactory");
 		ArgumentGuard.requireNotNull(edgeClass, "edgeClass");
 		
 		final var edges =
-				this
-					.matrix
-					.computeIfAbsent(sourceNode, _ -> new HashMap<>())
-					.computeIfAbsent(destinationNode, _ -> new HashSet<>());
+			this
+				.matrix
+				.computeIfAbsent(sourceNode, _ -> new HashMap<>())
+				.computeIfAbsent(destinationNode, _ -> new HashSet<>());
 		var edge =
-				edges
-					.stream()
-					.filter(knownEdge -> knownEdge.getClass() == edgeClass)
-					.map(edgeClass::cast)
-					.findFirst()
-					.orElse(null);
+			edges
+				.stream()
+				.filter(knownEdge -> knownEdge.getClass().equals(edgeClass))
+				.map(edgeClass::cast)
+				.findFirst()
+				.orElse(null);
 		if (edge == null) {
 			edge = edgeFactory.create(sourceNode, destinationNode);
 			edges.add(edge);
@@ -439,18 +438,17 @@ public final class Graph implements Cloneable {
 	
 	/**
 	 * Gets the start node of the refactoring.
-	 * @return The start node of the refactoring, if present, otherwise null.
+	 * @return The start node of the refactoring wrapped in {@link Optional<GraphNodeRefactoringStart>}, if present, otherwise an empty {@link Optional<GraphNodeRefactoringStart>}.
 	 */
-	public GraphNodeRefactoringStart getStart() {
+	public Optional<GraphNodeRefactoringStart> getStart() {
 		return
-				this
-					.matrix
-					.keySet()
-					.stream()
-					.filter(GraphNodeRefactoringStart.class::isInstance)
-					.map(GraphNodeRefactoringStart.class::cast)
-					.findFirst()
-					.orElse(null);
+			this
+				.matrix
+				.keySet()
+				.stream()
+				.filter(GraphNodeRefactoringStart.class::isInstance)
+				.map(GraphNodeRefactoringStart.class::cast)
+				.findFirst();
 	}
 	
 	/**
@@ -476,7 +474,7 @@ public final class Graph implements Cloneable {
 				final var nodeDestinationClone = nodeClones.get(edgeOriginalEntry.getKey());
 				final var edgesOriginal = edgeOriginalEntry.getValue();
 				for (final var edgeOriginal : edgesOriginal) {
-					graph.getOrAddEdge(
+					graph.computeEdge(
 						nodeSourceClone,
 						nodeDestinationClone,
 						(source, destination) -> edgeOriginal.clone(source, destination),

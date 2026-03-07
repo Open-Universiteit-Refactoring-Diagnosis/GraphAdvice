@@ -33,7 +33,7 @@ public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					attributeNode,
 					(source, destination) -> new GraphEdgeAdds(source, destination),
