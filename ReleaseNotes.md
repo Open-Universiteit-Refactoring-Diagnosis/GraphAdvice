@@ -5,6 +5,7 @@
 ## 0.6.0
 
 - Added the Program Location node that can be associated with code (AST) nodes.
+- Reorganized and expanded the software documentation.
 
 ## 0.5.0
 
