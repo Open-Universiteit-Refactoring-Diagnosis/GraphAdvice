@@ -3,8 +3,10 @@ package nl.ou.refactoring.advice.edges.code;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeProgramLocation;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
@@ -24,6 +26,17 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
  * Code edges follow Object Constraint Language (OCL) standards.
  */
 public final class GraphEdgeHas extends GraphEdge {
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param codeNode The node that represents a code symbol.
+	 * @param programLocationNode The node that represents the location in a software program's source code where the code symbol can be found.
+	 * @throws ArgumentNullException Thrown if codeNode or programLocationNode is null.
+	 */
+	public GraphEdgeHas(GraphNodeCode codeNode, GraphNodeProgramLocation programLocationNode)
+			throws ArgumentNullException {
+		super(codeNode, programLocationNode);
+	}
+	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeHas}.
 	 * @param packageNode The node that represents a package.

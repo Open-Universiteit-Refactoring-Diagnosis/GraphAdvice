@@ -16,6 +16,7 @@ import nl.ou.refactoring.advice.io.GraphReader;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeProgramLocation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
@@ -27,42 +28,65 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
  */
 public final class GraphJavaReader implements GraphReader {
 	/**
+	 * The Refactoring Advice Graph that will contain the code nodes.
+	 */
+	private Graph graph;
+	
+	/**
 	 * Reads the Java source code.
 	 */
 	private final Reader reader;
 	
 	/**
-	 * The Refactoring Advice Graph that will contain the code nodes.
+	 * The full file name of the Java source code, including its path.
 	 */
-	private Graph graph;
+	private final String fileNameFull;
+	
+	/**
+	 * The short file name of the Java source code.
+	 */
+	private final String fileName;
 
 	/**
 	 * Initialises a new instance of {@link GraphJavaReader}.
 	 * @param refactoringName The name of the refactoring.
 	 * @param reader Reads the Java source code.
+	 * @param fileNameFull The full file name of the Java source code, including its path.
+	 * @param fileName The short file name of the Java source code.
 	 * @throws ArgumentNullException Thrown if refactoringName or reader is null.
-	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains only white spaces.
+	 * @throws ArgumentEmptyException Thrown if refactoringName, fileNameFull or fileName is empty or contains only white spaces.
 	 */
-	public GraphJavaReader(String refactoringName, Reader reader)
+	public GraphJavaReader(String refactoringName, Reader reader, String fileNameFull, String fileName)
 			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
 		ArgumentGuard.requireNotNull(reader, "reader");
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");
 		this.graph = new Graph(refactoringName);
 		this.reader = reader;
+		this.fileNameFull = fileNameFull;
+		this.fileName = fileName;
 	}
 	
 	/**
 	 * Initialises a new instance of {@link GraphJavaReader}.
 	 * @param graph The graph to which to add the code nodes from the Java source code.
 	 * @param reader Reads the Java source code.
+	 * @param fileNameFull The full file name of the Java source code, including its path.s
+	 * @param fileName The short file name of the Java source code.
 	 * @throws ArgumentNullException Thrown if graph or reader is null.
+	 * @throws ArgumentEmptyException Thrown if fileNameFull or fileName is empty or contains only white spaces.
 	 */
-	public GraphJavaReader(Graph graph, Reader reader)
-			throws ArgumentNullException {
+	public GraphJavaReader(Graph graph, Reader reader, String fileNameFull, String fileName)
+			throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(reader, "reader");
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");
 		this.graph = graph;
 		this.reader = reader;
+		this.fileNameFull = fileNameFull;
+		this.fileName = fileName;
 	}
 
 	@Override
@@ -104,6 +128,19 @@ public final class GraphJavaReader implements GraphReader {
 				final var classNodeIdentifier = new GraphNodeIdentifier(graph, classOrInterfaceDeclaration.getNameAsString());
 				final var classNode = new GraphNodeClass(graph, classNodeIdentifier);
 				packageNode.has(classNode);
+				final var classPositionBegin = classOrInterfaceDeclaration.getBegin().get();
+				final var classPositionEnd = classOrInterfaceDeclaration.getEnd().get();
+				final var classProgramLocationNode =
+					new GraphNodeProgramLocation(
+						graph,
+						this.fileNameFull,
+						this.fileName,
+						classPositionBegin.line,
+						classPositionBegin.column,
+						classPositionEnd.line,
+						classPositionEnd.column
+					);
+				classNode.has(classProgramLocationNode);
 				for (final var member : classOrInterfaceDeclaration.getMembers()) {
 					if (member.isFieldDeclaration()) {
 						final var fieldDeclaration = member.asFieldDeclaration();
@@ -117,6 +154,19 @@ public final class GraphJavaReader implements GraphReader {
 										_ -> new GraphNodeType(graph, attributeTypeName)
 									);
 							attributeNode.is(attributeType);
+							final var attributePositionBegin = variableDeclaration.getBegin().get();
+							final var attributePositionEnd = variableDeclaration.getEnd().get();
+							final var attributeProgramLocationNode =
+								new GraphNodeProgramLocation(
+									graph,
+									this.fileNameFull,
+									this.fileName,
+									attributePositionBegin.line,
+									attributePositionBegin.column,
+									attributePositionEnd.line,
+									attributePositionEnd.column
+								);
+							attributeNode.has(attributeProgramLocationNode);
 							classNode.has(attributeNode);
 						}
 					}
@@ -149,6 +199,19 @@ public final class GraphJavaReader implements GraphReader {
 						
 						final var operationNode = new GraphNodeOperation(graph, operationIdentifier, operationParameters);
 						operationNode.hasReturnType(operationReturnType);
+						final var operationPositionBegin = methodDeclaration.getBegin().get();
+						final var operationPositionEnd = methodDeclaration.getEnd().get();
+						final var operationProgramLocationNode =
+							new GraphNodeProgramLocation(
+								graph,
+								this.fileNameFull,
+								this.fileName,
+								operationPositionBegin.line,
+								operationPositionBegin.column,
+								operationPositionEnd.line,
+								operationPositionEnd.column
+							);
+						operationNode.has(operationProgramLocationNode);
 						classNode.has(operationNode);
 					}
 				}

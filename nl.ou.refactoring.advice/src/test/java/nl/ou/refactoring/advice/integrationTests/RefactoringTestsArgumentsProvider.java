@@ -64,11 +64,15 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		
 		/* Introduce code nodes and edges. */
 		final var classLoader = RefactoringTestsArgumentsProvider.class.getClassLoader();
-		final var alphaReader = ResourceProvider.getReader(classLoader, "refactorings/moveField/Alpha.java");
-		final var betaReader = ResourceProvider.getReader(classLoader, "refactorings/moveField/Beta.java"); 
-		var graphJavaReader = new GraphJavaReader(graph, alphaReader);
+		final var alphaFileNameFull = "refactorings/moveField/Alpha.java";
+		final var alphaFileName = "Alpha.java";
+		final var alphaReader = ResourceProvider.getReader(classLoader, alphaFileNameFull);
+		final var betaFileNameFull = "refactorings/moveField/Beta.java";
+		final var betaFileName = "Beta.java";
+		final var betaReader = ResourceProvider.getReader(classLoader, betaFileNameFull); 
+		var graphJavaReader = new GraphJavaReader(graph, alphaReader, alphaFileNameFull, alphaFileName);
 		graphJavaReader.read();
-		graphJavaReader = new GraphJavaReader(graph, betaReader);
+		graphJavaReader = new GraphJavaReader(graph, betaReader, betaFileNameFull, betaFileName);
 		graphJavaReader.read();
 		
 		final var alphaClassNode =

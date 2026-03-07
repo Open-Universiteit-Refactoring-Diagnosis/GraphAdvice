@@ -38,7 +38,9 @@ public final class GraphJavaReaderTests {
 	public void readTest(String javaCode) throws ArgumentNullException, GraphPathSegmentInvalidException {
 		final var graph = new Graph("Refactoring test");
 		final var reader = new StringReader(javaCode);
-		final var javaReader = new GraphJavaReader(graph, reader);
+		final var fileNameFull = "$/tests/javaReader/Test.java";
+		final var fileName = "Test.java";
+		final var javaReader = new GraphJavaReader(graph, reader, fileNameFull, fileName);
 		javaReader.read();
 		
 	    final var refactoringName = graph.getRefactoringName();

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
@@ -21,6 +22,24 @@ public abstract class GraphNodeCode extends GraphNodeBase {
 	protected GraphNodeCode(Graph graph)
 			throws ArgumentNullException {
 		super(graph);
+	}
+	
+	/**
+	 * Indicates that the code symbol that is represented by this node may be found at the specified program location.
+	 * @param programLocationNode The node that represents the location in a software program where a code symbol can be found.
+	 * @return The edge that indicates that the code symbol that is represented by this node may be found at the specified program location.
+	 * @throws ArgumentNullException Thrown if programLocationNode is null.
+	 */
+	public GraphEdgeHas has(GraphNodeProgramLocation programLocationNode) throws ArgumentNullException {
+		return
+			this
+				.graph
+				.getOrAddEdge(
+					this,
+					programLocationNode,
+					(source, destination) -> new GraphEdgeHas(source, destination),
+					GraphEdgeHas.class
+				);
 	}
 	
 	/**
