@@ -1,6 +1,9 @@
 package nl.ou.refactoring.advice.contracts;
 
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
+
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * An exception that is thrown if an argument does not match an expected pattern.
@@ -45,5 +48,14 @@ public final class ArgumentPatternException extends IllegalArgumentException {
 	 */
 	public String getParameterName() {
 		return this.parameterName;
+	}
+	
+	@Override
+	public String getLocalizedMessage() {
+		final var messageTemplate =
+			ResourceProvider
+				.ExceptionMessages
+				.getMessageTemplate(ArgumentPatternException.class);
+		return MessageFormat.format(messageTemplate, this.parameterName, this.pattern.pattern());
 	}
 }
