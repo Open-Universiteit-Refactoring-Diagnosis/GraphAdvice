@@ -19,8 +19,11 @@ public final class GraphTextWriter extends GraphStringWriter {
 	/**
 	 * Initialises a new instance of {@link GraphTextWriter}.
 	 * @param stringWriter The {@link StringWriter} responsible for text output.
+	 * @param nlpProvider The {@link NLPProvider} that processes the Refactoring Advice Graph to legible text.
+	 * @throws ArgumentNullException Thrown if stringWriter or nlpProvider is null.
 	 */
-	public GraphTextWriter(StringWriter stringWriter, NLPProvider nlpProvider) {
+	public GraphTextWriter(StringWriter stringWriter, NLPProvider nlpProvider)
+			throws ArgumentNullException {
 		super(stringWriter);
 		ArgumentGuard.requireNotNull(nlpProvider, "nlpProvider");
 		this.nlpProvider = nlpProvider;
