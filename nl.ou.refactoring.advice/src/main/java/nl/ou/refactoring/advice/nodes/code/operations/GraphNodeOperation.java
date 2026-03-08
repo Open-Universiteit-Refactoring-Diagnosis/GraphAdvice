@@ -267,8 +267,8 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 		// Check Class.
 		final var classNodeThis = this.getClassNode();
 		final var classNodeOther = operationNode.getClassNode();
-		if (classNodeThis == null || classNodeOther == null ||
-			!classNodeThis.getClassName().equals(classNodeOther.getClassName())) {
+		if (classNodeThis.isEmpty() || classNodeOther.isEmpty() ||
+			!classNodeThis.get().getClassName().equals(classNodeOther.get().getClassName())) {
 			return false;
 		}
 		

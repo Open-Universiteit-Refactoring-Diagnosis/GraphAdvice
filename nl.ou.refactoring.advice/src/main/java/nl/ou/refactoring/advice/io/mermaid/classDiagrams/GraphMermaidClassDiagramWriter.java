@@ -164,7 +164,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		return switch(codeNode) {
 			case GraphNodePackage pkg -> pkg;
 			case GraphNodeClass cls -> cls;
-			case GraphNodeClassMember member -> member.getClassNode();
+			case GraphNodeClassMember member -> member.getClassNode().get();
 			default -> codeNode;
 		};
 	}

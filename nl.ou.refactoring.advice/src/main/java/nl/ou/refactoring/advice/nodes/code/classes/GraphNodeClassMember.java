@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code.classes;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
@@ -23,7 +25,7 @@ public abstract class GraphNodeClassMember extends GraphNodeCode {
 	 * Gets the class node that owns this member.
 	 * @return The class node that owns this member.
 	 */
-	public GraphNodeClass getClassNode() {
+	public Optional<GraphNodeClass> getClassNode() {
 		return
 			this
 				.getEdgesIncoming(GraphEdgeHas.class)
@@ -31,7 +33,6 @@ public abstract class GraphNodeClassMember extends GraphNodeCode {
 				.map(edge -> edge.getSourceNode())
 				.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
 				.map(GraphNodeClass.class::cast)
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 	}
 }

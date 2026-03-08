@@ -394,7 +394,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		return switch(codeNode) {
 			case GraphNodePackage pkg -> pkg;
 			case GraphNodeClass cls -> cls;
-			case GraphNodeClassMember member -> member.getClassNode();
+			case GraphNodeClassMember member -> member.getClassNode().get();
 			case GraphNodeMethodInvocationExpression methodInvocationExpression -> methodInvocationExpression.getOperationNode();
 			default -> codeNode;
 		};
