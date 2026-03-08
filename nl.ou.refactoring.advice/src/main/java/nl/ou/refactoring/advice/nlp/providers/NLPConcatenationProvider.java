@@ -18,6 +18,9 @@ import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeEx
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveClass;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
@@ -58,6 +61,9 @@ public final class NLPConcatenationProvider extends NLPProvider {
 					case GraphNodeMicrostepAddClass addClass -> this.appendNodeMicrostepAddClass(addClass, references);
 					case GraphNodeMicrostepAddField addField -> this.appendNodeMicrostepAddField(addField, references);
 					case GraphNodeMicrostepAddMethod addMethod -> this.appendNodeMicrostepAddMethod(addMethod, references);
+					case GraphNodeMicrostepRemoveClass removeClass -> this.appendNodeMicrostepRemoveClass(removeClass, references);
+					case GraphNodeMicrostepRemoveField removeField -> this.appendNodeMicrostepRemoveField(removeField, references);
+					case GraphNodeMicrostepRemoveMethod removeMethod -> this.appendNodeMicrostepRemoveMethod(removeMethod, references);
 					case GraphNodeRiskDoubleDefinition doubleDefinition -> this.appendNodeRiskDoubleDefinition(doubleDefinition, references);
 					case GraphNodeRiskForcedOverride forcedOverride -> this.appendNodeRiskForcedOverride(forcedOverride, references);
 					case GraphNodeRisk risk -> this.appendNodeRisk(risk, references);
@@ -133,6 +139,58 @@ public final class NLPConcatenationProvider extends NLPProvider {
 			if (classNode.isPresent()) {
 				final var classNodeId = getId(classNode.get());
 				this.appendFormat(" to class '%s'", classNodeId);
+				references.computeIfAbsent(classNodeId, (_) -> classNode.get());
+			}
+		}
+	}
+	
+	private void appendNodeMicrostepRemoveClass(GraphNodeMicrostepRemoveClass removeClassNode, Map<String, GraphNode> references) {
+		final var classNode = removeClassNode.getClassNode();
+		if (classNode.isEmpty()) {
+			this.append(", removing class");
+		} else {
+			final var classNodeId = getId(classNode.get());
+			this.appendFormat(", removing class '%s'", classNodeId);
+			references.computeIfAbsent(classNodeId, (_) -> classNode.get());
+			final var packageNode = classNode.get().getPackageNode();
+			if (packageNode.isPresent()) {
+				final var packageNodeId = getId(packageNode.get());
+				this.appendFormat(" from package '%s'", packageNodeId);
+				references.computeIfAbsent(packageNodeId, (_) -> packageNode.get());
+			}
+		}
+	}
+	
+	private void appendNodeMicrostepRemoveField(GraphNodeMicrostepRemoveField removeFieldNode, Map<String, GraphNode> references) {
+		final var attributeNodeOptional = removeFieldNode.getAttributeNode();
+		if (attributeNodeOptional.isEmpty()) {
+			this.append(", removing field");
+		} else {
+			final var attributeNode = attributeNodeOptional.get();
+			final var attributeNodeId = getId(attributeNode);
+			this.appendFormat(", removing field '%s'", attributeNodeId);
+			references.computeIfAbsent(attributeNodeId, (_) -> attributeNode);
+			final var classNode = attributeNode.getClassNode();
+			if (classNode.isPresent()) {
+				final var classNodeId = getId(classNode.get());
+				this.appendFormat(" from class '%s'", classNodeId);
+				references.computeIfAbsent(classNodeId, (_) -> classNode.get());
+			}
+		}
+	}
+	
+	private void appendNodeMicrostepRemoveMethod(GraphNodeMicrostepRemoveMethod removeMethodNode, Map<String, GraphNode> references) {
+		final var operationNode = removeMethodNode.getOperationNode();
+		if (operationNode.isEmpty()) {
+			this.append(", removing method");
+		} else {
+			final var operationNodeId = getId(operationNode.get());
+			this.appendFormat(", removing method '%s'", operationNodeId);
+			references.computeIfAbsent(operationNodeId, (_) -> operationNode.get());
+			final var classNode = operationNode.get().getClassNode();
+			if (classNode.isPresent()) {
+				final var classNodeId = getId(classNode.get());
+				this.appendFormat(" from class '%s'", classNodeId);
 				references.computeIfAbsent(classNodeId, (_) -> classNode.get());
 			}
 		}
