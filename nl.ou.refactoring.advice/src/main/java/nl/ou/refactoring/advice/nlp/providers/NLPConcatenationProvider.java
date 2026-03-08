@@ -22,8 +22,14 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
 
+/**
+ * A Natural Language Processing provider that concatenates pieces of texts
+ * based on nodes visited in a Refactoring Advice Graph.
+ */
 public final class NLPConcatenationProvider extends NLPProvider {
-
+	/**
+	 * Initialises a new instance of {@link NLPConcatenationProvider}.
+	 */
 	public NLPConcatenationProvider() { }
 
 	@Override
