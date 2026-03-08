@@ -19,7 +19,8 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
-import nl.ou.refactoring.advice.io.text.concatenation.GraphTextConcatenationWriter;
+import nl.ou.refactoring.advice.io.text.GraphTextWriter;
+import nl.ou.refactoring.advice.nlp.providers.NLPConcatenationProvider;
 
 public final class GraphTemplatesTests {
 	private static Path OUTPUT_DIR;
@@ -76,7 +77,7 @@ public final class GraphTemplatesTests {
 	    		final var concatenatingBufferedWriter =
 	    			new BufferedWriter(new FileWriter(concatenatedAdviceFilePath.toFile()))
 	    ) {
-	    	new GraphTextConcatenationWriter(concatenatingStringWriter).write(graph);
+	    	new GraphTextWriter(concatenatingStringWriter, new NLPConcatenationProvider()).write(graph);
 	    	concatenatingBufferedWriter.write(concatenatingStringWriter.toString());
 	    } catch (IOException exception) {
 	    	fail(String.format("Failed to write concatenated text advice for graph '%s'", refactoringName));

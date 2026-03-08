@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.io.text.concatenation;
+package nl.ou.refactoring.advice.io.text;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nlp.providers.NLPConcatenationProvider;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
@@ -44,7 +45,7 @@ public class GraphTextConcatenationWriterWriteTests {
 	@DisplayName("Should generate a refactoring advice text from a Refactoring Advice Graph")
 	public void writeTest(Graph graph, String expected) {
 		final var stringWriter = new StringWriter();
-		final var concatenationWriter = new GraphTextConcatenationWriter(stringWriter);
+		final var concatenationWriter = new GraphTextWriter(stringWriter, new NLPConcatenationProvider());
 		concatenationWriter.write(graph);
 		assertEquals(expected, stringWriter.toString());
 	}
