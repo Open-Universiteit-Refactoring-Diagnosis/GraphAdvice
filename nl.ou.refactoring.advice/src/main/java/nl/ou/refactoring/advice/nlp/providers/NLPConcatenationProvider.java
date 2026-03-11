@@ -89,16 +89,16 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	}
 	
 	private void appendNodeRefactoringStart(GraphNodeRefactoringStart startNode, Map<String, GraphNode> references) {
-		this.appendLine(startNode.getRefactoringName());
+		this.append(startNode.getRefactoringName());
 	}
 	
 	private void appendNodeMicrostepAddClass(GraphNodeMicrostepAddClass addClassNode, Map<String, GraphNode> references) {
 		final var classNode = addClassNode.getClassNode();
 		if (classNode == null) {
-			this.append(", adding class");
+			this.append(", adds class");
 		} else {
 			final var classNodeId = getId(classNode);
-			this.appendFormat(", adding class '%s'", classNodeId);
+			this.appendFormat(", adds class '%s'", classNodeId);
 			references.computeIfAbsent(classNodeId, (_) -> classNode);
 			final var packageNode = classNode.getPackageNode();
 			if (packageNode.isPresent()) {
@@ -112,11 +112,11 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	private void appendNodeMicrostepAddField(GraphNodeMicrostepAddField addFieldNode, Map<String, GraphNode> references) {
 		final var attributeNodeOptional = addFieldNode.getAttributeNode();
 		if (attributeNodeOptional.isEmpty()) {
-			this.append(", adding field");
+			this.append(", adds field");
 		} else {
 			final var attributeNode = attributeNodeOptional.get();
 			final var attributeNodeId = getId(attributeNode);
-			this.appendFormat(", adding field '%s'", attributeNodeId);
+			this.appendFormat(", adds field '%s'", attributeNodeId);
 			references.computeIfAbsent(attributeNodeId, (_) -> attributeNode);
 			final var classNode = attributeNode.getClassNode();
 			if (classNode.isPresent()) {
@@ -130,10 +130,10 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	private void appendNodeMicrostepAddMethod(GraphNodeMicrostepAddMethod addMethodNode, Map<String, GraphNode> references) {
 		final var operationNode = addMethodNode.getOperationNode();
 		if (operationNode.isEmpty()) {
-			this.append(", adding method");
+			this.append(", adds method {undefined}");
 		} else {
 			final var operationNodeId = getId(operationNode.get());
-			this.appendFormat(", adding method '%s'", operationNodeId);
+			this.appendFormat(", adds method '%s'", operationNodeId);
 			references.computeIfAbsent(operationNodeId, (_) -> operationNode.get());
 			final var classNode = operationNode.get().getClassNode();
 			if (classNode.isPresent()) {
@@ -147,10 +147,10 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	private void appendNodeMicrostepRemoveClass(GraphNodeMicrostepRemoveClass removeClassNode, Map<String, GraphNode> references) {
 		final var classNode = removeClassNode.getClassNode();
 		if (classNode.isEmpty()) {
-			this.append(", removing class");
+			this.append(", removes class");
 		} else {
 			final var classNodeId = getId(classNode.get());
-			this.appendFormat(", removing class '%s'", classNodeId);
+			this.appendFormat(", removes class '%s'", classNodeId);
 			references.computeIfAbsent(classNodeId, (_) -> classNode.get());
 			final var packageNode = classNode.get().getPackageNode();
 			if (packageNode.isPresent()) {
@@ -164,11 +164,11 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	private void appendNodeMicrostepRemoveField(GraphNodeMicrostepRemoveField removeFieldNode, Map<String, GraphNode> references) {
 		final var attributeNodeOptional = removeFieldNode.getAttributeNode();
 		if (attributeNodeOptional.isEmpty()) {
-			this.append(", removing field");
+			this.append(", removes field");
 		} else {
 			final var attributeNode = attributeNodeOptional.get();
 			final var attributeNodeId = getId(attributeNode);
-			this.appendFormat(", removing field '%s'", attributeNodeId);
+			this.appendFormat(", removes field '%s'", attributeNodeId);
 			references.computeIfAbsent(attributeNodeId, (_) -> attributeNode);
 			final var classNode = attributeNode.getClassNode();
 			if (classNode.isPresent()) {
@@ -182,10 +182,10 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	private void appendNodeMicrostepRemoveMethod(GraphNodeMicrostepRemoveMethod removeMethodNode, Map<String, GraphNode> references) {
 		final var operationNode = removeMethodNode.getOperationNode();
 		if (operationNode.isEmpty()) {
-			this.append(", removing method");
+			this.append(", removes method");
 		} else {
 			final var operationNodeId = getId(operationNode.get());
-			this.appendFormat(", removing method '%s'", operationNodeId);
+			this.appendFormat(", removes method '%s'", operationNodeId);
 			references.computeIfAbsent(operationNodeId, (_) -> operationNode.get());
 			final var classNode = operationNode.get().getClassNode();
 			if (classNode.isPresent()) {
@@ -197,7 +197,7 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	}
 	
 	private void appendNodeRisk(GraphNodeRisk riskNode, Map<String, GraphNode> references) {
-		this.appendFormat(" will cause a %s", riskNode.getCaption());
+		this.appendFormat(" which will cause a %s", riskNode.getCaption());
 		final var affectedNodes = riskNode.getAffected();
 		final var affectedNodesList =
 			affectedNodes
@@ -207,7 +207,7 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	}
 	
 	private void appendNodeRiskDoubleDefinition(GraphNodeRiskDoubleDefinition doubleDefinition, Map<String, GraphNode> references) {
-		this.append(" will introduce code symbols with identical signatures");
+		this.append(" which will introduce code symbols with identical signatures");
 		final var affectedNodes = doubleDefinition.getAffected();
 		final var affectedNodesList =
 			affectedNodes
@@ -217,7 +217,7 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	}
 	
 	private void appendNodeRiskForcedOverride(GraphNodeRiskForcedOverride forcedOverride, Map<String, GraphNode> references) {
-		this.append(" will forcefully cause an override of ");
+		this.append(" which will forcefully cause an override of ");
 		final var affectedNodes = forcedOverride.getAffected();
 		final var affectedNames =
 			affectedNodes

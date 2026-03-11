@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,21 @@ public abstract class GraphNodeCode extends GraphNodeBase {
 					(source, destination) -> new GraphEdgeHas(source, destination),
 					GraphEdgeHas.class
 				);
+	}
+	
+	/**
+	 * Gets the node that contains the program location of the code that is represented by this node.
+	 * @return The node that contains the program location of the code that is represented by this node, wrapped in a {@link Optional<GraphNodeProgramLocation>}, or an empty {@link Optional<GraphNodeProgramLocation>} if not found.
+	 */
+	public Optional<GraphNodeProgramLocation> getProgramLocationNode() {
+		return
+			this
+				.getEdges(GraphEdgeHas.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(GraphNodeProgramLocation.class::isInstance)
+				.map(GraphNodeProgramLocation.class::cast)
+				.findAny();
 	}
 	
 	/**
