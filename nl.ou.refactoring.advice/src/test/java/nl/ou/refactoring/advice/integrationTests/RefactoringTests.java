@@ -6,9 +6,19 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -16,12 +26,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
+import nl.ou.refactoring.advice.io.html.text.GraphHtmlTextWriter;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
-import nl.ou.refactoring.advice.io.text.GraphTextWriter;
+import nl.ou.refactoring.advice.nlp.NLPProvider;
 import nl.ou.refactoring.advice.nlp.providers.NLPConcatenationProvider;
 
 public final class RefactoringTests {
@@ -37,11 +49,17 @@ public final class RefactoringTests {
 	@ParameterizedTest
 	@ArgumentsSource(RefactoringTestsArgumentsProvider.class)
 	public void writeRefactoringOutputsTest(Graph graph)
-			throws IOException, ArgumentNullException, GraphPathSegmentInvalidException {
+			throws
+				IOException,
+				ArgumentNullException,
+				GraphValidationException,
+				URISyntaxException,
+				ParserConfigurationException,
+				TransformerException {
 	    final var refactoringName = graph.getRefactoringName();
 	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");
 	    final var plantUmlClassDiagramFilePath = OUTPUT_DIR.resolve(refactoringName + ".puml");
-	    final var concatenatedAdviceFilePath = OUTPUT_DIR.resolve(refactoringName + ".txt");
+	    final var concatenatedAdviceFilePath = OUTPUT_DIR.resolve(refactoringName + ".html");
 	    
 	    // Flowchart (graph)
 	    try (
@@ -72,15 +90,34 @@ public final class RefactoringTests {
 	        fail(String.format("Failed to write PlantUML Class Diagram for graph '%s'", refactoringName));
 	    }
 	    
-	    // Concatenated text
+	    // HTML text
 	    try (
-	    		final var concatenatingStringWriter =
-	    			new StringWriter();
-	    		final var concatenatingBufferedWriter =
-	    			new BufferedWriter(new FileWriter(concatenatedAdviceFilePath.toFile()))
+	    	final var concatenatingBufferedWriter =
+	    		new BufferedWriter(new FileWriter(concatenatedAdviceFilePath.toFile()))
 	    ) {
-	    	new GraphTextWriter(concatenatingStringWriter, new NLPConcatenationProvider()).write(graph);
-	    	concatenatingBufferedWriter.write(concatenatingStringWriter.toString());
+			final var htmlWriterSettings = new GraphHtmlWriterSettings(new URI("eclipse-resource://nl.ou.refactoring.advice.eclipse/"));
+			
+			final var htmlDocument =
+				DocumentBuilderFactory
+					.newInstance()
+					.newDocumentBuilder()
+					.newDocument();
+			final var htmlElement = htmlDocument.createElement("html");
+			htmlDocument.appendChild(htmlElement);
+			final var htmlHeadElement = htmlDocument.createElement("head");
+			htmlElement.appendChild(htmlHeadElement);
+			final var htmlBodyElement = htmlDocument.createElement("body");
+			htmlElement.appendChild(htmlBodyElement);
+			
+			final var nlpProvider = new NLPConcatenationProvider();
+			new GraphHtmlTextWriter(htmlWriterSettings, htmlBodyElement, (NLPProvider)nlpProvider).write(graph);
+			
+			final var transformerFactory = TransformerFactory.newInstance();
+			final var transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+			transformer.transform(new DOMSource(htmlDocument), new StreamResult(concatenatingBufferedWriter));
 	    } catch (IOException exception) {
 	    	fail(String.format("Failed to write concatenated text advice for graph '%s'", refactoringName));
 	    }
