@@ -96,7 +96,11 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 					anchorElement.setAttribute("href", link);
 					anchorElement.setTextContent(referenceNode.getCaption());
 					articleElement.appendChild(anchorElement);
+				} else {
+					articleElement.appendChild(document.createTextNode(referenceNode.getCaption()));
 				}
+			} else {
+				articleElement.appendChild(document.createTextNode(referenceNode.getCaption()));
 			}
 			indexPrevious = indexPrevious + textBefore.length() + reference.length();
 		}
