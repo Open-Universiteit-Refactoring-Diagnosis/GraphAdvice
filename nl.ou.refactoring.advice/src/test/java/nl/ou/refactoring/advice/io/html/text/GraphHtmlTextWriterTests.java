@@ -6,37 +6,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphTemplates;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.integrationTests.RefactoringTestsArgumentsProvider;
 import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
-import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
 import nl.ou.refactoring.advice.nlp.NLPProvider;
 import nl.ou.refactoring.advice.nlp.providers.NLPConcatenationProvider;
-import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeProgramLocation;
-import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
-import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
 
 public final class GraphHtmlTextWriterTests {
 	@DisplayName("Should write HTML for the Refactoring Advice text")

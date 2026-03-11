@@ -5,7 +5,10 @@
 ## 0.6.0
 
 - Added the Program Location node that can be associated with code (AST) nodes.
-- Reorganized and expanded the software documentation.
+- Reorganised and expanded the software documentation.
+- Introduced the NLPProvider abstract class for providing natural language refactoring advice.
+- Introduced the NLPConcatenationProvider implementation of NLPProvider for providing natural language refactoring advice by concatenating phrase elements that are collected through a Refactoring Advice Graph's nodes.
+- Introduced the GraphHtmlWriter for writing refactoring advice in natural language with HTML, including links to referred syntax elements.
 
 ## 0.5.0
 

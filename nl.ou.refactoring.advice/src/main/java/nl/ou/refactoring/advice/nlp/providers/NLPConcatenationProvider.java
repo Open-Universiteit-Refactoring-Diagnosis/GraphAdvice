@@ -82,11 +82,7 @@ public final class NLPConcatenationProvider extends NLPProvider {
 	private void appendFormat(String format, Object... args) {
 		this.stringBuilder.append(String.format(format, args));
 	}
-	
-	private void appendLine(String text) {
-		this.append(text);
-		this.stringBuilder.append(System.lineSeparator());
-	}
+
 	
 	private void appendNodeRefactoringStart(GraphNodeRefactoringStart startNode, Map<String, GraphNode> references) {
 		this.append(startNode.getRefactoringName());
