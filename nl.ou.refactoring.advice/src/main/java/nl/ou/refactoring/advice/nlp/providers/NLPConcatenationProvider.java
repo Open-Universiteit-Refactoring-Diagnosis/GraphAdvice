@@ -198,6 +198,7 @@ public final class NLPConcatenationProvider extends NLPProvider {
 		final var affectedNodesList =
 			affectedNodes
 				.stream()
+				.sorted((n1, n2) -> n1.getId().toString().compareTo(n2.getId().toString()))
 				.collect(Collectors.toUnmodifiableList());
 		this.append(" on " + getEnumeration(affectedNodesList, references));
 	}
@@ -208,6 +209,7 @@ public final class NLPConcatenationProvider extends NLPProvider {
 		final var affectedNodesList =
 			affectedNodes
 				.stream()
+				.sorted((n1, n2) -> n1.getId().toString().compareTo(n2.getId().toString()))
 				.collect(Collectors.toUnmodifiableList());
 		this.append(" on " + getEnumeration(affectedNodesList, references));
 	}
@@ -218,6 +220,7 @@ public final class NLPConcatenationProvider extends NLPProvider {
 		final var affectedNames =
 			affectedNodes
 				.stream()
+				.sorted((n1, n2) -> n1.getId().toString().compareTo(n2.getId().toString()))
 				.collect(Collectors.toUnmodifiableList());
 		this.append(getEnumeration(affectedNames, references));
 	}

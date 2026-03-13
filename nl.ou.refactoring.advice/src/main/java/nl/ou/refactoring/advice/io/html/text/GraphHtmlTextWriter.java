@@ -104,5 +104,10 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 			}
 			indexPrevious = indexPrevious + textBefore.length() + reference.length();
 		}
+		
+		// Append last bit of plain text if the last reference occurrence wasn't at the end of the text.
+		if (indexWithReferenceMapEntries.size() > 0 && indexPrevious < text.length()) {
+			articleElement.appendChild(document.createTextNode(text.substring(indexPrevious, text.length())));
+		}
 	}
 }

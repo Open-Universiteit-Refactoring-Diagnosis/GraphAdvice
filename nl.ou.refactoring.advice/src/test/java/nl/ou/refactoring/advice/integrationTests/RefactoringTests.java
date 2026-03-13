@@ -118,6 +118,7 @@ public final class RefactoringTests {
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			
 			transformer.transform(new DOMSource(htmlDocument), new StreamResult(concatenatingBufferedWriter));
+			concatenatingBufferedWriter.flush();
 	    } catch (IOException exception) {
 	    	fail(String.format("Failed to write concatenated text advice for graph '%s'", refactoringName));
 	    }
