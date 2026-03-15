@@ -13,10 +13,10 @@ import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 import nl.ou.refactoring.advice.nlp.grammar.determiners.PronounPossessive;
 
-public final class PronounsPossessiveTests {
+public final class PronounPossessiveLookupTreeTests {
 	@DisplayName("Should get the appropriate String value for a Possessive Pronoun")
 	@ParameterizedTest
-	@ArgumentsSource(PronounsPossessiveTestsArgumentsProvider.class)
+	@ArgumentsSource(PronounPossessiveLookupTreeTestsArgumentsProvider.class)
 	public void getStringTests
 	(
 		GrammaticalPerson person,
@@ -35,12 +35,20 @@ public final class PronounsPossessiveTests {
 				gender,
 				number
 			);
+		final var pronounPossessiveKey =
+			PronounPossessiveLookupTree
+				.constructKey(
+					pronounPossessive,
+					genderModifier,
+					numberModifier,
+					register
+				);
 		
 		// Act
 		final var actualValueOptional =
-			NLPLanguageDutchNetherlands
-				.Determiners
-				.PronounsPossessive.getString(pronounPossessive, genderModifier, numberModifier, register);
+			PronounPossessiveLookupTree
+				.INSTANCE
+				.lookup(pronounPossessiveKey);
 		
 		// Assert
 		assertTrue(actualValueOptional.isPresent());

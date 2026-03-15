@@ -8,8 +8,6 @@ public final class Tokens {
 	
 	public final class Adjectives {
 		private Adjectives() { }
-		public static final long AMAZING = "amazing".hashCode();
-		public static final long WONDERFUL = "wonderful".hashCode();
 	}
 	
 	public final class Determiners {
@@ -31,5 +29,6 @@ public final class Tokens {
 		public static final long BE = "to be".hashCode();
 		public static final long HAVE = "to have".hashCode();
 		public static final long REFACTOR = "to refactor".hashCode();
+		public static final long REMOVE = "to remove".hashCode();
 	}
 }

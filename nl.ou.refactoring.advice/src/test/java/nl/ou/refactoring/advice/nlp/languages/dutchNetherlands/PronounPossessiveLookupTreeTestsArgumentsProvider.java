@@ -13,7 +13,7 @@ import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 
-public class PronounsPossessiveTestsArgumentsProvider implements ArgumentsProvider {
+public class PronounPossessiveLookupTreeTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
 	public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context)
 			throws Exception {
