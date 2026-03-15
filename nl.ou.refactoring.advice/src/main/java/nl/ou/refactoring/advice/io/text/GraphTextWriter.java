@@ -8,21 +8,21 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphStringWriter;
 import nl.ou.refactoring.advice.io.GraphWriterException;
-import nl.ou.refactoring.advice.nlp.NLPProvider;
+import nl.ou.refactoring.advice.nlp.NLPProcessor;
 
 /**
  * Base class for generating text from Refactoring Advice Graphs.
  */
 public final class GraphTextWriter extends GraphStringWriter {
-	private final NLPProvider nlpProvider;
+	private final NLPProcessor nlpProvider;
 	
 	/**
 	 * Initialises a new instance of {@link GraphTextWriter}.
 	 * @param stringWriter The {@link StringWriter} responsible for text output.
-	 * @param nlpProvider The {@link NLPProvider} that processes the Refactoring Advice Graph to legible text.
+	 * @param nlpProvider The {@link NLPProcessor} that processes the Refactoring Advice Graph to legible text.
 	 * @throws ArgumentNullException Thrown if stringWriter or nlpProvider is null.
 	 */
-	public GraphTextWriter(StringWriter stringWriter, NLPProvider nlpProvider)
+	public GraphTextWriter(StringWriter stringWriter, NLPProcessor nlpProvider)
 			throws ArgumentNullException {
 		super(stringWriter);
 		ArgumentGuard.requireNotNull(nlpProvider, "nlpProvider");

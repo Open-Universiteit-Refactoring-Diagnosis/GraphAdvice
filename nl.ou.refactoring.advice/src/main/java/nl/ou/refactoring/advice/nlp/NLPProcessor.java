@@ -7,16 +7,16 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 /**
  * Provides Natural Language Processing results.
  */
-public abstract class NLPProvider {
+public abstract class NLPProcessor {
 	/**
 	 * Builds the clear text of the Natural Language Processing result.
 	 */
 	protected final StringBuilder stringBuilder;
 	
 	/**
-	 * Initialises a new instance of {@link NLPProvider}.
+	 * Initialises a new instance of {@link NLPProcessor}.
 	 */
-	protected NLPProvider() {
+	protected NLPProcessor() {
 		this.stringBuilder = new StringBuilder();
 	}
 	

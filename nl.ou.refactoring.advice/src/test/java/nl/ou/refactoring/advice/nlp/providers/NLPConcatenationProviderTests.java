@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 
 public final class NLPConcatenationProviderTests {
@@ -16,7 +17,7 @@ public final class NLPConcatenationProviderTests {
 	@ParameterizedTest
 	@ArgumentsSource(NLPConcatenationProviderTestArgumentsProvider.class)
 	public void processTests(Graph graph, String textExpected, Map<String, GraphNode> referencesExpected) {
-		final var nlpConcatenationProvider = new NLPConcatenationProvider();
+		final var nlpConcatenationProvider = new NLPConcatenationProcessor();
 		final var nlpResult = nlpConcatenationProvider.process(graph);
 		final var textActual = nlpResult.getText();
 		final var referencesActual = nlpResult.getReferences();

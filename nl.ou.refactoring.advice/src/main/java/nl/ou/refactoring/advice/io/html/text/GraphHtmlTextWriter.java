@@ -10,14 +10,14 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphWriterException;
 import nl.ou.refactoring.advice.io.html.GraphHtmlWriter;
 import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
-import nl.ou.refactoring.advice.nlp.NLPProvider;
+import nl.ou.refactoring.advice.nlp.NLPProcessor;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 
 /**
  * Writes refactoring advice texts in HTML from a Refactoring Advice Graph.
  */
 public final class GraphHtmlTextWriter extends GraphHtmlWriter {
-	private final NLPProvider nlpProvider;
+	private final NLPProcessor nlpProvider;
 	
 	/**
 	 * Initialises a new instance of {@link GraphHtmlTextWriter}.
@@ -26,7 +26,7 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 	 * @param nlpProvider Provides Natural Language Processing features.
 	 * @throws ArgumentNullException Thrown if settings, hostElement or nlpProvider is null.
 	 */
-	public GraphHtmlTextWriter(GraphHtmlWriterSettings settings, Element hostElement, NLPProvider nlpProvider)
+	public GraphHtmlTextWriter(GraphHtmlWriterSettings settings, Element hostElement, NLPProcessor nlpProvider)
 			throws ArgumentNullException {
 		super(settings, hostElement);
 		ArgumentGuard.requireNotNull(nlpProvider, "nlpProvider");
@@ -37,7 +37,7 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 	 * Gets the Natural Language Processing provider that provides natural language processing features.
 	 * @return The Natural Language Processing provider that provides natural language processing features.
 	 */
-	public NLPProvider getNLPProvider() {
+	public NLPProcessor getNLPProvider() {
 		return this.nlpProvider;
 	}
 

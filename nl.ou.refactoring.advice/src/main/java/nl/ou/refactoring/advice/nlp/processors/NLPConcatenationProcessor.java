@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nlp.providers;
+package nl.ou.refactoring.advice.nlp.processors;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nlp.NLPException;
-import nl.ou.refactoring.advice.nlp.NLPProvider;
+import nl.ou.refactoring.advice.nlp.NLPProcessor;
 import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
@@ -29,28 +30,31 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride
  * A Natural Language Processing provider that concatenates pieces of texts
  * based on nodes visited in a Refactoring Advice Graph.
  */
-public final class NLPConcatenationProvider extends NLPProvider {
+public final class NLPConcatenationProcessor extends NLPProcessor {
 	/**
-	 * Initialises a new instance of {@link NLPConcatenationProvider}.
+	 * Initialises a new instance of {@link NLPConcatenationProcessor}.
 	 */
-	public NLPConcatenationProvider() { }
+	public NLPConcatenationProcessor() { }
 
 	@Override
-	public NLPResult process(Graph graph) throws ArgumentNullException, NLPException {
+	public NLPResult process(Graph graph)
+		throws
+			ArgumentNullException,
+			GraphValidationException,
+			NLPException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		
 		final var references = new HashMap<String, GraphNode>();
 		
-		final var startNodeOptional = graph.getStart();
-		if (startNodeOptional.isEmpty()) {
-			throw new RefactoringMustContainStartNodeException();
-		}
-		final var startNode = startNodeOptional.get();
+		final var startNode =
+			graph
+				.getStart()
+				.orElseThrow(() -> new RefactoringMustContainStartNodeException());
 		
 		final var dangerNodes = GraphWorkflowExplorer.getDangers(graph);
 		for (final var dangerNode : dangerNodes) {
 			final var dangerPaths = startNode.findPaths(dangerNode, 100);
-			if (dangerPaths.size() == 0) {
+			if (dangerPaths.isEmpty()) {
 				continue;
 			}
 			

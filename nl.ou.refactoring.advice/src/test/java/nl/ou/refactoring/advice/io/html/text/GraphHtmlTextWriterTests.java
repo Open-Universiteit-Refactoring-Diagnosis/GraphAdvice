@@ -21,8 +21,8 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
-import nl.ou.refactoring.advice.nlp.NLPProvider;
-import nl.ou.refactoring.advice.nlp.providers.NLPConcatenationProvider;
+import nl.ou.refactoring.advice.nlp.NLPProcessor;
+import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
 
 public final class GraphHtmlTextWriterTests {
 	@DisplayName("Should write HTML for the Refactoring Advice text")
@@ -49,8 +49,8 @@ public final class GraphHtmlTextWriterTests {
 		final var htmlBodyElement = htmlDocument.createElement("body");
 		htmlElement.appendChild(htmlBodyElement);
 		
-		final var nlpProvider = new NLPConcatenationProvider();
-		final var htmlTextWriter = new GraphHtmlTextWriter(settings, htmlBodyElement, (NLPProvider)nlpProvider);
+		final var nlpProvider = new NLPConcatenationProcessor();
+		final var htmlTextWriter = new GraphHtmlTextWriter(settings, htmlBodyElement, (NLPProcessor)nlpProvider);
 		
 		// Act
 		htmlTextWriter.write(graph);

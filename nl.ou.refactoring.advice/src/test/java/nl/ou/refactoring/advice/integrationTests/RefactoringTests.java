@@ -33,8 +33,8 @@ import nl.ou.refactoring.advice.io.html.text.GraphHtmlTextWriter;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
-import nl.ou.refactoring.advice.nlp.NLPProvider;
-import nl.ou.refactoring.advice.nlp.providers.NLPConcatenationProvider;
+import nl.ou.refactoring.advice.nlp.NLPProcessor;
+import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
 
 public final class RefactoringTests {
 	private static Path OUTPUT_DIR;
@@ -109,8 +109,8 @@ public final class RefactoringTests {
 			final var htmlBodyElement = htmlDocument.createElement("body");
 			htmlElement.appendChild(htmlBodyElement);
 			
-			final var nlpProvider = new NLPConcatenationProvider();
-			new GraphHtmlTextWriter(htmlWriterSettings, htmlBodyElement, (NLPProvider)nlpProvider).write(graph);
+			final var nlpProvider = new NLPConcatenationProcessor();
+			new GraphHtmlTextWriter(htmlWriterSettings, htmlBodyElement, (NLPProcessor)nlpProvider).write(graph);
 			
 			final var transformerFactory = TransformerFactory.newInstance();
 			final var transformer = transformerFactory.newTransformer();

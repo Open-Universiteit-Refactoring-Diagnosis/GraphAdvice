@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.nlp;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
@@ -42,5 +43,41 @@ public final class NLPResult {
 	 */
 	public Map<String, GraphNode> getReferences() {
 		return this.references;
+	}
+	
+	/**
+	 * Merges this {@link NLPResult} with the specified other {@link NLPResult}.
+	 * @param otherResult The other {@link NLPResult}.
+	 * @return The merged {@link NLPResult}.
+	 * @throws ArgumentNullException Thrown if otherResult is null.
+	 */
+	public NLPResult merge(NLPResult otherResult)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(otherResult, "otherResult");
+		return merge(this, otherResult);
+	}
+	
+	/**
+	 * Merges two {@link NLPResult} into one {@link NLPResult}.
+	 * @param firstResult The first {@link NLPResult}.
+	 * @param secondResult The second {@link NLPResult}.
+	 * @return The merged {@link NLPResult}.
+	 * @throws ArgumentNullException Thrown if firstResult or secondResult is null.
+	 */
+	public static NLPResult merge(NLPResult firstResult, NLPResult secondResult)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(firstResult, "firstResult");
+		ArgumentGuard.requireNotNull(secondResult, "secondResult");
+		final var text = firstResult.getText() + secondResult.getText();
+		final var references = new HashMap<String, GraphNode>();
+		final var referencesEntriesFirst = firstResult.getReferences().entrySet();
+		for (final var entry : referencesEntriesFirst) {
+			references.put(entry.getKey(), entry.getValue());
+		}
+		final var referencesEntriesSecond = secondResult.getReferences().entrySet();
+		for (final var entry : referencesEntriesSecond) {
+			references.putIfAbsent(entry.getKey(), entry.getValue());
+		}
+		return new NLPResult(text, references);
 	}
 }

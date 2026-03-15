@@ -22,7 +22,7 @@ import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirec
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 import nl.ou.refactoring.advice.io.text.GraphTextWriter;
-import nl.ou.refactoring.advice.nlp.providers.NLPConcatenationProvider;
+import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
 
 public final class DangerTests {
 	private static Path OUTPUT_DIR;
@@ -79,7 +79,7 @@ public final class DangerTests {
 	    		final var concatenatingBufferedWriter =
 	    			new BufferedWriter(new FileWriter(concatenatedAdviceFilePath.toFile()))
 	    ) {
-	    	new GraphTextWriter(concatenatingStringWriter, new NLPConcatenationProvider()).write(graph);
+	    	new GraphTextWriter(concatenatingStringWriter, new NLPConcatenationProcessor()).write(graph);
 	    	concatenatingBufferedWriter.write(concatenatingStringWriter.toString());
 	    } catch (IOException exception) {
 	    	fail(String.format("Failed to write concatenated text advice for graph '%s'", refactoringName));
