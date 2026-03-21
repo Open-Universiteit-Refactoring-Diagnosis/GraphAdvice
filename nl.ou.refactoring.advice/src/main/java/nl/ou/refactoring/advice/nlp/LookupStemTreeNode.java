@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
@@ -19,7 +20,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  */
 public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
 	private final ValueType value;
-	private final BiFunction<String, Key, String> valueProducer;
+	private final Function<Key, ValueType> valueProducer;
 	private final Map<ChildValueType, LookupStemTreeNode<Key, ChildValueType, ?>> children =
 		new HashMap<ChildValueType, LookupStemTreeNode<Key, ChildValueType, ?>>();
 
@@ -28,7 +29,7 @@ public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
 	 * @param value The value that is represented by this node.
 	 * @param valueProducer Produces a value from the specified key.
 	 */
-	public LookupStemTreeNode(ValueType value, BiFunction<String, Key, String> valueProducer) {
+	public LookupStemTreeNode(ValueType value, Function<Key, ValueType> valueProducer) {
 		this.value = value;
 		this.valueProducer = valueProducer;
 	}
@@ -54,8 +55,10 @@ public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
 		final var childEntries = this.children.entrySet();
 		for (final var childEntry : childEntries) {
 			final var childNode = childEntry.getValue();
-			if (childNode.getValue() != null &&
-					childNode.getValue().equals(childNode.produceValue(stem, key))) {
+			final var childNodeValue = childNode.getValue();
+			if (childNodeValue != null &&
+				(childNodeValue.equals(childNode.valueProducer.apply(key)) ||
+					BiFunction.class.isInstance(childNodeValue))) {
 				return Optional.of(childNode);
 			}
 		}
@@ -91,16 +94,15 @@ public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
 	 * @throws ArgumentNullException Thrown if stem or key is null.
 	 * @throws ArgumentEmptyException Thrown if stem is empty or contains only white spaces.
 	 */
-	public String produceValue(String stem, Key key)
+	public ValueType produceValue(Key key)
 			throws
 				ArgumentNullException,
 				ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(stem, "stem");
 		ArgumentGuard.requireNotNull(key, "key");
 		return
 			this.valueProducer == null
 				? null
-				: this.valueProducer.apply(stem, key);
+				: this.valueProducer.apply(key);
 	}
 
 	/**

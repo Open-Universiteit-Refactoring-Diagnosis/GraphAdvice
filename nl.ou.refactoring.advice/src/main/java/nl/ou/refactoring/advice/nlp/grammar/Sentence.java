@@ -1,35 +1,71 @@
 package nl.ou.refactoring.advice.nlp.grammar;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
 
 /**
  * Represents a Sentence in Natural Language.
  */
 public final class Sentence implements SyntaxElement {
-	private final Set<Phrase> phrases;
+	private Optional<NounPhrase> nounPhrase;
+	private Optional<PrepositionalPhrase> prepositionalPhrase;
+	private Optional<VerbPhrase> verbPhrase;
 	
 	/**
 	 * Initialises a new instance of {@link Sentence}.
 	 */
 	public Sentence() {
-		this.phrases = new HashSet<Phrase>();
+		this.nounPhrase = Optional.empty();
+		this.prepositionalPhrase = Optional.empty();
+		this.verbPhrase = Optional.empty();
 	}
 	
 	/**
-	 * Adds a new {@link Phrase} to the {@link Sentence}.
-	 * @param phrase The {@link Phrase} to add to the {@link Sentence}.
+	 * Gets the Noun Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
+	 * @return The Noun Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 	 */
-	public void addPhrase(Phrase phrase) {
-		this.phrases.add(phrase);
+	public Optional<NounPhrase> getNounPhrase() {
+		return this.nounPhrase;
 	}
 	
 	/**
-	 * Gets an unmodifiable set of {@link Phrase}s in the {@link Sentence}.
-	 * @return An unmodifiable set of {@link Phrase}s in the {@link Sentence}.
+	 * Sets the Noun Phrase of the Sentence.
+	 * @param nounPhrase The Noun Phrase of the Sentence.
 	 */
-	public Set<Phrase> getPhrases() {
-		return Collections.unmodifiableSet(this.phrases);
+	public void setNounPhrase(NounPhrase nounPhrase) {
+		this.nounPhrase = Optional.ofNullable(nounPhrase);
+	}
+	
+	/**
+	 * Gets the Prepositional Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
+	 * @return The Prepositional Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
+	 */
+	public Optional<PrepositionalPhrase> getPrepositionalPhrase() {
+		return this.prepositionalPhrase;
+	}
+	
+	/**
+	 * 
+	 * @param prepositionalPhrase
+	 */
+	public void setPrepositionalPhrase(PrepositionalPhrase prepositionalPhrase) {
+		this.prepositionalPhrase = Optional.ofNullable(prepositionalPhrase);
+	}
+	
+	/**
+	 * Gets the Verb Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
+	 * @return The Verb Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}..
+	 */
+	public Optional<VerbPhrase> getVerbPhrase() {
+		return this.verbPhrase;
+	}
+	
+	/**
+	 * Sets the Verb Phrase of the Sentence.
+	 * @param verbPhrase The Verb Phrase of the Sentence.
+	 */
+	public void setVerbPhrase(VerbPhrase verbPhrase) {
+		this.verbPhrase = Optional.ofNullable(verbPhrase);
 	}
 }

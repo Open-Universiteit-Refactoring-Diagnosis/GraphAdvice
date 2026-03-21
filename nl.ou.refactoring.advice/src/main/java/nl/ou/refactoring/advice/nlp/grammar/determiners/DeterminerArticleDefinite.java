@@ -9,15 +9,12 @@ public final class DeterminerArticleDefinite extends DeterminerArticle {
 	/**
 	 * The token for a definite article.
 	 */
-	public static final long TOKEN = Tokens.Determiners.THE;
+	public static final long TOKEN = Tokens.Determiners.Articles.THE;
 	
 	/**
 	 * Initialises a new instance of {@link DetermineArticleDefinite}.
 	 */
-	public DeterminerArticleDefinite() { }
-	
-	@Override
-	public long getToken() {
-		return TOKEN;
+	public DeterminerArticleDefinite() {
+		super(TOKEN);
 	}
 }

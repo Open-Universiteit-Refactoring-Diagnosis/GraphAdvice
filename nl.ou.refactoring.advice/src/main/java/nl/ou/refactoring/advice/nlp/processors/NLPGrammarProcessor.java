@@ -9,7 +9,12 @@ import nl.ou.refactoring.advice.nlp.NLPException;
 import nl.ou.refactoring.advice.nlp.NLPProcessor;
 import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nlp.grammar.Sentence;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
 import nl.ou.refactoring.advice.nlp.languages.NLPLanguage;
+import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphWorkflowExplorer;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
@@ -56,8 +61,19 @@ public class NLPGrammarProcessor extends NLPProcessor {
 			if (dangerPaths.isEmpty()) {
 				continue;
 			}
+			final var dangerPath = dangerPaths.get(0);
 			
-			var dangerSentence = new Sentence(); // TODO construct sentence
+			final var dangerSentence = new Sentence();
+			final var refactoringNoun =
+				CommonNoun
+					.fromToken(Tokens.Nouns.Common.REFACTORING, this.language.getNounGenderSuppliers())
+					.get();
+			final var dangerNounPhrase = new NounPhrase(refactoringNoun);
+			for (final var dangerPathSegment : dangerPath.getSegments()) {
+				// TODO verb phrases for microsteps
+				final var node = dangerPathSegment.getNode();
+			}
+			// TODO construct sentence
 			result = result.merge(this.language.visit(dangerSentence));
 			
 			// Remedies

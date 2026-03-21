@@ -1,7 +1,9 @@
 package nl.ou.refactoring.advice.contracts;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Enforces contracts on parameter arguments in methods.
@@ -13,6 +15,34 @@ public final class ArgumentGuard {
 	 */
 	private ArgumentGuard() {
 		throw new AssertionError("ArgumentGuard should not be instantiated; it only hosts static methods.");
+	}
+	
+	/**
+	 * Requires that an item from an argument is in the specified collection.
+	 * @param <T> The type of item.
+	 * @param item The item to verify.
+	 * @param itemParameterName The name of the parameter that provided the item argument.
+	 * @param collection The collection to which the item should belong.
+	 * @param collectionName The name of the collection to which the item should belong.
+	 * @throws ArgumentNullException Thrown if item, itemParameterName, collection or collectionName is null.
+	 * @throws ArgumentEmptyException Thrown if the item parameter name is empty or contains only white spaces.
+	 * @throws ArgumentMembershipException Thrown if the specified item is not in the specified collection.
+	 */
+	public static <T> void requireItemOf(T item, String itemParameterName, Collection<T> collection, String collectionName)
+			throws ArgumentNullException, ArgumentEmptyException, ArgumentMembershipException {
+		requireNotNull(item, itemParameterName);
+		requireNotNull(collection, "collection");
+		requireNotNullEmptyOrWhiteSpace(collectionName, "collectionName");
+		if (!collection.contains(item)) {
+			throw new ArgumentMembershipException(
+				(Object)item,
+				collection
+					.stream()
+					.map(Object.class::cast)
+					.collect(Collectors.toUnmodifiableSet()),
+				collectionName
+			);
+		}
 	}
 	
 	/**

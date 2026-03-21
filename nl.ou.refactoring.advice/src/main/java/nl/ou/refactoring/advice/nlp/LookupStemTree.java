@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nlp;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -50,6 +51,7 @@ public class LookupStemTree<Key, ValueType, ChildValueType> {
 	 * @param key The specified key to look up.
 	 * @return The matching {@link String} value wrapped in an {@link Optional}, if not found an empty {@link Optional}.
 	 */
+	@SuppressWarnings("unchecked")
 	public Optional<String> lookup(Key key) {
 		Optional<LookupStemTreeNode<Key, ?, ?>> nodeCurrent = Optional.of(this.root);
 		Optional<String> matchingValue = Optional.empty();
@@ -59,8 +61,8 @@ public class LookupStemTree<Key, ValueType, ChildValueType> {
 			if (nodeNext.isPresent()) {
 				nodeCurrent = Optional.of(nodeNext.get());
 			} else {
-				if (String.class.isInstance(node.getValue())) {
-					return Optional.of((String)node.getValue());
+				if (BiFunction.class.isInstance(node.getValue())) {
+					return Optional.of(((BiFunction<String, Key, String>)node.getValue()).apply(this.stem, key));
 				}
 				nodeCurrent = Optional.empty();
 			}

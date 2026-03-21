@@ -6,7 +6,7 @@ import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 
 /**
- * A key for a Possessive Pronoun.
+ * A key for a Possessive Pronoun's declension.
  * @param person The grammatical person of the Possessive Pronoun.
  * @param gender The grammatical gender of the Possessive Pronoun.
  * @param number The grammatical number of the Possessive Pronoun.
