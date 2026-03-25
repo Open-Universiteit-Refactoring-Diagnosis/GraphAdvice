@@ -14,11 +14,11 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  * Represents a node in a lookup tree for looking up values for tokens.
  * @param <ValueType> The type of value represented by the node.
  */
-public class LookupTreeNode<Key, ValueType, ChildValueType> {
-	private final ValueType value;
-	private final Function<Key, ValueType> valueProducer;
-	private final Map<ChildValueType, LookupTreeNode<Key, ChildValueType, ?>> children =
-		new HashMap<ChildValueType, LookupTreeNode<Key, ChildValueType, ?>>();
+public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extends LookupTreeNode<Key, ChildValueType, ?, ?>> {
+	protected final ValueType value;
+	protected final Function<Key, ValueType> valueProducer;
+	protected final Map<ChildValueType, LookupTreeNode<Key, ?, ?, ?>> children =
+		new HashMap<ChildValueType, LookupTreeNode<Key, ?, ?, ?>>();
 	
 	/**
 	 * Initialises a new instance of {@link LookupTreeNode<Key, ValueType, ChildValueType>}.
@@ -36,8 +36,9 @@ public class LookupTreeNode<Key, ValueType, ChildValueType> {
 	 * @param value The value of the requested child node.
 	 * @return The requested child node wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 	 */
-	public final Optional<LookupTreeNode<Key, ChildValueType, ?>> getChild(ChildValueType value) {
-		return Optional.ofNullable(this.children.get(value));
+	@SuppressWarnings("unchecked")
+	public final Optional<ChildNodeType> getChild(ChildValueType value) {
+		return Optional.ofNullable((ChildNodeType)this.children.get(value));
 	}
 	
 	/**
@@ -45,14 +46,15 @@ public class LookupTreeNode<Key, ValueType, ChildValueType> {
 	 * @param key The key that provides the parameters to look for when looking up the requested value.
 	 * @return If found, the next tree node that matches the specified key wrapped in a {@link Optional}, otherwise an empty {@link Optional}.
 	 */
-	public final Optional<LookupTreeNode<Key, ChildValueType, ?>> getChildNext(Key key) {
+	@SuppressWarnings("unchecked")
+	public Optional<ChildNodeType> getChildNext(Key key) {
 		ArgumentGuard.requireNotNull(key, "key");
 		final var childEntries = this.children.entrySet();
 		for (final var childEntry : childEntries) {
 			final var childNode = childEntry.getValue();
 			if (childNode.getValue() != null &&
 					childNode.getValue().equals(childNode.produceValue(key))) {
-				return Optional.of(childNode);
+				return Optional.of((ChildNodeType)childNode);
 			}
 		}
 		return Optional.empty();
@@ -62,12 +64,14 @@ public class LookupTreeNode<Key, ValueType, ChildValueType> {
 	 * Gets the child nodes of this lookup tree node.
 	 * @return An unmodifiable set of child {@link LookupTreeNode<Key, ChildValueType, ?>}s.
 	 */
-	public final Set<LookupTreeNode<Key, ChildValueType, ?>> getChildren() {
+	@SuppressWarnings("unchecked")
+	public final Set<ChildNodeType> getChildren() {
 		return
 			this
 				.children
 				.values()
 				.stream()
+				.map((node) -> (ChildNodeType)node)
 				.collect(Collectors.toUnmodifiableSet());
 	}
 	
@@ -102,9 +106,9 @@ public class LookupTreeNode<Key, ValueType, ChildValueType> {
 	 * @throws ArgumentNullException Thrown if childNode is null.
 	 */
 	@SuppressWarnings("unchecked")
-	public final <GrandchildValueType> LookupTreeNode<Key, ChildValueType, GrandchildValueType> putIfAbsent(LookupTreeNode<Key, ChildValueType, GrandchildValueType> childNode)
+	public final <GrandchildValueType> ChildNodeType putIfAbsent(ChildNodeType childNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(childNode, "childNode");
-		return (LookupTreeNode<Key, ChildValueType, GrandchildValueType>)this.children.putIfAbsent(childNode.getValue(), childNode);
+		return (ChildNodeType)this.children.putIfAbsent(childNode.getValue(), childNode);
 	}
 }

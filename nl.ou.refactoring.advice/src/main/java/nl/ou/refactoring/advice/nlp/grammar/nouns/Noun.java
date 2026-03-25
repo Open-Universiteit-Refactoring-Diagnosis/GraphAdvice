@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.nlp.grammar.nouns;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -10,12 +11,12 @@ import nl.ou.refactoring.advice.nlp.grammar.SyntaxElement;
 /**
  * Represents a Noun in Natural Language.
  */
-public abstract class Noun implements Cloneable, SyntaxElement {
+public abstract class Noun
+		implements
+			Cloneable,
+			SyntaxElement {
 	private final long token;
-	private final LexicalCategory lexicalCategory;
-	private final SemanticClassification semanticClassification;
-	private final Countability countability;
-	private final Supplier<GrammaticalGender> genderSupplier;
+	protected final NounCategories categories;
 	
 	/**
 	 * Initialises a new instance of {@link Noun}.
@@ -27,17 +28,11 @@ public abstract class Noun implements Cloneable, SyntaxElement {
 	 */
 	protected Noun(
 		long token,
-		LexicalCategory lexicalCategory,
-		SemanticClassification semanticClassification,
-		Countability countability,
-		Supplier<GrammaticalGender> genderSupplier
+		NounCategories categories
 	) throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(genderSupplier, "genderSupplier");
+		ArgumentGuard.requireNotNull(categories, "categories");
 		this.token = token;
-		this.lexicalCategory = lexicalCategory;
-		this.semanticClassification = semanticClassification;
-		this.countability = countability;
-		this.genderSupplier = genderSupplier;
+		this.categories = categories;
 	}
 	
 	/**
@@ -53,7 +48,7 @@ public abstract class Noun implements Cloneable, SyntaxElement {
 	 * @return The Lexical Category of the Noun.
 	 */
 	public final LexicalCategory getLexicalCategory() {
-		return this.lexicalCategory;
+		return this.categories.lexicalCategory();
 	}
 	
 	/**
@@ -61,7 +56,7 @@ public abstract class Noun implements Cloneable, SyntaxElement {
 	 * @return The Semantic Classification of the Noun.
 	 */
 	public SemanticClassification getSemanticClassification() {
-		return this.semanticClassification;
+		return this.categories.semanticClassification();
 	}
 	
 	/**
@@ -69,24 +64,18 @@ public abstract class Noun implements Cloneable, SyntaxElement {
 	 * @return The Countability of the Noun.
 	 */
 	public Countability getCountability() {
-		return this.countability;
+		return this.categories.countability();
 	}
 	
 	/**
-	 * Gets the Grammatical Gender of the Noun.
-	 * @return The Grammatical Gender of the Noun.
+	 * Gets the grammatical gender of the Noun.
+	 * Each Noun class may have a different way of determining the gender.
+	 * For example, a Pronoun's gender is intrinsic, a Common Noun's gender is determined by the language.
+	 * @return The grammatical gender of the Noun if found, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
+	 * @throws ArgumentNullException Thrown if genderSupplier is null.
 	 */
-	public GrammaticalGender getGender() {
-		return this.genderSupplier.get();
-	}
-	
-	/**
-	 * Gets the supplier of the Grammatical Gender of the Noun.
-	 * @return The supplier of the Grammatical Gender of the Noun.
-	 */
-	protected final Supplier<GrammaticalGender> getGenderSupplier() {
-		return this.genderSupplier;
-	}
+	public abstract Optional<GrammaticalGender> getGender(Supplier<GrammaticalGender> genderSupplier)
+		throws ArgumentNullException;
 	
 	@Override
 	protected abstract Object clone();

@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nlp.languages.dutchNetherlands;
+package nl.ou.refactoring.advice.nlp.grammar.determiners;
 
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalGender;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;

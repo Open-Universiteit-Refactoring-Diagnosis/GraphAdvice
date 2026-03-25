@@ -80,4 +80,16 @@ public final class NLPResult {
 		}
 		return new NLPResult(text, references);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !NLPResult.class.isInstance(obj)) {
+			return false;
+		}
+		if (this == obj) {
+			return true;
+		}
+		final var other = (NLPResult)obj;
+		return this.getText().equals(other.getText()) && this.getReferences().equals(other.getReferences());
+	};
 }

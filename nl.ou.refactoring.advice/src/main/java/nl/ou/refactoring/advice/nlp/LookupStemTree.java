@@ -2,8 +2,8 @@ package nl.ou.refactoring.advice.nlp;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
-import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
@@ -11,23 +11,21 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  * A lookup tree with a stem.
  * @param <Key> The type of lookup key.
  */
-public class LookupStemTree<Key, ValueType, ChildValueType> {
-	private final String stem;
-	private final LookupStemTreeNode<Key, ValueType, ChildValueType> root;
+public class LookupStemTree<Key, ValueType, ChildValueType>
+		extends LookupTree<Key, ValueType, ChildValueType, LookupStemTreeNode<Key, ValueType, ChildValueType, ?>> {
+	private final Supplier<String> stem;
 	
 	/**
 	 * Initialises a new instance of {@link LookupStemTree}.
-	 * @param stem The stem value of the lookup tree.
+	 * @param stemSupplier Supplies the stem value of the lookup tree.
 	 * @param root The root node of the lookup tree.
 	 * @throws ArgumentNullException Thrown if stem or root is null.
-	 * @throws ArgumentEmptyException Thrown if stem is empty or contains only white spaces.
 	 */
-	public LookupStemTree(String stem, LookupStemTreeNode<Key, ValueType, ChildValueType> root)
-			throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(stem, "stem");
-		ArgumentGuard.requireNotNull(root, "root");
-		this.stem = stem;
-		this.root = root;
+	public LookupStemTree(Supplier<String> stemSupplier, LookupStemTreeNode<Key, ValueType, ChildValueType, ?> root)
+			throws ArgumentNullException {
+		super(root);
+		ArgumentGuard.requireNotNull(stemSupplier, "stemSupplier");
+		this.stem = stemSupplier;
 	}
 
 	/**
@@ -35,15 +33,7 @@ public class LookupStemTree<Key, ValueType, ChildValueType> {
 	 * @return The stem value of the lookup tree.
 	 */
 	public String getStem() {
-		return this.stem;
-	}
-	
-	/**
-	 * Gets the root node of the lookup tree.
-	 * @return The root node of the lookup tree.
-	 */
-	public LookupStemTreeNode<Key, ValueType, ChildValueType> getRoot() {
-		return this.root;
+		return this.stem.get();
 	}
 	
 	/**
@@ -51,18 +41,19 @@ public class LookupStemTree<Key, ValueType, ChildValueType> {
 	 * @param key The specified key to look up.
 	 * @return The matching {@link String} value wrapped in an {@link Optional}, if not found an empty {@link Optional}.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Optional<String> lookup(Key key) {
-		Optional<LookupStemTreeNode<Key, ?, ?>> nodeCurrent = Optional.of(this.root);
+		Optional<LookupStemTreeNode<Key, ?, ?, ?>> nodeCurrent = Optional.of(this.root);
 		Optional<String> matchingValue = Optional.empty();
 		do {
 			final var node = nodeCurrent.get();
-			final var nodeNext = node.getChildNext(this.stem, key);
+			final var nodeNext = node.getChildNext(this.stem.get(), key);
 			if (nodeNext.isPresent()) {
 				nodeCurrent = Optional.of(nodeNext.get());
 			} else {
 				if (BiFunction.class.isInstance(node.getValue())) {
-					return Optional.of(((BiFunction<String, Key, String>)node.getValue()).apply(this.stem, key));
+					return Optional.of(((BiFunction<String, Key, String>)node.getValue()).apply(this.stem.get(), key));
 				}
 				nodeCurrent = Optional.empty();
 			}

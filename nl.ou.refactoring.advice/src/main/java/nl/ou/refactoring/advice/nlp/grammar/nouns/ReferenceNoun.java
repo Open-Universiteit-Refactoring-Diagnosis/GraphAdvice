@@ -1,6 +1,9 @@
 package nl.ou.refactoring.advice.nlp.grammar.nouns;
 
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
+
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalGender;
@@ -19,12 +22,18 @@ public final class ReferenceNoun<T> extends Noun {
 	 * Initialises a new instance of {@link ReferenceNoun}.
 	 * @param reference The reference of the Noun.
 	 * @param captionFunction The function that provides the caption for the reference.
-	 * @param gender The Grammatical Gender of the Noun.
 	 * @throws ArgumentNullException Thrown if reference is null.
 	 */
-	public ReferenceNoun(T reference, Function<T, String> captionFunction, GrammaticalGender gender)
+	public ReferenceNoun(T reference, Function<T, String> captionFunction)
 			throws ArgumentNullException {
-		super(TOKEN, LexicalCategory.PROPER, SemanticClassification.ABSTRACT, Countability.UNCOUNTABLE, () -> gender);
+		super(
+			TOKEN,
+			new NounCategories(
+				LexicalCategory.PROPER,
+				SemanticClassification.ABSTRACT,
+				Countability.UNCOUNTABLE
+			)
+		);
 		ArgumentGuard.requireNotNull(reference, "reference");
 		ArgumentGuard.requireNotNull(captionFunction, "captionFunction");
 		this.reference = reference;
@@ -49,7 +58,14 @@ public final class ReferenceNoun<T> extends Noun {
 	
 	@Override
 	protected Object clone() {
-		return new ReferenceNoun<T>(this.reference, this.captionFunction, this.getGender());
+		return new ReferenceNoun<T>(this.reference, this.captionFunction);
+	}
+	
+	@Override
+	public Optional<GrammaticalGender> getGender(Supplier<GrammaticalGender> genderSupplier)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(genderSupplier, "genderSupplier");
+		return Optional.ofNullable(genderSupplier.get());
 	}
 	
 	@Override

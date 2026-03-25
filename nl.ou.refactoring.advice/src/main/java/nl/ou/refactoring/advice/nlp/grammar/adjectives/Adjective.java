@@ -1,8 +1,9 @@
-package nl.ou.refactoring.advice.nlp.grammar;
+package nl.ou.refactoring.advice.nlp.grammar.adjectives;
 
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nlp.grammar.SyntaxElement;
 
 /**
  * Represents an Adjective in Natural Language.

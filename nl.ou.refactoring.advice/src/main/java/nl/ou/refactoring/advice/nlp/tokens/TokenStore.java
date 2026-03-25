@@ -1,8 +1,10 @@
 package nl.ou.refactoring.advice.nlp.tokens;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A store for tokens and associated syntax elements.
@@ -16,6 +18,14 @@ public final class TokenStore<T> {
 	 */
 	protected TokenStore() {
 		this.syntaxElements = new HashMap<Long, T>();
+	}
+	
+	/**
+	 * Gets all registered tokens in this {@link TokenStore}.
+	 * @return An unmodifiable set of tokens.
+	 */
+	public Set<Long> allTokens() {
+		return Collections.unmodifiableSet(this.syntaxElements.keySet());
 	}
 
 	/**

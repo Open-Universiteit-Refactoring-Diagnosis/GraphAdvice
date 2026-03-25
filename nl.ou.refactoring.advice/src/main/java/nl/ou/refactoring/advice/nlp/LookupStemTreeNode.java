@@ -1,14 +1,9 @@
 package nl.ou.refactoring.advice.nlp;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
@@ -18,30 +13,15 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  * @param <ValueType> The type of value of the node.
  * @param <ChildValueType> The type of value of the child nodes.
  */
-public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
-	private final ValueType value;
-	private final Function<Key, ValueType> valueProducer;
-	private final Map<ChildValueType, LookupStemTreeNode<Key, ChildValueType, ?>> children =
-		new HashMap<ChildValueType, LookupStemTreeNode<Key, ChildValueType, ?>>();
-
+public class LookupStemTreeNode<Key, ValueType, ChildValueType, ChildNodeType extends LookupStemTreeNode<Key, ChildValueType, ?, ?>>
+		extends LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType> {
 	/**
 	 * Initialises a new instance of {@link LookupStemTreeNode<Key, ValueType, ChildValueType>}.
 	 * @param value The value that is represented by this node.
 	 * @param valueProducer Produces a value from the specified key.
 	 */
 	public LookupStemTreeNode(ValueType value, Function<Key, ValueType> valueProducer) {
-		this.value = value;
-		this.valueProducer = valueProducer;
-	}
-	
-	/**
-	 * Gets the requested child node, if present, wrapped in an {@link Optional},
-	 * otherwise an empty {@link Optional}.
-	 * @param value The value of the requested child node.
-	 * @return The requested child node wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
-	 */
-	public Optional<LookupStemTreeNode<Key, ChildValueType, ?>> getChild(ChildValueType value) {
-		return Optional.ofNullable(this.children.get(value));
+		super(value, valueProducer);
 	}
 	
 	/**
@@ -50,7 +30,8 @@ public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
 	 * @param key The lookup key.
 	 * @return If found, the next tree node that matches the specified key wrapped in a {@link Optional}, otherwise an empty {@link Optional}.
 	 */
-	public Optional<LookupStemTreeNode<Key, ChildValueType, ?>> getChildNext(String stem, Key key) {
+	@SuppressWarnings("unchecked")
+	public Optional<ChildNodeType> getChildNext(String stem, Key key) {
 		ArgumentGuard.requireNotNull(key, "key");
 		final var childEntries = this.children.entrySet();
 		for (final var childEntry : childEntries) {
@@ -59,50 +40,10 @@ public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
 			if (childNodeValue != null &&
 				(childNodeValue.equals(childNode.valueProducer.apply(key)) ||
 					BiFunction.class.isInstance(childNodeValue))) {
-				return Optional.of(childNode);
+				return Optional.of((ChildNodeType)childNode);
 			}
 		}
 		return Optional.empty();
-	}
-	
-	/**
-	 * Gets the child nodes of this lookup tree node.
-	 * @return An unmodifiable set of child {@link LookupStremTreeNode<Key, ChildValueType, ?>}.
-	 */
-	public Set<LookupStemTreeNode<Key, ChildValueType, ?>> getChildren() {
-		return
-			this
-				.children
-				.values()
-				.stream()
-				.collect(Collectors.toUnmodifiableSet());
-	}
-	
-	/**
-	 * Gets the value that is represented by the node.
-	 * @return The value that is represented by the node.
-	 */
-	public ValueType getValue() {
-		return this.value;
-	}
-	
-	/**
-	 * Produces a value from the specified stem and key.
-	 * @param stem The stem value of the lookup tree.
-	 * @param key The lookup key.
-	 * @return The produced value from the specified stem and key.
-	 * @throws ArgumentNullException Thrown if stem or key is null.
-	 * @throws ArgumentEmptyException Thrown if stem is empty or contains only white spaces.
-	 */
-	public ValueType produceValue(Key key)
-			throws
-				ArgumentNullException,
-				ArgumentEmptyException {
-		ArgumentGuard.requireNotNull(key, "key");
-		return
-			this.valueProducer == null
-				? null
-				: this.valueProducer.apply(key);
 	}
 
 	/**
@@ -113,9 +54,9 @@ public final class LookupStemTreeNode<Key, ValueType, ChildValueType> {
 	 * @throws ArgumentNullException Thrown if childNode is null.
 	 */
 	@SuppressWarnings("unchecked")
-	public <GrandchildValueType> LookupStemTreeNode<Key, ChildValueType, GrandchildValueType> putIfAbsent(LookupStemTreeNode<Key, ChildValueType, GrandchildValueType> childNode)
+	public <GrandchildValueType> LookupStemTreeNode<Key, ChildValueType, GrandchildValueType, ?> putIfAbsent(LookupStemTreeNode<Key, ChildValueType, GrandchildValueType, ?> childNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(childNode, "childNode");
-		return (LookupStemTreeNode<Key, ChildValueType, GrandchildValueType>)this.children.putIfAbsent(childNode.getValue(), childNode);
+		return (LookupStemTreeNode<Key, ChildValueType, GrandchildValueType, ?>)this.children.putIfAbsent(childNode.getValue(), childNode);
 	}
 }

@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nlp.languages.dutchNetherlands;
+package nl.ou.refactoring.advice.nlp.grammar.determiners;
 
 import java.util.ArrayList;
 import java.util.stream.Stream;

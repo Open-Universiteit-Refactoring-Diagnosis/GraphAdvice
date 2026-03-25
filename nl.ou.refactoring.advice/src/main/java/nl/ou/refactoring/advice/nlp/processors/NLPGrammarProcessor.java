@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nlp.processors;
 
 import java.util.HashMap;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -11,13 +12,18 @@ import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nlp.grammar.Sentence;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.prepositions.Preposition;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.LexicalVerb;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
 import nl.ou.refactoring.advice.nlp.languages.NLPLanguage;
+import nl.ou.refactoring.advice.nlp.tokens.NLPTokenNotFoundException;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphWorkflowExplorer;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepOperationMissingException;
 
 /**
  * A Natural Language Processing provider that arrange text into natural language grammar
@@ -63,18 +69,47 @@ public class NLPGrammarProcessor extends NLPProcessor {
 			}
 			final var dangerPath = dangerPaths.get(0);
 			
-			final var dangerSentence = new Sentence();
-			final var refactoringNoun =
-				CommonNoun
-					.fromToken(Tokens.Nouns.Common.REFACTORING, this.language.getNounGenderSuppliers())
-					.get();
-			final var dangerNounPhrase = new NounPhrase(refactoringNoun);
 			for (final var dangerPathSegment : dangerPath.getSegments()) {
-				// TODO verb phrases for microsteps
 				final var node = dangerPathSegment.getNode();
+				switch (node) {
+					case GraphNodeMicrostepAddMethod microstepAddMethodNode: {
+						final var microstepSentence = new Sentence();
+						final var operationNode =
+							microstepAddMethodNode
+								.getOperationNode()
+								.orElseThrow(() -> new GraphNodeMicrostepOperationMissingException(microstepAddMethodNode));
+						
+						final var methodNoun =
+							CommonNoun
+								.fromToken(Tokens.Nouns.Common.METHOD)
+								.orElseThrow(() -> new NLPTokenNotFoundException(Tokens.Nouns.Common.METHOD, Tokens.Nouns.Common.class));
+						final var microstepNounPhrase = new NounPhrase(methodNoun);
+						microstepSentence.setNounPhrase(microstepNounPhrase);
+						final var addVerb =
+							LexicalVerb
+								.fromToken(Tokens.Verbs.Lexical.ADD)
+								.orElseThrow(() -> new NLPTokenNotFoundException(Tokens.Verbs.Lexical.ADD, Tokens.Verbs.Lexical.class));
+						final var microstepVerbPhrase = new VerbPhrase(addVerb);
+						microstepSentence.setVerbPhrase(microstepVerbPhrase);
+						final var toPreposition =
+							Preposition
+								.fromToken(Tokens.Prepositions.TO_DIRECTIONAL)
+								.orElseThrow(() -> new NLPTokenNotFoundException(Tokens.Prepositions.TO_DIRECTIONAL, Tokens.Prepositions.class));
+						final var microstepPrepositionalPhrase = new PrepositionalPhrase();
+						// TODO add PP to VP
+						
+						operationNode
+							.getClassNode()
+							.ifPresentOrElse(cn -> { }, () -> { });
+						
+						// TODO construct sentence
+						result = result.merge(this.language.visit(microstepSentence));
+						break;
+					}
+					default:
+						break;
+				}
 			}
-			// TODO construct sentence
-			result = result.merge(this.language.visit(dangerSentence));
 			
 			// Remedies
 			// TODO remedy paths

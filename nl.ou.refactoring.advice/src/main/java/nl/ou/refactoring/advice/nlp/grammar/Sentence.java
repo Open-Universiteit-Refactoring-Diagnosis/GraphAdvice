@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.nlp.grammar;
 import java.util.Optional;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
 
 /**
  * Represents a Sentence in Natural Language.

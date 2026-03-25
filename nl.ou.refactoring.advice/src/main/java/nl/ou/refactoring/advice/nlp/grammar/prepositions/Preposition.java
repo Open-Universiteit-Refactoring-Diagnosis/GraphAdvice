@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nlp.grammar.prepositions;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentMembershipException;
 import nl.ou.refactoring.advice.nlp.grammar.SyntaxElement;
@@ -35,8 +37,7 @@ public final class Preposition implements SyntaxElement {
 	 * @return The constructed Preposition.
 	 * @throws ArgumentMembershipException Thrown if token does not represent a Preposition.
 	 */
-	public static Preposition fromToken(long token) {
-		ArgumentGuard.requireItemOf(token, "token", Tokens.Prepositions.all(), "Prepositions");
-		return new Preposition(token);
+	public static Optional<Preposition> fromToken(long token) {
+		return Tokens.Prepositions.get(token);
 	}
 }

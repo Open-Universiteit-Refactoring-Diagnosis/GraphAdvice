@@ -8,7 +8,8 @@ import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 /**
  * Represents a Possessive Pronoun in Natural Language.
  */
-public final class PronounPossessive implements DeterminerWithToken {
+public final class PronounPossessive
+		implements DeterminerWithToken {
 	public static final long TOKEN = Tokens.Determiners.POSSESSIVE_PRONOUN;
 	private final GrammaticalPerson person;
 	private final GrammaticalGender gender;

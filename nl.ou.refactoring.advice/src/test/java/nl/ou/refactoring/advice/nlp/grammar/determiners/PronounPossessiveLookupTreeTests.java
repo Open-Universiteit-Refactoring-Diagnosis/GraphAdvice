@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nlp.languages.dutchNetherlands;
+package nl.ou.refactoring.advice.nlp.grammar.determiners;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,7 +11,6 @@ import nl.ou.refactoring.advice.nlp.grammar.GrammaticalGender;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
-import nl.ou.refactoring.advice.nlp.grammar.determiners.PronounPossessive;
 
 public final class PronounPossessiveLookupTreeTests {
 	@DisplayName("Should get the appropriate String value for a Possessive Pronoun")
