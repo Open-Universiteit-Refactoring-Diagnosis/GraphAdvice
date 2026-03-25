@@ -95,7 +95,7 @@ public class NLPGrammarProcessor extends NLPProcessor {
 							Preposition
 								.fromToken(Tokens.Prepositions.TO_DIRECTIONAL)
 								.orElseThrow(() -> new NLPTokenNotFoundException(Tokens.Prepositions.TO_DIRECTIONAL, Tokens.Prepositions.class));
-						final var microstepPrepositionalPhrase = new PrepositionalPhrase();
+						// final var microstepPrepositionalPhrase = new PrepositionalPhrase();
 						// TODO add PP to VP
 						
 						operationNode

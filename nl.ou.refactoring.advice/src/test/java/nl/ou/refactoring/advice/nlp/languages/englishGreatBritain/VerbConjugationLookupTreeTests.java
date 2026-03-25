@@ -70,4 +70,53 @@ public class VerbConjugationLookupTreeTests {
 				)
 			);
 	}
+	
+	@DisplayName("Should look up the correct conjugation of the irregular verb 'to be'")
+	@ParameterizedTest
+	@MethodSource("lookupToBeTestParameters")
+	public void lookupToBeTests(VerbConjugationKey key, String expected) {
+		final var lookupTree = NLPLanguageEnglishGreatBritain.VERB_CONJUGATION_TO_BE;
+		final var actualOptional = lookupTree.lookup(key);
+		assertTrue(actualOptional.isPresent());
+		assertEquals(expected, actualOptional.get());
+	}
+	
+	public static Stream<Arguments> lookupToBeTestParameters() {
+		return
+			Stream.of(
+				Arguments.of(
+					new VerbConjugationKey(
+						GrammaticalPerson.THIRD,
+						GrammaticalNumber.PLURAL,
+						VerbAspect.IMPERFECTIVE,
+						VerbModality.INDICATIVE,
+						VerbTense.PRESENT,
+						VerbVoice.ACTIVE
+					),
+					"are"
+				),
+				Arguments.of(
+					new VerbConjugationKey(
+						GrammaticalPerson.THIRD,
+						GrammaticalNumber.SINGULAR,
+						VerbAspect.IMPERFECTIVE,
+						VerbModality.INDICATIVE,
+						VerbTense.PRESENT,
+						VerbVoice.ACTIVE
+					),
+					"is"
+				),
+				Arguments.of(
+					new VerbConjugationKey(
+						GrammaticalPerson.THIRD,
+						GrammaticalNumber.SINGULAR,
+						VerbAspect.PERFECTIVE,
+						VerbModality.INDICATIVE,
+						VerbTense.PRESENT,
+						VerbVoice.ACTIVE
+					),
+					"been"
+				)
+			);
+	}
 }

@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nlp.grammar.verbs;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentMembershipException;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
@@ -25,9 +27,9 @@ public final class AuxiliaryVerb extends Verb {
 	 * @return The constructed Auxiliary Verb.
 	 * @throws ArgumentMembershipException Thrown if the token does not represent an Auxiliary Verb.
 	 */
-	public static AuxiliaryVerb fromToken(long token)
+	public static Optional<AuxiliaryVerb> fromToken(long token)
 			throws ArgumentMembershipException {
 		ArgumentGuard.requireItemOf(token, "token", Tokens.Verbs.Auxiliary.all(), "Auxiliary Verbs");
-		return new AuxiliaryVerb(token);
+		return Optional.of(new AuxiliaryVerb(token));
 	}
 }

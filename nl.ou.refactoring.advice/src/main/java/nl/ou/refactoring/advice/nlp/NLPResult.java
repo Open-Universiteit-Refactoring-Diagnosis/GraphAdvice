@@ -45,6 +45,12 @@ public final class NLPResult {
 		return this.references;
 	}
 	
+	public NLPResult merge(NLPResult otherResult, String separator) {
+		ArgumentGuard.requireNotNull(otherResult, "otherResult");
+		ArgumentGuard.requireNotNull(separator, "separator");
+		return merge(this, otherResult, separator);
+	}
+	
 	/**
 	 * Merges this {@link NLPResult} with the specified other {@link NLPResult}.
 	 * @param otherResult The other {@link NLPResult}.
@@ -54,7 +60,7 @@ public final class NLPResult {
 	public NLPResult merge(NLPResult otherResult)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(otherResult, "otherResult");
-		return merge(this, otherResult);
+		return merge(this, otherResult, "");
 	}
 	
 	/**
@@ -64,11 +70,12 @@ public final class NLPResult {
 	 * @return The merged {@link NLPResult}.
 	 * @throws ArgumentNullException Thrown if firstResult or secondResult is null.
 	 */
-	public static NLPResult merge(NLPResult firstResult, NLPResult secondResult)
+	public static NLPResult merge(NLPResult firstResult, NLPResult secondResult, String separator)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(firstResult, "firstResult");
 		ArgumentGuard.requireNotNull(secondResult, "secondResult");
-		final var text = firstResult.getText() + secondResult.getText();
+		ArgumentGuard.requireNotNull(separator, "separator");
+		final var text = firstResult.getText() + separator + secondResult.getText();
 		final var references = new HashMap<String, GraphNode>();
 		final var referencesEntriesFirst = firstResult.getReferences().entrySet();
 		for (final var entry : referencesEntriesFirst) {

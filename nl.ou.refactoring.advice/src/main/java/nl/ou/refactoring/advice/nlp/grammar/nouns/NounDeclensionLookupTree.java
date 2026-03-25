@@ -7,6 +7,7 @@ import nl.ou.refactoring.advice.nlp.LookupStemTree;
 
 /**
  * A look up tree for Noun declension in the Dutch language (Netherlands).
+ * @param <ValueType> The type of value of the first declension category.
  */
 public final class NounDeclensionLookupTree<ValueType>
 		extends LookupStemTree<NounDeclensionKey, Void, ValueType> {

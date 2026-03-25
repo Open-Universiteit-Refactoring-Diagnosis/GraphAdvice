@@ -12,6 +12,14 @@ import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nlp.grammar.Sentence;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.prepositions.Preposition;
+import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.AuxiliaryVerb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.LexicalVerb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
+import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 
 public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider implements ArgumentsProvider {
@@ -29,7 +37,37 @@ public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider imp
 	
 	public static Pair<Sentence, NLPResult> createSentenceMethodIsAddedToClass() {
 		final var sentence = new Sentence();
-		final var nlpResult = new NLPResult("", new HashMap<String, GraphNode>());
+		// TODO articles
+		final var methodNoun =
+			CommonNoun
+				.fromToken(Tokens.Nouns.Common.METHOD)
+				.get();
+		final var methodNounPhrase = new NounPhrase(methodNoun);
+		sentence.setNounPhrase(methodNounPhrase);
+		final var toBeVerb =
+			AuxiliaryVerb
+				.fromToken(Tokens.Verbs.Auxiliary.BE)
+				.get();
+		final var addVerb =
+			LexicalVerb
+				.fromToken(Tokens.Verbs.Lexical.ADD)
+				.get();
+		final var toPreposition =
+			Preposition
+				.fromToken(Tokens.Prepositions.TO_DIRECTIONAL)
+				.get();
+		final var classNoun =
+			CommonNoun
+				.fromToken(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING)
+				.get();
+		final var classNounPhrase = new NounPhrase(classNoun);
+		final var prepositionalPhrase = new PrepositionalPhrase(toPreposition, classNounPhrase);
+		final var verbPhrase = new VerbPhrase(addVerb);
+		verbPhrase.setAuxiliaryVerb(toBeVerb);
+		verbPhrase.setPrepositionalPhrase(prepositionalPhrase);
+		sentence.setVerbPhrase(verbPhrase);
+		
+		final var nlpResult = new NLPResult("method is added to class", new HashMap<String, GraphNode>());
 		return Pair.with(sentence, nlpResult);
 	}
 }

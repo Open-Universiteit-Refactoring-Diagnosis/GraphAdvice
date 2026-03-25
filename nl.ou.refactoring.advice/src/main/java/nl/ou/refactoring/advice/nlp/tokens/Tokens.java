@@ -95,6 +95,12 @@ public final class Tokens {
 				new TokenStore<CommonNoun>();
 			
 			/**
+			 * <a href="https://en.wiktionary.org/wiki/class">Class</a>;
+			 * A set of objects having the same behavior (but typically differing in state), or a template defining such a set in terms of its common properties, functions, etc.
+			 */
+			public static final long CLASS_OO_PROGRAMMING = "class (OO PROGRAMMING)".hashCode();
+			
+			/**
 			 * <a href="https://en.wiktionary.org/wiki/method">Method</a>:
 			 * A process by which a task is completed; 
 			 * a way of doing something (followed by the adposition of, to or for before the purpose of the process).
@@ -114,6 +120,10 @@ public final class Tokens {
 			public static final long REFACTORING = "refactoring".hashCode();
 			
 			static {
+				COMMON_NOUNS.putIfAbsent(
+					CLASS_OO_PROGRAMMING,
+					new CommonNoun(CLASS_OO_PROGRAMMING, SemanticClassification.ABSTRACT, Countability.COUNTABLE)
+				);
 				COMMON_NOUNS.putIfAbsent(
 					METHOD,
 					new CommonNoun(METHOD, SemanticClassification.ABSTRACT, Countability.COUNTABLE)
