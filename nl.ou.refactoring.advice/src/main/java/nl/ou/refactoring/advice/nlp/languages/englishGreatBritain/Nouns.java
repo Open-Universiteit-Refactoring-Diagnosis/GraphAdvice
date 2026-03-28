@@ -1,10 +1,9 @@
 package nl.ou.refactoring.advice.nlp.languages.englishGreatBritain;
 
-import java.util.function.BiFunction;
-
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionLookupTreeNode;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionProducer;
 
 class Nouns {
 	private Nouns() { }
@@ -14,14 +13,14 @@ class Nouns {
 		
 		// Singular
 		final var singularNode =
-			new NounDeclensionLookupTreeNode<GrammaticalNumber, BiFunction<String, NounDeclensionKey, String>>(
+			new NounDeclensionLookupTreeNode<GrammaticalNumber, NounDeclensionProducer>(
 				GrammaticalNumber.SINGULAR,
 				k -> k.number()
 			);
 		rootNode.putIfAbsent(singularNode);
-		BiFunction<String, NounDeclensionKey, String> singularDeclension = (s, _) -> s;
+		NounDeclensionProducer singularDeclension = (s, _) -> s;
 		final var singularDeclensionNode =
-			new NounDeclensionLookupTreeNode<BiFunction<String, NounDeclensionKey, String>, Void>(
+			new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(
 				singularDeclension,
 				_ -> singularDeclension
 			);
@@ -29,18 +28,28 @@ class Nouns {
 		
 		// Plural
 		final var pluralNode =
-			new NounDeclensionLookupTreeNode<GrammaticalNumber, BiFunction<String, NounDeclensionKey, String>>(
+			new NounDeclensionLookupTreeNode<GrammaticalNumber, NounDeclensionProducer>(
 				GrammaticalNumber.PLURAL,
 				k -> k.number()
 			);
 		rootNode.putIfAbsent(pluralNode);
-		BiFunction<String, NounDeclensionKey, String> pluralDeclension = (s, k) -> plural(s, k);
+		NounDeclensionProducer pluralDeclension = (s, k) -> plural(s, k);
 		final var pluralDeclensionNode =
-			new NounDeclensionLookupTreeNode<BiFunction<String, NounDeclensionKey, String>, Void>(
+			new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(
 				pluralDeclension,
 				_ -> pluralDeclension
 			);
 		pluralNode.putIfAbsent(pluralDeclensionNode);
+		
+		return rootNode;
+	}
+	
+	static NounDeclensionLookupTreeNode<Void, NounDeclensionProducer> declensionReferenceTree() {
+		final var rootNode = new NounDeclensionLookupTreeNode<Void, NounDeclensionProducer>(null, null);
+		
+		NounDeclensionProducer declension = (s, _) -> String.format("{%s}", s);
+		final var declensionNode = new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(declension, _ -> declension);
+		rootNode.putIfAbsent(declensionNode);
 		
 		return rootNode;
 	}

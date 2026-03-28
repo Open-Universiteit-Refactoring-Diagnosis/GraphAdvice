@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.Phrase;
 import nl.ou.refactoring.advice.nlp.grammar.adjectives.Adjective;
 import nl.ou.refactoring.advice.nlp.grammar.determiners.Determiner;
@@ -18,6 +19,8 @@ public final class NounPhrase extends Phrase {
 	private final Noun noun;
 	private Optional<Determiner> determiner;
 	private List<Adjective> adjectives;
+	private NounDeclensionKey declension =
+		new NounDeclensionKey(GrammaticalNumber.SINGULAR);
 	
 	/**
 	 * Initialises a new instance of {@link NounPhrase}.
@@ -45,6 +48,25 @@ public final class NounPhrase extends Phrase {
 	 */
 	public Optional<Determiner> getDeterminer() {
 		return this.determiner;
+	}
+	
+	/**
+	 * Gets the declension of the {@link NounPhrase}.
+	 * @return The {@link NounDeclensionKey} that specifies the declension of the {@link NounPhrase}.
+	 */
+	public NounDeclensionKey getDeclension() {
+		return this.declension;
+	}
+	
+	/**
+	 * Sets the declension of the {@link NounPhrase}.
+	 * @param declension {@link NounDeclensionKey} Specifies the declension of the {@link NounPhrase}.
+	 * @throws ArgumentNullException Thrown if declension is null.
+	 */
+	public void setDeclension(NounDeclensionKey declension)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(declension, "key");
+		this.declension = declension;
 	}
 	
 	/**

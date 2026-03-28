@@ -11,9 +11,9 @@ import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.Sentence;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.Noun;
-import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionLookupTree;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.ReferenceNoun;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
@@ -31,7 +31,7 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
  */
 public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 	/**
-	 * The default lookup tree for Noun declension in the English (Great Britain) language.
+	 * Creates a default lookup tree for Noun declension in the English (Great Britain) language.
 	 */
 	public static final Function<String, NounDeclensionLookupTree<GrammaticalNumber>> NOUN_DECLENSION_DEFAULT =
 		(stem) -> new NounDeclensionLookupTree<GrammaticalNumber>(() -> stem, Nouns.declensionDefaultTree());
@@ -101,18 +101,28 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 	
 	private NLPResult visit(NounPhrase nounPhrase) {
 		final var noun = nounPhrase.getNoun();
-		// TODO Inherit declension from Noun Phrase.
-		final var nounDeclensionKey =
-			new NounDeclensionKey(
-				GrammaticalNumber.SINGULAR
-			);
-		final var nounString =
-			this
-				.nounDeclensions
-				.get(noun.getToken())
-				.lookup(nounDeclensionKey)
-				.get();
-		return new NLPResult(nounString, new HashMap<String, GraphNode>());
+		final var nounDeclensionKey = nounPhrase.getDeclension();
+		
+		final var references = new HashMap<String, GraphNode>();
+		final var nounString = switch(noun) {
+			case ReferenceNoun<?> referenceNoun -> {
+				final var reference = referenceNoun.getReference();
+				if (!GraphNode.class.isInstance(reference)) {
+					yield reference.toString();
+				}
+				final var referenceKey = String.format("{%s}", ((GraphNode)referenceNoun.getReference()).getId().toString());
+				references.putIfAbsent(referenceKey, (GraphNode)referenceNoun.getReference());
+				yield referenceKey;
+			}
+			default ->
+				this
+					.nounDeclensions
+					.get(noun.getToken())
+					.lookup(nounDeclensionKey)
+					.get();
+		};
+		
+		return new NLPResult(nounString, references);
 	}
 	
 	private NLPResult visit(PrepositionalPhrase prepositionalPhrase) {
