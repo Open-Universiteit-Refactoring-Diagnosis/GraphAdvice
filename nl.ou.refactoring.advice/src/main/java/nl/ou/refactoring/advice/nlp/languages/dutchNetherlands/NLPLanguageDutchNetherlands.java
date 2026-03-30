@@ -14,9 +14,12 @@ import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionLookupTree;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.ReferenceNoun;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.AuxiliaryVerb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.Verb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationLookupTree;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
 import nl.ou.refactoring.advice.nlp.languages.NLPLanguage;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
@@ -34,8 +37,8 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 	/**
 	 * The default lookup tree for Verb conjugation in the Dutch (Netherlands) language.
 	 */
-	public static final Function<String, VerbConjugationLookupTree<VerbAspect>> VERB_CONJUGATION_DEFAULT =
-		(stem) -> new VerbConjugationLookupTree<VerbAspect>(() -> stem, Verbs.conjugationDefaultTree());
+	public static final Function<String, VerbConjugationLookupTree<GrammaticalNumber>> VERB_CONJUGATION_DEFAULT =
+		(stem) -> new VerbConjugationLookupTree<GrammaticalNumber>(() -> stem, Verbs.conjugationDefaultTree());
 	
 	/**
 	 * The singleton instance of {@link NLPLanguageDutchNetherlands}.
@@ -48,10 +51,12 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 		new HashMap<Long, GrammaticalGender>();
 	private final Map<Long, String> prepositions =
 		new HashMap<Long, String>();
-	private final Map<Long, VerbConjugationLookupTree<VerbAspect>> verbConjugations =
-		new HashMap<Long, VerbConjugationLookupTree<VerbAspect>>();
+	private final Map<Long, VerbConjugationLookupTree<GrammaticalNumber>> verbConjugations =
+		new HashMap<Long, VerbConjugationLookupTree<GrammaticalNumber>>();
 
 	private NLPLanguageDutchNetherlands() {
+		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("klasse"));
+		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, GrammaticalGender.FEMININE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.METHOD, NOUN_DECLENSION_DEFAULT.apply("methode"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.METHOD, GrammaticalGender.FEMININE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.MICROSTEP, NOUN_DECLENSION_DEFAULT.apply("microstap"));
@@ -127,11 +132,11 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 		final var resultTextBuilder = new StringBuilder();
 
 		final var verb = verbPhrase.getVerb();
+		verbPhrase = this.visit(verbPhrase, verb);
 		final var verbAuxiliaryVerbs = verb.getAuxiliaryVerbs();
 		final var verbConjugationKey = verbPhrase.getConjugation();
 		for (final var auxiliaryVerb : verbAuxiliaryVerbs) {
-			 // TODO determine conjugation for each auxiliary verb (e.g. zou zijn, zal zijn, zou hebben, etc.)
-			final var auxiliaryVerbConjugationKey = verbPhrase.getConjugation();
+			final var auxiliaryVerbConjugationKey = auxiliaryVerb.getConjugation();
 			resultTextBuilder.append(
 				this
 					.verbConjugations
@@ -157,5 +162,27 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 		}
 		
 		return result;
+	}
+	
+	private VerbPhrase visit(VerbPhrase verbPhrase, Verb mainVerb) {
+		final var mainVerbConjugation = verbPhrase.getConjugation();
+		switch (mainVerbConjugation) {
+			case VerbConjugationKey(var _, var _, var _, var _, var _, VerbVoice voice, var _): {
+				switch (voice) {
+					case VerbVoice.PASSIVE: {
+						final var passiveBecomes = AuxiliaryVerb.setByToken(Tokens.Verbs.Auxiliary.BECOME, mainVerb);
+						passiveBecomes.ifPresent(auxiliaryVerb -> {
+							auxiliaryVerb.setConjugation(mainVerbConjugation.withVoice(VerbVoice.ACTIVE));
+						});
+					}
+					default: {
+						break;
+					}
+				}
+			}
+			default: {
+				return verbPhrase;
+			}
+		}
 	}
 }

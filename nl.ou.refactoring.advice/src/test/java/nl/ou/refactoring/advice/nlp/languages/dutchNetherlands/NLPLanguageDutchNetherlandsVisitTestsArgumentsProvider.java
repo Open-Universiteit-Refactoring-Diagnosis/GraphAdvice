@@ -12,15 +12,22 @@ import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nlp.NLPResult;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 import nl.ou.refactoring.advice.nlp.grammar.Sentence;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.ReferenceNoun;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.Preposition;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.AuxiliaryVerb;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.LexicalVerb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbModality;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbTense;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
@@ -56,9 +63,17 @@ public class NLPLanguageDutchNetherlandsVisitTestsArgumentsProvider implements A
 				.fromToken(Tokens.Verbs.Lexical.ADD)
 				.get();
 		final var verbPhrase = new VerbPhrase(addVerb);
-		AuxiliaryVerb
-			.setByToken(Tokens.Verbs.Auxiliary.BECOME, verbPhrase.getVerb())
-			.get();
+		verbPhrase.setConjugation(
+			new VerbConjugationKey(
+				GrammaticalPerson.THIRD,
+				GrammaticalNumber.SINGULAR,
+				VerbAspect.IMPERFECTIVE,
+				VerbModality.INDICATIVE,
+				VerbTense.PRESENT,
+				VerbVoice.PASSIVE,
+				GrammaticalRegister.PLAIN
+			)
+		);
 		final var toPreposition =
 			Preposition
 				.fromToken(Tokens.Prepositions.TO_TARGET_RECIPIENT)
@@ -99,7 +114,17 @@ public class NLPLanguageDutchNetherlandsVisitTestsArgumentsProvider implements A
 				.fromToken(Tokens.Verbs.Lexical.ADD)
 				.get();
 		final var verbPhrase = new VerbPhrase(addVerb);
-		AuxiliaryVerb.setByToken(Tokens.Verbs.Auxiliary.BECOME, verbPhrase.getVerb());
+		verbPhrase.setConjugation(
+			new VerbConjugationKey(
+				GrammaticalPerson.THIRD,
+				GrammaticalNumber.SINGULAR,
+				VerbAspect.IMPERFECTIVE,
+				VerbModality.INDICATIVE,
+				VerbTense.PRESENT,
+				VerbVoice.PASSIVE,
+				GrammaticalRegister.PLAIN
+			)
+		);
 		final var toPreposition =
 			Preposition
 				.fromToken(Tokens.Prepositions.TO_TARGET_RECIPIENT)
@@ -113,7 +138,7 @@ public class NLPLanguageDutchNetherlandsVisitTestsArgumentsProvider implements A
 		final var references = new HashMap<String, GraphNode>();
 		final var classNodeIdString = String.format("{%s}", classNode.getId().toString());
 		references.putIfAbsent(classNodeIdString, classNode);
-		final var nlpResult = new NLPResult(String.format("methode wordt toegevoegd aan %s", classNodeIdString), references);
+		final var nlpResult = new NLPResult(String.format("methode wordt gevoegd aan %s", classNodeIdString), references);
 		return Pair.with(sentence, nlpResult);
 	}
 }

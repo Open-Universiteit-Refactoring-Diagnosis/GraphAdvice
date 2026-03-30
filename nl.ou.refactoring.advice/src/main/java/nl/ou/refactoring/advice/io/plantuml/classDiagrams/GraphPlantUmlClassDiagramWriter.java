@@ -297,7 +297,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 			// Note text
 			this.printLine(
 				String.format(
-					"<b>%s</b> on %s",
+					"<b>%s</b> on %s", // TODO use Preposition for 'on' from NLP name space, put the rest in a Sentence as well
 					dangerNode.getCaption(),
 					String.join(
 						", ",

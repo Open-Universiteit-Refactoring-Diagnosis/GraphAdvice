@@ -16,6 +16,8 @@ public class NLPLanguageDutchNetherlandsTests {
 	public void visitTests(Sentence sentence, NLPResult expected) {
 		final var language = NLPLanguageDutchNetherlands.INSTANCE;
 		final var actual = language.visit(sentence);
+		assertEquals(expected.getText(), actual.getText());
+		assertEquals(expected.getReferences(), actual.getReferences());
 		assertEquals(expected, actual);
 	}
 }
