@@ -103,7 +103,6 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
 		removeFieldMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(alphaBarOperationNode);
-		missingDefinitionRiskNode.affects(alphaTwoAttributeNode);
 		
 		return graph;
 	}
@@ -166,7 +165,6 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
 		removeMethodMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(alphaBarOperationNode);
-		missingDefinitionRiskNode.affects(alphaFooOperationNode);
 		
 		return graph;
 	}
@@ -236,7 +234,6 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
 		removeMethodMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(gammaCallerOperationNode);
-		missingDefinitionRiskNode.affects(alphaFooOperationNode);
 		
 		return graph;
 	}

@@ -13,3 +13,4 @@ copular
 countability
 declensions
 dutch
+declension
