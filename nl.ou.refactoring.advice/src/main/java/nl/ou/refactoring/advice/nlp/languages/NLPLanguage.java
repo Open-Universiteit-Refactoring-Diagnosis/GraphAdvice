@@ -24,4 +24,7 @@ public interface NLPLanguage {
 	 * @return The {@link NLPResult} that contains the result of Natural Language Processing.
 	 */
 	NLPResult visit(Sentence sentence);
+	
+	@Override
+	String toString();
 }

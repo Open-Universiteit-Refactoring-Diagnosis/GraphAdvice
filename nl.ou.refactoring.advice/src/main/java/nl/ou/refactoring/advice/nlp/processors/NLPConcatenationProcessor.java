@@ -35,49 +35,6 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 	 * Initialises a new instance of {@link NLPConcatenationProcessor}.
 	 */
 	public NLPConcatenationProcessor() { }
-
-	@Override
-	public NLPResult process(Graph graph)
-		throws
-			ArgumentNullException,
-			GraphValidationException,
-			NLPException {
-		ArgumentGuard.requireNotNull(graph, "graph");
-		
-		final var references = new HashMap<String, GraphNode>();
-		
-		final var startNode =
-			graph
-				.getStart()
-				.orElseThrow(() -> new RefactoringMustContainStartNodeException());
-		
-		final var dangerNodes = GraphWorkflowExplorer.getDangers(graph);
-		for (final var dangerNode : dangerNodes) {
-			final var dangerPaths = startNode.findPaths(dangerNode, 100);
-			if (dangerPaths.isEmpty()) {
-				continue;
-			}
-			
-			final var dangerPath = dangerPaths.get(0);
-			for (final var dangerPathSegment : dangerPath.getSegments()) {
-				switch (dangerPathSegment.getNode()) {
-					case GraphNodeRefactoringStart start -> this.appendNodeRefactoringStart(start, references);
-					case GraphNodeMicrostepAddClass addClass -> this.appendNodeMicrostepAddClass(addClass, references);
-					case GraphNodeMicrostepAddField addField -> this.appendNodeMicrostepAddField(addField, references);
-					case GraphNodeMicrostepAddMethod addMethod -> this.appendNodeMicrostepAddMethod(addMethod, references);
-					case GraphNodeMicrostepRemoveClass removeClass -> this.appendNodeMicrostepRemoveClass(removeClass, references);
-					case GraphNodeMicrostepRemoveField removeField -> this.appendNodeMicrostepRemoveField(removeField, references);
-					case GraphNodeMicrostepRemoveMethod removeMethod -> this.appendNodeMicrostepRemoveMethod(removeMethod, references);
-					case GraphNodeRiskDoubleDefinition doubleDefinition -> this.appendNodeRiskDoubleDefinition(doubleDefinition, references);
-					case GraphNodeRiskForcedOverride forcedOverride -> this.appendNodeRiskForcedOverride(forcedOverride, references);
-					case GraphNodeRisk risk -> this.appendNodeRisk(risk, references);
-					default -> { }
-				}
-			}
-		}
-		
-		return new NLPResult(this.stringBuilder.toString(), references);
-	}
 	
 	private void append(String text) {
 		this.stringBuilder.append(text);
@@ -264,5 +221,53 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 	
 	private static String getId(GraphNode node) {
 		return String.format("{%s}", node.getId().toString());
+	}
+	
+	@Override
+	public NLPResult process(Graph graph)
+			throws
+				ArgumentNullException,
+				GraphValidationException,
+				NLPException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		
+		final var references = new HashMap<String, GraphNode>();
+		
+		final var startNode =
+			graph
+				.getStart()
+				.orElseThrow(() -> new RefactoringMustContainStartNodeException());
+		
+		final var dangerNodes = GraphWorkflowExplorer.getDangers(graph);
+		for (final var dangerNode : dangerNodes) {
+			final var dangerPaths = startNode.findPaths(dangerNode, 100);
+			if (dangerPaths.isEmpty()) {
+				continue;
+			}
+			
+			final var dangerPath = dangerPaths.get(0);
+			for (final var dangerPathSegment : dangerPath.getSegments()) {
+				switch (dangerPathSegment.getNode()) {
+					case GraphNodeRefactoringStart start -> this.appendNodeRefactoringStart(start, references);
+					case GraphNodeMicrostepAddClass addClass -> this.appendNodeMicrostepAddClass(addClass, references);
+					case GraphNodeMicrostepAddField addField -> this.appendNodeMicrostepAddField(addField, references);
+					case GraphNodeMicrostepAddMethod addMethod -> this.appendNodeMicrostepAddMethod(addMethod, references);
+					case GraphNodeMicrostepRemoveClass removeClass -> this.appendNodeMicrostepRemoveClass(removeClass, references);
+					case GraphNodeMicrostepRemoveField removeField -> this.appendNodeMicrostepRemoveField(removeField, references);
+					case GraphNodeMicrostepRemoveMethod removeMethod -> this.appendNodeMicrostepRemoveMethod(removeMethod, references);
+					case GraphNodeRiskDoubleDefinition doubleDefinition -> this.appendNodeRiskDoubleDefinition(doubleDefinition, references);
+					case GraphNodeRiskForcedOverride forcedOverride -> this.appendNodeRiskForcedOverride(forcedOverride, references);
+					case GraphNodeRisk risk -> this.appendNodeRisk(risk, references);
+					default -> { }
+				}
+			}
+		}
+		
+		return new NLPResult(this.stringBuilder.toString(), references);
+	}
+	
+	@Override
+	public String toString() {
+		return "Concatenation";
 	}
 }

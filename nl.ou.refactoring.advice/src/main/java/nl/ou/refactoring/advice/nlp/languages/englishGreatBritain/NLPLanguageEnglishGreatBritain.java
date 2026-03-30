@@ -87,6 +87,11 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 	}
 	
 	@Override
+	public String toString() {
+		return "en-GB";
+	}
+	
+	@Override
 	public NLPResult visit(Sentence sentence) {
 		var result = new NLPResult("", new HashMap<String, GraphNode>());
 		final var nounPhrase = sentence.getNounPhrase();

@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.integrationTests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -13,6 +14,10 @@ import nl.ou.refactoring.advice.GraphTemplates;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
+import nl.ou.refactoring.advice.nlp.languages.dutchNetherlands.NLPLanguageDutchNetherlands;
+import nl.ou.refactoring.advice.nlp.languages.englishGreatBritain.NLPLanguageEnglishGreatBritain;
+import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
+import nl.ou.refactoring.advice.nlp.processors.NLPGrammarProcessor;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
@@ -37,13 +42,27 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		ParameterDeclarations parameters,
 		ExtensionContext context
 	) throws RefactoringMayContainOnlyOneStartNodeException, ArgumentNullException, GraphReaderException {
-		return
-			Stream.of(
+		final var argumentsList = new ArrayList<Arguments>();
+		
+		final var graphs =
+			List.of(
 				moveFieldFromClassToClassReferenceWithinSourceClass(),
 				moveMethodFromClassToClassInvocationInSourceClass(),
 				moveMethodFromClassToClassInvocationOutsideClass()
-			)
-			.map(Arguments::of);
+			);
+		
+		final var nlpProcessors =
+			List.of(
+				new NLPConcatenationProcessor(),
+				new NLPGrammarProcessor(NLPLanguageDutchNetherlands.INSTANCE),
+				new NLPGrammarProcessor(NLPLanguageEnglishGreatBritain.INSTANCE)
+			);
+		
+		for (final var graph : graphs) {
+			argumentsList.add(Arguments.of(graph, nlpProcessors));
+		}
+		
+		return argumentsList.stream();
 	}
 	
 	private static Graph moveFieldFromClassToClassReferenceWithinSourceClass() throws GraphReaderException {

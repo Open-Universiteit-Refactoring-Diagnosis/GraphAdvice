@@ -77,6 +77,11 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 	public Supplier<GrammaticalGender> getGenderSupplier(Noun noun) {
 		return () -> this.nounGenders.get(noun.getToken());
 	}
+	
+	@Override
+	public String toString() {
+		return "nl-NL";
+	}
 
 	@Override
 	public NLPResult visit(Sentence sentence) {

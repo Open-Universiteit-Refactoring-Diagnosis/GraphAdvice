@@ -136,4 +136,9 @@ public class NLPGrammarProcessor extends NLPProcessor {
 	public NLPLanguage getLanguage() {
 		return this.language;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Grammar_%s", this.language.toString());
+	}
 }
