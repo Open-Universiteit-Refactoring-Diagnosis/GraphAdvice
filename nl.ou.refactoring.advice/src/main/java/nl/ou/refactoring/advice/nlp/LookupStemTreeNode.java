@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nlp;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -17,11 +18,11 @@ public class LookupStemTreeNode<Key, ValueType, ChildValueType, ChildNodeType ex
 		extends LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType> {
 	/**
 	 * Initialises a new instance of {@link LookupStemTreeNode<Key, ValueType, ChildValueType>}.
-	 * @param value The value that is represented by this node.
+	 * @param values The values that are matched by this node.
 	 * @param valueProducer Produces a value from the specified key.
 	 */
-	public LookupStemTreeNode(ValueType value, Function<Key, ValueType> valueProducer) {
-		super(value, valueProducer);
+	public LookupStemTreeNode(Set<ValueType> values, Function<Key, ValueType> valueProducer) {
+		super(values, valueProducer);
 	}
 	
 	/**
@@ -36,10 +37,11 @@ public class LookupStemTreeNode<Key, ValueType, ChildValueType, ChildNodeType ex
 		final var childEntries = this.children.entrySet();
 		for (final var childEntry : childEntries) {
 			final var childNode = childEntry.getValue();
-			final var childNodeValue = childNode.getValue();
-			if (childNodeValue != null &&
-				(childNodeValue.equals(childNode.valueProducer.apply(key)) ||
-					BiFunction.class.isInstance(childNodeValue))) {
+			final var childNodeValues = childNode.getValues();
+			if (childNodeValues != null &&
+				(childNodeValues.size() == 0 ||
+					childNodeValues.contains(childNode.valueProducer.apply(key)) ||
+					(childNodeValues.size() == 1 && BiFunction.class.isInstance(childNodeValues.toArray()[0])))) {
 				return Optional.of((ChildNodeType)childNode);
 			}
 		}
@@ -50,13 +52,16 @@ public class LookupStemTreeNode<Key, ValueType, ChildValueType, ChildNodeType ex
 	 * Puts the child node with the specified value, if it is not already present.
 	 * @param <GrandchildValueType> The type of values of the child node's children.
 	 * @param childNode The child node to put to this tree node.
-	 * @return The child node with the specified value, identical to childNode if not already present, otherwise the existing node.
+	 * @return The child node with the specified value, identical to the childNode parameter's argument.
 	 * @throws ArgumentNullException Thrown if childNode is null.
 	 */
-	@SuppressWarnings("unchecked")
 	public <GrandchildValueType> LookupStemTreeNode<Key, ChildValueType, GrandchildValueType, ?> putIfAbsent(LookupStemTreeNode<Key, ChildValueType, GrandchildValueType, ?> childNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(childNode, "childNode");
-		return (LookupStemTreeNode<Key, ChildValueType, GrandchildValueType, ?>)this.children.putIfAbsent(childNode.getValue(), childNode);
+		final var childNodeValues = childNode.getValues();
+		for (final var childNodeValue : childNodeValues) {
+			this.children.putIfAbsent(childNodeValue, childNode);
+		}
+		return childNode;
 	}
 }

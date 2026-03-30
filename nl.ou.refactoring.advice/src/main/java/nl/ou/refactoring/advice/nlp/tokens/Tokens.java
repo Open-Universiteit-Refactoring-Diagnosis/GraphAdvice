@@ -4,15 +4,20 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.Countability;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.SemanticClassification;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.Preposition;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.AuxiliaryVerb;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.LexicalVerb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.Verb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbTransitivity;
 
 /**
@@ -43,12 +48,12 @@ public final class Tokens {
 			/**
 			 * The indeterminate article "a(n)".
 			 */
-			public static final long A = "a".hashCode();
+			public static final long A = "[article] a".hashCode();
 			
 			/**
 			 * The determinate article "the".
 			 */
-			public static final long THE = "the".hashCode();
+			public static final long THE = "[article] the".hashCode();
 			
 			/**
 			 * Gets all tokens for articles.
@@ -98,26 +103,26 @@ public final class Tokens {
 			 * <a href="https://en.wiktionary.org/wiki/class">Class</a>;
 			 * A set of objects having the same behavior (but typically differing in state), or a template defining such a set in terms of its common properties, functions, etc.
 			 */
-			public static final long CLASS_OO_PROGRAMMING = "class (OO PROGRAMMING)".hashCode();
+			public static final long CLASS_OO_PROGRAMMING = "[common noun] class (OO programming)".hashCode();
 			
 			/**
 			 * <a href="https://en.wiktionary.org/wiki/method">Method</a>:
 			 * A process by which a task is completed; 
 			 * a way of doing something (followed by the adposition of, to or for before the purpose of the process).
 			 */
-			public static final long METHOD = "method".hashCode();
+			public static final long METHOD = "[common noun] method".hashCode();
 			
 			/**
 			 * <a href="https://en.wiktionary.org/wiki/microstep">Microstep</a>:
 			 * A very small step (typically made by a stepping motor).
 			 */
-			public static final long MICROSTEP = "microstep".hashCode();
+			public static final long MICROSTEP = "[common noun] microstep".hashCode();
 			
 			/**
 			 * <a href="https://en.wiktionary.org/wiki/refactoring">Refactoring</a>:
 			 * (programming) An act or process in which code is refactored.
 			 */
-			public static final long REFACTORING = "refactoring".hashCode();
+			public static final long REFACTORING = "[common noun] refactoring".hashCode();
 			
 			static {
 				COMMON_NOUNS.putIfAbsent(
@@ -192,17 +197,17 @@ public final class Tokens {
 		 * <a href="https://en.wiktionary.org/wiki/in">in</a>:
 		 * Used to indicate location, inclusion, or position within spatial, temporal or abstract limits.
 		 */
-		public static final long IN = "in".hashCode();
+		public static final long IN = "[preposition] in".hashCode();
 		
 		/**
 		 * <a href="https://en.wiktionary.org/wiki/to">to</a>:
-		 * 2. Indicating destination or final position: In the direction of, so as to arrive at or reach.
+		 * 3. Used to indicate the target or recipient of an action.
 		 */
-		public static final long TO_DIRECTIONAL = "to (directional)".hashCode();
+		public static final long TO_TARGET_RECIPIENT = "[preposition] to (target or recipient)".hashCode();
 		
 		static {
 			PREPOSITIONS.putIfAbsent(IN, new Preposition(IN));
-			PREPOSITIONS.putIfAbsent(TO_DIRECTIONAL, new Preposition(TO_DIRECTIONAL));
+			PREPOSITIONS.putIfAbsent(TO_TARGET_RECIPIENT, new Preposition(TO_TARGET_RECIPIENT));
 		}
 		
 		/**
@@ -235,27 +240,34 @@ public final class Tokens {
 		public final class Auxiliary {
 			private Auxiliary() { }
 			
-			private static final TokenStore<AuxiliaryVerb> AUXILIARY_VERBS = new TokenStore<AuxiliaryVerb>();
+			private static final TokenStore<Function<Verb, AuxiliaryVerb>> AUXILIARY_VERBS =
+				new TokenStore<Function<Verb, AuxiliaryVerb>>();
 			
 			/**
 			 * The auxiliary verb "to be".
 			 */
-			public static final long BE = "to be (AUXILIARY)".hashCode();
+			public static final long BE = "[auxiliary verb] to be".hashCode();
+			
+			/**
+			 * The auxiliary verb "to become". (e.g. "worden" in "wordt gezien")
+			 */
+			public static final long BECOME = "[auxiliary verb] to become".hashCode();
 			
 			/**
 			 * The auxiliary verb "to do".
 			 */
-			public static final long DO = "to do (AUXILIARY)".hashCode();
+			public static final long DO = "[auxiliary verb] to do".hashCode();
 			
 			/**
 			 * The auxiliary verb "to have".
 			 */
-			public static final long HAVE = "to have (AUXILIARY)".hashCode();
+			public static final long HAVE = "[auxiliary verb] to have".hashCode();
 			
 			static {
-				AUXILIARY_VERBS.putIfAbsent(BE, new AuxiliaryVerb(BE));
-				AUXILIARY_VERBS.putIfAbsent(DO, new AuxiliaryVerb(DO));
-				AUXILIARY_VERBS.putIfAbsent(HAVE, new AuxiliaryVerb(HAVE));
+				AUXILIARY_VERBS.putIfAbsent(BE, (headVerb) -> new AuxiliaryVerb(BE, headVerb));
+				AUXILIARY_VERBS.putIfAbsent(BECOME, (headVerb) -> new AuxiliaryVerb(BECOME, headVerb));
+				AUXILIARY_VERBS.putIfAbsent(DO, (headVerb) -> new AuxiliaryVerb(DO, headVerb));
+				AUXILIARY_VERBS.putIfAbsent(HAVE, (headVerb) -> new AuxiliaryVerb(HAVE, headVerb));
 			}
 			
 			/**
@@ -269,10 +281,13 @@ public final class Tokens {
 			/**
 			 * Gets the Auxiliary Verb that is linked to the specified token.
 			 * @param token The token of the Auxiliary Verb.
+			 * @param mainVerb The main verb of the Auxiliary Verb.
 			 * @return The Auxiliary Verb that is linked to the specified token, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 			 */
-			public static Optional<AuxiliaryVerb> get(long token) {
-				return AUXILIARY_VERBS.get(token);
+			public static Optional<AuxiliaryVerb> get(long token, Verb mainVerb)
+					throws ArgumentNullException {
+				ArgumentGuard.requireNotNull(mainVerb, "mainVerb");
+				return AUXILIARY_VERBS.get(token).map(factory -> factory.apply(mainVerb));
 			}
 		}
 		
@@ -282,39 +297,40 @@ public final class Tokens {
 		public final class Lexical {
 			private Lexical() { }
 			
-			private static TokenStore<LexicalVerb> LEXICAL_VERBS = new TokenStore<LexicalVerb>();
+			private static TokenStore<Function<VerbPhrase, Verb>> LEXICAL_VERBS =
+				new TokenStore<Function<VerbPhrase, Verb>>();
 			
 			/**
 			 * To Add.
 			 */
-			public static final long ADD = "to add".hashCode();
+			public static final long ADD = "[lexical verb] to add".hashCode();
 			
 			/**
 			 * To Cause.
 			 */
-			public static final long CAUSE = "to cause".hashCode();
+			public static final long CAUSE = "[lexical verb] to cause".hashCode();
 			
 			/**
 			 * To Have.
 			 */
-			public static final long HAVE = "to have (LEXICAL)".hashCode();
+			public static final long HAVE = "[lexical verb] to have".hashCode();
 			
 			/**
 			 * To Refactor.
 			 */
-			public static final long REFACTOR = "to refactor".hashCode();
+			public static final long REFACTOR = "[lexical verb] to refactor".hashCode();
 			
 			/**
 			 * To Remove.
 			 */
-			public static final long REMOVE = "to remove".hashCode();
+			public static final long REMOVE = "[lexical verb] to remove".hashCode();
 			
 			static {
-				LEXICAL_VERBS.putIfAbsent(ADD, new LexicalVerb(ADD, VerbTransitivity.TRANSITIVE));
-				LEXICAL_VERBS.putIfAbsent(CAUSE, new LexicalVerb(CAUSE, VerbTransitivity.TRANSITIVE));
-				LEXICAL_VERBS.putIfAbsent(HAVE, new LexicalVerb(HAVE, VerbTransitivity.TRANSITIVE));
-				LEXICAL_VERBS.putIfAbsent(REFACTOR, new LexicalVerb(REFACTOR, VerbTransitivity.TRANSITIVE));
-				LEXICAL_VERBS.putIfAbsent(REMOVE, new LexicalVerb(REMOVE, VerbTransitivity.TRANSITIVE));
+				LEXICAL_VERBS.putIfAbsent(ADD, phrase -> new LexicalVerb(ADD, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.putIfAbsent(CAUSE, phrase -> new LexicalVerb(CAUSE, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.putIfAbsent(HAVE, phrase -> new LexicalVerb(HAVE, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.putIfAbsent(REFACTOR, phrase -> new LexicalVerb(REFACTOR, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.putIfAbsent(REMOVE, phrase -> new LexicalVerb(REMOVE, VerbTransitivity.TRANSITIVE, phrase));
 			}
 			
 			/**
@@ -326,11 +342,11 @@ public final class Tokens {
 			}
 			
 			/**
-			 * Gets the {@link LexicalVerb} associated with the specified token.
+			 * Gets a factory function for the {@link LexicalVerb} associated with the specified token.
 			 * @param token The token that represents a {@link LexicalVerb}.
-			 * @return The requested {@link LexicalVerb}, if registered wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
+			 * @return If found, the requested factory function for {@link LexicalVerb} wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 			 */
-			public static Optional<LexicalVerb> get(long token) {
+			public static Optional<Function<VerbPhrase, Verb>> get(long token) {
 				return LEXICAL_VERBS.get(token);
 			}
 		}
@@ -344,19 +360,19 @@ public final class Tokens {
 			/**
 			 * The linking (copular) verb "to be".
 			 */
-			public static final long BE = "to be (LINKING)".hashCode();
+			public static final long BE = "[linking verb] to be".hashCode();
 			
 			/**
 			 * The linking (copular) verb "to become".
 			 */
-			public static final long BECOME = "to become (LINKING)".hashCode();
+			public static final long BECOME = "[linking verb] to become".hashCode();
 			
 			/**
 			 * Gets all tokens for Linking Verbs.
 			 * @return An unmodifiable set of tokens for Linking Verbs.
 			 */
 			public static Set<Long> all() {
-				return getAll(Lexical.class);
+				return getAll(Linking.class);
 			}
 		}
 		

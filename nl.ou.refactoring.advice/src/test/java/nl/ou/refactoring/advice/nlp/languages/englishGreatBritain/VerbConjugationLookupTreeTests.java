@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbModality;
@@ -40,7 +41,8 @@ public class VerbConjugationLookupTreeTests {
 						VerbAspect.IMPERFECTIVE,
 						VerbModality.INDICATIVE,
 						VerbTense.PRESENT,
-						VerbVoice.ACTIVE
+						VerbVoice.ACTIVE,
+						GrammaticalRegister.PLAIN
 					),
 					"add"
 				),
@@ -52,7 +54,8 @@ public class VerbConjugationLookupTreeTests {
 						VerbAspect.IMPERFECTIVE,
 						VerbModality.INDICATIVE,
 						VerbTense.PRESENT,
-						VerbVoice.ACTIVE
+						VerbVoice.ACTIVE,
+						GrammaticalRegister.PLAIN
 					),
 					"adds"
 				),
@@ -64,7 +67,8 @@ public class VerbConjugationLookupTreeTests {
 						VerbAspect.PERFECTIVE,
 						VerbModality.INDICATIVE,
 						VerbTense.PRESENT,
-						VerbVoice.ACTIVE
+						VerbVoice.ACTIVE,
+						GrammaticalRegister.PLAIN
 					),
 					"added"
 				)
@@ -91,7 +95,8 @@ public class VerbConjugationLookupTreeTests {
 						VerbAspect.IMPERFECTIVE,
 						VerbModality.INDICATIVE,
 						VerbTense.PRESENT,
-						VerbVoice.ACTIVE
+						VerbVoice.ACTIVE,
+						GrammaticalRegister.PLAIN
 					),
 					"are"
 				),
@@ -102,7 +107,8 @@ public class VerbConjugationLookupTreeTests {
 						VerbAspect.IMPERFECTIVE,
 						VerbModality.INDICATIVE,
 						VerbTense.PRESENT,
-						VerbVoice.ACTIVE
+						VerbVoice.ACTIVE,
+						GrammaticalRegister.PLAIN
 					),
 					"is"
 				),
@@ -113,7 +119,8 @@ public class VerbConjugationLookupTreeTests {
 						VerbAspect.PERFECTIVE,
 						VerbModality.INDICATIVE,
 						VerbTense.PRESENT,
-						VerbVoice.ACTIVE
+						VerbVoice.ACTIVE,
+						GrammaticalRegister.PLAIN
 					),
 					"been"
 				)

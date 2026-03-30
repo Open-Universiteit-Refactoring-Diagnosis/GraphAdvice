@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
 
 public final class NounDeclensionLookupTreeTests {
@@ -27,10 +28,10 @@ public final class NounDeclensionLookupTreeTests {
 	public static Stream<Arguments> lookupDefaultTestParameters() {
 		return
 			Stream.of(
-				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.SINGULAR), "land"),
-				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.PLURAL), "lands"),
-				Arguments.of("water", new NounDeclensionKey(GrammaticalNumber.SINGULAR), "water"),
-				Arguments.of("water", new NounDeclensionKey(GrammaticalNumber.PLURAL), "waters")
+				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.SINGULAR, GrammaticalRegister.PLAIN), "land"),
+				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.PLURAL, GrammaticalRegister.PLAIN), "lands"),
+				Arguments.of("water", new NounDeclensionKey(GrammaticalNumber.SINGULAR, GrammaticalRegister.PLAIN), "water"),
+				Arguments.of("water", new NounDeclensionKey(GrammaticalNumber.PLURAL, GrammaticalRegister.PLAIN), "waters")
 			);
 	}
 }

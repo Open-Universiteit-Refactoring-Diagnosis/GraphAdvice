@@ -8,21 +8,13 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalGender;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
-import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
-import nl.ou.refactoring.advice.nlp.grammar.HasGenderAgreement;
-import nl.ou.refactoring.advice.nlp.grammar.HasNumberAgreement;
-import nl.ou.refactoring.advice.nlp.grammar.HasRegisterAgreement;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 
 /**
  * Represents a Pronoun in Natural Language.
  */
 public final class Pronoun
-		extends Noun
-		implements
-			HasGenderAgreement,
-			HasNumberAgreement,
-			HasRegisterAgreement {
+		extends Noun {
 	/**
 	 * The token for a Pronoun.
 	 */
@@ -30,9 +22,7 @@ public final class Pronoun
 	private final GrammaticalPerson person;
 	private final GrammaticalGender gender;
 	private final GrammaticalNumber number;
-	private GrammaticalGender genderAgreement;
-	private GrammaticalNumber numberAgreement;
-	private GrammaticalRegister registerAgreement;
+	private NounDeclensionKey declension;
 	
 	/**
 	 * Initialises a new instance of {@link Pronoun}.
@@ -74,34 +64,23 @@ public final class Pronoun
 		return this.number;
 	}
 	
-	@Override
-	public GrammaticalGender getGenderAgreement() {
-		return this.genderAgreement;
-	}
-
-	@Override
-	public void setGenderAgreement(GrammaticalGender gender) {
-		this.genderAgreement = gender;
+	/**
+	 * Gets the declension of the {@link Pronoun}.
+	 * @return The declension of the {@link Pronoun}.
+	 */
+	public NounDeclensionKey getDeclension() {
+		return this.declension;
 	}
 	
-	@Override
-	public GrammaticalNumber getNumberAgreement() {
-		return this.numberAgreement;
-	}
-
-	@Override
-	public void setNumberAgreement(GrammaticalNumber number) {
-		this.numberAgreement = number;
-	}
-	
-	@Override
-	public GrammaticalRegister getRegisterAgreement() {
-		return this.registerAgreement;
-	}
-	
-	@Override
-	public void setRegisterAgreement(GrammaticalRegister register) {
-		this.registerAgreement = register;
+	/**
+	 * Sets the declension of the {@link Pronoun}.
+	 * @param declension The declension of the {@link Pronoun}.
+	 * @throws ArgumentNullException Thrown if declension is null.
+	 */
+	void setDeclension(NounDeclensionKey declension)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(declension, "declension");
+		this.declension = declension;
 	}
 	
 	@Override

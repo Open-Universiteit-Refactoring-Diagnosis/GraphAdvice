@@ -1,8 +1,11 @@
 package nl.ou.refactoring.advice.nlp.grammar;
 
 import java.util.Optional;
+
+import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
 
 /**
@@ -39,6 +42,17 @@ public final class Sentence implements SyntaxElement {
 	}
 	
 	/**
+	 * Gets the {@link NounDeclensionKey} of the {@link NounPhrase}.
+	 * @return The {@link NounDeclensionKey} of the {@link NounPhrase}.
+	 */
+	public Optional<NounDeclensionKey> getNounDeclensionKey() {
+		return
+			this
+				.nounPhrase
+				.map(nounPhrase -> nounPhrase.getDeclension());
+	}
+	
+	/**
 	 * Gets the Prepositional Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 	 * @return The Prepositional Phrase of the Sentence, if present, wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 	 */
@@ -68,5 +82,16 @@ public final class Sentence implements SyntaxElement {
 	 */
 	public void setVerbPhrase(VerbPhrase verbPhrase) {
 		this.verbPhrase = Optional.ofNullable(verbPhrase);
+	}
+	
+	/**
+	 * Gets the {@link VerbConjugationKey} of the {@link VerbPhrase}.
+	 * @return The {@link VerbConjugationKey} of the {@link VerbPhrase}.
+	 */
+	public Optional<VerbConjugationKey> getConjugation() {
+		return
+			this
+				.verbPhrase
+				.map(verbPhrase -> verbPhrase.getConjugation());
 	}
 }

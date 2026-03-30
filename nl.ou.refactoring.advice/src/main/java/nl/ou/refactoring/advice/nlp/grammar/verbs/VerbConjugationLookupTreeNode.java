@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.nlp.grammar.verbs;
 
+import java.util.Set;
 import java.util.function.Function;
 
 import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
@@ -13,10 +14,10 @@ public final class VerbConjugationLookupTreeNode<ValueType, ChildValueType>
 		extends LookupStemTreeNode<VerbConjugationKey, ValueType, ChildValueType, VerbConjugationLookupTreeNode<ChildValueType, ?>> {
 	/**
 	 * Initialises a new instance of {@link VerbConjugationLookupTreeNode}.
-	 * @param value The value of the node.
+	 * @param values The values of the node.
 	 * @param valueProducer A function that produces a value from the conjugation key that corresponds to the node's value.
 	 */
-	public VerbConjugationLookupTreeNode(ValueType value, Function<VerbConjugationKey, ValueType> valueProducer) {
-		super(value, valueProducer);
+	public VerbConjugationLookupTreeNode(Set<ValueType> values, Function<VerbConjugationKey, ValueType> valueProducer) {
+		super(values, valueProducer);
 	}
 }

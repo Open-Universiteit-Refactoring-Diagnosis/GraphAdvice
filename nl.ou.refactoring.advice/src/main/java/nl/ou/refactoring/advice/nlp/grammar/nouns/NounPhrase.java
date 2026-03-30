@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.Phrase;
 import nl.ou.refactoring.advice.nlp.grammar.adjectives.Adjective;
 import nl.ou.refactoring.advice.nlp.grammar.determiners.Determiner;
@@ -19,8 +18,7 @@ public final class NounPhrase extends Phrase {
 	private final Noun noun;
 	private Optional<Determiner> determiner;
 	private List<Adjective> adjectives;
-	private NounDeclensionKey declension =
-		new NounDeclensionKey(GrammaticalNumber.SINGULAR);
+	private NounDeclensionKey declension = NounDeclensionKey.DEFAULT;
 	
 	/**
 	 * Initialises a new instance of {@link NounPhrase}.

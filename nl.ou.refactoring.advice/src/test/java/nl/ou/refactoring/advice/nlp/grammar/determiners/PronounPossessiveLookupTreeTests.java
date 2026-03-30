@@ -11,6 +11,7 @@ import nl.ou.refactoring.advice.nlp.grammar.GrammaticalGender;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
+import nl.ou.refactoring.advice.nlp.languages.dutchNetherlands.PronounPossessiveLookupTree;
 
 public final class PronounPossessiveLookupTreeTests {
 	@DisplayName("Should get the appropriate String value for a Possessive Pronoun")

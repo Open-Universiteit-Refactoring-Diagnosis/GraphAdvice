@@ -52,8 +52,9 @@ public class LookupStemTree<Key, ValueType, ChildValueType>
 			if (nodeNext.isPresent()) {
 				nodeCurrent = Optional.of(nodeNext.get());
 			} else {
-				if (BiFunction.class.isInstance(node.getValue())) {
-					return Optional.of(((BiFunction<String, Key, String>)node.getValue()).apply(this.stem.get(), key));
+				final var nodeValues = node.getValues();
+				if (nodeValues.size() == 1 && BiFunction.class.isInstance(nodeValues.toArray()[0])) {
+					return Optional.of(((BiFunction<String, Key, String>)nodeValues.toArray()[0]).apply(this.stem.get(), key));
 				}
 				nodeCurrent = Optional.empty();
 			}

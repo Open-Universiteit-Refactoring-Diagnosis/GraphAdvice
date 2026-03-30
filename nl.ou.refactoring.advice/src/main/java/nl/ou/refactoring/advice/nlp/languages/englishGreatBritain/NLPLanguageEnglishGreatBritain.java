@@ -15,12 +15,12 @@ import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionLookupTree;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.ReferenceNoun;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.AuxiliaryVerb;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.Verb;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationLookupTree;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbModality;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbTense;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
 import nl.ou.refactoring.advice.nlp.languages.NLPLanguage;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
@@ -39,8 +39,8 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 	/**
 	 * The default lookup tree for Verb conjugation in the English (Great Britain) language.
 	 */
-	public static final Function<String, VerbConjugationLookupTree<VerbAspect>> VERB_CONJUGATION_DEFAULT =
-		(stem) -> new VerbConjugationLookupTree<VerbAspect>(() -> stem, Verbs.conjugationDefaultTree());
+	public static final Function<String, VerbConjugationLookupTree<GrammaticalPerson>> VERB_CONJUGATION_DEFAULT =
+		(stem) -> new VerbConjugationLookupTree<GrammaticalPerson>(() -> stem, Verbs.conjugationDefaultTree());
 	
 	/**
 	 * The lookup tree for Verb conjugation of the irregular verb "to be" in the English (Great Britain) language.
@@ -59,8 +59,8 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 		new HashMap<Long, GrammaticalGender>();
 	private final Map<Long, String> prepositions =
 		new HashMap<Long, String>();
-	private final Map<Long, VerbConjugationLookupTree<VerbAspect>> verbConjugations =
-		new HashMap<Long, VerbConjugationLookupTree<VerbAspect>>();
+	private final Map<Long, VerbConjugationLookupTree<?>> verbConjugations =
+		new HashMap<Long, VerbConjugationLookupTree<?>>();
 
 	private NLPLanguageEnglishGreatBritain() {
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("class"));
@@ -72,12 +72,13 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.REFACTORING, NOUN_DECLENSION_DEFAULT.apply("refactoring"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.REFACTORING, GrammaticalGender.MASCULINE);
 		prepositions.putIfAbsent(Tokens.Prepositions.IN, "in");
-		prepositions.putIfAbsent(Tokens.Prepositions.TO_DIRECTIONAL, "to");
+		prepositions.putIfAbsent(Tokens.Prepositions.TO_TARGET_RECIPIENT, "to");
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Auxiliary.BE, VERB_CONJUGATION_TO_BE);
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.ADD, VERB_CONJUGATION_DEFAULT.apply("add"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.CAUSE, VERB_CONJUGATION_DEFAULT.apply("cause"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.REFACTOR, VERB_CONJUGATION_DEFAULT.apply("refactor"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.REMOVE, VERB_CONJUGATION_DEFAULT.apply("remove"));
+		this.verbConjugations.putIfAbsent(Tokens.Verbs.Linking.BE, VERB_CONJUGATION_TO_BE);
 	}
 	
 	@Override
@@ -135,40 +136,23 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 	}
 	
 	private NLPResult visit(VerbPhrase verbPhrase) {
-		// TODO Check necessity of auxiliary verb if main verb requires it.
-		// TODO Inherit conjugation from Sentence.
 		final var resultTextBuilder = new StringBuilder();
-		final var auxiliaryVerb = verbPhrase.getAuxiliaryVerb();
-		if (auxiliaryVerb.isPresent()) {
-			final var auxiliaryVerbConjugationKey =
-				new VerbConjugationKey(
-					GrammaticalPerson.THIRD,
-					GrammaticalNumber.SINGULAR,
-					VerbAspect.IMPERFECTIVE,
-					VerbModality.INDICATIVE,
-					VerbTense.PRESENT,
-					VerbVoice.ACTIVE
-				);
+
+		final var verb = verbPhrase.getVerb(); // Linking Verb or Lexical Verb
+		verbPhrase = this.visit(verbPhrase, verb);
+		final var verbAuxiliaryVerbs = verb.getAuxiliaryVerbs();
+		final var verbConjugationKey = verbPhrase.getConjugation();
+		for (final var auxiliaryVerb : verbAuxiliaryVerbs) {
+			final var auxiliaryVerbConjugationKey = auxiliaryVerb.getConjugation();
 			resultTextBuilder.append(
 				this
 					.verbConjugations
-					.get(auxiliaryVerb.get().getToken())
+					.get(auxiliaryVerb.getToken())
 					.lookup(auxiliaryVerbConjugationKey)
 					.get()
 			);
 			resultTextBuilder.append(" ");
 		}
-
-		final var verb = verbPhrase.getVerb();
-		final var verbConjugationKey =
-			new VerbConjugationKey(
-				GrammaticalPerson.THIRD,
-				GrammaticalNumber.SINGULAR,
-				VerbAspect.PERFECTIVE,
-				VerbModality.INDICATIVE,
-				VerbTense.PRESENT,
-				VerbVoice.ACTIVE
-			);
 		resultTextBuilder.append(
 			this
 				.verbConjugations
@@ -185,5 +169,28 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 		}
 		
 		return result;
+	}
+	
+	private VerbPhrase visit(VerbPhrase verbPhrase, Verb mainVerb) {
+		final var mainVerbConjugation = verbPhrase.getConjugation();
+		switch (mainVerbConjugation) {
+			case VerbConjugationKey(var _, var _, var _, var _, var _, VerbVoice voice, var _): {
+				switch (voice) {
+					case VerbVoice.PASSIVE: {
+						final var passiveIs = AuxiliaryVerb.setByToken(Tokens.Verbs.Auxiliary.BE, mainVerb);
+						passiveIs.ifPresent(auxiliaryVerb -> {
+							auxiliaryVerb.setConjugation(mainVerbConjugation.withVoice(VerbVoice.ACTIVE));
+						});
+					}
+					default: {
+						break;
+					}
+				}
+				return verbPhrase;
+			}
+			default: {
+				return verbPhrase;
+			}
+		}
 	}
 }

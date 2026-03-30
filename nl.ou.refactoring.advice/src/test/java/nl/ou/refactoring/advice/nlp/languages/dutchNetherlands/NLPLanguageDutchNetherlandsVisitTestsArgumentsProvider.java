@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.nlp.languages.englishGreatBritain;
+package nl.ou.refactoring.advice.nlp.languages.dutchNetherlands;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +12,6 @@ import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nlp.NLPResult;
-import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
-import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
-import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 import nl.ou.refactoring.advice.nlp.grammar.Sentence;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
@@ -23,19 +20,14 @@ import nl.ou.refactoring.advice.nlp.grammar.prepositions.Preposition;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.AuxiliaryVerb;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.LexicalVerb;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbModality;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbPhrase;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbTense;
-import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
-public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider implements ArgumentsProvider {
+public class NLPLanguageDutchNetherlandsVisitTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
 	public Stream<? extends Arguments> provideArguments
 	(
@@ -64,7 +56,9 @@ public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider imp
 				.fromToken(Tokens.Verbs.Lexical.ADD)
 				.get();
 		final var verbPhrase = new VerbPhrase(addVerb);
-		AuxiliaryVerb.setByToken(Tokens.Verbs.Auxiliary.BE, verbPhrase.getVerb());
+		AuxiliaryVerb
+			.setByToken(Tokens.Verbs.Auxiliary.BECOME, verbPhrase.getVerb())
+			.get();
 		final var toPreposition =
 			Preposition
 				.fromToken(Tokens.Prepositions.TO_TARGET_RECIPIENT)
@@ -76,20 +70,9 @@ public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider imp
 		final var classNounPhrase = new NounPhrase(classNoun);
 		final var prepositionalPhrase = new PrepositionalPhrase(toPreposition, classNounPhrase);
 		verbPhrase.setPrepositionalPhrase(prepositionalPhrase);
-		verbPhrase.setConjugation(
-			new VerbConjugationKey(
-				GrammaticalPerson.THIRD,
-				GrammaticalNumber.SINGULAR,
-				VerbAspect.IMPERFECTIVE,
-				VerbModality.INDICATIVE,
-				VerbTense.PRESENT,
-				VerbVoice.PASSIVE,
-				GrammaticalRegister.PLAIN
-			)
-		);
 		sentence.setVerbPhrase(verbPhrase);
 		
-		final var nlpResult = new NLPResult("method is added to class", new HashMap<String, GraphNode>());
+		final var nlpResult = new NLPResult("methode wordt gevoegd aan klasse", new HashMap<String, GraphNode>());
 		return Pair.with(sentence, nlpResult);
 	}
 	
@@ -116,7 +99,7 @@ public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider imp
 				.fromToken(Tokens.Verbs.Lexical.ADD)
 				.get();
 		final var verbPhrase = new VerbPhrase(addVerb);
-		AuxiliaryVerb.setByToken(Tokens.Verbs.Auxiliary.BE, verbPhrase.getVerb());
+		AuxiliaryVerb.setByToken(Tokens.Verbs.Auxiliary.BECOME, verbPhrase.getVerb());
 		final var toPreposition =
 			Preposition
 				.fromToken(Tokens.Prepositions.TO_TARGET_RECIPIENT)
@@ -125,23 +108,12 @@ public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider imp
 		final var classNounPhrase = new NounPhrase(classReferenceNoun);
 		final var prepositionalPhrase = new PrepositionalPhrase(toPreposition, classNounPhrase);
 		verbPhrase.setPrepositionalPhrase(prepositionalPhrase);
-		verbPhrase.setConjugation(
-			new VerbConjugationKey(
-				GrammaticalPerson.THIRD,
-				GrammaticalNumber.SINGULAR,
-				VerbAspect.IMPERFECTIVE,
-				VerbModality.INDICATIVE,
-				VerbTense.PRESENT,
-				VerbVoice.PASSIVE,
-				GrammaticalRegister.PLAIN
-			)
-		);
 		sentence.setVerbPhrase(verbPhrase);
 		
 		final var references = new HashMap<String, GraphNode>();
 		final var classNodeIdString = String.format("{%s}", classNode.getId().toString());
 		references.putIfAbsent(classNodeIdString, classNode);
-		final var nlpResult = new NLPResult(String.format("method is added to %s", classNodeIdString), references);
+		final var nlpResult = new NLPResult(String.format("methode wordt toegevoegd aan %s", classNodeIdString), references);
 		return Pair.with(sentence, nlpResult);
 	}
 }

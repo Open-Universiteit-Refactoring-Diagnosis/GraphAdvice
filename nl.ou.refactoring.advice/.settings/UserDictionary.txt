@@ -8,3 +8,8 @@ refactoringsugiyama
 sugiyama
 refactoring
 mermaid
+conjugation
+copular
+countability
+declensions
+dutch

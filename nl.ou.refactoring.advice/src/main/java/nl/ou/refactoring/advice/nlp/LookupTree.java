@@ -42,8 +42,9 @@ public class LookupTree<Key, ValueType, ChildValueType, NodeType extends LookupT
 			if (nodeNext.isPresent()) {
 				nodeCurrent = Optional.of((NodeType)nodeNext.get());
 			} else {
-				if (String.class.isInstance(node.getValue())) {
-					return Optional.of((String)node.getValue());
+				final var nodeValues = node.getValues();
+				if (nodeValues.size() == 1 && String.class.isInstance(nodeValues.toArray()[0])) {
+					return Optional.of((String)nodeValues.toArray()[0]);
 				}
 				nodeCurrent = Optional.empty();
 			}

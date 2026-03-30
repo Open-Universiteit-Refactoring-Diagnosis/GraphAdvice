@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.nlp;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,18 +16,21 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  * @param <ValueType> The type of value represented by the node.
  */
 public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extends LookupTreeNode<Key, ChildValueType, ?, ?>> {
-	protected final ValueType value;
+	protected final Set<ValueType> values;
 	protected final Function<Key, ValueType> valueProducer;
 	protected final Map<ChildValueType, LookupTreeNode<Key, ?, ?, ?>> children =
 		new HashMap<ChildValueType, LookupTreeNode<Key, ?, ?, ?>>();
 	
 	/**
 	 * Initialises a new instance of {@link LookupTreeNode<Key, ValueType, ChildValueType>}.
-	 * @param value The value that is represented by this node.
+	 * @param values The values that are matched by this node.
 	 * @param valueProducer Produces a value from the specified key.
+	 * @throws ArgumentNullException Thrown if values is null.
 	 */
-	public LookupTreeNode(ValueType value, Function<Key, ValueType> valueProducer) {
-		this.value = value;
+	public LookupTreeNode(Set<ValueType> values, Function<Key, ValueType> valueProducer)
+			throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(values, "values");
+		this.values = values;
 		this.valueProducer = valueProducer;
 	}
 	
@@ -52,8 +56,8 @@ public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extend
 		final var childEntries = this.children.entrySet();
 		for (final var childEntry : childEntries) {
 			final var childNode = childEntry.getValue();
-			if (childNode.getValue() != null &&
-					childNode.getValue().equals(childNode.produceValue(key))) {
+			if (childNode.getValues() != null &&
+					childNode.getValues().contains(childNode.produceValue(key))) {
 				return Optional.of((ChildNodeType)childNode);
 			}
 		}
@@ -76,11 +80,11 @@ public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extend
 	}
 	
 	/**
-	 * Gets the value that is represented by the node.
-	 * @return The value that is represented by the node.
+	 * Gets the values that are matched by the node.
+	 * @return An unmodifiable set of values that are matched by the node.
 	 */
-	public final ValueType getValue() {
-		return this.value;
+	public final Set<ValueType> getValues() {
+		return Collections.unmodifiableSet(this.values);
 	}
 	
 	/**
@@ -102,13 +106,16 @@ public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extend
 	 * Puts the child node with the specified value, if it is not already present.
 	 * @param <GrandchildValueType> The type of values of the child node's children.
 	 * @param childNode The child node to put to this tree node.
-	 * @return The child node with the specified value, identical to childNode if not already present, otherwise the existing node.
+	 * @return The child node with the specified value, identical to the childNode parameter's argument.
 	 * @throws ArgumentNullException Thrown if childNode is null.
 	 */
-	@SuppressWarnings("unchecked")
 	public final <GrandchildValueType> ChildNodeType putIfAbsent(ChildNodeType childNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(childNode, "childNode");
-		return (ChildNodeType)this.children.putIfAbsent(childNode.getValue(), childNode);
+		final var childNodeValues = childNode.getValues();
+		for (final var childNodeValue : childNodeValues) {
+			this.children.putIfAbsent(childNodeValue, childNode);
+		}
+		return childNode;
 	}
 }

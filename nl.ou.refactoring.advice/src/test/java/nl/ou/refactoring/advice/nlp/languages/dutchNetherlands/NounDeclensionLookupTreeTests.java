@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
 
 public class NounDeclensionLookupTreeTests {
@@ -28,12 +29,12 @@ public class NounDeclensionLookupTreeTests {
 	public static Stream<Arguments> lookupDefaultTestParameters() {
 		return
 			Stream.of(
-				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.SINGULAR), "land"),
-				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.PLURAL), "landen"),
-				Arguments.of("schaap", new NounDeclensionKey(GrammaticalNumber.SINGULAR), "schaap"),
-				Arguments.of("schaap", new NounDeclensionKey(GrammaticalNumber.PLURAL), "schapen"),
-				Arguments.of("stap", new NounDeclensionKey(GrammaticalNumber.SINGULAR), "stap"),
-				Arguments.of("stap", new NounDeclensionKey(GrammaticalNumber.PLURAL), "stappen")
+				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.SINGULAR, GrammaticalRegister.PLAIN), "land"),
+				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.PLURAL, GrammaticalRegister.PLAIN), "landen"),
+				Arguments.of("schaap", new NounDeclensionKey(GrammaticalNumber.SINGULAR, GrammaticalRegister.PLAIN), "schaap"),
+				Arguments.of("schaap", new NounDeclensionKey(GrammaticalNumber.PLURAL, GrammaticalRegister.PLAIN), "schapen"),
+				Arguments.of("stap", new NounDeclensionKey(GrammaticalNumber.SINGULAR, GrammaticalRegister.PLAIN), "stap"),
+				Arguments.of("stap", new NounDeclensionKey(GrammaticalNumber.PLURAL, GrammaticalRegister.PLAIN), "stappen")
 			);
 	}
 }

@@ -12,6 +12,7 @@ import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nlp.grammar.Sentence;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounPhrase;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.ReferenceNoun;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.Preposition;
 import nl.ou.refactoring.advice.nlp.grammar.prepositions.PrepositionalPhrase;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.LexicalVerb;
@@ -20,6 +21,7 @@ import nl.ou.refactoring.advice.nlp.languages.NLPLanguage;
 import nl.ou.refactoring.advice.nlp.tokens.NLPTokenNotFoundException;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.workflow.GraphWorkflowExplorer;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -93,14 +95,23 @@ public class NLPGrammarProcessor extends NLPProcessor {
 						microstepSentence.setVerbPhrase(microstepVerbPhrase);
 						final var toPreposition =
 							Preposition
-								.fromToken(Tokens.Prepositions.TO_DIRECTIONAL)
-								.orElseThrow(() -> new NLPTokenNotFoundException(Tokens.Prepositions.TO_DIRECTIONAL, Tokens.Prepositions.class));
-						// final var microstepPrepositionalPhrase = new PrepositionalPhrase();
+								.fromToken(Tokens.Prepositions.TO_TARGET_RECIPIENT)
+								.orElseThrow(() -> new NLPTokenNotFoundException(Tokens.Prepositions.TO_TARGET_RECIPIENT, Tokens.Prepositions.class));
+						
 						// TODO add PP to VP
 						
-						operationNode
-							.getClassNode()
-							.ifPresentOrElse(cn -> { }, () -> { });
+						final var microstepPrepositionalNounPhrase =
+							operationNode
+								.getClassNode()
+								.map(
+									cn -> {
+										final var microstepClassReferenceNoun = new ReferenceNoun<GraphNodeClass>(cn, n -> n.getId().toString());
+										return new NounPhrase(microstepClassReferenceNoun);
+									}
+								)
+								.orElse(new NounPhrase(CommonNoun.fromToken(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING).get()));
+						final var prepositionalPhrase = new PrepositionalPhrase(toPreposition, microstepPrepositionalNounPhrase);
+						microstepVerbPhrase.setPrepositionalPhrase(prepositionalPhrase);
 						
 						// TODO construct sentence
 						result = result.merge(this.language.visit(microstepSentence));
