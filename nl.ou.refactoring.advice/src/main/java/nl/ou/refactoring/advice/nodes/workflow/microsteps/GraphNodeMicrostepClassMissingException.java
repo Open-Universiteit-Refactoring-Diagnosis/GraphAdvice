@@ -4,7 +4,7 @@ import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
- * An exception that is thrown  if no Class node is associated with a node that represents a microstep[ 
+ * An exception that is thrown if no Class node is associated with a node that represents a microstep.
  */
 public final class GraphNodeMicrostepClassMissingException extends GraphValidationException {
 	/**

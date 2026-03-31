@@ -16,6 +16,7 @@ public final class DeterminerPhrase implements Determiner {
 	 */
 	public DeterminerPhrase() {
 		this.article = Optional.empty();
+		this.distributive = Optional.empty();
 		this.possessive = Optional.empty();
 		this.quantifier = Optional.empty();
 	}

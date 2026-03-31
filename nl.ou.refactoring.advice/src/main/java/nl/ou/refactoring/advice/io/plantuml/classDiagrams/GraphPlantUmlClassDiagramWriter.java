@@ -6,12 +6,14 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.SortOrder;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.io.GraphWriterException;
+import nl.ou.refactoring.advice.io.GraphWriterMemberOwningClassMissingException;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
@@ -47,8 +49,8 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	public void write(Graph graph)
 			throws
 				ArgumentNullException,
-				GraphPathSegmentInvalidException,
-				GraphNodeClassHasMultipleGeneralisationsException
+				GraphValidationException,
+				GraphWriterException
 	{
 		ArgumentGuard.requireNotNull(graph, "graph");
 		this.writeStartUml(graph.getRefactoringName());
@@ -394,7 +396,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		return switch(codeNode) {
 			case GraphNodePackage pkg -> pkg;
 			case GraphNodeClass cls -> cls;
-			case GraphNodeClassMember member -> member.getClassNode().get();
+			case GraphNodeClassMember member -> member.getClassNode().orElseThrow(() -> new GraphWriterMemberOwningClassMissingException(member));
 			case GraphNodeMethodInvocationExpression methodInvocationExpression -> methodInvocationExpression.getOperationNode();
 			default -> codeNode;
 		};

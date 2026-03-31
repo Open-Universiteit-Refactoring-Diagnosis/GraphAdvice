@@ -47,7 +47,7 @@ public final class AuxiliaryVerb extends Verb {
 		ArgumentGuard.requireNotNull(headVerb, "headVerb");
 		final var auxiliaryVerb = new AuxiliaryVerb(token, headVerb);
 		auxiliaryVerb.setConjugation(headVerb.getPhrase().getConjugation());
-		return Optional.of(new AuxiliaryVerb(token, headVerb));
+		return Optional.of(auxiliaryVerb);
 	}
 	
 	/**

@@ -131,19 +131,19 @@ public final class Tokens {
 			public static final long REFACTORING = "[common noun] refactoring".hashCode();
 			
 			static {
-				COMMON_NOUNS.putIfAbsent(
+				COMMON_NOUNS.computeIfAbsent(
 					CLASS_OO_PROGRAMMING,
 					new CommonNoun(CLASS_OO_PROGRAMMING, SemanticClassification.ABSTRACT, Countability.COUNTABLE)
 				);
-				COMMON_NOUNS.putIfAbsent(
+				COMMON_NOUNS.computeIfAbsent(
 					METHOD,
 					new CommonNoun(METHOD, SemanticClassification.ABSTRACT, Countability.COUNTABLE)
 				);
-				COMMON_NOUNS.putIfAbsent(
+				COMMON_NOUNS.computeIfAbsent(
 					MICROSTEP,
 					new CommonNoun(MICROSTEP, SemanticClassification.ABSTRACT, Countability.COUNTABLE)
 				);
-				COMMON_NOUNS.putIfAbsent(
+				COMMON_NOUNS.computeIfAbsent(
 					REFACTORING,
 					new CommonNoun(REFACTORING, SemanticClassification.ABSTRACT, Countability.COUNTABLE)
 				);
@@ -218,9 +218,9 @@ public final class Tokens {
 		public static final long TO_TARGET_RECIPIENT = "[preposition] to (target or recipient)".hashCode();
 		
 		static {
-			PREPOSITIONS.putIfAbsent(FROM_REMOVAL_SEPARATION, new Preposition(FROM_REMOVAL_SEPARATION));
-			PREPOSITIONS.putIfAbsent(IN, new Preposition(IN));
-			PREPOSITIONS.putIfAbsent(TO_TARGET_RECIPIENT, new Preposition(TO_TARGET_RECIPIENT));
+			PREPOSITIONS.computeIfAbsent(FROM_REMOVAL_SEPARATION, new Preposition(FROM_REMOVAL_SEPARATION));
+			PREPOSITIONS.computeIfAbsent(IN, new Preposition(IN));
+			PREPOSITIONS.computeIfAbsent(TO_TARGET_RECIPIENT, new Preposition(TO_TARGET_RECIPIENT));
 		}
 		
 		/**
@@ -277,10 +277,10 @@ public final class Tokens {
 			public static final long HAVE = "[auxiliary verb] to have".hashCode();
 			
 			static {
-				AUXILIARY_VERBS.putIfAbsent(BE, (headVerb) -> new AuxiliaryVerb(BE, headVerb));
-				AUXILIARY_VERBS.putIfAbsent(BECOME, (headVerb) -> new AuxiliaryVerb(BECOME, headVerb));
-				AUXILIARY_VERBS.putIfAbsent(DO, (headVerb) -> new AuxiliaryVerb(DO, headVerb));
-				AUXILIARY_VERBS.putIfAbsent(HAVE, (headVerb) -> new AuxiliaryVerb(HAVE, headVerb));
+				AUXILIARY_VERBS.computeIfAbsent(BE, (headVerb) -> new AuxiliaryVerb(BE, headVerb));
+				AUXILIARY_VERBS.computeIfAbsent(BECOME, (headVerb) -> new AuxiliaryVerb(BECOME, headVerb));
+				AUXILIARY_VERBS.computeIfAbsent(DO, (headVerb) -> new AuxiliaryVerb(DO, headVerb));
+				AUXILIARY_VERBS.computeIfAbsent(HAVE, (headVerb) -> new AuxiliaryVerb(HAVE, headVerb));
 			}
 			
 			/**
@@ -339,11 +339,11 @@ public final class Tokens {
 			public static final long REMOVE = "[lexical verb] to remove".hashCode();
 			
 			static {
-				LEXICAL_VERBS.putIfAbsent(ADD, phrase -> new LexicalVerb(ADD, VerbTransitivity.TRANSITIVE, phrase));
-				LEXICAL_VERBS.putIfAbsent(CAUSE, phrase -> new LexicalVerb(CAUSE, VerbTransitivity.TRANSITIVE, phrase));
-				LEXICAL_VERBS.putIfAbsent(HAVE, phrase -> new LexicalVerb(HAVE, VerbTransitivity.TRANSITIVE, phrase));
-				LEXICAL_VERBS.putIfAbsent(REFACTOR, phrase -> new LexicalVerb(REFACTOR, VerbTransitivity.TRANSITIVE, phrase));
-				LEXICAL_VERBS.putIfAbsent(REMOVE, phrase -> new LexicalVerb(REMOVE, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.computeIfAbsent(ADD, phrase -> new LexicalVerb(ADD, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.computeIfAbsent(CAUSE, phrase -> new LexicalVerb(CAUSE, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.computeIfAbsent(HAVE, phrase -> new LexicalVerb(HAVE, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.computeIfAbsent(REFACTOR, phrase -> new LexicalVerb(REFACTOR, VerbTransitivity.TRANSITIVE, phrase));
+				LEXICAL_VERBS.computeIfAbsent(REMOVE, phrase -> new LexicalVerb(REMOVE, VerbTransitivity.TRANSITIVE, phrase));
 			}
 			
 			/**

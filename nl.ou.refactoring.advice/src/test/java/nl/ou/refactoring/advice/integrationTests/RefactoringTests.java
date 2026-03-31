@@ -53,9 +53,9 @@ public final class RefactoringTests {
 				IOException,
 				ArgumentNullException,
 				GraphValidationException,
-				URISyntaxException,
 				ParserConfigurationException,
-				TransformerException {
+				TransformerException,
+				URISyntaxException {
 	    final var refactoringName = graph.getRefactoringName();
 	    final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve(refactoringName + ".mermaid");
 	    final var plantUmlClassDiagramFilePath = OUTPUT_DIR.resolve(refactoringName + ".puml");

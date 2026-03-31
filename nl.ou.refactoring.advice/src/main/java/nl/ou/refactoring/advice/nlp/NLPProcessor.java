@@ -33,4 +33,7 @@ public abstract class NLPProcessor {
 			ArgumentNullException,
 			GraphValidationException,
 			NLPException;
+	
+	@Override
+	public abstract String toString();
 }

@@ -38,12 +38,12 @@ public final class TokenStore<T> {
 	}
 	
 	/**
-	 * Puts the specified item and associates it with the specified token, if not already present in the store.
+	 * Computes the specified item and associates it with the specified token, if not already present in the store.
 	 * @param token The token to associate the specified item with.
 	 * @param item The item to put in the store.
 	 * @return The item that is put in the store.
 	 */
-	public T putIfAbsent(long token, T item) {
-		return this.syntaxElements.putIfAbsent(token, item);
+	public T computeIfAbsent(long token, T item) {
+		return this.syntaxElements.computeIfAbsent(token, _ -> item);
 	}
 }

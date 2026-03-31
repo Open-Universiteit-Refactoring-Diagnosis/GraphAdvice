@@ -61,7 +61,7 @@ public abstract class Verb {
 
 		var auxiliaryVerbCurrent = this.auxiliaryVerb;
 		while (auxiliaryVerbCurrent.isPresent()) {
-			final var auxiliaryVerbCurrentUnwrapped = auxiliaryVerb.get();
+			final var auxiliaryVerbCurrentUnwrapped = auxiliaryVerbCurrent.get();
 			auxiliaryVerbs.push(auxiliaryVerbCurrentUnwrapped);
 			auxiliaryVerbCurrent = auxiliaryVerbCurrentUnwrapped.getAuxiliaryVerb();
 		}
