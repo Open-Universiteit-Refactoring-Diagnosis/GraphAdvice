@@ -13,16 +13,30 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
 /**
  * Represents a node in a lookup tree for looking up values for tokens.
+ * @param <Key> The type of lookup key.
  * @param <ValueType> The type of value represented by the node.
+ * @param <ChildValueType> The type of value represented by the node's child nodes.
+ * @param <ChildNodeType> The type of the node's child nodes.
  */
 public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extends LookupTreeNode<Key, ChildValueType, ?, ?>> {
+	/**
+	 * The values that match this lookup node.
+	 */
 	protected final Set<ValueType> values;
+	
+	/**
+	 * Produces the value from the lookup key that corresponds to this node.
+	 */
 	protected final Function<Key, ValueType> valueProducer;
+	
+	/**
+	 * The child nodes of this node.
+	 */
 	protected final Map<ChildValueType, LookupTreeNode<Key, ?, ?, ?>> children =
 		new HashMap<ChildValueType, LookupTreeNode<Key, ?, ?, ?>>();
 	
 	/**
-	 * Initialises a new instance of {@link LookupTreeNode<Key, ValueType, ChildValueType>}.
+	 * Initialises a new instance of {@link LookupTreeNode}.
 	 * @param values The values that are matched by this node.
 	 * @param valueProducer Produces a value from the specified key.
 	 * @throws ArgumentNullException Thrown if values is null.
@@ -66,7 +80,7 @@ public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extend
 	
 	/**
 	 * Gets the child nodes of this lookup tree node.
-	 * @return An unmodifiable set of child {@link LookupTreeNode<Key, ChildValueType, ?>}s.
+	 * @return An unmodifiable set of child {@link LookupTreeNode}s.
 	 */
 	@SuppressWarnings("unchecked")
 	public final Set<ChildNodeType> getChildren() {

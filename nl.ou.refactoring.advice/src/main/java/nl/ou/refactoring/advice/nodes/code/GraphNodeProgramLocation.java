@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
@@ -62,7 +63,10 @@ public final class GraphNodeProgramLocation extends GraphNodeBase {
 		int columnIndexStart,
 		int lineNumberEnd,
 		int columnIndexEnd
-	) throws ArgumentNullException {
+	) throws
+			ArgumentNullException,
+			ArgumentEmptyException,
+			IllegalArgumentException {
 		super(graph);
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");

@@ -11,10 +11,14 @@ import nl.ou.refactoring.advice.nlp.tokens.Tokens;
  * Represents a Preposition in Natural Language.
  */
 public final class Preposition implements SyntaxElement {
+	/**
+	 * The token of the {@link Preposition}.
+	 */
 	public final long token;
 	
 	/**
 	 * Initialises a new instance of {@link Preposition}.
+	 * @param token The token of the {@link Preposition}.
 	 * @throws ArgumentMembershipException Thrown if the token is not linked to a Preposition.
 	 */
 	public Preposition(long token)

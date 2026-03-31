@@ -6,6 +6,13 @@ import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
 
 /**
  * A key for looking up a conjugation of a verb.
+ * @param person The {@link GrammaticalPerson} of the verb.
+ * @param number The {@link GrammaticalNumber} of the verb.
+ * @param aspect The {@link VerbAspect} of the verb.
+ * @param modality The {@link VerbModality} of the verb.
+ * @param tense The {@link VerbTense} of the verb.
+ * @param voice The {@link VerbVoice} of the verb.
+ * @param register The {@link GrammaticalRegister} of the verb.
  */
 public final record VerbConjugationKey
 (

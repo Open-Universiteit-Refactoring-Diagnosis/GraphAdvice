@@ -17,12 +17,15 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
  * Writes refactoring advice texts in HTML from a Refactoring Advice Graph.
  */
 public final class GraphHtmlTextWriter extends GraphHtmlWriter {
+	/**
+	 * The Natural Language Processor that will provide 
+	 */
 	private final NLPProcessor nlpProvider;
 	
 	/**
 	 * Initialises a new instance of {@link GraphHtmlTextWriter}.
 	 * @param settings The settings of the {@link GraphHtmlTextWriter}.
-	 * @param element The host HTML element that will contain the refactoring advice text.
+	 * @param hostElement The host HTML element that will contain the refactoring advice text.
 	 * @param nlpProvider Provides Natural Language Processing features.
 	 * @throws ArgumentNullException Thrown if settings, hostElement or nlpProvider is null.
 	 */

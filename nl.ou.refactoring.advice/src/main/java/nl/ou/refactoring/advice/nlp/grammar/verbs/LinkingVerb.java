@@ -17,6 +17,7 @@ public final class LinkingVerb extends Verb {
 	/**
 	 * Initialises a new instance of {@link LinkingVerb}.
 	 * @param token The token that represents a particular Linking Verb.
+	 * @param phrase The {@link VerbPhrase} that contains the {@link LinkingVerb}.
 	 */
 	public LinkingVerb(long token, VerbPhrase phrase) {
 		super(token, VerbTransitivity.COPULAR, phrase);
@@ -25,6 +26,7 @@ public final class LinkingVerb extends Verb {
 	/**
 	 * Constructs an Linking Verb from the specified token.
 	 * @param token The token that should represent a Linking Verb.
+	 * @param phrase The {@link VerbPhrase} that contains this {@link LinkingVerb}.
 	 * @return The constructed Linking Verb.
 	 * @throws ArgumentMembershipException Thrown if the token does not represent a Linking Verb.
 	 * @throws ArgumentNullException Thrown if phrase is null.

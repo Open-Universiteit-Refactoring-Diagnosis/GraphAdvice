@@ -13,6 +13,7 @@ public final class Adjective implements SyntaxElement {
 	
 	/**
 	 * Initialises a new instance of {@link Adjective}.
+	 * @param token The token of the {@link Adjective}.
 	 * @throws ArgumentNullException Thrown if token is null.
 	 * @throws ArgumentEmptyException Thrown if token is empty or contains only white spaces.
 	 */

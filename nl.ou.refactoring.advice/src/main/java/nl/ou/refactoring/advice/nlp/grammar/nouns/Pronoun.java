@@ -26,6 +26,9 @@ public final class Pronoun
 	
 	/**
 	 * Initialises a new instance of {@link Pronoun}.
+	 * @param person The proper grammatical person of the {@link Pronoun}.
+	 * @param gender The proper grammatical gender of the {@link Pronoun}.
+	 * @param number The proper grammatical number of the {@link Pronoun}.
 	 */
 	public Pronoun(GrammaticalPerson person, GrammaticalGender gender, GrammaticalNumber number) {
 		super(

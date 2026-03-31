@@ -13,11 +13,12 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
  * @param <Key> The type of lookup key.
  * @param <ValueType> The type of value of the node.
  * @param <ChildValueType> The type of value of the child nodes.
+ * @param <ChildNodeType> The type of the node's child nodes.
  */
 public class LookupStemTreeNode<Key, ValueType, ChildValueType, ChildNodeType extends LookupStemTreeNode<Key, ChildValueType, ?, ?>>
 		extends LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType> {
 	/**
-	 * Initialises a new instance of {@link LookupStemTreeNode<Key, ValueType, ChildValueType>}.
+	 * Initialises a new instance of {@link LookupStemTreeNode}.
 	 * @param values The values that are matched by this node.
 	 * @param valueProducer Produces a value from the specified key.
 	 */

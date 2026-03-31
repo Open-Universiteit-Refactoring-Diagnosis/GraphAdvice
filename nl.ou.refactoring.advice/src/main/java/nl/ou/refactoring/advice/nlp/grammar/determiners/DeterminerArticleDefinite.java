@@ -12,7 +12,7 @@ public final class DeterminerArticleDefinite extends DeterminerArticle {
 	public static final long TOKEN = Tokens.Determiners.Articles.THE;
 	
 	/**
-	 * Initialises a new instance of {@link DetermineArticleDefinite}.
+	 * Initialises a new instance of {@link DeterminerArticleDefinite}.
 	 */
 	public DeterminerArticleDefinite() {
 		super(TOKEN);

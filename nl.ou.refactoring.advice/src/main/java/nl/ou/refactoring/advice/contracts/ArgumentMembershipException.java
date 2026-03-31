@@ -12,8 +12,20 @@ public final class ArgumentMembershipException extends RuntimeException {
 	 * A generated serial version unique identifier.
 	 */
 	private static final long serialVersionUID = 7817403788987340302L;
+	
+	/**
+	 * The item that is not a member of the specified collection.
+	 */
 	private final Object item;
+	
+	/**
+	 * The collection to which the specified item should have belonged.
+	 */
 	private final Collection<Object> collection;
+	
+	/**
+	 * The name of the collection.
+	 */
 	private final String collectionName;
 	
 	/**

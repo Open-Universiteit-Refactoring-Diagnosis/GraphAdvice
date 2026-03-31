@@ -5,7 +5,17 @@ import java.util.Optional;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 
+/**
+ * A lookup tree for use cases such as conjugations of verbs or declensions of nouns.
+ * @param <Key> The type of the lookup key.
+ * @param <ValueType> The type of the value of the root node.
+ * @param <ChildValueType> The type of the value of the root node's child nodes.
+ * @param <NodeType> The type of the root node.
+ */
 public class LookupTree<Key, ValueType, ChildValueType, NodeType extends LookupTreeNode<Key, ValueType, ChildValueType, ?>> {
+	/**
+	 * The root node of the lookup tree.
+	 */
 	protected final NodeType root;
 	
 	/**

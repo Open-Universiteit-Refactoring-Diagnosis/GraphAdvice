@@ -95,6 +95,7 @@ public final class NLPResult {
 	 * Merges two {@link NLPResult} into one {@link NLPResult}.
 	 * @param firstResult The first {@link NLPResult}.
 	 * @param secondResult The second {@link NLPResult}.
+	 * @param separator The separator to interject between the merged {@link NLPResult}.
 	 * @return The merged {@link NLPResult}.
 	 * @throws ArgumentNullException Thrown if firstResult or secondResult is null.
 	 */

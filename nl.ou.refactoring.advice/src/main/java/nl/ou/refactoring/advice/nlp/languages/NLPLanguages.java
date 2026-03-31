@@ -18,9 +18,9 @@ public final class NLPLanguages {
 	private NLPLanguages() { }
 	
 	/**
-	 * Gets the {@link NLPLanguage} specified by locale, wrapped in an {@link Optional<NLPLanguage>} or an empty {@link Optional<NLPLanguage} if no language is registered for the specified locale.
+	 * Gets the {@link NLPLanguage} specified by locale, wrapped in an {@link Optional<NLPLanguage>} or an empty {@link Optional<NLPLanguage>} if no language is registered for the specified locale.
 	 * @param locale The locale of the language.
-	 * @return The {@link NLPLanguage} specified by locale, wrapped in an {@link Optional<NLPLanguage>} or an empty {@link Optional<NLPLanguage} if no language is registered for the specified locale.
+	 * @return The {@link NLPLanguage} specified by locale, wrapped in an {@link Optional<NLPLanguage>} or an empty {@link Optional<NLPLanguage>} if no language is registered for the specified locale.
 	 * @throws ArgumentNullException Thrown if locale is null.
 	 */
 	public static Optional<NLPLanguage> get(Locale locale)

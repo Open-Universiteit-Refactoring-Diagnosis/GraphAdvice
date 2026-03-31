@@ -9,11 +9,19 @@ import nl.ou.refactoring.advice.io.GraphWriter;
  * Writes refactoring advice texts to HTML from Refactoring Advice Graphs.
  */
 public abstract class GraphHtmlWriter implements GraphWriter {
+	/**
+	 * The settings for the {@link GraphHtmlWriter}.
+	 */
 	protected final GraphHtmlWriterSettings settings;
+	
+	/**
+	 * The host HTML element that will contain the advice.
+	 */
 	protected final Element hostElement;
 
 	/**
 	 * Initialises a new instance of {@link GraphHtmlWriter}.
+	 * @param settings The settings for the {@link GraphHtmlWriter}.
 	 * @param hostElement The host HTML element that will contain the advice.
 	 * @throws ArgumentNullException Thrown if settings or hostElement is null.
 	 */

@@ -36,6 +36,7 @@ public final class AuxiliaryVerb extends Verb {
 	/**
 	 * Constructs an Auxiliary Verb from the specified token.
 	 * @param token The token that should represent an Auxiliary Verb.
+	 * @param headVerb The head {@link Verb} that is supplemented by this {@link AuxiliaryVerb}.
 	 * @return If found by token, the constructed Auxiliary Verb wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 	 * @throws ArgumentMembershipException Thrown if the token does not represent an Auxiliary Verb.
 	 * @throws ArgumentNullException Thrown if headVerb is null.

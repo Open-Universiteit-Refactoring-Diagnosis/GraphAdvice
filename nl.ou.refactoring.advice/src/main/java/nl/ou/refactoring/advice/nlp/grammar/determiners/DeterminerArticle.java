@@ -8,6 +8,7 @@ public abstract class DeterminerArticle implements DeterminerWithToken {
 	
 	/**
 	 * Initialises a new instance of {@link DeterminerArticle}.
+	 * @param token The token of the {@link DeterminerArticle}.
 	 */
 	protected DeterminerArticle(long token) {
 		this.token = token;

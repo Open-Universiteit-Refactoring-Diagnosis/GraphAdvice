@@ -36,25 +36,33 @@ public final class DeterminerPhrase implements Determiner {
 		this.article = Optional.ofNullable(article);
 	}
 	
+	/**
+	 * Gets the {@link DeterminerDistributive} of the {@link DeterminerPhrase}.
+	 * @return The {@link DeterminerDistributive} wrapped in an {@link Optional}, if present, otherwise an empty {@link Optional}.
+	 */
 	public Optional<DeterminerDistributive> getDistributive() {
 		return this.distributive;
 	}
 	
+	/**
+	 * Sets the {@link DeterminerDistributive} of the {@link DeterminerPhrase}.
+	 * @param distributive The {@link DeterminerDistributive} to set in the {@link DeterminerPhrase}.
+	 */
 	public void setDistributive(DeterminerDistributive distributive) {
 		this.distributive = Optional.ofNullable(distributive);
 	}
 	
 	/**
-	 * Gets the possessive pronoun of the determiner phrase.
-	 * @return The possessive pronoun of a determiner phrase (such as "my", "your", etc.).
+	 * Gets the {@link PronounPossessive} of the determiner phrase.
+	 * @return The {@link PronounPossessive} of a determiner phrase (such as "my", "your", etc.) wrapped in an {@link Optional}, if present, otherwise an empty {@link Optional}.
 	 */
 	public Optional<PronounPossessive> getPossessive() {
 		return this.possessive;
 	}
 	
 	/**
-	 * Sets the possessive pronoun of the determiner phrase.
-	 * @param possessive The possessive pronoun of the determiner phrase.
+	 * Sets the {@link PronounPossessive} of the {@link DeterminerPhrase}.
+	 * @param possessive The {@link PronounPossessive} of the {@link DeterminerPhrase}.
 	 */
 	public void setPossessive(PronounPossessive possessive) {
 		this.possessive = Optional.ofNullable(possessive);

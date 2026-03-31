@@ -11,7 +11,15 @@ public final class NLPTokenNotFoundException extends NLPException {
 	 * A generated serial version unique identifier.
 	 */
 	private static final long serialVersionUID = -3694737447654162583L;
+	
+	/**
+	 * The token of which the grammatical syntax element was not found.
+	 */
 	private final long token;
+	
+	/**
+	 * The type of class that should be associated with the token.
+	 */
 	private final Class<?> classType;
 	
 	/**

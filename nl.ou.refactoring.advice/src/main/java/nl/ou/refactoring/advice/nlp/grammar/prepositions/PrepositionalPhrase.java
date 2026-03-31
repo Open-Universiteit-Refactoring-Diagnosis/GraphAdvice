@@ -14,6 +14,8 @@ public class PrepositionalPhrase extends Phrase {
 	
 	/**
 	 * Initialises a new instance of {@link PrepositionalPhrase}.
+	 * @param preposition The main {@link Preposition} of the phrase.
+	 * @param nounPhrase A Noun Phrase that is linked to the Preposition.
 	 * @throws ArgumentNullException Thrown if preposition or nounPhrase is null.
 	 */
 	public PrepositionalPhrase(Preposition preposition, NounPhrase nounPhrase)

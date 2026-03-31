@@ -14,8 +14,19 @@ import nl.ou.refactoring.advice.nlp.tokens.Tokens;
  * @param <T> The type of entity that is being referred to.
  */
 public final class ReferenceNoun<T> extends Noun {
+	/**
+	 * The generic token for a {@link ReferenceNoun}.
+	 */
 	public static long TOKEN = Tokens.Nouns.REFERENCE;
+	
+	/**
+	 * The referenced item.
+	 */
 	private final T reference;
+	
+	/**
+	 * A function that generates the caption for the referenced item.
+	 */
 	private final Function<T, String> captionFunction;
 	
 	/**

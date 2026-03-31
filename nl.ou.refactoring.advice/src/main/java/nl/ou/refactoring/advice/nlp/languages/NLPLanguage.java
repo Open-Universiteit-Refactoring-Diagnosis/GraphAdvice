@@ -14,13 +14,14 @@ import nl.ou.refactoring.advice.nlp.grammar.nouns.Noun;
 public interface NLPLanguage {
 	/**
 	 * Gets a supplier for the grammatical gender of the specified noun.
+	 * @param noun The {@link Noun} of which to determine its {@link GrammaticalGender}.
 	 * @return {@link Supplier} The supplier for the grammatical gender of the specified noun, if found wrapped in an {@link Optional}, otherwise an empty {@link Optional}.
 	 */
 	Supplier<GrammaticalGender> getGenderSupplier(Noun noun);
 	
 	/**
 	 * Visits a {@link Sentence} to provide a Natural Language Processing result.
-	 * @param phrase The sentence to visit.
+	 * @param sentence The {@link Sentence} to visit.
 	 * @return The {@link NLPResult} that contains the result of Natural Language Processing.
 	 */
 	NLPResult visit(Sentence sentence);

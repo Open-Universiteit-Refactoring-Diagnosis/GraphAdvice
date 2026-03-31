@@ -15,7 +15,6 @@ public final class ProperNoun extends Noun {
 	 * Initialises a new instance of {@link ProperNoun}.
 	 * @param token The token that represents the Proper Noun.
 	 * @param semanticClassification The Semantic Classification of the Proper Noun.
-	 * @param gender The Grammatical Gender of the Proper Noun.
 	 */
 	public ProperNoun(long token, SemanticClassification semanticClassification) {
 		super(

@@ -10,6 +10,8 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 /**
  * A lookup tree with a stem.
  * @param <Key> The type of lookup key.
+ * @param <ValueType> The type of value of the tree's root node.
+ * @param <ChildValueType> The type of value of the tree's root node's child nodes.
  */
 public class LookupStemTree<Key, ValueType, ChildValueType>
 		extends LookupTree<Key, ValueType, ChildValueType, LookupStemTreeNode<Key, ValueType, ChildValueType, ?>> {
@@ -19,7 +21,7 @@ public class LookupStemTree<Key, ValueType, ChildValueType>
 	 * Initialises a new instance of {@link LookupStemTree}.
 	 * @param stemSupplier Supplies the stem value of the lookup tree.
 	 * @param root The root node of the lookup tree.
-	 * @throws ArgumentNullException Thrown if stem or root is null.
+	 * @throws ArgumentNullException Thrown if stemSupplier or root is null.
 	 */
 	public LookupStemTree(Supplier<String> stemSupplier, LookupStemTreeNode<Key, ValueType, ChildValueType, ?> root)
 			throws ArgumentNullException {

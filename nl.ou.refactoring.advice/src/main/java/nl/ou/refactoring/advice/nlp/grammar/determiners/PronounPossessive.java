@@ -10,13 +10,31 @@ import nl.ou.refactoring.advice.nlp.tokens.Tokens;
  */
 public final class PronounPossessive
 		implements DeterminerWithToken {
+	/**
+	 * The generic token for a Possessive Pronoun.
+	 */
 	public static final long TOKEN = Tokens.Determiners.POSSESSIVE_PRONOUN;
+	
+	/**
+	 * The proper grammatical person of the Possessive Pronoun.
+	 */
 	private final GrammaticalPerson person;
+	
+	/**
+	 * The proper grammatical gender of the Possessive Pronoun.
+	 */
 	private final GrammaticalGender gender;
+	
+	/**
+	 * The proper grammatical number of the Possessive Pronoun.
+	 */
 	private final GrammaticalNumber number;
 	
 	/**
 	 * Initialises a new instance of {@link PronounPossessive}.
+	 * @param person The proper grammatical person of the Possessive Pronoun.
+	 * @param gender The proper grammatical gender of the Possessive Pronoun.
+	 * @param number The proper grammatical number of the Possessive Pronoun.
 	 */
 	public PronounPossessive(GrammaticalPerson person, GrammaticalGender gender, GrammaticalNumber number) {
 		this.person = person;

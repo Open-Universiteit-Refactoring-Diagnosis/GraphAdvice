@@ -61,8 +61,8 @@ public final class Sentence implements SyntaxElement {
 	}
 	
 	/**
-	 * 
-	 * @param prepositionalPhrase
+	 * Sets the Prepositional Phrase of the Sentence.
+	 * @param prepositionalPhrase The Prepositional Phrase of the Sentence.
 	 */
 	public void setPrepositionalPhrase(PrepositionalPhrase prepositionalPhrase) {
 		this.prepositionalPhrase = Optional.ofNullable(prepositionalPhrase);

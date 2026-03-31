@@ -12,6 +12,9 @@ public final class GraphNodeMicrostepClassMissingException extends GraphValidati
 	 */
 	private static final long serialVersionUID = -3927082807823439185L;
 	
+	/**
+	 * The delinquent microstep node.
+	 */
 	private final GraphNodeMicrostep microstepNode;
 
 	/**

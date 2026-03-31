@@ -9,6 +9,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
+import nl.ou.refactoring.advice.nlp.grammar.Sentence;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 
 /**
@@ -19,6 +20,7 @@ public final class LexicalVerb extends Verb {
 	 * Initialises a new instance of {@link LexicalVerb}.
 	 * @param token The token that represents a particular Lexical Verb.
 	 * @param transitivity The transitivity of the Lexical Verb.
+	 * @param phrase The {@link VerbPhrase} that contains this {@link LexicalVerb}.
 	 * @throws ArgumentMembershipException Thrown if the token is not associated with a Lexical Verb.
 	 * @throws ArgumentNullException Thrown if phrase is null.
 	 */

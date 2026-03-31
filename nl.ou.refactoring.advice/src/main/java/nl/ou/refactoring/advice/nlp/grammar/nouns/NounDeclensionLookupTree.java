@@ -14,6 +14,7 @@ public final class NounDeclensionLookupTree<ValueType>
 	/**
 	 * Initialises a new instance of {@link stem}.
 	 * @param stemSupplier The stem of the Noun.
+	 * @param root The root node of the lookup tree.
 	 * @throws ArgumentNullException Thrown if stemSupplier is null.
 	 */
 	public NounDeclensionLookupTree(Supplier<String> stemSupplier, NounDeclensionLookupTreeNode<Void, ValueType> root)

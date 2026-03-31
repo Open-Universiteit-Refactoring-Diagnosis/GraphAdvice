@@ -1,5 +1,8 @@
 package nl.ou.refactoring.advice.nlp.grammar;
 
+/**
+ * Represents a Grammatical Register in a Natural Language grammar.
+ */
 public enum GrammaticalRegister {
 	/**
 	 * The deferential register (e.g. 하소서체, hasoseoche in Korean).
