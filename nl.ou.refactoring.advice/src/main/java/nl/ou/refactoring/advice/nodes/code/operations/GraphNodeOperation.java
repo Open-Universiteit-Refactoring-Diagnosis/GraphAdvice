@@ -49,7 +49,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
 		super(graph);
 		this.operationNameEdge =
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				operationName,
 				(source, destination) -> new GraphEdgeHas(source, destination),
@@ -64,7 +64,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 				throw new GraphNodeOperationParameterNullReferenceException(this, 0);
 			}
 			this.operationParameterHead =
-				this.graph.getOrAddEdge(
+				this.graph.computeEdge(
 					this,
 					operationParameters.get(0),
 					(source, destination) -> new GraphEdgeHas(source, destination),
@@ -177,7 +177,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	public GraphEdgeIs hasReturnType(GraphNodeType typeNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(typeNode, "typeNode");
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				typeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
@@ -193,7 +193,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	public GraphEdgeHas hasBody(GraphNodeBlock blockNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(blockNode, "blockNode");
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				blockNode,
 				(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -267,8 +267,8 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 		// Check Class.
 		final var classNodeThis = this.getClassNode();
 		final var classNodeOther = operationNode.getClassNode();
-		if (classNodeThis == null || classNodeOther == null ||
-			!classNodeThis.getClassName().equals(classNodeOther.getClassName())) {
+		if (classNodeThis.isEmpty() || classNodeOther.isEmpty() ||
+			!classNodeThis.get().getClassName().equals(classNodeOther.get().getClassName())) {
 			return false;
 		}
 		

@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
@@ -33,13 +35,28 @@ public final class GraphNodeMicrostepRemoveField extends GraphNodeMicrostep {
 		return
 			this
 				.graph
-				.getOrAddEdge
+				.computeEdge
 				(
 					this,
 					attributeNode,
 					(source, destination) -> new GraphEdgeRemoves(source, destination),
 					GraphEdgeRemoves.class
 				);
+	}
+	
+	/**
+	 * Gets the node that represents the attribute/field that is being removed.
+	 * @return The node that represents the attribute/field that is being removed.
+	 */
+	public Optional<GraphNodeAttribute> getAttributeNode() {
+		return
+			this
+				.getEdges(GraphEdgeRemoves.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(GraphNodeAttribute.class::isInstance)
+				.map(GraphNodeAttribute.class::cast)
+				.findAny();
 	}
 
 	@Override

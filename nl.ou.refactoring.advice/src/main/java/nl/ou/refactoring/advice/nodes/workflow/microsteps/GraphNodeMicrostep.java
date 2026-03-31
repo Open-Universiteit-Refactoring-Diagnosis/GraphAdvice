@@ -9,7 +9,9 @@ import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflowAction;
+import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * Represents a microstep in a Refactoring Advice Graph.
@@ -33,23 +35,35 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 	 */
 	public GraphEdgeCauses causes(GraphNodeRisk risk)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
-				this,
-				risk,
-				(source, destination) -> new GraphEdgeCauses(source, destination),
-				GraphEdgeCauses.class);
+		return
+			this
+				.graph
+				.computeEdge(
+					this,
+					risk,
+					(source, destination) -> new GraphEdgeCauses(source, destination),
+					GraphEdgeCauses.class
+				);
 	}
 	
 	/**
 	 * Finalises the refactoring.
 	 * @return An edge {@link GraphEdgeFinalises} that finalises the refactoring.
 	 */
-	public GraphEdgeFinalises finalises() {
-		return this.graph.getOrAddEdge(
-				this,
-				this.graph.getStart(),
-				(source, destination) -> new GraphEdgeFinalises(source, destination),
-				GraphEdgeFinalises.class);
+	public GraphEdgeFinalises finalises() throws RefactoringMustContainStartNodeException {
+		final var startNodeOptional = this.graph.getStart();
+		if (startNodeOptional.isEmpty()) {
+			throw new RefactoringMustContainStartNodeException();
+		}
+		return
+			this
+				.graph
+				.computeEdge(
+					this,
+					startNodeOptional.get(),
+					(source, destination) -> new GraphEdgeFinalises(source, destination),
+					GraphEdgeFinalises.class
+				);
 	}
 	
 	/**
@@ -60,26 +74,30 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 	 */
 	public GraphEdgeObsolesces obsolesces(GraphNodeRisk risk)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
-				this,
-				risk,
-				(source, destination) -> new GraphEdgeObsolesces(source, destination),
-				GraphEdgeObsolesces.class);
+		return
+			this
+				.graph
+				.computeEdge(
+					this,
+					risk,
+					(source, destination) -> new GraphEdgeObsolesces(source, destination),
+					GraphEdgeObsolesces.class
+				);
 	}
 	
 	/**
 	 * Gets the risks associated with this microstep.
-	 * @return The risks associated with this microstep.
+	 * @return The risks associated with this microstep in an unmodifiable {@link Set<GraphNodeRisk>}.
 	 */
 	public Set<GraphNodeRisk> getRisks() {
 		return
-				this
-					.getEdges(GraphEdgeCauses.class)
-					.stream()
-					.map(edge -> edge.getDestinationNode())
-					.filter(node -> node instanceof GraphNodeRisk)
-					.map(node -> (GraphNodeRisk)node)
-					.collect(Collectors.toUnmodifiableSet());
+			this
+				.getEdges(GraphEdgeCauses.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeRisk)
+				.map(node -> (GraphNodeRisk)node)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	/**
@@ -88,15 +106,16 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 	 */
 	public Set<GraphNodeRisk> getDangers() {
 		return
-				this
-					.getRisks()
-					.stream()
-					.filter(node -> node.getNeutralisers().size() == 0)
-					.collect(Collectors.toUnmodifiableSet());
+			this
+				.getRisks()
+				.stream()
+				// TODO determine whether the risk really has been neutralised
+				.filter(node -> node.getNeutralisers().isEmpty())
+				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	@Override
 	public String getLabel() {
-		return "Microstep";
+		return ResourceProvider.GraphNodeLabels.getLabel(GraphNodeMicrostep.class);
 	}
 }

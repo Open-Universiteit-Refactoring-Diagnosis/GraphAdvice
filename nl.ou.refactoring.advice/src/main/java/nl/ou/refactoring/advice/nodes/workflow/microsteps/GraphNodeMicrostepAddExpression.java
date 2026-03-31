@@ -33,7 +33,7 @@ public final class GraphNodeMicrostepAddExpression extends GraphNodeMicrostep {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					statementExpressionNode,
 					(sourceNode, destinationNode) -> new GraphEdgeAdds(sourceNode, destinationNode),

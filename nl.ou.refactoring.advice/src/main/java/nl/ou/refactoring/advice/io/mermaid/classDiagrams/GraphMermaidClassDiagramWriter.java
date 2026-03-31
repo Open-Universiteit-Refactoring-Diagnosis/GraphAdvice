@@ -10,6 +10,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.io.GraphWriterException;
+import nl.ou.refactoring.advice.io.GraphWriterMemberOwningClassMissingException;
 import nl.ou.refactoring.advice.io.mermaid.GraphMermaidWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
@@ -164,7 +165,7 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		return switch(codeNode) {
 			case GraphNodePackage pkg -> pkg;
 			case GraphNodeClass cls -> cls;
-			case GraphNodeClassMember member -> member.getClassNode();
+			case GraphNodeClassMember member -> member.getClassNode().orElseThrow(() -> new GraphWriterMemberOwningClassMissingException(member));
 			default -> codeNode;
 		};
 	}

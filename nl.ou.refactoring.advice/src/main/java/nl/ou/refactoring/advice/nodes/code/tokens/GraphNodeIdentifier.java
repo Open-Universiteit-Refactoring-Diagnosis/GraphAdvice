@@ -85,7 +85,7 @@ public final class GraphNodeIdentifier
 	public GraphEdgeReferences references(GraphNodeAttribute attributeNode) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(attributeNode, "attributeNode");
 		return
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				attributeNode,
 				(source, destination) -> new GraphEdgeReferences(source, destination),

@@ -43,14 +43,14 @@ public final class GraphNodeFieldAccessPrimary
 		ArgumentGuard.requireNotNull(identifier, "identifier");
 		super(graph);
 		this.primaryExpressionEdge =
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				primaryExpression,
 				(source, destination) -> new GraphEdgeHas(source, destination),
 				GraphEdgeHas.class
 			);
 		this.identifierEdge =
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				identifier,
 				(source, destination) -> new GraphEdgeHas(source, destination),

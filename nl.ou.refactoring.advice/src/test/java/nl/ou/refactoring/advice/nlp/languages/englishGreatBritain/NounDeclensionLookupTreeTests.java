@@ -1,0 +1,37 @@
+package nl.ou.refactoring.advice.nlp.languages.englishGreatBritain;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
+import nl.ou.refactoring.advice.nlp.grammar.GrammaticalRegister;
+import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
+
+public final class NounDeclensionLookupTreeTests {
+	@DisplayName("Should look up the correct declension of a noun")
+	@ParameterizedTest
+	@MethodSource("lookupDefaultTestParameters")
+	public void lookupDefaultTests(String stem, NounDeclensionKey key, String expected) {
+		final var lookupTree = NLPLanguageEnglishGreatBritain.NOUN_DECLENSION_DEFAULT.apply(stem);
+		final var actualOptional = lookupTree.lookup(key);
+		assertTrue(actualOptional.isPresent());
+		assertEquals(expected, actualOptional.get());
+	}
+	
+	public static Stream<Arguments> lookupDefaultTestParameters() {
+		return
+			Stream.of(
+				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.SINGULAR, GrammaticalRegister.PLAIN), "land"),
+				Arguments.of("land", new NounDeclensionKey(GrammaticalNumber.PLURAL, GrammaticalRegister.PLAIN), "lands"),
+				Arguments.of("water", new NounDeclensionKey(GrammaticalNumber.SINGULAR, GrammaticalRegister.PLAIN), "water"),
+				Arguments.of("water", new NounDeclensionKey(GrammaticalNumber.PLURAL, GrammaticalRegister.PLAIN), "waters")
+			);
+	}
+}

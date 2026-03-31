@@ -45,7 +45,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		ArgumentGuard.requireNotNull(className, "className");
 		super(graph);
 		this.classNameEdge =
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				className,
 				(source, destination) -> new GraphEdgeHas(source, destination),
@@ -95,7 +95,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					classNode,
 					(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -114,7 +114,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					attributeNode,
 					(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -134,7 +134,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					operationNode,
 					(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -153,7 +153,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					generalisedClassNode,
 					(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
@@ -172,7 +172,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					interfaceNode,
 					(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
@@ -361,9 +361,9 @@ public final class GraphNodeClass extends GraphNodeCode {
 	
 	/**
 	 * Attempts to get a package node associated with this class, indicating that the package contains the class.
-	 * @return The package node associated with this class, representing the package that contains the class. If no association is found, returns null.
+	 * @return The package node associated with this class wrapped in {@link Optional<GraphNodePackage>}, representing the package that contains the class. If no association is found, returns an empty {@link Optional<GraphNodePackage>}.
 	 */
-	public GraphNodePackage getPackageNode() {
+	public Optional<GraphNodePackage> getPackageNode() {
 		return
 			this
 				.getEdgesIncoming(GraphEdgeHas.class)
@@ -371,8 +371,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 				.map(edge -> edge.getSourceNode())
 				.filter(node -> node instanceof GraphNodePackage)
 				.map(GraphNodePackage.class::cast)
-				.findAny()
-				.orElse(null);
+				.findAny();
 	}
 	
 	/**

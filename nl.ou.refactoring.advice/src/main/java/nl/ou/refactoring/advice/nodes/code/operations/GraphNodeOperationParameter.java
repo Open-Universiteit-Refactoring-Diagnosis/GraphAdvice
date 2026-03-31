@@ -78,7 +78,7 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 	 */
 	public GraphEdgeIs is(GraphNodeType typeNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				typeNode,
 				(sourceNode, destinationNode) -> new GraphEdgeIs(sourceNode, destinationNode),
@@ -92,7 +92,7 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 	 */
 	public GraphEdgeList hasNext(GraphNodeOperationParameter operationParameterNode) {
 		ArgumentGuard.requireNotNull(operationParameterNode, "operationParameterNode");
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 			this,
 			operationParameterNode,
 			(source, destination) -> new GraphEdgeList(source, destination),

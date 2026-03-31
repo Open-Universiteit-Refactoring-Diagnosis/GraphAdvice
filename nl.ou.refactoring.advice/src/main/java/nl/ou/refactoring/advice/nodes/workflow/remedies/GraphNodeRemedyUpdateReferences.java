@@ -29,7 +29,7 @@ public final class GraphNodeRemedyUpdateReferences extends GraphNodeRemedy {
 	 */
 	public GraphEdgeMitigates mitigates(GraphNodeRiskMissingDefinition missingDefinition)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				missingDefinition,
 				(source, destination) -> new GraphEdgeMitigates(source, destination),

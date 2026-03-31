@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.integrationTests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -13,6 +14,10 @@ import nl.ou.refactoring.advice.GraphTemplates;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
+import nl.ou.refactoring.advice.nlp.languages.dutchNetherlands.NLPLanguageDutchNetherlands;
+import nl.ou.refactoring.advice.nlp.languages.englishGreatBritain.NLPLanguageEnglishGreatBritain;
+import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
+import nl.ou.refactoring.advice.nlp.processors.NLPGrammarProcessor;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
@@ -37,13 +42,27 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		ParameterDeclarations parameters,
 		ExtensionContext context
 	) throws RefactoringMayContainOnlyOneStartNodeException, ArgumentNullException, GraphReaderException {
-		return
-			Stream.of(
+		final var argumentsList = new ArrayList<Arguments>();
+		
+		final var graphs =
+			List.of(
 				moveFieldFromClassToClassReferenceWithinSourceClass(),
 				moveMethodFromClassToClassInvocationInSourceClass(),
 				moveMethodFromClassToClassInvocationOutsideClass()
-			)
-			.map(Arguments::of);
+			);
+		
+		final var nlpProcessors =
+			List.of(
+				new NLPConcatenationProcessor(),
+				new NLPGrammarProcessor(NLPLanguageDutchNetherlands.INSTANCE),
+				new NLPGrammarProcessor(NLPLanguageEnglishGreatBritain.INSTANCE)
+			);
+		
+		for (final var graph : graphs) {
+			argumentsList.add(Arguments.of(graph, nlpProcessors));
+		}
+		
+		return argumentsList.stream();
 	}
 	
 	private static Graph moveFieldFromClassToClassReferenceWithinSourceClass() throws GraphReaderException {
@@ -64,11 +83,15 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		
 		/* Introduce code nodes and edges. */
 		final var classLoader = RefactoringTestsArgumentsProvider.class.getClassLoader();
-		final var alphaReader = ResourceProvider.getReader(classLoader, "refactorings/moveField/Alpha.java");
-		final var betaReader = ResourceProvider.getReader(classLoader, "refactorings/moveField/Beta.java"); 
-		var graphJavaReader = new GraphJavaReader(graph, alphaReader);
+		final var alphaFileNameFull = "refactorings/moveField/Alpha.java";
+		final var alphaFileName = "Alpha.java";
+		final var alphaReader = ResourceProvider.getReader(classLoader, alphaFileNameFull);
+		final var betaFileNameFull = "refactorings/moveField/Beta.java";
+		final var betaFileName = "Beta.java";
+		final var betaReader = ResourceProvider.getReader(classLoader, betaFileNameFull); 
+		var graphJavaReader = new GraphJavaReader(graph, alphaReader, alphaFileNameFull, alphaFileName);
 		graphJavaReader.read();
-		graphJavaReader = new GraphJavaReader(graph, betaReader);
+		graphJavaReader = new GraphJavaReader(graph, betaReader, betaFileNameFull, betaFileName);
 		graphJavaReader.read();
 		
 		final var alphaClassNode =
@@ -99,7 +122,6 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
 		removeFieldMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(alphaBarOperationNode);
-		missingDefinitionRiskNode.affects(alphaTwoAttributeNode);
 		
 		return graph;
 	}
@@ -162,7 +184,6 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
 		removeMethodMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(alphaBarOperationNode);
-		missingDefinitionRiskNode.affects(alphaFooOperationNode);
 		
 		return graph;
 	}
@@ -232,7 +253,6 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
 		removeMethodMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(gammaCallerOperationNode);
-		missingDefinitionRiskNode.affects(alphaFooOperationNode);
 		
 		return graph;
 	}

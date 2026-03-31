@@ -128,7 +128,7 @@ public final class GraphTests {
 		
 		// Act
 		final var edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
-		graph.getOrAddEdge(
+		graph.computeEdge(
 				start,
 				createMethod,
 				(source, destination) -> new GraphEdgeInitiates(source, destination),
@@ -154,13 +154,13 @@ public final class GraphTests {
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		
 		// Act
-		graph.getOrAddEdge(
+		graph.computeEdge(
 				createMethod,
 				removeMethod,
 				(source, destination) -> new GraphEdgePrecedes(source, destination),
 				GraphEdgePrecedes.class);
 		final var edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
-		graph.getOrAddEdge(
+		graph.computeEdge(
 				createMethod,
 				removeMethod,
 				(source, destination) -> new GraphEdgePrecedes(source, destination),

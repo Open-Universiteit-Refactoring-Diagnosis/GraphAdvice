@@ -30,7 +30,7 @@ public final class GraphNodeRiskMissingAbstractImplementation extends GraphNodeR
 	 */
 	public GraphEdgeAffects affects(GraphNodeOperation operationNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				operationNode,
 				(source, destination) -> new GraphEdgeAffects(source, destination),

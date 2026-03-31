@@ -108,7 +108,7 @@ public abstract class GraphNodeStatement extends GraphNodeCode {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 						this,
 						next,
 						(source, destination) -> new GraphEdgeList(source, destination),

@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
@@ -31,30 +33,29 @@ public final class GraphNodeMicrostepAddMethod extends GraphNodeMicrostep {
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(operationNode, "operationNode");
 		return
-				this
-					.graph
-					.getOrAddEdge(
-							this,
-							operationNode,
-							(source, destination) -> new GraphEdgeAdds(source, destination),
-							GraphEdgeAdds.class
-					);
+			this
+				.graph
+				.computeEdge(
+					this,
+					operationNode,
+					(source, destination) -> new GraphEdgeAdds(source, destination),
+					GraphEdgeAdds.class
+				);
 	}
 	
 	/**
 	 * Gets the {@link GraphNodeOperation} node that represents the operation that is added by the microstep.
-	 * @return The {@link GraphNodeOperation} node that represents the operation that is added by the microstep, or null if there is none.
+	 * @return The {@link GraphNodeOperation} node that represents the operation that is added by the microstep, wrapped in an {@link Optional<GraphNodeOperation>}, or an empty {@link Optional<GraphNodeOperation>} if there is none.
 	 */
-	public GraphNodeOperation getOperationNode() {
+	public Optional<GraphNodeOperation> getOperationNode() {
 		return
-				this
-					.getEdges(GraphEdgeAdds.class)
-					.stream()
-					.map(edge -> edge.getDestinationNode())
-					.filter(node -> node instanceof GraphNodeOperation)
-					.map(GraphNodeOperation.class::cast)
-					.findAny()
-					.orElse(null);
+			this
+				.getEdges(GraphEdgeAdds.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeOperation)
+				.map(GraphNodeOperation.class::cast)
+				.findAny();
 	}
 
 	@Override

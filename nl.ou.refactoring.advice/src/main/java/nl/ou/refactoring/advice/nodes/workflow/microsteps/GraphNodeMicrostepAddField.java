@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
@@ -33,7 +35,7 @@ public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					attributeNode,
 					(source, destination) -> new GraphEdgeAdds(source, destination),
@@ -43,9 +45,9 @@ public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
 	
 	/**
 	 * Gets the {@link GraphNodeAttribute} node that represents the attribute that is added by the microstep.
-	 * @return The {@link GraphNodeAttribute} node that represents the attribute that is added by the microstep, or null if there is none.
+	 * @return The {@link GraphNodeAttribute} node that represents the attribute that is added by the microstep wrapped in {@link Optional<GraphNodeAttribute>}, or an empty {@link Optional<GraphNodeAttribute>} if there is none.
 	 */
-	public GraphNodeAttribute getAttributeNode() {
+	public Optional<GraphNodeAttribute> getAttributeNode() {
 		return
 			this
 				.getEdges(GraphEdgeAdds.class)
@@ -53,8 +55,7 @@ public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
 				.map(edge -> edge.getDestinationNode())
 				.filter(node -> node instanceof GraphNodeAttribute)
 				.map(GraphNodeAttribute.class::cast)
-				.findAny()
-				.orElse(null);
+				.findAny();
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
+import java.util.Optional;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
@@ -31,12 +33,27 @@ public final class GraphNodeMicrostepRemoveClass extends GraphNodeMicrostep {
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(classNode, "classNode");
 		return
-			this.graph.getOrAddEdge(
+			this.graph.computeEdge(
 				this,
 				classNode,
 				(source, destination) -> new GraphEdgeRemoves(source, destination),
 				GraphEdgeRemoves.class
 			);
+	}
+	
+	/**
+	 * Gets the node that represents the class that is being removed by this microstep.
+	 * @return The node that represents the class that is being removed by this microstep.
+	 */
+	public Optional<GraphNodeClass> getClassNode() {
+		return
+			this
+				.getEdges(GraphEdgeRemoves.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(GraphNodeClass.class::isInstance)
+				.map(GraphNodeClass.class::cast)
+				.findAny();
 	}
 
 	@Override

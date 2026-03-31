@@ -48,7 +48,7 @@ public final class GraphNodeMethodInvocationExpression
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					operationNode,
 					(sourceNode, destinationNode) -> new GraphEdgeInvokes(sourceNode, destinationNode),

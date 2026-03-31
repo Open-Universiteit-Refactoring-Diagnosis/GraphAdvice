@@ -31,8 +31,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
 	public Stream<? extends Arguments> provideArguments
 	(
-			ParameterDeclarations parameters,
-			ExtensionContext context
+		ParameterDeclarations parameters,
+		ExtensionContext context
 	) throws RefactoringMayContainOnlyOneStartNodeException {
 		return
 				Stream.of(

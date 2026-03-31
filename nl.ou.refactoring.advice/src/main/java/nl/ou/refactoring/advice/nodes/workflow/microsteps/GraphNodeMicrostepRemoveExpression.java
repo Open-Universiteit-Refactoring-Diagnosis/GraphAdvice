@@ -33,7 +33,7 @@ public final class GraphNodeMicrostepRemoveExpression extends GraphNodeMicrostep
 		return
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					statementExpressionNode,
 					(sourceNode, destinationNode) -> new GraphEdgeRemoves(sourceNode, destinationNode),

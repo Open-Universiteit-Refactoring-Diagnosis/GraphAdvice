@@ -36,7 +36,7 @@ public final class GraphNodeRefactoringStart extends GraphNodeWorkflow {
 	 */
 	public GraphEdgeInitiates initiates(GraphNodeWorkflow workflowStep)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 				this,
 				workflowStep,
 				(source, destination) -> new GraphEdgeInitiates(source, destination),

@@ -47,6 +47,7 @@ public class GraphJsonReader implements GraphReader {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Graph read() throws GraphReaderException {
 		try {
 			this.reader.reset();
@@ -96,7 +97,7 @@ public class GraphJsonReader implements GraphReader {
 						throw new RuntimeException(exception);
 					}
 					
-					graph.getOrAddEdge(
+					graph.computeEdge(
 							node,
 							nodeTo,
 							(_, _) -> this.constructEdge(edgeClass, node, nodeTo),
@@ -108,6 +109,7 @@ public class GraphJsonReader implements GraphReader {
 		return graph;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private <TEdge extends GraphEdge> TEdge constructEdge
 	(
 		final Class<TEdge> edgeClassType,

@@ -43,7 +43,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 		this.packageNameEdge =
 			this
 				.graph
-				.getOrAddEdge(
+				.computeEdge(
 					this,
 					packageName,
 					(source, destination) -> new GraphEdgeHas(source, destination),
@@ -119,7 +119,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 */
 	public GraphEdgeHas has(GraphNodePackage packageNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 			this,
 			packageNode,
 			(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -135,7 +135,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 */
 	public GraphEdgeHas has(GraphNodeClass classNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 			this,
 			classNode,
 			(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
@@ -151,7 +151,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 	 */
 	public GraphEdgeHas has(GraphNodeInterface interfaceNode)
 			throws ArgumentNullException {
-		return this.graph.getOrAddEdge(
+		return this.graph.computeEdge(
 			this,
 			interfaceNode,
 			(sourceNode, destinationNode) -> new GraphEdgeHas(sourceNode, destinationNode),
