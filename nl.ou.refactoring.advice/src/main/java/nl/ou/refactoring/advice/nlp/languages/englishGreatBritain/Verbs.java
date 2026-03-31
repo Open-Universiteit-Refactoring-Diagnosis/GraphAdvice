@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.nlp.languages.englishGreatBritain;
 
 import java.util.Set;
 
+import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
@@ -50,6 +51,7 @@ class Verbs {
 				Set.of(GrammaticalPerson.FIRST, GrammaticalPerson.SECOND),
 				k -> k.person()
 			);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalPerson, ?, ?>)unmarkedPersonNode);
 		
 		// First/Second: MODALITY
 		final var unmarkedPersonSubjunctiveImperativeNode =
@@ -132,6 +134,7 @@ class Verbs {
 				Set.of(GrammaticalPerson.THIRD),
 				k -> k.person()
 			);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalPerson, ?, ?>)thirdPersonNode);
 		
 		// Third Person: NUMBER
 		final var thirdPersonSingularNode =
@@ -263,7 +266,6 @@ class Verbs {
 			);
 		thirdPersonPluralPresentImperfectiveIndicativeNode.putIfAbsent(thirdPersonPluralPresentImperfectiveIndicativeActiveNode);
 		thirdPersonPluralPresentImperfectiveIndicativeActiveNode.putIfAbsent(BASE_FORM_CONJUGATION_NODE);
-		rootNode.putIfAbsent(thirdPersonNode);
 		
 		return rootNode;
 	}

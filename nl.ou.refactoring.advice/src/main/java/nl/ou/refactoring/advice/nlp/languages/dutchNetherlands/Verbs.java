@@ -2,8 +2,10 @@ package nl.ou.refactoring.advice.nlp.languages.dutchNetherlands;
 
 import java.util.Set;
 
+import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationLookupTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationProducer;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
@@ -36,7 +38,7 @@ class Verbs {
 				Set.of(GrammaticalNumber.SINGULAR),
 				k -> k.number()
 			);
-		rootNode.putIfAbsent(singularNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalNumber, ?, ?>)singularNode);
 		
 		// Third Person (Singular)
 		final var singularThirdPersonNode =
