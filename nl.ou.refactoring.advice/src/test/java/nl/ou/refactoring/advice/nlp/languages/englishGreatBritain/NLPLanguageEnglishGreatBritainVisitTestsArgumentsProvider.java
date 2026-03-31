@@ -89,7 +89,7 @@ public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider imp
 		);
 		sentence.setVerbPhrase(verbPhrase);
 		
-		final var nlpResult = new NLPResult("method is added to class", new HashMap<String, GraphNode>());
+		final var nlpResult = new NLPResult("Method is added to class.", new HashMap<String, GraphNode>());
 		return Pair.with(sentence, nlpResult);
 	}
 	
@@ -141,7 +141,7 @@ public final class NLPLanguageEnglishGreatBritainVisitTestsArgumentsProvider imp
 		final var references = new HashMap<String, GraphNode>();
 		final var classNodeIdString = String.format("{%s}", classNode.getId().toString());
 		references.putIfAbsent(classNodeIdString, classNode);
-		final var nlpResult = new NLPResult(String.format("method is added to %s", classNodeIdString), references);
+		final var nlpResult = new NLPResult(String.format("Method is added to %s.", classNodeIdString), references);
 		return Pair.with(sentence, nlpResult);
 	}
 }

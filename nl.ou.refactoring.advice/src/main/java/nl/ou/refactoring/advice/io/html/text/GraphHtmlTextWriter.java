@@ -92,7 +92,10 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 					final var programLocationNode = programLocationNodeOptional.get();
 					final var referenceFileNameFull = programLocationNode.getFileNameFull();
 					final var anchorElement = document.createElement("a");
-					final var link = this.settings.getResourceUrlPrefix().toString() + referenceFileNameFull;
+					final var link =
+						this.settings.getResourceUrlPrefix().toString() +
+							referenceFileNameFull +
+							String.format("#%d:%d", programLocationNode.getLineNumberStart(), programLocationNode.getColumnIndexStart());
 					anchorElement.setAttribute("href", link);
 					anchorElement.setTextContent(referenceNode.getCaption());
 					articleElement.appendChild(anchorElement);

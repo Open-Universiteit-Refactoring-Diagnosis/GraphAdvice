@@ -45,7 +45,35 @@ public final class NLPResult {
 		return this.references;
 	}
 	
-	public NLPResult merge(NLPResult otherResult, String separator) {
+	/**
+	 * Appends a period (.) to the end of the text and returns a new instance of {@link NLPResult}.
+	 * If the text already ends with a period, the identity is returned.
+	 * @return A new instance of {@link NLPResult} with a period appended. If the text already ends with a period, the identity is returned.
+	 */
+	public NLPResult appendPeriod() {
+		if (this.text.endsWith(".")) {
+			return this;
+		}
+		return new NLPResult(this.text + ".", this.references);
+	}
+	
+	/**
+	 * Capitalises the first letter of the text and returns a new instance of {@link NLPResult}.
+	 * @return A new instance of {@link NLPResult} with the first letter capitalised.
+	 */
+	public NLPResult capitaliseFirstLetter() {
+		return new NLPResult(NLPTransformer.capitaliseFirstLetter(this.text), this.references);
+	}
+	
+	/**
+	 * Merges this Natural Language Processing result with the other Natural Language Processing result and interjects the specified separator.
+	 * @param otherResult The other Natural Language Processing result to merge with.
+	 * @param separator The separator to interject between the merged Natural Language Processing results.
+	 * @return A new instance of {@link NLPResult} with a merged text and references map.
+	 * @throws ArgumentNullException Thrown if otherResult or separator is null.
+	 */
+	public NLPResult merge(NLPResult otherResult, String separator)
+			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(otherResult, "otherResult");
 		ArgumentGuard.requireNotNull(separator, "separator");
 		return merge(this, otherResult, separator);

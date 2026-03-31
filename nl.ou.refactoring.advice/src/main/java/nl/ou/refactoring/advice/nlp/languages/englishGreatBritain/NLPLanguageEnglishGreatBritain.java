@@ -65,12 +65,15 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 	private NLPLanguageEnglishGreatBritain() {
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("class"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, GrammaticalGender.MASCULINE);
+		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.FIELD_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("field"));
+		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.FIELD_OO_PROGRAMMING, GrammaticalGender.MASCULINE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.METHOD, NOUN_DECLENSION_DEFAULT.apply("method"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.METHOD, GrammaticalGender.MASCULINE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.MICROSTEP, NOUN_DECLENSION_DEFAULT.apply("microstep"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.MICROSTEP, GrammaticalGender.MASCULINE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.REFACTORING, NOUN_DECLENSION_DEFAULT.apply("refactoring"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.REFACTORING, GrammaticalGender.MASCULINE);
+		prepositions.putIfAbsent(Tokens.Prepositions.FROM_REMOVAL_SEPARATION, "from");
 		prepositions.putIfAbsent(Tokens.Prepositions.IN, "in");
 		prepositions.putIfAbsent(Tokens.Prepositions.TO_TARGET_RECIPIENT, "to");
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Auxiliary.BE, VERB_CONJUGATION_TO_BE);
@@ -102,7 +105,10 @@ public final class NLPLanguageEnglishGreatBritain implements NLPLanguage {
 		if (verbPhrase.isPresent()) {
 			result = result.merge(this.visit(verbPhrase.get()), nounPhrase.isPresent() ? " " : "");
 		}
-		return result;
+		return
+			result
+				.capitaliseFirstLetter()
+				.appendPeriod();
 	}
 	
 	private NLPResult visit(NounPhrase nounPhrase) {

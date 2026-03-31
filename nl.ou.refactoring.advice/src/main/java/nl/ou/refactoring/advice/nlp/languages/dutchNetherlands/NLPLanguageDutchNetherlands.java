@@ -57,14 +57,17 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 	private NLPLanguageDutchNetherlands() {
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("klasse"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, GrammaticalGender.FEMININE);
+		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.FIELD_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("veld"));
+		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.FIELD_OO_PROGRAMMING, GrammaticalGender.NEUTER);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.METHOD, NOUN_DECLENSION_DEFAULT.apply("methode"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.METHOD, GrammaticalGender.FEMININE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.MICROSTEP, NOUN_DECLENSION_DEFAULT.apply("microstap"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.MICROSTEP, GrammaticalGender.MASCULINE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.REFACTORING, NOUN_DECLENSION_DEFAULT.apply("refactoring"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.REFACTORING, GrammaticalGender.MASCULINE);
+		prepositions.putIfAbsent(Tokens.Prepositions.FROM_REMOVAL_SEPARATION, "uit");
 		prepositions.putIfAbsent(Tokens.Prepositions.IN, "in");
-		prepositions.putIfAbsent(Tokens.Prepositions.TO_TARGET_RECIPIENT, "aan");
+		prepositions.putIfAbsent(Tokens.Prepositions.TO_TARGET_RECIPIENT, "toe");
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Auxiliary.BECOME, VERB_CONJUGATION_DEFAULT.apply("word"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.ADD, VERB_CONJUGATION_DEFAULT.apply("voeg"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.CAUSE, VERB_CONJUGATION_DEFAULT.apply("veroorzaak"));
@@ -94,7 +97,10 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 		if (verbPhrase.isPresent()) {
 			result = result.merge(this.visit(verbPhrase.get()), nounPhrase.isPresent() ? " " : "");
 		}
-		return result;
+		return
+			result
+				.capitaliseFirstLetter()
+				.appendPeriod();
 	}
 	
 	private NLPResult visit(NounPhrase nounPhrase) {

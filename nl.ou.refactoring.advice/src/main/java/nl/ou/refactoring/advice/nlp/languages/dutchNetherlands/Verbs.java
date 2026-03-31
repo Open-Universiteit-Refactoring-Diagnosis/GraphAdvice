@@ -14,7 +14,7 @@ class Verbs {
 	private static final VerbConjugationProducer SINGULAR_THIRD_PERSON_ACTIVE_CONJUGATION =
 		(s, _) -> s + "t";
 	private static final VerbConjugationProducer PERFECTIVE_CONJUGATION =
-		(s, _) -> "ge" + s + (s.chars().skip(s.length() - 1).anyMatch(c -> "kfschp".indexOf(c) >= 0) ? "t" : "d");
+		(s, _) -> (s.startsWith("ver") ? "" : "ge") + s + (s.chars().skip(s.length() - 1).anyMatch(c -> "kfschp".indexOf(c) >= 0) ? "t" : "d");
 		
 	private static final VerbConjugationLookupTreeNode<VerbConjugationProducer, Void> SINGULAR_THIRD_PERSON_ACTIVE_CONJUGATION_NODE =
 		new VerbConjugationLookupTreeNode<VerbConjugationProducer, Void>(

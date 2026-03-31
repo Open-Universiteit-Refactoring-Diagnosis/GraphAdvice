@@ -14,3 +14,5 @@ countability
 declensions
 dutch
 declension
+interjects
+interject

@@ -100,10 +100,16 @@ public final class Tokens {
 				new TokenStore<CommonNoun>();
 			
 			/**
-			 * <a href="https://en.wiktionary.org/wiki/class">Class</a>;
+			 * <a href="https://en.wiktionary.org/wiki/class">Class</a>:
 			 * A set of objects having the same behavior (but typically differing in state), or a template defining such a set in terms of its common properties, functions, etc.
 			 */
 			public static final long CLASS_OO_PROGRAMMING = "[common noun] class (OO programming)".hashCode();
+			
+			/**
+			 * <a href="https://en.wiktionary.org/wiki/field">Field</a>:
+			 * A physical or virtual location for the input of information in the form of symbols.
+			 */
+			public static final long FIELD_OO_PROGRAMMING = "[common noun] field (OO programming)".hashCode();
 			
 			/**
 			 * <a href="https://en.wiktionary.org/wiki/method">Method</a>:
@@ -194,6 +200,12 @@ public final class Tokens {
 		private static final TokenStore<Preposition> PREPOSITIONS = new TokenStore<Preposition>();
 		
 		/**
+		 * <a href="https://en.wiktionary.org/wiki/from">from</a>:
+		 * Indicating removal or separation.
+		 */
+		public static final long FROM_REMOVAL_SEPARATION = "[preposition] from (removal or separation)".hashCode();
+		
+		/**
 		 * <a href="https://en.wiktionary.org/wiki/in">in</a>:
 		 * Used to indicate location, inclusion, or position within spatial, temporal or abstract limits.
 		 */
@@ -206,6 +218,7 @@ public final class Tokens {
 		public static final long TO_TARGET_RECIPIENT = "[preposition] to (target or recipient)".hashCode();
 		
 		static {
+			PREPOSITIONS.putIfAbsent(FROM_REMOVAL_SEPARATION, new Preposition(FROM_REMOVAL_SEPARATION));
 			PREPOSITIONS.putIfAbsent(IN, new Preposition(IN));
 			PREPOSITIONS.putIfAbsent(TO_TARGET_RECIPIENT, new Preposition(TO_TARGET_RECIPIENT));
 		}

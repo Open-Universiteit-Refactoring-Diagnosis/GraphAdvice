@@ -20,8 +20,8 @@ class Verbs {
 	}
 	
 	private static String pastPerfectiveOrPassiveConjugation(String stem, VerbConjugationKey conjugation) {
-		if (stem.length() > 2 &&
-			stem.charAt(stem.length() - 2) == 'e') {
+		if (stem.length() > 0 &&
+			stem.charAt(stem.length() - 1) == 'e') {
 			stem += "d";
 		} else {
 			stem += "ed";

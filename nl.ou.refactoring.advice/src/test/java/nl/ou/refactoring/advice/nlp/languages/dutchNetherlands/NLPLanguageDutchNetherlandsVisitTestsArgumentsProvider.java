@@ -87,7 +87,7 @@ public class NLPLanguageDutchNetherlandsVisitTestsArgumentsProvider implements A
 		verbPhrase.setPrepositionalPhrase(prepositionalPhrase);
 		sentence.setVerbPhrase(verbPhrase);
 		
-		final var nlpResult = new NLPResult("methode wordt gevoegd aan klasse", new HashMap<String, GraphNode>());
+		final var nlpResult = new NLPResult("Methode wordt gevoegd toe klasse.", new HashMap<String, GraphNode>());
 		return Pair.with(sentence, nlpResult);
 	}
 	
@@ -138,7 +138,7 @@ public class NLPLanguageDutchNetherlandsVisitTestsArgumentsProvider implements A
 		final var references = new HashMap<String, GraphNode>();
 		final var classNodeIdString = String.format("{%s}", classNode.getId().toString());
 		references.putIfAbsent(classNodeIdString, classNode);
-		final var nlpResult = new NLPResult(String.format("methode wordt gevoegd aan %s", classNodeIdString), references);
+		final var nlpResult = new NLPResult(String.format("Methode wordt gevoegd toe %s.", classNodeIdString), references);
 		return Pair.with(sentence, nlpResult);
 	}
 }
