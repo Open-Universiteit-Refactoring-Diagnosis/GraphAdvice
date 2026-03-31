@@ -27,7 +27,7 @@ class Nouns {
 				Set.of(singularDeclension),
 				_ -> singularDeclension
 			);
-		singularNode.putIfAbsent(singularDeclensionNode);
+		singularNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ? , ?>)singularDeclensionNode);
 		
 		// Plural
 		final var pluralNode =
@@ -42,7 +42,7 @@ class Nouns {
 				Set.of(pluralDeclension),
 				_ -> pluralDeclension
 			);
-		pluralNode.putIfAbsent(pluralDeclensionNode);
+		pluralNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ? , ?>)pluralDeclensionNode);
 		
 		return rootNode;
 	}
@@ -52,7 +52,7 @@ class Nouns {
 		
 		NounDeclensionProducer declension = (s, _) -> String.format("{%s}", s);
 		final var declensionNode = new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(Set.of(declension), _ -> declension);
-		rootNode.putIfAbsent(declensionNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ? , ?>)declensionNode);
 		
 		return rootNode;
 	}

@@ -46,7 +46,7 @@ class Verbs {
 				Set.of(GrammaticalPerson.THIRD),
 				k -> k.person()
 			);
-		singularNode.putIfAbsent(singularThirdPersonNode);
+		singularNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalPerson, ?, ?>)singularThirdPersonNode);
 		
 		// Active (Singular Third Person)
 		final var singularThirdPersonActiveNode =
@@ -54,8 +54,8 @@ class Verbs {
 				Set.of(VerbVoice.ACTIVE, VerbVoice.MIDDLE, VerbVoice.REFLEXIVE),
 				k -> k.voice()
 			);
-		singularThirdPersonNode.putIfAbsent(singularThirdPersonActiveNode);	
-		singularThirdPersonActiveNode.putIfAbsent(SINGULAR_THIRD_PERSON_ACTIVE_CONJUGATION_NODE);		
+		singularThirdPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)singularThirdPersonActiveNode);	
+		singularThirdPersonActiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)SINGULAR_THIRD_PERSON_ACTIVE_CONJUGATION_NODE);		
 		
 		// Passive (Singular Third Person)
 		final var singularThirdPersonPassiveNode =
@@ -63,8 +63,8 @@ class Verbs {
 				Set.of(VerbVoice.PASSIVE),
 				k -> k.voice()
 			);
-		singularThirdPersonNode.putIfAbsent(singularThirdPersonPassiveNode);
-		singularThirdPersonPassiveNode.putIfAbsent(SINGULAR_THIRD_PERSON_PASSIVE_CONJUGATION_NODE);
+		singularThirdPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)singularThirdPersonPassiveNode);
+		singularThirdPersonPassiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)SINGULAR_THIRD_PERSON_PASSIVE_CONJUGATION_NODE);
 		
 		return rootNode;
 	}

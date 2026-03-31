@@ -35,7 +35,7 @@ class Nouns {
 				Set.of(singularDeclension),
 				_ -> singularDeclension
 			);
-		singularNode.putIfAbsent(singularDeclensionNode);
+		singularNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ?, ?>)singularDeclensionNode);
 		
 		// Plural
 		final var pluralNode =
@@ -50,7 +50,7 @@ class Nouns {
 				Set.of(pluralDeclension),
 				_ -> pluralDeclension // TODO modify stem or particle if necessary (e.g. vaat|, vat|en, slee|, slee|ën)
 			);
-		pluralNode.putIfAbsent(pluralDeclensionNode);
+		pluralNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ?, ?>)pluralDeclensionNode);
 		
 		return rootNode;
 	}
