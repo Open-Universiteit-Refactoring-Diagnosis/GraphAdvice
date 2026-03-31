@@ -118,12 +118,11 @@ public class LookupTreeNode<Key, ValueType, ChildValueType, ChildNodeType extend
 	
 	/**
 	 * Puts the child node with the specified value, if it is not already present.
-	 * @param <GrandchildValueType> The type of values of the child node's children.
 	 * @param childNode The child node to put to this tree node.
 	 * @return The child node with the specified value, identical to the childNode parameter's argument.
 	 * @throws ArgumentNullException Thrown if childNode is null.
 	 */
-	public final <GrandchildValueType> ChildNodeType putIfAbsent(ChildNodeType childNode)
+	public final ChildNodeType putIfAbsent(ChildNodeType childNode)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(childNode, "childNode");
 		final var childNodeValues = childNode.getValues();
