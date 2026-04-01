@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.nlp.languages.dutchNetherlands;
 
 import java.util.Set;
 
+import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionLookupTreeNode;
@@ -27,14 +28,14 @@ class Nouns {
 				Set.of(GrammaticalNumber.SINGULAR),
 				k -> k.number()
 			);
-		rootNode.putIfAbsent(singularNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, GrammaticalNumber, ?, ?>)singularNode);
 		NounDeclensionProducer singularDeclension = (s, _) -> s;
 		final var singularDeclensionNode =
 			new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(
 				Set.of(singularDeclension),
 				_ -> singularDeclension
 			);
-		singularNode.putIfAbsent(singularDeclensionNode);
+		singularNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ?, ?>)singularDeclensionNode);
 		
 		// Plural
 		final var pluralNode =
@@ -42,14 +43,14 @@ class Nouns {
 				Set.of(GrammaticalNumber.PLURAL),
 				k -> k.number()
 			);
-		rootNode.putIfAbsent(pluralNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, GrammaticalNumber, ?, ?>)pluralNode);
 		NounDeclensionProducer pluralDeclension = (s, k) -> Nouns.plural(s, k);
 		final var pluralDeclensionNode =
 			new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(
 				Set.of(pluralDeclension),
 				_ -> pluralDeclension // TODO modify stem or particle if necessary (e.g. vaat|, vat|en, slee|, slee|ën)
 			);
-		pluralNode.putIfAbsent(pluralDeclensionNode);
+		pluralNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ?, ?>)pluralDeclensionNode);
 		
 		return rootNode;
 	}

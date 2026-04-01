@@ -2,8 +2,10 @@ package nl.ou.refactoring.advice.nlp.languages.dutchNetherlands;
 
 import java.util.Set;
 
+import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
+import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationKey;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationLookupTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbConjugationProducer;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
@@ -36,7 +38,7 @@ class Verbs {
 				Set.of(GrammaticalNumber.SINGULAR),
 				k -> k.number()
 			);
-		rootNode.putIfAbsent(singularNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalNumber, ?, ?>)singularNode);
 		
 		// Third Person (Singular)
 		final var singularThirdPersonNode =
@@ -44,7 +46,7 @@ class Verbs {
 				Set.of(GrammaticalPerson.THIRD),
 				k -> k.person()
 			);
-		singularNode.putIfAbsent(singularThirdPersonNode);
+		singularNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalPerson, ?, ?>)singularThirdPersonNode);
 		
 		// Active (Singular Third Person)
 		final var singularThirdPersonActiveNode =
@@ -52,8 +54,8 @@ class Verbs {
 				Set.of(VerbVoice.ACTIVE, VerbVoice.MIDDLE, VerbVoice.REFLEXIVE),
 				k -> k.voice()
 			);
-		singularThirdPersonNode.putIfAbsent(singularThirdPersonActiveNode);	
-		singularThirdPersonActiveNode.putIfAbsent(SINGULAR_THIRD_PERSON_ACTIVE_CONJUGATION_NODE);		
+		singularThirdPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)singularThirdPersonActiveNode);	
+		singularThirdPersonActiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)SINGULAR_THIRD_PERSON_ACTIVE_CONJUGATION_NODE);		
 		
 		// Passive (Singular Third Person)
 		final var singularThirdPersonPassiveNode =
@@ -61,8 +63,8 @@ class Verbs {
 				Set.of(VerbVoice.PASSIVE),
 				k -> k.voice()
 			);
-		singularThirdPersonNode.putIfAbsent(singularThirdPersonPassiveNode);
-		singularThirdPersonPassiveNode.putIfAbsent(SINGULAR_THIRD_PERSON_PASSIVE_CONJUGATION_NODE);
+		singularThirdPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)singularThirdPersonPassiveNode);
+		singularThirdPersonPassiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)SINGULAR_THIRD_PERSON_PASSIVE_CONJUGATION_NODE);
 		
 		return rootNode;
 	}

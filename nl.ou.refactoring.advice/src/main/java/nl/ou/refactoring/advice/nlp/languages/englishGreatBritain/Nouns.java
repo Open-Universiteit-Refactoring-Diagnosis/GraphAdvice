@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.nlp.languages.englishGreatBritain;
 
 import java.util.Set;
 
+import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionKey;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.NounDeclensionLookupTreeNode;
@@ -19,14 +20,14 @@ class Nouns {
 				Set.of(GrammaticalNumber.SINGULAR),
 				k -> k.number()
 			);
-		rootNode.putIfAbsent(singularNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, GrammaticalNumber, ? , ?>)singularNode);
 		NounDeclensionProducer singularDeclension = (s, _) -> s;
 		final var singularDeclensionNode =
 			new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(
 				Set.of(singularDeclension),
 				_ -> singularDeclension
 			);
-		singularNode.putIfAbsent(singularDeclensionNode);
+		singularNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ? , ?>)singularDeclensionNode);
 		
 		// Plural
 		final var pluralNode =
@@ -34,14 +35,14 @@ class Nouns {
 				Set.of(GrammaticalNumber.PLURAL),
 				k -> k.number()
 			);
-		rootNode.putIfAbsent(pluralNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, GrammaticalNumber, ? , ?>)pluralNode);
 		NounDeclensionProducer pluralDeclension = (s, k) -> plural(s, k);
 		final var pluralDeclensionNode =
 			new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(
 				Set.of(pluralDeclension),
 				_ -> pluralDeclension
 			);
-		pluralNode.putIfAbsent(pluralDeclensionNode);
+		pluralNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ? , ?>)pluralDeclensionNode);
 		
 		return rootNode;
 	}
@@ -51,7 +52,7 @@ class Nouns {
 		
 		NounDeclensionProducer declension = (s, _) -> String.format("{%s}", s);
 		final var declensionNode = new NounDeclensionLookupTreeNode<NounDeclensionProducer, Void>(Set.of(declension), _ -> declension);
-		rootNode.putIfAbsent(declensionNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<NounDeclensionKey, NounDeclensionProducer, ? , ?>)declensionNode);
 		
 		return rootNode;
 	}

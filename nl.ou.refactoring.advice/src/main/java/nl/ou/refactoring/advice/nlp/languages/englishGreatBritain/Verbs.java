@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.nlp.languages.englishGreatBritain;
 
 import java.util.Set;
 
+import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalNumber;
 import nl.ou.refactoring.advice.nlp.grammar.GrammaticalPerson;
 import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbAspect;
@@ -50,6 +51,7 @@ class Verbs {
 				Set.of(GrammaticalPerson.FIRST, GrammaticalPerson.SECOND),
 				k -> k.person()
 			);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalPerson, ?, ?>)unmarkedPersonNode);
 		
 		// First/Second: MODALITY
 		final var unmarkedPersonSubjunctiveImperativeNode =
@@ -57,14 +59,14 @@ class Verbs {
 				Set.of(VerbModality.SUBJUNCTIVE, VerbModality.IMPERATIVE),
 				k -> k.modality()
 			);
-		unmarkedPersonNode.putIfAbsent(unmarkedPersonSubjunctiveImperativeNode);
-		unmarkedPersonSubjunctiveImperativeNode.putIfAbsent(BASE_FORM_CONJUGATION_NODE);
+		unmarkedPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbModality, ?, ?>)unmarkedPersonSubjunctiveImperativeNode);
+		unmarkedPersonSubjunctiveImperativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)BASE_FORM_CONJUGATION_NODE);
 		final var unmarkedPersonIndicativeNode =
 			new VerbConjugationLookupTreeNode<VerbModality, VerbTense>(
 				Set.of(VerbModality.CONDITIONAL, VerbModality.INDICATIVE, VerbModality.OPTATIVE),
 				k -> k.modality()
 			);
-		unmarkedPersonNode.putIfAbsent(unmarkedPersonIndicativeNode);
+		unmarkedPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbModality, ?, ?>)unmarkedPersonIndicativeNode);
 		
 		// First/Second: TENSE
 		final var unmarkedPersonIndicativePresentNode =
@@ -72,13 +74,13 @@ class Verbs {
 				Set.of(VerbTense.PRESENT),
 				k -> k.tense()
 			);
-		unmarkedPersonIndicativeNode.putIfAbsent(unmarkedPersonIndicativePresentNode);
+		unmarkedPersonIndicativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbTense, ?, ?>)unmarkedPersonIndicativePresentNode);
 		final var unmarkedPersonIndicativePastNode =
 			new VerbConjugationLookupTreeNode<VerbTense, VerbAspect>(
 				Set.of(VerbTense.PAST),
 				k -> k.tense()
 			);
-		unmarkedPersonIndicativeNode.putIfAbsent(unmarkedPersonIndicativePastNode);
+		unmarkedPersonIndicativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbTense, ?, ?>)unmarkedPersonIndicativePastNode);
 		
 		// First/Second: ASPECT (present)
 		final var unmarkedPersonIndicativePresentImperfectiveNode =
@@ -86,20 +88,20 @@ class Verbs {
 				Set.of(VerbAspect.IMPERFECTIVE),
 				k -> k.aspect()
 			);
-		unmarkedPersonIndicativePresentNode.putIfAbsent(unmarkedPersonIndicativePresentImperfectiveNode);
+		unmarkedPersonIndicativePresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)unmarkedPersonIndicativePresentImperfectiveNode);
 		final var unmarkedPersonIndicativePresentProgressiveNode =
 			new VerbConjugationLookupTreeNode<VerbAspect, VerbVoice>(
 				Set.of(VerbAspect.PROGRESSIVE),
 				k -> k.aspect()
 			);
-		unmarkedPersonIndicativePresentNode.putIfAbsent(unmarkedPersonIndicativePresentProgressiveNode);
+		unmarkedPersonIndicativePresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)unmarkedPersonIndicativePresentProgressiveNode);
 		final var unmarkedPersonIndicativePresentPerfectiveNode =
 			new VerbConjugationLookupTreeNode<VerbAspect, VerbConjugationProducer>(
 				Set.of(VerbAspect.PERFECTIVE),
 				k -> k.aspect()
 			);
-		unmarkedPersonIndicativePresentNode.putIfAbsent(unmarkedPersonIndicativePresentPerfectiveNode);
-		unmarkedPersonIndicativePresentPerfectiveNode.putIfAbsent(PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
+		unmarkedPersonIndicativePresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)unmarkedPersonIndicativePresentPerfectiveNode);
+		unmarkedPersonIndicativePresentPerfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
 		
 		// First/Second: ASPECT (past)
 		final var unmarkedPersonIndicativePastImperfectivePerfectiveNode =
@@ -107,8 +109,8 @@ class Verbs {
 				Set.of(VerbAspect.IMPERFECTIVE, VerbAspect.PERFECTIVE),
 				k -> k.aspect()
 			);
-		unmarkedPersonIndicativePastNode.putIfAbsent(unmarkedPersonIndicativePastImperfectivePerfectiveNode);
-		unmarkedPersonIndicativePastImperfectivePerfectiveNode.putIfAbsent(PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
+		unmarkedPersonIndicativePastNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)unmarkedPersonIndicativePastImperfectivePerfectiveNode);
+		unmarkedPersonIndicativePastImperfectivePerfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
 		
 		// First/Second: VOICE (present imperfective)
 		final var unmarkedPersonIndicativePresentImperfectiveActiveNode =
@@ -116,15 +118,15 @@ class Verbs {
 				Set.of(VerbVoice.ACTIVE, VerbVoice.MIDDLE, VerbVoice.REFLEXIVE),
 				k -> k.voice()
 			);
-		unmarkedPersonIndicativePresentImperfectiveNode.putIfAbsent(unmarkedPersonIndicativePresentImperfectiveActiveNode);
-		unmarkedPersonIndicativePresentImperfectiveActiveNode.putIfAbsent(BASE_FORM_CONJUGATION_NODE);
+		unmarkedPersonIndicativePresentImperfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)unmarkedPersonIndicativePresentImperfectiveActiveNode);
+		unmarkedPersonIndicativePresentImperfectiveActiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)BASE_FORM_CONJUGATION_NODE);
 		final var unmarkedPersonIndicativePresentImperfectivePassiveNode =
 			new VerbConjugationLookupTreeNode<VerbVoice, VerbConjugationProducer>(
 				Set.of(VerbVoice.PASSIVE),
 				k -> k.voice()
 			);
-		unmarkedPersonIndicativePresentImperfectiveNode.putIfAbsent(unmarkedPersonIndicativePresentImperfectivePassiveNode);
-		unmarkedPersonIndicativePresentImperfectivePassiveNode.putIfAbsent(PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
+		unmarkedPersonIndicativePresentImperfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)unmarkedPersonIndicativePresentImperfectivePassiveNode);
+		unmarkedPersonIndicativePresentImperfectivePassiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
 		
 		// Third Person
 		final var thirdPersonNode =
@@ -132,6 +134,7 @@ class Verbs {
 				Set.of(GrammaticalPerson.THIRD),
 				k -> k.person()
 			);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalPerson, ?, ?>)thirdPersonNode);
 		
 		// Third Person: NUMBER
 		final var thirdPersonSingularNode =
@@ -139,13 +142,13 @@ class Verbs {
 				Set.of(GrammaticalNumber.SINGULAR),
 				k -> k.number()
 			);
-		thirdPersonNode.putIfAbsent(thirdPersonSingularNode);
+		thirdPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalNumber, ?, ?>)thirdPersonSingularNode);
 		final var thirdPersonPluralNode =
 			new VerbConjugationLookupTreeNode<GrammaticalNumber, VerbTense>(
 				Set.of(GrammaticalNumber.PLURAL),
 				k -> k.number()
 			);
-		thirdPersonNode.putIfAbsent(thirdPersonPluralNode);
+		thirdPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalNumber, ?, ?>)thirdPersonPluralNode);
 		
 		// Third Person: TENSE (singular)
 		final var thirdPersonSingularPresentNode =
@@ -153,7 +156,7 @@ class Verbs {
 				Set.of(VerbTense.PRESENT),
 				k -> k.tense()
 			);
-		thirdPersonSingularNode.putIfAbsent(thirdPersonSingularPresentNode);
+		thirdPersonSingularNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbTense, ?, ?>)thirdPersonSingularPresentNode);
 		
 		// Third Person: ASPECT (singular present)
 		final var thirdPersonSingularPresentImperfectiveNode =
@@ -161,13 +164,13 @@ class Verbs {
 				Set.of(VerbAspect.IMPERFECTIVE),
 				k -> k.aspect()
 			);
-		thirdPersonSingularPresentNode.putIfAbsent(thirdPersonSingularPresentImperfectiveNode);
+		thirdPersonSingularPresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)thirdPersonSingularPresentImperfectiveNode);
 		final var thirdPersonSingularPresentPerfectiveNode =
 			new VerbConjugationLookupTreeNode<VerbAspect, VerbModality>(
 				Set.of(VerbAspect.PERFECTIVE),
 				k -> k.aspect()
 			);
-		thirdPersonSingularPresentNode.putIfAbsent(thirdPersonSingularPresentPerfectiveNode);
+		thirdPersonSingularPresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)thirdPersonSingularPresentPerfectiveNode);
 		
 		// Third Person: MODALITY (singular present imperfective)
 		final var thirdPersonSingularPresentImperfectiveIndicativeNode =
@@ -175,7 +178,7 @@ class Verbs {
 				Set.of(VerbModality.INDICATIVE),
 				k -> k.modality()
 			);
-		thirdPersonSingularPresentImperfectiveNode.putIfAbsent(thirdPersonSingularPresentImperfectiveIndicativeNode);
+		thirdPersonSingularPresentImperfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbModality, ?, ?>)thirdPersonSingularPresentImperfectiveIndicativeNode);
 		
 		// Third Person: MODALITY (singular present perfective)
 		final var thirdPersonSingularPresentPerfectiveIndicativeNode =
@@ -183,8 +186,8 @@ class Verbs {
 				Set.of(VerbModality.INDICATIVE),
 				k -> k.modality()
 			);
-		thirdPersonSingularPresentPerfectiveNode.putIfAbsent(thirdPersonSingularPresentPerfectiveIndicativeNode);
-		thirdPersonSingularPresentPerfectiveIndicativeNode.putIfAbsent(PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
+		thirdPersonSingularPresentPerfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbModality, ?, ?>)thirdPersonSingularPresentPerfectiveIndicativeNode);
+		thirdPersonSingularPresentPerfectiveIndicativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
 		
 		// Third Person: VOICE (singular present imperfective indicative)
 		final var thirdPersonSingularPresentImperfectiveIndicativeActive =
@@ -192,7 +195,7 @@ class Verbs {
 				Set.of(VerbVoice.ACTIVE),
 				k -> k.voice()
 			);
-		thirdPersonSingularPresentImperfectiveIndicativeNode.putIfAbsent(thirdPersonSingularPresentImperfectiveIndicativeActive);
+		thirdPersonSingularPresentImperfectiveIndicativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)thirdPersonSingularPresentImperfectiveIndicativeActive);
 		final VerbConjugationProducer thirdPersonSingularPresentImperfectiveIndicativeActiveConjugation =
 			(s, _) -> s + "s"; // to talk » he [talks]
 		final var thirdPersonSingularPresentImperfectiveIndicativeActiveConjugationNode =
@@ -200,13 +203,15 @@ class Verbs {
 				Set.of(thirdPersonSingularPresentImperfectiveIndicativeActiveConjugation),
 				_ -> thirdPersonSingularPresentImperfectiveIndicativeActiveConjugation
 			);
-		thirdPersonSingularPresentImperfectiveIndicativeActive.putIfAbsent(thirdPersonSingularPresentImperfectiveIndicativeActiveConjugationNode);
+		thirdPersonSingularPresentImperfectiveIndicativeActive.putIfAbsent(
+			(LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)thirdPersonSingularPresentImperfectiveIndicativeActiveConjugationNode
+		);
 		final var thirdPersonSingularPresentImperfectiveIndicativePassive =
 			new VerbConjugationLookupTreeNode<VerbVoice, VerbConjugationProducer>(
 				Set.of(VerbVoice.PASSIVE),
 				k -> k.voice()
 			);
-		thirdPersonSingularPresentImperfectiveIndicativeNode.putIfAbsent(thirdPersonSingularPresentImperfectiveIndicativePassive);
+		thirdPersonSingularPresentImperfectiveIndicativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)thirdPersonSingularPresentImperfectiveIndicativePassive);
 		final VerbConjugationProducer thirdPersonSingularPresentImperfectiveIndicativePassiveConjugation =
 			(s, k) -> pastPerfectiveOrPassiveConjugation(s, k); // to add » has been [added], to add » is [added]
 		final var thirdPersonSingularPresentImperfectiveIndicativePassiveConjugationNode =
@@ -214,7 +219,7 @@ class Verbs {
 				Set.of(thirdPersonSingularPresentImperfectiveIndicativePassiveConjugation),
 				_ -> thirdPersonSingularPresentImperfectiveIndicativePassiveConjugation
 			);
-		thirdPersonSingularPresentImperfectiveIndicativePassive.putIfAbsent(thirdPersonSingularPresentImperfectiveIndicativePassiveConjugationNode);
+		thirdPersonSingularPresentImperfectiveIndicativePassive.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)thirdPersonSingularPresentImperfectiveIndicativePassiveConjugationNode);
 		
 		// Third Person: TENSE (plural)
 		final var thirdPersonPluralPresentNode =
@@ -222,7 +227,7 @@ class Verbs {
 				Set.of(VerbTense.PRESENT),
 				k -> k.tense()
 			);
-		thirdPersonPluralNode.putIfAbsent(thirdPersonPluralPresentNode);
+		thirdPersonPluralNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbTense, ?, ?>)thirdPersonPluralPresentNode);
 		
 		// Third Person: ASPECT (plural present)
 		final var thirdPersonPluralPresentImperfectiveNode =
@@ -230,13 +235,13 @@ class Verbs {
 				Set.of(VerbAspect.IMPERFECTIVE),
 				k -> k.aspect()
 			);
-		thirdPersonPluralPresentNode.putIfAbsent(thirdPersonPluralPresentImperfectiveNode);
+		thirdPersonPluralPresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)thirdPersonPluralPresentImperfectiveNode);
 		final var thirdPersonPluralPresentPerfectiveNode =
 			new VerbConjugationLookupTreeNode<VerbAspect, VerbModality>(
 				Set.of(VerbAspect.PERFECTIVE),
 				k -> k.aspect()
 			);
-		thirdPersonPluralPresentNode.putIfAbsent(thirdPersonPluralPresentPerfectiveNode);
+		thirdPersonPluralPresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)thirdPersonPluralPresentPerfectiveNode);
 		
 		// Third Person: MODALITY (plural present imperfective)
 		final var thirdPersonPluralPresentImperfectiveIndicativeNode =
@@ -244,7 +249,7 @@ class Verbs {
 				Set.of(VerbModality.INDICATIVE),
 				k -> k.modality()
 			);
-		thirdPersonPluralPresentImperfectiveNode.putIfAbsent(thirdPersonPluralPresentImperfectiveIndicativeNode);
+		thirdPersonPluralPresentImperfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbModality, ?, ?>)thirdPersonPluralPresentImperfectiveIndicativeNode);
 		
 		// Third Person: MODALITY (plural present perfective)
 		final var thirdPersonPluralPresentPerfectiveIndicativeNode =
@@ -252,8 +257,8 @@ class Verbs {
 				Set.of(VerbModality.INDICATIVE),
 				k -> k.modality()
 			);
-		thirdPersonPluralPresentImperfectiveNode.putIfAbsent(thirdPersonPluralPresentPerfectiveIndicativeNode);
-		thirdPersonPluralPresentPerfectiveIndicativeNode.putIfAbsent(PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
+		thirdPersonPluralPresentImperfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbModality, ?, ?>)thirdPersonPluralPresentPerfectiveIndicativeNode);
+		thirdPersonPluralPresentPerfectiveIndicativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
 		
 		// Third Person: VOICE (plural present imperfective indicative)
 		final var thirdPersonPluralPresentImperfectiveIndicativeActiveNode =
@@ -261,9 +266,8 @@ class Verbs {
 				Set.of(VerbVoice.ACTIVE),
 				k -> k.voice()
 			);
-		thirdPersonPluralPresentImperfectiveIndicativeNode.putIfAbsent(thirdPersonPluralPresentImperfectiveIndicativeActiveNode);
-		thirdPersonPluralPresentImperfectiveIndicativeActiveNode.putIfAbsent(BASE_FORM_CONJUGATION_NODE);
-		rootNode.putIfAbsent(thirdPersonNode);
+		thirdPersonPluralPresentImperfectiveIndicativeNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbVoice, ?, ?>)thirdPersonPluralPresentImperfectiveIndicativeActiveNode);
+		thirdPersonPluralPresentImperfectiveIndicativeActiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)BASE_FORM_CONJUGATION_NODE);
 		
 		return rootNode;
 	}
@@ -277,19 +281,19 @@ class Verbs {
 				Set.of(VerbAspect.IMPERFECTIVE),
 				k -> k.aspect()
 			);
-		rootNode.putIfAbsent(imperfectiveNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)imperfectiveNode);
 		final var imperfectiveSingularNode =
 			new VerbConjugationLookupTreeNode<GrammaticalNumber, GrammaticalPerson>(
 				Set.of(GrammaticalNumber.SINGULAR),
 				k -> k.number()
 			);
-		imperfectiveNode.putIfAbsent(imperfectiveSingularNode);
+		imperfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalNumber, ?, ?>)imperfectiveSingularNode);
 		final var imperfectiveSingularThirdPersonNode =
 			new VerbConjugationLookupTreeNode<GrammaticalPerson, VerbConjugationProducer>(
 				Set.of(GrammaticalPerson.THIRD),
 				k -> k.person()
 			);
-		imperfectiveSingularNode.putIfAbsent(imperfectiveSingularThirdPersonNode);
+		imperfectiveSingularNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalPerson, ?, ?>)imperfectiveSingularThirdPersonNode);
 		VerbConjugationProducer imperfectiveSingularThirdPersonConjugation =
 			(_, _) -> "is"; // to be -> is
 		final var imperfectiveSingularThirdPersonConjugationNode =
@@ -297,7 +301,7 @@ class Verbs {
 				Set.of(imperfectiveSingularThirdPersonConjugation),
 				_ -> imperfectiveSingularThirdPersonConjugation
 			);
-		imperfectiveSingularThirdPersonNode.putIfAbsent(imperfectiveSingularThirdPersonConjugationNode);
+		imperfectiveSingularThirdPersonNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)imperfectiveSingularThirdPersonConjugationNode);
 		
 		// Imperfective Plural
 		final var imperfectivePluralNode =
@@ -305,7 +309,7 @@ class Verbs {
 				Set.of(GrammaticalNumber.PLURAL),
 				k -> k.number()
 			);
-		imperfectiveNode.putIfAbsent(imperfectivePluralNode);
+		imperfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, GrammaticalNumber, ?, ?>)imperfectivePluralNode);
 		VerbConjugationProducer imperfectivePluralConjugation =
 			(_, _) -> "are"; // to be -> are
 		final var imperfectivePluralConjugationNode =
@@ -313,14 +317,14 @@ class Verbs {
 				Set.of(imperfectivePluralConjugation),
 				_ -> imperfectivePluralConjugation
 			);
-		imperfectivePluralNode.putIfAbsent(imperfectivePluralConjugationNode);
+		imperfectivePluralNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)imperfectivePluralConjugationNode);
 		
 		// Perfective
 		final var perfectiveNode = new VerbConjugationLookupTreeNode<VerbAspect, VerbConjugationProducer>(
 			Set.of(VerbAspect.PERFECTIVE),
 			k -> k.aspect()
 		);
-		rootNode.putIfAbsent(perfectiveNode);
+		rootNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)perfectiveNode);
 		VerbConjugationProducer perfectiveConjugation =
 			(_, _) -> "been"; // to be -> been
 		final var perfectiveConjugationNode =
@@ -328,7 +332,7 @@ class Verbs {
 				Set.of(perfectiveConjugation),
 				_ -> perfectiveConjugation
 			);
-		perfectiveNode.putIfAbsent(perfectiveConjugationNode);
+		perfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)perfectiveConjugationNode);
 		
 		return rootNode;
 	}
