@@ -101,7 +101,7 @@ class Verbs {
 				k -> k.aspect()
 			);
 		unmarkedPersonIndicativePresentNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbAspect, ?, ?>)unmarkedPersonIndicativePresentPerfectiveNode);
-		unmarkedPersonIndicativePresentPerfectiveNode.putIfAbsent(PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
+		unmarkedPersonIndicativePresentPerfectiveNode.putIfAbsent((LookupStemTreeNode<VerbConjugationKey, VerbConjugationProducer, ?, ?>)PAST_PERFECTIVE_PASSIVE_CONJUGATION_NODE);
 		
 		// First/Second: ASPECT (past)
 		final var unmarkedPersonIndicativePastImperfectivePerfectiveNode =
