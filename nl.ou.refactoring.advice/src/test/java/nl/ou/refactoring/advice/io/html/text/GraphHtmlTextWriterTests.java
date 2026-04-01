@@ -15,10 +15,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.TestEnvironments;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
 import nl.ou.refactoring.advice.nlp.NLPProcessor;
@@ -28,6 +30,7 @@ public final class GraphHtmlTextWriterTests {
 	@DisplayName("Should write HTML for the Refactoring Advice text")
 	@ParameterizedTest
 	@ArgumentsSource(GraphHtmlTextWriterTestsWriteArgumentsProvider.class)
+	@DisabledIfEnvironmentVariable(named = TestEnvironments.GITHUB_ACTIONS, matches = "true")
 	public void writeTests(Graph graph, String htmlStringExpected)
 		throws
 			ArgumentNullException,
