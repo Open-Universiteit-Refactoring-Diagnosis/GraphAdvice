@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Open Universiteit Refactoring Advice through Knowledge Graphs Eclipse Plug-in
+Bundle-SymbolicName: nl.ou.refactoring.advice.eclipse;singleton:=true
+Bundle-Version: 0.7.0.qualifier
+Bundle-Vendor: Open Universiteit
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ nl.ou.refactoring.advice
+Automatic-Module-Name: nl.ou.refactoring.advice.eclipse
+Bundle-RequiredExecutionEnvironment: JavaSE-26

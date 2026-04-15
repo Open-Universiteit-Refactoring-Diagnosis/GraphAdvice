@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.io.svg;
 
 import java.awt.Rectangle;
+
 import javax.xml.namespace.QName;
 
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;

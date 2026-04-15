@@ -2,6 +2,10 @@
 
 [Back to README](/README.md)
 
+## 0.7.0
+
+
+
 ## 0.6.0
 
 - Added the Program Location node that can be associated with code (AST) nodes.
