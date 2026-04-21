@@ -1,10 +1,18 @@
 package nl.ou.refactoring.advice.eclipse;
 
+import java.io.StringWriter;
+
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.w3c.dom.Document;
 
 /**
  * Web view for displaying refactoring advice in HTML format.
@@ -16,7 +24,7 @@ public final class RefactoringAdviceWebView {
      * @param title The title of the web view.
      * @param htmlContent The HTML content to display.
      */
-    public static void showWebView(Shell parentShell, String title, String htmlContent) {
+    public static void showWebView(Shell parentShell, String title, Document htmlContent) {
         // Create a new shell for the web view.
         final var shell = new Shell(parentShell, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
         shell.setText(title);
@@ -27,7 +35,18 @@ public final class RefactoringAdviceWebView {
         final var browser = new Browser(shell, SWT.NONE);
         
         // Set the HTML content.
-        browser.setText(htmlContent);
+        final var htmlWriter = new StringWriter();
+        try {
+	        final var transformer =
+	        	TransformerFactory
+	        		.newInstance()
+	        		.newTransformer();
+	        transformer.transform(new DOMSource(htmlContent), new StreamResult(htmlWriter));
+        } catch (TransformerException ex) {
+        	ex.printStackTrace();
+        	htmlWriter.write("<html><head><title>Error loading HTML</title></head><body></body></html>");
+        }
+        browser.setText(htmlWriter.toString());
 
         // Centre the shell on the parent.
         centerShell(shell, parentShell);

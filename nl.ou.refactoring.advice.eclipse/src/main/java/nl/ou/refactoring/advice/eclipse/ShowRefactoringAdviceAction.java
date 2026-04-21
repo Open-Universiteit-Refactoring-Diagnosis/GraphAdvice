@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.eclipse;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,7 +15,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import nl.ou.refactoring.advice.Graph;
@@ -54,7 +56,7 @@ public final class ShowRefactoringAdviceAction implements IObjectActionDelegate 
     public void run(IAction action) {
         if (this.selectedElement != null) {
             // Generate HTML content for the advice.
-            String htmlContent = "<html><head><title>Error</title></head></html>";
+            Document htmlContent = null;
             try {
                 htmlContent = generateHtmlAdvice(this.selectedElement);
             } catch (ArgumentNullException e) {
@@ -108,15 +110,14 @@ public final class ShowRefactoringAdviceAction implements IObjectActionDelegate 
     /**
      * Generate HTML content for refactoring advice.
      * @param element the Java element to generate advice for.
-     * 
-     * @return HTML content as a string
+     * @return {@link Document} HTML content as a W3C DOM Document.
      * @throws ArgumentNullException Thrown if element is null.
      * @throws ParserConfigurationException Thrown if the parser configuration for HTML documents contains errors.
      * @throws IOException Thrown if SVG could not be written to output stream while generating from a PlantUML specification.
      * @throws ArgumentEmptyException Thrown if the PlantUML specification is an empty string or contains only white spaces.
      * @throws SAXException Thrown if SVG could not be parsed as HTML element.
      */
-    private String generateHtmlAdvice(IJavaElement element)
+    private Document generateHtmlAdvice(IJavaElement element)
             throws
             ArgumentEmptyException,
             ArgumentNullException,
@@ -168,11 +169,12 @@ public final class ShowRefactoringAdviceAction implements IObjectActionDelegate 
          * Generate SVG from PlantUML output.
          */
         final var svg = GraphPlantUmlSvgGenerator.generate(plantUml);
+        final var svgDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        svgDocumentBuilderFactory.setNamespaceAware(true);
         final var svgDocument =
-            DocumentBuilderFactory
-                .newInstance()
+            svgDocumentBuilderFactory
                 .newDocumentBuilder()
-                .parse(svg);
+                .parse(new InputSource(new StringReader(svg)));
 
         /*
          * Create HTML document.
@@ -203,10 +205,12 @@ public final class ShowRefactoringAdviceAction implements IObjectActionDelegate 
         h1Element.setTextContent("Refactoring Advice");
         htmlBodyElement.appendChild(h1Element);
         final var classDiagramSectionElement = htmlDocument.createElement("section");
+        classDiagramSectionElement.setAttribute("width", "500");
+        classDiagramSectionElement.setAttribute("height", "500");
         htmlBodyElement.appendChild(classDiagramSectionElement);
         final var svgElement = htmlDocument.importNode(svgDocument.getDocumentElement(), true);
         classDiagramSectionElement.appendChild(svgElement);
 
-        return htmlDocument.toString();
+        return htmlDocument;
     }
 }

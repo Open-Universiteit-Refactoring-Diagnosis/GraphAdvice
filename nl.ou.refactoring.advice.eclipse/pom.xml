@@ -19,12 +19,6 @@
 		<scope>test</scope>
 	</dependency>
 	<dependency>
-		<groupId>com.github.javaparser</groupId>
-		<artifactId>javaparser-symbol-solver-core</artifactId>
-		<version>3.28.0</version>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
 		<groupId>org.eclipse.platform</groupId>
 		<artifactId>org.eclipse.core.resources</artifactId>
 		<version>3.23.200</version>
