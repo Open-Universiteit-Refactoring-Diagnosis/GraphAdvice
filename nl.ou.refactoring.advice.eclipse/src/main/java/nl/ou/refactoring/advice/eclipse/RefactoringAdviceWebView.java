@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Web view for displaying refactoring advice in HTML format.
  */
-public class RefactoringAdviceWebView {
+public final class RefactoringAdviceWebView {
     /**
      * Show a web view with the given HTML content.
      * @param parentShell The parent shell.

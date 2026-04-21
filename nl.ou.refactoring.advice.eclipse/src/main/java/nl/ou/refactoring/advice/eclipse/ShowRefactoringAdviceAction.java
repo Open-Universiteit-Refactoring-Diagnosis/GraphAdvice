@@ -1,73 +1,82 @@
-package nl.ou.refactoring.advice.eclipse;
+package nl.ou.refactoring.advice.eclipse;
+
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.StringWriter;
+
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;import org.eclipse.jdt.core.IJavaElement;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.xml.sax.SAXException;
+import org.eclipse.ui.IWorkbenchPart;
+
+import org.xml.sax.SAXException;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlSvgGenerator;
-import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
+import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
+
 /**
  * Action to show refactoring advice in a web view when a Java element is selected.
  */
-public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
+public final class ShowRefactoringAdviceAction implements IObjectActionDelegate {
     private IWorkbenchPart targetPart;
-    private IJavaElement selectedElement;
+    private IJavaElement selectedElement;
+
     /**
      * Initialises a new instance of {@link ShowRefactoringAdviceAction}.
      */
     public ShowRefactoringAdviceAction() {
         super();
-    }
+    }
+
     /**
      * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
      */
     @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
-    }
+    }
+
     /**
      * @see IActionDelegate#run(IAction)
      */
     @Override
     public void run(IAction action) {
         if (this.selectedElement != null) {
-            // Get the element name
-            final var elementType = getElementType(this.selectedElement);
             // Generate HTML content for the advice.
-            String htmlContent = "<html><head><title>Error</title></head></html>";
-			try {
-				htmlContent = generateHtmlAdvice(this.selectedElement);
-			} catch (ArgumentNullException e) {
-				if ("elementPath".equals(e.getParameterName())) {
-					MessageDialog.openError(
-						targetPart.getSite().getShell(),
-						"Refactoring Advice",
-						"Selected element does not have a valid file path. Only elements with physical files (like classes, methods, fields) can be analyzed.");
-				} else {
-					e.printStackTrace();
-				}
-				return;
-			} catch (ArgumentEmptyException e) {
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			}
+            String htmlContent = "<html><head><title>Error</title></head></html>";
+            try {
+                htmlContent = generateHtmlAdvice(this.selectedElement);
+            } catch (ArgumentNullException e) {
+                if ("elementPath".equals(e.getParameterName())) {
+                    MessageDialog.openError(
+                        targetPart.getSite().getShell(),
+                        "Refactoring Advice",
+                        "Selected element does not have a valid file path. Only elements with physical files (like classes, methods, fields) can be analyzed.");
+                } else {
+                    e.printStackTrace();
+                }
+                return;
+            } catch (ArgumentEmptyException e) {
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            }
+
             // Show the HTML content in a web view.
             RefactoringAdviceWebView.showWebView(targetPart.getSite().getShell(), "Refactoring Advice", htmlContent);
         } else {
@@ -76,7 +85,8 @@ public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
                 "Refactoring Advice",
                 "No Java element selected.");
         }
-    }
+    }
+
     /**
      * @see IActionDelegate#selectionChanged(IAction, ISelection)
      */
@@ -86,45 +96,19 @@ public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
             final var structuredSelection = (StructuredSelection) selection;
             final var firstElement = structuredSelection.getFirstElement();
             if (firstElement instanceof IJavaElement) {
-                this.selectedElement = (IJavaElement)firstElement;
+                this.selectedElement = (IJavaElement) firstElement;
             } else {
                 this.selectedElement = null;
             }
         } else {
             this.selectedElement = null;
         }
-    }
-    /**
-     * Get the type of the Java element as a string.
-     * @param element the Java element.
-     * @return The element type as a string.
-     */
-    private String getElementType(IJavaElement element) {
-        switch (element.getElementType()) {
-            case IJavaElement.TYPE:
-                return "Type (Class/Interface)";
-            case IJavaElement.METHOD:
-                return "Method";
-            case IJavaElement.FIELD:
-                return "Field";
-            case IJavaElement.PACKAGE_DECLARATION:
-                return "Package";
-            case IJavaElement.IMPORT_DECLARATION:
-                return "Import";
-            case IJavaElement.LOCAL_VARIABLE:
-                return "Local Variable";
-            case IJavaElement.CLASS_FILE:
-                return "Class File";
-            case IJavaElement.COMPILATION_UNIT:
-                return "Compilation Unit";
-            default:
-                return "Java Element";
-        }
-    }
+    }
+
     /**
      * Generate HTML content for refactoring advice.
-     * @param elementName The name of the Java element.
-     * @param elementType The type of the Java element.
+     * @param element the Java element to generate advice for.
+     * 
      * @return HTML content as a string
      * @throws ArgumentNullException Thrown if element is null.
      * @throws ParserConfigurationException Thrown if the parser configuration for HTML documents contains errors.
@@ -133,23 +117,32 @@ public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
      * @throws SAXException Thrown if SVG could not be parsed as HTML element.
      */
     private String generateHtmlAdvice(IJavaElement element)
-            throws            	ArgumentEmptyException,
-                ArgumentNullException,                ElementResourceLocationNotFoundException,                ElementResourceNotFoundException,                IOException,
-                ParserConfigurationException,                SAXException {
-        ArgumentGuard.requireNotNull(element, "element");
+            throws
+            ArgumentEmptyException,
+            ArgumentNullException,
+            ElementResourceLocationNotFoundException,
+            ElementResourceNotFoundException,
+            IOException,
+            ParserConfigurationException,
+            SAXException {
+        ArgumentGuard.requireNotNull(element, "element");
+
         /*
          * Collect selected element's metadata.
          */
         final var resource = element.getResource();
         if (resource == null) {
             throw new ElementResourceNotFoundException(element);
-        }
+        }
+
         final var resourceLocation = resource.getLocation();
         if (resourceLocation == null) {
             throw new ElementResourceLocationNotFoundException(element);
-        }
+        }
+
         final var elementFile = resourceLocation.toFile();
-        final var elementReader = new FileReader(elementFile);
+        final var elementReader = new FileReader(elementFile);
+
         /*
          * Build Refactoring Advice Graph.
          */
@@ -160,15 +153,17 @@ public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
                 elementReader,
                 elementFile.getAbsolutePath(),
                 resource.getName()
-        );
-        graph = javaReader.read();
+        );
+        graph = javaReader.read();
+
         /*
          * Write PlantUML output.
          */
         final var plantUmlStringWriter = new StringWriter();
         final var plantUmlWriter = new GraphPlantUmlClassDiagramWriter(plantUmlStringWriter);
         plantUmlWriter.write(graph);
-        final var plantUml = plantUmlStringWriter.toString();
+        final var plantUml = plantUmlStringWriter.toString();
+
         /*
          * Generate SVG from PlantUML output.
          */
@@ -177,7 +172,8 @@ public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
             DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
-                .parse(svg);
+                .parse(svg);
+
         /*
          * Create HTML document.
          */
@@ -185,18 +181,21 @@ public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
             DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
-                .newDocument();
+                .newDocument();
+
         /*
          * Add HTML boiler plating.
          */
         final var htmlElement = htmlDocument.createElement("html");
-        htmlDocument.appendChild(htmlElement);
+        htmlDocument.appendChild(htmlElement);
+
         // <head>
         final var htmlHeadElement = htmlDocument.createElement("head");
         htmlElement.appendChild(htmlHeadElement);
         final var htmlTitleElement = htmlDocument.createElement("title");
         htmlTitleElement.setTextContent("Refactoring Advice");
-        htmlHeadElement.appendChild(htmlTitleElement);
+        htmlHeadElement.appendChild(htmlTitleElement);
+
         // <body>
         final var htmlBodyElement = htmlDocument.createElement("body");
         htmlElement.appendChild(htmlBodyElement);
@@ -207,6 +206,7 @@ public class ShowRefactoringAdviceAction implements IObjectActionDelegate {
         htmlBodyElement.appendChild(classDiagramSectionElement);
         final var svgElement = htmlDocument.importNode(svgDocument.getDocumentElement(), true);
         classDiagramSectionElement.appendChild(svgElement);
+
         return htmlDocument.toString();
     }
 }
