@@ -31,7 +31,7 @@ public class GraphPlantUmlSvgGenerator {
 		
 		final var reader = new SourceStringReader(puml);
 		final var outputStream = new ByteArrayOutputStream();
-		reader.generateImage(outputStream, new FileFormatOption(FileFormat.SVG));
+		reader.outputImage(outputStream, new FileFormatOption(FileFormat.SVG));
 		outputStream.close();
 		
 		return outputStream.toString("UTF-8");

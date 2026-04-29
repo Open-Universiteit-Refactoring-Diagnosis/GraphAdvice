@@ -1,5 +1,5 @@
 package nl.ou.refactoring.advice.io.plantuml;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +22,6 @@ public class GraphPlantUmlSvgGeneratorTests {
 		// Act
 		final var result = GraphPlantUmlSvgGenerator.generate(puml);
 		// Assert
-		assertNotNull(result);
-	}
+		assertNotNull(result);		assertFalse(result.contains("Syntax Error?"));
+	}		@DisplayName("Should generate SVG from a PlantUML specification (Employee)")	@Test	public void generateEmployeeTest() throws ArgumentNullException, ArgumentEmptyException, IOException {		// Arrange		final var inputStream = GraphPlantUmlSvgGeneratorTests.class.getResourceAsStream("/plantuml/Employee.puml");		final var bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));		final var scanner = new Scanner(bufferedReader).useDelimiter("\\A");		final var puml = scanner.next();		scanner.close();				// Act		final var result = GraphPlantUmlSvgGenerator.generate(puml);		// Assert		assertNotNull(result);		assertFalse(result.contains("Syntax Error?"));	}
 }

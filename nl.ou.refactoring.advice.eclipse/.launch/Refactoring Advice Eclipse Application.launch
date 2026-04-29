@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
-<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/nl.ou.refactoring.advice.eclipse"/>
-</listAttribute>
-<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
-<listEntry value="4"/>
-</listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="nl.ou.refactoring.advice.eclipse"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms256m -Xmx1024m -XX:MaxPermSize=256m"/>
-<stringAttribute key="org.eclipse.pde.ui.LAUNCH_CONFIGURATION" value="org.eclipse.pde.ui.EclipseApplication"/>
-<stringAttribute key="org.eclipse.pde.ui.PDE_VERSION" value="3.3"/>
-<stringAttribute key="pde.version" value="3.3"/>
-<stringAttribute key="product" value="org.eclipse.platform.ide"/>
-<stringAttribute key="templateConfig" value="true"/>
-<booleanAttribute key="useCustomFeatures" value="false"/>
-<booleanAttribute key="useDefaultConfigArea" value="true"/>
-<booleanAttribute key="useDefaultConfig" value="true"/>
-<booleanAttribute key="useProduct" value="true"/>
+	<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+		<listEntry value="/nl.ou.refactoring.advice"/>
+		<listEntry value="/nl.ou.refactoring.advice.eclipse"/>
+	</listAttribute>
+	<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+		<listEntry value="4"/>
+	</listAttribute>
+	<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
+	<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="nl.ou.refactoring.advice.eclipse"/>
+	<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms256m -Xmx1024m -XX:MaxPermSize=256m"/>
+	<stringAttribute key="org.eclipse.pde.ui.LAUNCH_CONFIGURATION" value="org.eclipse.pde.ui.EclipseApplication"/>
+	<stringAttribute key="org.eclipse.pde.ui.PDE_VERSION" value="3.3"/>
+	<stringAttribute key="pde.version" value="3.3"/>
+	<stringAttribute key="product" value="org.eclipse.platform.ide"/>
+	<stringAttribute key="templateConfig" value="true"/>
+	<booleanAttribute key="useCustomFeatures" value="false"/>
+	<booleanAttribute key="useDefaultConfigArea" value="true"/>
+	<booleanAttribute key="useDefaultConfig" value="true"/>
+	<booleanAttribute key="useProduct" value="true"/>
 </launchConfiguration>

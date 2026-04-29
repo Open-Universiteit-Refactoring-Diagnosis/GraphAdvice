@@ -24,12 +24,12 @@
 		    <artifactId>classgraph</artifactId>
 		    <version>4.8.184</version>
 		</dependency>
-	   	<dependency>
-	   		<groupId>net.sourceforge.plantuml</groupId>
-	   		<artifactId>plantuml</artifactId>
-	     	<version>8059</version>
-	     	<scope>compile</scope>
-	    </dependency>
+		<dependency>
+		    <groupId>net.sourceforge.plantuml</groupId>
+		    <artifactId>plantuml-mit</artifactId>
+		    <version>1.2026.2</version>
+		    <scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>

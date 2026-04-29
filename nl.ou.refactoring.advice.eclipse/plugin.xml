@@ -15,8 +15,7 @@
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.swt"/>
    </requires>
-   <extension-point id="org.eclipse.ui.menus" name="Add a context menu item for Java elements" schema="schema/org.eclipse.ui.menus.exsd"/>
-   
+
    <!-- Context Menu Extension for Java Elements -->
    <extension
          point="org.eclipse.ui.popupMenus">

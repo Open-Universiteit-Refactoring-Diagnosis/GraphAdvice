@@ -8,7 +8,6 @@ Export-Package: nl.ou.refactoring.advice,
  nl.ou.refactoring.advice.contracts,
  nl.ou.refactoring.advice.edges,
  nl.ou.refactoring.advice.edges.code,
- nl.ou.refactoring.advice.edges.code.operations,
  nl.ou.refactoring.advice.edges.code.operations.expressions,
  nl.ou.refactoring.advice.edges.workflow,
  nl.ou.refactoring.advice.io,
@@ -61,7 +60,8 @@ Bundle-ClassPath: .,
  lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar,
  lib/log4j-api-2.25.3.jar,
  lib/log4j-core-2.25.3.jar,
- lib/plantuml-8059.jar,
+ lib/plantuml-mit-1.2026.2.jar,
  lib/slf4j-api-2.0.17.jar,
  lib/xmlgraphics-commons-2.11.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-26
+Automatic-Module-Name: nl.ou.refactoring.advice
+Bundle-RequiredExecutionEnvironment: JavaSE-26
