@@ -18,6 +18,12 @@ import org.w3c.dom.Document;
  * Web view for displaying refactoring advice in HTML format.
  */
 public final class RefactoringAdviceWebView {
+	/**
+	 * Initialises a new instance of {@link RefactoringAdviceWebView}.
+	 */
+	public RefactoringAdviceWebView() {
+	}
+	
     /**
      * Show a web view with the given HTML content.
      * @param parentShell The parent shell.

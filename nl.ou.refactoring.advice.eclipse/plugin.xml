@@ -1,41 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-
-<plugin
-   id="nl.ou.refactoring.advice.eclipse"
-   name="Open Universiteit Refactoring Advice through Knowledge Graphs Eclipse Plug-in"
-   version="0.7.0.qualifier"
-   provider="Open Universiteit">
-
-   <!-- Dependencies (Required Plug-ins) -->
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.swt"/>
-   </requires>
-
-   <!-- Context Menu Extension for Java Elements -->
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.jdt.core.IJavaElement"
-            id="nl.ou.refactoring.advice.eclipse.javaElementContribution">
+<?eclipse version="4.40"?>
+<plugin>
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any?additions">
          <menu
-               label="Refactoring Advice"
-               path="additions"
-               id="nl.ou.refactoring.advice.eclipse.refactoringMenu">
-            <separator name="refactoringGroup"/>
+               id="nl.ou.refactoring.advice.submenu"
+               label="Refactoring Advice">
+            <visibleWhen checkEnabled="false">
+               <or>
+                  <with variable="selection">
+                     <iterate ifEmpty="false">
+                        <adapt type="org.eclipse.jdt.core.IJavaElement"/>
+                     </iterate>
+                  </with>
+                  <with variable="activeEditorId">
+                     <or>
+                        <equals value="org.eclipse.jdt.ui.CompilationUnitEditor"/>
+                        <equals value="org.eclipse.jdt.ui.ClassFileEditor"/>
+                     </or>
+                  </with>
+               </or>
+            </visibleWhen>
+            <dynamic
+                  id="nl.ou.refactoring.advice.dynamicItems"
+                  class="nl.ou.refactoring.advice.eclipse.contextMenu.refactorings.RefactoringsSubmenuContribution"/>
          </menu>
-         <action
-               label="Show Refactoring Advice"
-               class="nl.ou.refactoring.advice.eclipse.ShowRefactoringAdviceAction"
-               menubarPath="nl.ou.refactoring.advice.eclipse.refactoringMenu/refactoringGroup"
-               enablesFor="1"
-               id="nl.ou.refactoring.advice.eclipse.showRefactoringAdviceAction">
-         </action>
-      </objectContribution>
+      </menuContribution>
    </extension>
-
 </plugin>

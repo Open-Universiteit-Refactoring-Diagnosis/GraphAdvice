@@ -9,6 +9,7 @@ Require-Bundle:  org.eclipse.core.resources;bundle-version="[3.23.0,4.0.0)",
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.jface,
+ org.eclipse.jface.text,
  org.eclipse.swt,
  org.eclipse.ui,
  nl.ou.refactoring.advice
