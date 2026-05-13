@@ -33,7 +33,7 @@ public class GraphPlantUmlSvgGenerator {
 		final var outputStream = new ByteArrayOutputStream();
 		reader.outputImage(outputStream, new FileFormatOption(FileFormat.SVG));
 		outputStream.close();
-		
+
 		return outputStream.toString("UTF-8");
 	}
 }

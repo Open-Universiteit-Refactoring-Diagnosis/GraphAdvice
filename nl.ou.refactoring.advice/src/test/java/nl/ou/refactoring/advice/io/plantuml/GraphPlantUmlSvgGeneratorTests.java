@@ -13,15 +13,5 @@ public class GraphPlantUmlSvgGeneratorTests {
 	@DisplayName("Should generate SVG from a PlantUML specification")
 	@Test
 	public void generateTest() throws ArgumentNullException, ArgumentEmptyException, IOException {
-		// Arrange
-		final var inputStream = GraphPlantUmlSvgGeneratorTests.class.getResourceAsStream("/plantuml/MoveField.puml");
-		final var bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-		final var scanner = new Scanner(bufferedReader).useDelimiter("\\A");
-		final var puml = scanner.next();
-		scanner.close();		
-		// Act
-		final var result = GraphPlantUmlSvgGenerator.generate(puml);
-		// Assert
-		assertNotNull(result);		assertFalse(result.contains("Syntax Error?"));
-	}		@DisplayName("Should generate SVG from a PlantUML specification (Employee)")	@Test	public void generateEmployeeTest() throws ArgumentNullException, ArgumentEmptyException, IOException {		// Arrange		final var inputStream = GraphPlantUmlSvgGeneratorTests.class.getResourceAsStream("/plantuml/Employee.puml");		final var bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));		final var scanner = new Scanner(bufferedReader).useDelimiter("\\A");		final var puml = scanner.next();		scanner.close();				// Act		final var result = GraphPlantUmlSvgGenerator.generate(puml);		// Assert		assertNotNull(result);		assertFalse(result.contains("Syntax Error?"));	}
-}
+		// Arrange		final var inputStream = GraphPlantUmlSvgGeneratorTests.class.getResourceAsStream("/plantuml/MoveField.puml");		final var bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));		final var scanner = new Scanner(bufferedReader).useDelimiter("\\A");		final var puml = scanner.next();		scanner.close();				// Act		final var result = GraphPlantUmlSvgGenerator.generate(puml);				// Assert		assertNotNull(result);		assertFalse(result.contains("Syntax Error?"));
+	}		@DisplayName("Should generate SVG from a PlantUML specification (Employee)")	@Test	public void generateEmployeeTest() throws ArgumentNullException, ArgumentEmptyException, IOException {		// Arrange		final var inputStream = GraphPlantUmlSvgGeneratorTests.class.getResourceAsStream("/plantuml/Employee.puml");		final var bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));		final var scanner = new Scanner(bufferedReader).useDelimiter("\\A");		final var puml = scanner.next();		scanner.close();				// Act		final var result = GraphPlantUmlSvgGenerator.generate(puml);				// Assert		assertNotNull(result);		assertFalse(result.contains("Syntax Error?"));	}}
