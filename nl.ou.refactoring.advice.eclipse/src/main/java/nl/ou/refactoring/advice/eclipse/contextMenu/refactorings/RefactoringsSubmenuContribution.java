@@ -9,10 +9,10 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeRoot;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.text.ITextSelection;
@@ -22,6 +22,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CompoundContributionItem;
+
+import nl.ou.refactoring.advice.eclipse.refactorings.Refactoring;
+import nl.ou.refactoring.advice.eclipse.refactorings.RefactoringAdviceView;
+import nl.ou.refactoring.advice.eclipse.refactorings.methods.RenameMethodRefactoring;
 
 /**
  * Dynamically creates menu items for the "Refactoring Advice" sub-menu.
@@ -52,12 +56,17 @@ public final class RefactoringsSubmenuContribution extends CompoundContributionI
 
 	@Override
 	protected IContributionItem[] getContributionItems() {
-		final IJavaElement element = getCurrentElement();
+		final var element = getCurrentElement();
 		if (element == null) {
 			return new IContributionItem[0];
 		}
 
-		return this.createItemsForElement(element);
+		try {
+			return this.createItemsForElement(element);
+		} catch (JavaModelException ex) {
+			ex.printStackTrace();
+			return new IContributionItem[0];
+		}
 	}
 
 	/**
@@ -179,39 +188,50 @@ public final class RefactoringsSubmenuContribution extends CompoundContributionI
 		return null;
 	}
 
-	private IContributionItem[] createItemsForElement(IJavaElement element) {
-		final java.util.List<IContributionItem> items = new java.util.ArrayList<>();
+	private IContributionItem[] createItemsForElement(IJavaElement element) throws JavaModelException {
+		final var items = new java.util.ArrayList<>();
 
 		if (element instanceof IType) {
-			items.add(this.createItem("Rename Class", "renameClass", element));
+			items.add(this.createItem("Rename Class", null));
 		} else if (element instanceof IMethod) {
-			items.add(this.createItem("Rename Method", "renameMethod", element));
+			final var method = (IMethod)element;
+			final var methodIsConstructor = method.isConstructor();
+			if (!methodIsConstructor) {
+				items.add(this.createItem("Move Method", null));
+				try {
+					items.add(this.createItem("Rename Method", new RenameMethodRefactoring(method)));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
 		} else if (element instanceof IField) {
-			items.add(this.createItem("Rename Field", "renameField", element));
+			items.add(this.createItem("Rename Field", null));
 		} else if (element instanceof ILocalVariable) {
-			items.add(createItem("Analyze Variable for Refactoring", "analyzeVariable", element));
-			items.add(createItem("Replace Temp with Query", "replaceTempWithQuery", element));
+			items.add(this.createItem("Rename Local Variable", null));
 		} else if (element instanceof ICompilationUnit) {
-			items.add(createItem("Analyze File for Refactoring", "analyzeFile", element));
-			items.add(createItem("Show File Smells", "showFileSmells", element));
+			items.add(this.createItem("Compilation Unit", null));
 		} else if (element instanceof IPackageFragment) {
-			items.add(createItem("Analyze Package for Refactoring", "analyzePackage", element));
-			items.add(createItem("Show Package Smells", "showPackageSmells", element));
+			items.add(this.createItem("Rename Package", null));
 		} else {
-			items.add(createItem("Analyze Element for Refactoring", "analyzeElement", element));
+			items.add(this.createItem("Unknown", null));
 		}
 
 		items.add(new Separator());
-		items.add(createItem("Show Refactoring Graph", "showRefactoringGraph", element));
+		// items.add(this.createItem("Show Refactoring Graph", "showRefactoringGraph", element));
 
 		return items.toArray(new IContributionItem[0]);
 	}
 
-	private IContributionItem createItem(String text, String commandId, IJavaElement javaElement) {
-		final IAction action = new Action(text) {
+	private IContributionItem createItem(String text, Refactoring refactoring) {
+		final var action = new Action(text) {
 			@Override
 			public void run() {
-				System.out.println("Refactoring Advice: " + commandId + " on " + javaElement.getElementName());
+				final var parent =
+					PlatformUI
+						.getWorkbench()
+						.getModalDialogShellProvider()
+						.getShell();
+				new RefactoringAdviceView(parent, refactoring).show();
 			}
 		};
 		return new ActionContributionItem(action);
