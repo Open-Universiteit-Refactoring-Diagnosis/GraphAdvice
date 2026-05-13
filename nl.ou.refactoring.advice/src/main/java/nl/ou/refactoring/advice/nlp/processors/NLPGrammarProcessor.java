@@ -29,7 +29,6 @@ import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
 import nl.ou.refactoring.advice.nlp.languages.NLPLanguage;
 import nl.ou.refactoring.advice.nlp.tokens.NLPTokenNotFoundException;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
-import nl.ou.refactoring.advice.nlp.tokens.Tokens.Nouns;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens.Verbs;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
