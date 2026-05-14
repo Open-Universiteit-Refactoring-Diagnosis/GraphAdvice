@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Open Universiteit Refactoring Advice through Knowledge Graphs
 Bundle-SymbolicName: nl.ou.refactoring.advice;singleton:=true
-Bundle-Version: 0.7.0
+Bundle-Version: 0.8.0
 Bundle-Vendor: Open Universiteit
 Export-Package: nl.ou.refactoring.advice,
  nl.ou.refactoring.advice.contracts,
