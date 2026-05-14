@@ -19,18 +19,6 @@
 		<scope>test</scope>
 	</dependency>
 	<dependency>
-		<groupId>org.eclipse.platform</groupId>
-		<artifactId>org.eclipse.core.resources</artifactId>
-		<version>3.23.200</version>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.eclipse.platform</groupId>
-		<artifactId>org.eclipse.core.runtime</artifactId>
-		<version>3.34.100</version>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
 		<groupId>org.eclipse.jdt</groupId>
 		<artifactId>org.eclipse.jdt.core</artifactId>
 		<version>3.45.0</version>
@@ -39,13 +27,25 @@
 	<dependency>
 		<groupId>org.eclipse.jdt</groupId>
 		<artifactId>org.eclipse.jdt.ui</artifactId>
-		<version>3.34.0</version>
+		<version>3.37.0</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.platform</groupId>
+		<artifactId>org.eclipse.core.resources</artifactId>
+		<version>3.23.200</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.platform</groupId>
+		<artifactId>org.eclipse.core.runtime</artifactId>
+		<version>3.34.200</version>
 		<scope>provided</scope>
 	</dependency>
 	<dependency>
 		<groupId>org.eclipse.platform</groupId>
 		<artifactId>org.eclipse.jface</artifactId>
-		<version>3.38.100</version>
+		<version>3.39.0</version>
 		<scope>provided</scope>
 	</dependency>
 	<dependency>
