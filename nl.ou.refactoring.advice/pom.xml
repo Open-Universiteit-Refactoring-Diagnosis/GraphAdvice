@@ -159,7 +159,8 @@
 				<repository>
 					<id>github</id>
 					<url>
-						https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice</url>
+						https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice
+					</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
@@ -172,7 +173,8 @@
 			<id>github</id>
 			<name>GitHub Packages</name>
 			<url>
-				https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice</url>
+				https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice
+			</url>
 		</repository>
 	</distributionManagement>
 </project>
