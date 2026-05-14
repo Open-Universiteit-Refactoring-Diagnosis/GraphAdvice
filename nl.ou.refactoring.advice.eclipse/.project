@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Open Universiteit Refactoring Advice through Knowledge Graphs</name>
+	<name>Open Universiteit Refactoring Advice through Knowledge Graphs Eclipse Plug-in</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -27,13 +27,13 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1763311320202</id>
+			<id>1775677082080</id>
 			<name></name>
 			<type>30</type>
 			<matcher>

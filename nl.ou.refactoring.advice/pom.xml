@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.ou.refactoring</groupId>
 	<artifactId>nl.ou.refactoring.advice</artifactId>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 	<name>Open Universiteit Refactoring Advice through Knowledge Graphs</name>
 	<description>A software component for generating refactoring advices by assembling a refactoring in a graph and converting it to a human-readable advice.</description>
 	<dependencies>
@@ -23,6 +23,12 @@
 		    <groupId>io.github.classgraph</groupId>
 		    <artifactId>classgraph</artifactId>
 		    <version>4.8.184</version>
+		</dependency>
+		<dependency>
+		    <groupId>net.sourceforge.plantuml</groupId>
+		    <artifactId>plantuml-mit</artifactId>
+		    <version>1.2026.2</version>
+		    <scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -96,6 +102,23 @@
 							<goal>jar</goal>
 						</goals>
 						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.8.0</version>
+				<executions>
+					<execution>
+						<id>copy-osgi-libs</id>
+						<phase>generate-resources</phase>
+						<goals><goal>copy-dependencies</goal></goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/lib</outputDirectory>
+							<includeScope>compile</includeScope>
+							<excludeTypes>pom</excludeTypes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

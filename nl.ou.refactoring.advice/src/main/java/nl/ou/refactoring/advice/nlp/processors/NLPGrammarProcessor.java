@@ -29,6 +29,7 @@ import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
 import nl.ou.refactoring.advice.nlp.languages.NLPLanguage;
 import nl.ou.refactoring.advice.nlp.tokens.NLPTokenNotFoundException;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
+import nl.ou.refactoring.advice.nlp.tokens.Tokens.Verbs;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
@@ -41,6 +42,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAttr
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepOperationMissingException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 
 /**
  * A Natural Language Processing provider that arrange text into natural language grammar
@@ -105,6 +107,10 @@ public class NLPGrammarProcessor extends NLPProcessor {
 						result = result.merge(this.language.visit(createMicrostepRemoveMethodSentence(microstepRemoveMethodNode, references)));
 						break;
 					}
+					case GraphNodeRiskDoubleDefinition riskDoubleDefinitionNode: {
+						result = result.merge(this.language.visit(createRiskDoubleDefinitionSentence(riskDoubleDefinitionNode, references)));
+						break;
+					}
 					default:
 						break;
 				}
@@ -116,7 +122,7 @@ public class NLPGrammarProcessor extends NLPProcessor {
 		
 		return result;
 	}
-	
+
 	/**
 	 * Gets the {@link NLPLanguage} that visits the grammar and follows its rules to generate {@link NLPResult}.
 	 * @return The {@link NLPLanguage} that visits the grammar and follows its rules to generate {@link NLPResult}.
@@ -332,5 +338,30 @@ public class NLPGrammarProcessor extends NLPProcessor {
 		microstepVerbPhrase.setPrepositionalPhrase(prepositionalPhrase);
 		
 		return microstepSentence;
+	}
+	
+	private Sentence createRiskDoubleDefinitionSentence(GraphNodeRiskDoubleDefinition riskDoubleDefinitionNode, HashMap<String, GraphNode> references) {
+		final var dangerSentence = new Sentence();
+		
+		final var affectedNodes = riskDoubleDefinitionNode.getAffected();
+		
+		final var hasVerb =
+			LexicalVerb
+				.fromToken(Verbs.Lexical.HAVE)
+				.orElseThrow(() -> new NLPTokenNotFoundException(Verbs.Lexical.HAVE, Tokens.Verbs.Lexical.class));
+		final var dangerVerbPhrase = new VerbPhrase(hasVerb);
+		dangerVerbPhrase.setConjugation(
+			new VerbConjugationKey(
+				GrammaticalPerson.THIRD,
+				GrammaticalNumber.PLURAL,
+				VerbAspect.IMPERFECTIVE,
+				VerbModality.INDICATIVE,
+				VerbTense.PRESENT,
+				VerbVoice.ACTIVE,
+				GrammaticalRegister.PLAIN
+			)
+		);
+		
+		return dangerSentence;
 	}
 }

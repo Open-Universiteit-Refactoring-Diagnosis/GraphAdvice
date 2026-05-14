@@ -2,6 +2,10 @@
 
 [Back to README](/README.md)
 
+## 0.7.0
+
+- An Eclipse Plug-in for demonstrating the capabilities of the Refactoring Advice Graph concept.
+
 ## 0.6.0
 
 - Added the Program Location node that can be associated with code (AST) nodes.
