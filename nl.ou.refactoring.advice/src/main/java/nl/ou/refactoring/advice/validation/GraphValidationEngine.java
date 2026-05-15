@@ -1,7 +1,9 @@
 package nl.ou.refactoring.advice.validation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import nl.ou.refactoring.advice.Graph;
@@ -34,16 +36,16 @@ public final class GraphValidationEngine {
 	/**
 	 * Validates a Refactoring Advice Graph (RAG) {@link graph}.
 	 * @param graph A Refactoring Advice Graph (RAG) {@link graph}.
-	 * @return An unmodifiable set of validation results {@link GraphValidationResult}.
+	 * @return An unmodifiable list of validation results {@link GraphValidationResult}.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	public Set<GraphValidationResult> validate(Graph graph)
+	public List<GraphValidationResult> validate(Graph graph)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		final var validationResults = new HashSet<GraphValidationResult>();
+		final var validationResults = new ArrayList<GraphValidationResult>();
 		for (final var validator : this.validators) {
-			validationResults.add(validator.validate(graph));
+			validationResults.addAll(validator.validate(graph));
 		}
-		return Collections.unmodifiableSet(validationResults);
+		return Collections.unmodifiableList(validationResults);
 	}
 }
