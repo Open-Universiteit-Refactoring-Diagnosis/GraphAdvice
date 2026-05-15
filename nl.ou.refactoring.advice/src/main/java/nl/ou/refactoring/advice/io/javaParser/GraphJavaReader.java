@@ -145,7 +145,11 @@ public final class GraphJavaReader implements GraphReader {
 					if (member.isFieldDeclaration()) {
 						final var fieldDeclaration = member.asFieldDeclaration();
 						for (final var variableDeclaration : fieldDeclaration.getVariables()) {
-							final var attributeNode = new GraphNodeAttribute(graph, variableDeclaration.getNameAsString());
+							final var attributeNode =
+								new GraphNodeAttribute(
+									graph,
+									new GraphNodeIdentifier(graph, variableDeclaration.getNameAsString())
+								);
 							final var attributeTypeName = variableDeclaration.getTypeAsString();
 							final var attributeType =
 								typeMap

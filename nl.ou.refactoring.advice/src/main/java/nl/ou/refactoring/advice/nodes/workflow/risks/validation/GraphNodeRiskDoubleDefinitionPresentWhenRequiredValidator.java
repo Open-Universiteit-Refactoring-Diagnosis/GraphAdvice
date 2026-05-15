@@ -126,7 +126,8 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 							(node) ->
 							node != methodNodeAdded &&
 							node instanceof GraphNodeCode &&
-							GraphNodeSignature.equals((GraphNodeCode)node, methodNodeAdded))
+							GraphNodeSignature.equals((GraphNodeCode)node, methodNodeAdded)
+						)
 						.map(GraphNodeCode.class::cast)
 						.collect(Collectors.toUnmodifiableSet());
 				results.add(

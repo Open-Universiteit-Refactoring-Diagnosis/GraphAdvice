@@ -3,15 +3,16 @@ package nl.ou.refactoring.advice.nodes.code;
 import java.util.Optional;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
 
@@ -19,20 +20,25 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemo
  * Represents a node in a Refactoring Advice Graph that describes an Attribute of a Class that is affected by a refactoring.
  */
 public final class GraphNodeAttribute extends GraphNodeClassMember {
-	private final String attributeName;
+	private final GraphEdgeHas attributeNameEdge;
 	
 	/**
 	 * Initialises a new instance of {@link GraphNodeAttribute}.
 	 * @param graph The graph that contains the node.
 	 * @param attributeName The name of the affected Attribute.
 	 * @throws ArgumentNullException Thrown if graph or attributeName is null.
-	 * @throws ArgumentEmptyException Thrown if attributeName is empty or contains only white spaces.
 	 */
-	public GraphNodeAttribute(Graph graph, String attributeName)
-			throws ArgumentNullException, ArgumentEmptyException {
+	public GraphNodeAttribute(Graph graph, GraphNodeIdentifier attributeName)
+			throws ArgumentNullException {
 		super(graph);
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(attributeName, "attributeName");
-		this.attributeName = attributeName;
+		ArgumentGuard.requireNotNull(attributeName, "attributeName");
+		this.attributeNameEdge =
+			this.graph.computeEdge(
+				this,
+				attributeName,
+				(source, destination) -> new GraphEdgeHas(source, destination),
+				GraphEdgeHas.class
+			);
 	}
 	
 	/**
@@ -40,7 +46,7 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 	 * @return The name of the Attribute affected by a refactoring.
 	 */
 	public String getAttributeName() {
-		return this.attributeName;
+		return ((GraphNodeIdentifier)this.attributeNameEdge.getDestinationNode()).getIdentifier();
 	}
 	
 	/**
@@ -109,7 +115,11 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 	
 	@Override
 	public GraphNodeBase clone(Graph graph) {
-		return new GraphNodeAttribute(graph, this.attributeName);
+		return
+			new GraphNodeAttribute(
+				graph,
+				(GraphNodeIdentifier)this.attributeNameEdge.getDestinationNode().clone(graph)
+			);
 	}
 	
 	@Override
@@ -131,6 +141,6 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 
 	@Override
 	public String getCaption() {
-		return this.attributeName;
+		return ((GraphNodeIdentifier)this.attributeNameEdge.getDestinationNode()).getIdentifier();
 	}
 }

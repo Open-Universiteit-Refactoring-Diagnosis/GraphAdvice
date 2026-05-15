@@ -114,7 +114,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 				.filter(node -> node.getTypeName().equals("String"))
 				.findAny()
 				.get();
-		final var betaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
+		final var betaTwoAttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "two"));
 		betaTwoAttributeNode.is(stringType);
 		betaClassNode.has(betaTwoAttributeNode);
 		addFieldMicrostepNode.adds(betaTwoAttributeNode);
@@ -151,8 +151,8 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		
 		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var alphaClassNode = new GraphNodeClass(graph, alphaIdentifier);
-		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
-		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
+		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "one"));
+		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "two"));
 		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");
 		final var alphaBarOperationNode = new GraphNodeOperation(graph, barIdentifier);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
@@ -172,8 +172,8 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		
 		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
 		final var betaClassNode = new GraphNodeClass(graph, betaIdentifier);
-		final var betaField1AttributeNode = new GraphNodeAttribute(graph, "field1");
-		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
+		final var betaField1AttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "field1"));
+		final var betaField2AttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "field2"));
 		final var betaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
 		packageNodeLeaf.has(betaClassNode);
 		betaClassNode.has(betaField1AttributeNode);
@@ -213,8 +213,8 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		
 		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var alphaClassNode = new GraphNodeClass(graph, alphaIdentifier);
-		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, "one");
-		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, "two");
+		final var alphaOneAttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "one"));
+		final var alphaTwoAttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "two"));
 		final var barIdentifier = new GraphNodeIdentifier(graph, "bar");
 		final var alphaBarOperationNode = new GraphNodeOperation(graph, barIdentifier);
 		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
@@ -228,8 +228,8 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		
 		final var betaIdentifier = new GraphNodeIdentifier(graph, "Beta");
 		final var betaClassNode = new GraphNodeClass(graph, betaIdentifier);
-		final var betaField1AttributeNode = new GraphNodeAttribute(graph, "field1");
-		final var betaField2AttributeNode = new GraphNodeAttribute(graph, "field2");
+		final var betaField1AttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "field1"));
+		final var betaField2AttributeNode = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "field2"));
 		final var betaFooOperationNode = new GraphNodeOperation(graph, fooIdentifier);
 		packageNodeLeaf.has(betaClassNode);
 		betaClassNode.has(betaField1AttributeNode);

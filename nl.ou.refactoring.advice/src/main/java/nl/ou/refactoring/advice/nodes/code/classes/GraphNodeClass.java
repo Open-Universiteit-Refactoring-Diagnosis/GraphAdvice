@@ -253,7 +253,11 @@ public final class GraphNodeClass extends GraphNodeCode {
 			this
 				.getAttributeNode(attributeName)
 				.or(() -> {
-					final var node = new GraphNodeAttribute(this.graph, attributeName);
+					final var node =
+						new GraphNodeAttribute(
+							this.graph,
+							new GraphNodeIdentifier(this.graph, attributeName)
+						);
 					this.has(node);
 					return Optional.of(node);
 				})

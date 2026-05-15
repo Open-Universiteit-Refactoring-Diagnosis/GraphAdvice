@@ -40,13 +40,17 @@ public final class GraphEdgeTestsArgumentsProvider implements ArgumentsProvider 
 			)
 		);
 		
-		final var graphNodeAttributeOriginal = new GraphNodeAttribute(graphOriginal, "foo");
+		final var graphNodeAttributeOriginal =
+			new GraphNodeAttribute(
+				graphOriginal,
+				new GraphNodeIdentifier(graphOriginal, "foo")
+			);
 		final var graphEdgeClassHasAttribute = new GraphEdgeHas(graphNodeClassOriginal, graphNodeAttributeOriginal);
 		argumentsList.add(
 			Arguments.of(
 				graphEdgeClassHasAttribute,
 				new GraphNodeClass(graphCloned, alphaIdentifierCloned),
-				new GraphNodeAttribute(graphCloned, "foo")
+				new GraphNodeAttribute(graphCloned, new GraphNodeIdentifier(graphCloned, "foo"))
 			)
 		);
 		
