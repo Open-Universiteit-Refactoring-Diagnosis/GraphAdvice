@@ -229,6 +229,43 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 				.collect(Collectors.toUnmodifiableSet());
 	}
 	
+	/**
+	 * Determines whether the operation specification matches the current operation node.
+	 * @param operationName The name of the operation.
+	 * @param operationParameterSignatures The signatures of the operation parameters.
+	 * @return A value that indicates whether the signatures match.
+	 */
+	public boolean matches(String operationName, List<GraphNodeOperationParameterSignature> operationParameterSignatures) {
+		if (!this.getOperationName().equals(operationName)) {
+			return false;
+		}
+		
+		final var operationParameters = this.getOperationParameters();
+		if (operationParameters.size() != operationParameterSignatures.size()) {
+			return false;
+		}
+		for (var i = 0; i < operationParameters.size(); i++) {
+			final var operationParameter = operationParameters.get(i);
+			final var operationParameterSignature = operationParameterSignatures.get(i);
+			if (!operationParameter.getParameterName().equals(operationParameterSignature.name())) {
+				return false;
+			}
+			
+			final var operationParameterType = operationParameter.getParameterType();
+			if (operationParameterType == null) {
+				if (operationParameterSignature.typeName() != null && operationParameterSignature.typeName() != "") {
+					return false;
+				}
+			} else {
+				if (!operationParameterType.getTypeName().equals(operationParameterSignature.typeName())) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");

@@ -17,7 +17,7 @@ public final class GraphValidationEngine {
 	private final Set<GraphValidator> validators; 
 	
 	/**
-	 * Initialises a new instance of {@link GraphValidatorEngine}.
+	 * Initialises a new instance of {@link GraphValidationEngine}.
 	 */
 	public GraphValidationEngine() {
 		this.validators = new HashSet<>();
@@ -34,8 +34,8 @@ public final class GraphValidationEngine {
 	}
 
 	/**
-	 * Validates a Refactoring Advice Graph (RAG) {@link graph}.
-	 * @param graph A Refactoring Advice Graph (RAG) {@link graph}.
+	 * Validates a Refactoring Advice Graph (RAG) {@link Graph}.
+	 * @param graph A Refactoring Advice Graph (RAG) {@link Graph}.
 	 * @return An unmodifiable list of validation results {@link GraphValidationResult}.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */

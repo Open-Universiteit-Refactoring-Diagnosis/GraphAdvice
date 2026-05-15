@@ -16,6 +16,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameterSignature;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 public final class GraphNodeClassTests {
@@ -26,10 +27,10 @@ public final class GraphNodeClassTests {
 	public void getOperationNodeTest(
 		GraphNodeClass classNode,
 		GraphNodeIdentifier operationName,
-		List<GraphNodeOperationParameter> operationParameters,
+		List<GraphNodeOperationParameterSignature> operationParameterSignatures,
 		Optional<GraphNodeOperation> expectedOperationNode
 	) {
-		final var actualOperationNode = classNode.getOperationNode(operationName.getIdentifier(), operationParameters);
+		final var actualOperationNode = classNode.getOperationNode(operationName.getIdentifier(), operationParameterSignatures);
 		assertEquals(expectedOperationNode, actualOperationNode);
 	}
 	
@@ -40,14 +41,14 @@ public final class GraphNodeClassTests {
 		final var graph1IdentifierNode = new GraphNodeIdentifier(graph1, "Class1");
 		final var graph1ClassNode = new GraphNodeClass(graph1, graph1IdentifierNode);
 		final var graph1OperationNodeName = new GraphNodeIdentifier(graph1, "operation1");
-		final var graph1OperationNodeParameters = new ArrayList<GraphNodeOperationParameter>();
+		final var graph1OperationNodeParameterSignatures = new ArrayList<GraphNodeOperationParameterSignature>();
 		final var graph1OperationNode = new GraphNodeOperation(graph1, graph1OperationNodeName);
 		graph1ClassNode.has(graph1OperationNode);
 		argumentsList.add(
 			Arguments.of(
 				graph1ClassNode,
 				graph1OperationNodeName,
-				graph1OperationNodeParameters,
+				graph1OperationNodeParameterSignatures,
 				Optional.ofNullable(graph1OperationNode)
 			)
 		);
@@ -56,8 +57,8 @@ public final class GraphNodeClassTests {
 		final var graph2IdentifierNode = new GraphNodeIdentifier(graph2, "Class2");
 		final var graph2ClassNode = new GraphNodeClass(graph2, graph2IdentifierNode);
 		final var graph2OperationNodeName = new GraphNodeIdentifier(graph2, "operation2");
-		final var graph2OperationNodeParametersInput = new ArrayList<GraphNodeOperationParameter>();
-		graph2OperationNodeParametersInput.add(new GraphNodeOperationParameter(graph2, "test"));
+		final var graph2OperationNodeParametersInput = new ArrayList<GraphNodeOperationParameterSignature>();
+		graph2OperationNodeParametersInput.add(new GraphNodeOperationParameterSignature("test", null));
 		final var graph2OperationNodeParametersModel = new ArrayList<GraphNodeOperationParameter>();
 		graph2OperationNodeParametersModel.add(new GraphNodeOperationParameter(graph2, "test"));
 		final var graph2OperationNode =
@@ -80,7 +81,7 @@ public final class GraphNodeClassTests {
 		final var graph3IdentifierNode = new GraphNodeIdentifier(graph3, "Class3");
 		final var graph3ClassNode = new GraphNodeClass(graph3, graph3IdentifierNode);
 		final var graph3OperationNodeName = new GraphNodeIdentifier(graph3, "operation3");
-		final var graph3OperationNodeParameters = new ArrayList<GraphNodeOperationParameter>();
+		final var graph3OperationNodeParameters = new ArrayList<GraphNodeOperationParameterSignature>();
 		final GraphNodeOperation graph3OperationNode = null;
 		argumentsList.add(
 			Arguments.of(
@@ -95,8 +96,8 @@ public final class GraphNodeClassTests {
 		final var graph4IdentifierNode = new GraphNodeIdentifier(graph4, "Class4");
 		final var graph4ClassNode = new GraphNodeClass(graph4, graph4IdentifierNode);
 		final var graph4OperationNodeName = new GraphNodeIdentifier(graph4, "operation4");
-		final var graph4OperationNodeParametersInput = new ArrayList<GraphNodeOperationParameter>();
-		graph4OperationNodeParametersInput.add(new GraphNodeOperationParameter(graph4, "test"));
+		final var graph4OperationNodeParametersInput = new ArrayList<GraphNodeOperationParameterSignature>();
+		graph4OperationNodeParametersInput.add(new GraphNodeOperationParameterSignature("test", ""));
 		final var graph4OperationNodeParametersModel = new ArrayList<GraphNodeOperationParameter>();
 		graph4OperationNodeParametersModel.add(new GraphNodeOperationParameter(graph4, "test2"));
 		final var graph4OperationNodeModel =

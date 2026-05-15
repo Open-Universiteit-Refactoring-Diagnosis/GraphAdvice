@@ -134,6 +134,8 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 						graph,
 						memberNodes,
 						methodNodeAdded,
+						// No members with identical identifier, so no Double Definition found.
+						memberNodes.isEmpty() ||
 						// Double Definition found, validation now only succeeds if the risk is associated.
 						methodNodeAdded
 							.getRisks()

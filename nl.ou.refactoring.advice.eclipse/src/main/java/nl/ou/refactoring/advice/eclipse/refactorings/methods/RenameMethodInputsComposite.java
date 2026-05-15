@@ -15,9 +15,13 @@ import nl.ou.refactoring.advice.eclipse.refactorings.GraphChangedEvent;
 import nl.ou.refactoring.advice.eclipse.refactorings.RefactoringInputsComposite;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameterSignature;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.nodes.workflow.risks.validation.GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator;
+import nl.ou.refactoring.advice.validation.GraphValidationEngine;
+import nl.ou.refactoring.advice.validation.GraphValidationFixableResult;
 
 /**
  * A composite for inputs of a Rename Method refactoring.
@@ -51,41 +55,73 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 		this.newNameTextWidget = new Text(this, SWT.BORDER);
 		this.newNameTextWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		this.newNameTextWidget.addModifyListener(_ -> {
-			final var newName = this.newNameTextWidget.getText();
-			final var graphClone = graph.clone(graph.getRefactoringName());
-			
-			// Get parent Class.
-			final var className = selectedMethod.getDeclaringType().getFullyQualifiedName();
-			final var classNode =
-				graphClone
-					.getNode(className, GraphNodeClass.class)
-					.get();
-			
-			// Create new Method.
-			final var operationRenamedNode =
-				new GraphNodeOperation(
-					graphClone,
-					new GraphNodeIdentifier(graphClone, newName),
-					new ArrayList<>()
-				);
-			classNode.has(operationRenamedNode);
-			
-			// Get relevant microsteps.
-			final var addMethodNode =
-				graphClone
-					.getNodes(GraphNodeMicrostepAddMethod.class)
-					.stream()
-					.findAny()
-					.get();
-			addMethodNode.adds(operationRenamedNode);
-			// TODO also do remove node.
-			
-			// Emulate double definition
-			final var doubleDefinitionRisk = new GraphNodeRiskDoubleDefinition(graphClone);
-			doubleDefinitionRisk.affects(operationRenamedNode);
-			addMethodNode.causes(doubleDefinitionRisk);
-			
-			this.onGraphChanged(new GraphChangedEvent(graphClone));
+			try {
+				final var newName = this.newNameTextWidget.getText();
+				final var graphClone = graph.clone(graph.getRefactoringName());
+				
+				// Get parent Class.
+				final var className = selectedMethod.getDeclaringType().getFullyQualifiedName();
+				final var classNode =
+					graphClone
+						.getNode(className, GraphNodeClass.class)
+						.get();
+				
+				// Find OperationNode that matches Selected Method
+				final var operationParameterSignatures = new ArrayList<GraphNodeOperationParameterSignature>();
+				final var methodParameters = selectedMethod.getParameters();
+				for (final var methodParameter : methodParameters) {
+					operationParameterSignatures.add(
+						new GraphNodeOperationParameterSignature(
+							methodParameter.getElementName(),
+							methodParameter.getTypeSignature()
+						)
+					);
+				}
+				final var selectedMethodNode =
+					classNode
+						.getOperationNode(selectedMethod.getElementName(), operationParameterSignatures)
+						.get();
+				
+				// Create new Method.
+				final var operationRenamedNode =
+					new GraphNodeOperation(
+						graphClone,
+						new GraphNodeIdentifier(graphClone, newName),
+						new ArrayList<>()
+					);
+				classNode.has(operationRenamedNode);
+				
+				// Get relevant microsteps.
+				final var addMethodNode =
+					graphClone
+						.getNodes(GraphNodeMicrostepAddMethod.class)
+						.stream()
+						.findAny()
+						.get();
+				addMethodNode.adds(operationRenamedNode);
+				
+				final var removeMethodNode =
+					graphClone
+						.getNodes(GraphNodeMicrostepRemoveMethod.class)
+						.stream()
+						.findAny()
+						.get();
+				removeMethodNode.removes(selectedMethodNode);
+				
+				// Validate and fix risk
+				final var validationEngine = new GraphValidationEngine();
+				validationEngine.addValidator(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
+				final var validationResults = validationEngine.validate(graphClone);
+				for (final var validationResult : validationResults) {
+					if (!validationResult.getIsValid() && validationResult instanceof GraphValidationFixableResult) {
+						((GraphValidationFixableResult)validationResult).fix(false); // Graph is already a clone.
+					}
+				}
+				
+				this.onGraphChanged(new GraphChangedEvent(graphClone));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		});
 	}
 }

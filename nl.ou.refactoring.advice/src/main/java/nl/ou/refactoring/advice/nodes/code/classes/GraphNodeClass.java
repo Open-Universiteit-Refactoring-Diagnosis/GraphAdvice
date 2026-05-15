@@ -1,5 +1,6 @@
 package nl.ou.refactoring.advice.nodes.code.classes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,6 +21,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameterSignature;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 /**
@@ -343,7 +345,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 */
 	public Optional<GraphNodeOperation> getOperationNode(
 		String operationName,
-		List<GraphNodeOperationParameter> operationParameters
+		List<GraphNodeOperationParameterSignature> operationParameters
 	) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
@@ -351,11 +353,7 @@ public final class GraphNodeClass extends GraphNodeCode {
 			this
 				.getOperationNodes()
 				.stream()
-				.filter(
-					node ->
-					node.getOperationName().equals(operationName) &&
-					node.getOperationParameters().equals(operationParameters)
-				)
+				.filter(node -> node.matches(operationName, operationParameters))
 				.findAny();
 	}
 	
@@ -378,21 +376,35 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * Attempts to get an operation node associated with this class, with operationName and operationParameters as its signature.
 	 * If it is not found, a new operation node with operationName and operationParameters is created and associated with this class node.
 	 * @param operationName The name of the operation.
-	 * @param operationParameters The parameters of the operation.
+	 * @param operationParameterSignatures The parameter signatures of the operation.
 	 * @return The operation with operationName and operationParameters, if found, otherwise a newly created operation node with operationName and operationParameters.
 	 * @throws ArgumentNullException Thrown if operationName or operationParameters is null.
 	 */
 	public GraphNodeOperation computeOperationNode(
 		String operationName,
-		List<GraphNodeOperationParameter> operationParameters
+		List<GraphNodeOperationParameterSignature> operationParameterSignatures
 	) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(operationName, "operationName");
-		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
+		ArgumentGuard.requireNotNull(operationParameterSignatures, "operationParameters");
 		return
 			this
-				.getOperationNode(operationName, operationParameters)
+				.getOperationNode(operationName, operationParameterSignatures)
 				.or(() -> {
-					final var node = new GraphNodeOperation(this.graph, new GraphNodeIdentifier(graph, operationName), operationParameters);
+					final var operationParameterNodes = new ArrayList<GraphNodeOperationParameter>();
+					for (final var operationParameterSignature : operationParameterSignatures) {
+						final var operationParameterNode =
+							new GraphNodeOperationParameter(
+								this.graph,
+								operationParameterSignature.name()
+							);
+						operationParameterNodes.add(operationParameterNode);
+					}
+					final var node =
+						new GraphNodeOperation(
+							this.graph,
+							new GraphNodeIdentifier(graph, operationName),
+							operationParameterNodes
+						);
 					this.has(node);
 					return Optional.of(node);
 				})

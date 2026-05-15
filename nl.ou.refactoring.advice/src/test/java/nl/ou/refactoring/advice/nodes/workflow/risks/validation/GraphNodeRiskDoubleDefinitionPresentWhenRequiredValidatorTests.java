@@ -44,6 +44,38 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidatorTest
 			);
 	}
 	
+	@DisplayName("Graph Double Definition present when required validation fix")
+	@ParameterizedTest
+	@MethodSource("fixTestParameters")
+	public void fixTest(Graph graph) {
+		final var engine = new GraphValidationEngine();
+		engine.addValidator(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
+		final var results = engine.validate(graph);
+		assertFalse(results.isEmpty());
+		assertEquals(results.size(), 1);
+		final var result = results.stream().findAny().get();
+		assertInstanceOf(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult.class, result);
+		
+		// Validate risk is actually absent.
+		assertTrue(graph.getNodes(GraphNodeRiskDoubleDefinition.class).isEmpty());
+		
+		final var doubleDefinitionValidationResult =
+			(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult)result;
+		doubleDefinitionValidationResult.fix(false);
+		
+		// Validate risk is not absent anymore.
+		final var risks = graph.getNodes(GraphNodeRiskDoubleDefinition.class);
+		assertFalse(risks.isEmpty());
+		
+	}
+	
+	public static Stream<Arguments> fixTestParameters() {
+		return
+			Stream.of(
+				Arguments.of(createGraphMissingRiskDoubleDefinitionMethod())	
+			);
+	}
+	
 	private static Graph createGraphMissingRiskDoubleDefinitionMethod() {
 		final var graph = new Graph("Graph missing risk Double Definition with operation/method");
 		final var graphStart = graph.start();
@@ -78,37 +110,5 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidatorTest
 		riskDoubleDefinitionNode.affects(operationNodeNew);
 		
 		return graph;
-	}
-	
-	@DisplayName("Graph Double Definition present when required validation fix")
-	@ParameterizedTest
-	@MethodSource("fixTestParameters")
-	public void fixTest(Graph graph) {
-		final var engine = new GraphValidationEngine();
-		engine.addValidator(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
-		final var results = engine.validate(graph);
-		assertFalse(results.isEmpty());
-		assertEquals(results.size(), 1);
-		final var result = results.stream().findAny().get();
-		assertInstanceOf(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult.class, result);
-		
-		// Validate risk is actually absent.
-		assertTrue(graph.getNodes(GraphNodeRiskDoubleDefinition.class).isEmpty());
-		
-		final var doubleDefinitionValidationResult =
-			(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult)result;
-		doubleDefinitionValidationResult.fix(false);
-		
-		// Validate risk is not absent anymore.
-		final var risks = graph.getNodes(GraphNodeRiskDoubleDefinition.class);
-		assertFalse(risks.isEmpty());
-		
-	}
-	
-	private static Stream<Arguments> fixTestParameters() {
-		return
-			Stream.of(
-				Arguments.of(createGraphMissingRiskDoubleDefinitionMethod())	
-			);
 	}
 }

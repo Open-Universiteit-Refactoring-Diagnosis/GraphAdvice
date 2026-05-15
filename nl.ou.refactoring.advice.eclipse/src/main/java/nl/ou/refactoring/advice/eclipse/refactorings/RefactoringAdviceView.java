@@ -73,6 +73,7 @@ public final class RefactoringAdviceView {
         
         // Set the initial HTML content.
         browser.setText(renderRefactoringAdviceHtml(this.refactoring.getGraph()));
+        browser.setSize(800, 400);
         
         // This composite will contain input controls for refactoring parameters.
         final var inputsComposite = this.refactoring.createComposite(sashForm);

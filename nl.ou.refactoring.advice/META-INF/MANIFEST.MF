@@ -41,7 +41,10 @@ Export-Package: nl.ou.refactoring.advice,
  nl.ou.refactoring.advice.nodes.workflow.microsteps,
  nl.ou.refactoring.advice.nodes.workflow.remedies,
  nl.ou.refactoring.advice.nodes.workflow.risks,
- nl.ou.refactoring.advice.resources
+ nl.ou.refactoring.advice.nodes.workflow.risks.validation,
+ nl.ou.refactoring.advice.resources,
+ nl.ou.refactoring.advice.validation,
+ nl.ou.refactoring.advice.validation.common
 Bundle-ClassPath: .,
  lib/api-0.34.0.jar,
  lib/batik-all-1.19.jar,

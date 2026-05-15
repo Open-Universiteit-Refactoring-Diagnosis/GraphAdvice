@@ -20,7 +20,7 @@ public abstract class GraphValidationFixableResult extends GraphValidationResult
 	/**
 	 * Fixes the validation result.
 	 * @param cloneGraph A value that indicates whether the fix should be in a cloned {@link Graph}.
-	 * @returns A Refactoring Advice Graph (RAG) with the fix of the validation result. A clone if <pre>{@code cloneGraph == true}</pre>.
+	 * @return A Refactoring Advice Graph (RAG) with the fix of the validation result. A clone if <pre>{@code cloneGraph == true}</pre>.
 	 * @throws GraphValidationResultFixFailedException Thrown if the automated fix fails.
 	 */
 	public abstract Graph fix(boolean cloneGraph) throws GraphValidationResultFixFailedException;
