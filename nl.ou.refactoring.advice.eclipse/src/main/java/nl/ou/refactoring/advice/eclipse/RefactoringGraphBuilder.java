@@ -56,15 +56,16 @@ public final class RefactoringGraphBuilder {
 			graph
 				.getNode(type.getFullyQualifiedName(), GraphNodeClass.class)
 				.get();
-		final var typeHierarchy = type.newSupertypeHierarchy(null);
-		final var typeSuperTypes = typeHierarchy.getAllSupertypes(type);
-		for (final var typeSuperType : typeSuperTypes) {
+		final var typeHierarchy = type.newTypeHierarchy(null);
+		
+		final var typeSupertypes = typeHierarchy.getAllSupertypes(type);
+		for (final var typeSupertype : typeSupertypes) {
 			try {
-				graph = readElementToGraph(graph, typeSuperType);
-				if (typeSuperType.isClass()) {
+				graph = readElementToGraph(graph, typeSupertype);
+				if (typeSupertype.isClass()) {
 					final var classNode =
 						graph
-							.getNode(typeSuperType.getFullyQualifiedName(), GraphNodeClass.class)
+							.getNode(typeSupertype.getFullyQualifiedName(), GraphNodeClass.class)
 							.get();
 					classNodeBase.is(classNode);
 				}
@@ -72,6 +73,23 @@ public final class RefactoringGraphBuilder {
 				ex.printStackTrace();
 			}
 		}
+		
+		final var typeSubtypes = typeHierarchy.getAllSubtypes(type);
+		for (final var typeSubtype : typeSubtypes) {
+			try {
+				graph = readElementToGraph(graph, typeSubtype);
+				if (typeSubtype.isClass()) {
+					final var classNode =
+						graph
+							.getNode(typeSubtype.getFullyQualifiedName(), GraphNodeClass.class)
+							.get();
+					classNode.is(classNodeBase);
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		
 		return graph;
 	}
 

@@ -29,7 +29,7 @@ public final class TypeSignatureResolver {
 			default -> {
 				if (typeSignature.startsWith("T")) {
 					// "T" + Identifier + ";" // type variable
-					yield typeSignature.substring(1, typeSignature.length() - 2);
+					yield typeSignature.substring(1, typeSignature.length() - 1);
 				}
 				if (typeSignature.startsWith("[")) {
 					// "[" + TypeSignature // array X[]
