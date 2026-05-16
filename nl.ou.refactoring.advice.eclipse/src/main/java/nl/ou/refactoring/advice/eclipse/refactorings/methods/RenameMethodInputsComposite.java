@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.eclipse.refactorings.methods;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.swt.SWT;
@@ -11,10 +12,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.eclipse.TypeSignatureResolver;
 import nl.ou.refactoring.advice.eclipse.refactorings.GraphChangedEvent;
 import nl.ou.refactoring.advice.eclipse.refactorings.RefactoringInputsComposite;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameterSignature;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -27,6 +31,8 @@ import nl.ou.refactoring.advice.validation.GraphValidationFixableResult;
  * A composite for inputs of a Rename Method refactoring.
  */
 public final class RenameMethodInputsComposite extends RefactoringInputsComposite {
+	private Label originalNameLabelWidget;
+	private Label originalNameValueLabelWidget;
 	private Label newNameLabelWidget;
 	private Text newNameTextWidget;
 	
@@ -49,11 +55,18 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 		gridLayout.marginHeight = 5;
 		this.setLayout(gridLayout);
 		
+		this.originalNameLabelWidget = new Label(this, SWT.NONE);
+		this.originalNameLabelWidget.setText("Original method name:");
+		
+		this.originalNameValueLabelWidget = new Label(this, SWT.NONE);
+		this.originalNameValueLabelWidget.setText(selectedMethod.getElementName());
+		
 		this.newNameLabelWidget = new Label(this, SWT.NONE);
 		this.newNameLabelWidget.setText("New method name:");
 		
 		this.newNameTextWidget = new Text(this, SWT.BORDER);
 		this.newNameTextWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		this.newNameTextWidget.setText(selectedMethod.getElementName());
 		this.newNameTextWidget.addModifyListener(_ -> {
 			try {
 				final var newName = this.newNameTextWidget.getText();
@@ -73,23 +86,36 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 					operationParameterSignatures.add(
 						new GraphNodeOperationParameterSignature(
 							methodParameter.getElementName(),
-							methodParameter.getTypeSignature()
+							TypeSignatureResolver.resolveName(methodParameter)
 						)
 					);
 				}
-				final var selectedMethodNode =
+				final var operationNodeSelected =
 					classNode
 						.getOperationNode(selectedMethod.getElementName(), operationParameterSignatures)
 						.get();
 				
 				// Create new Method.
-				final var operationRenamedNode =
+				final var operationNodeSelectedReturnTypeOptional =
+					operationNodeSelected.getReturnType();
+				final var operationNodeRenamedParameters =
+					operationNodeSelected
+						.getOperationParameters()
+						.stream()
+						.map((node) -> (GraphNodeOperationParameter)node.clone(graphClone))
+						.collect(Collectors.toUnmodifiableList());
+				final var operationNodeRenamed =
 					new GraphNodeOperation(
 						graphClone,
 						new GraphNodeIdentifier(graphClone, newName),
-						new ArrayList<>()
+						operationNodeRenamedParameters
 					);
-				classNode.has(operationRenamedNode);
+				if (operationNodeSelectedReturnTypeOptional.isPresent()) {
+					operationNodeRenamed.hasReturnType(
+						(GraphNodeType)operationNodeSelectedReturnTypeOptional.get().clone(graphClone)
+					);
+				}
+				classNode.has(operationNodeRenamed);
 				
 				// Get relevant microsteps.
 				final var addMethodNode =
@@ -98,15 +124,14 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 						.stream()
 						.findAny()
 						.get();
-				addMethodNode.adds(operationRenamedNode);
-				
+				addMethodNode.adds(operationNodeRenamed);
 				final var removeMethodNode =
 					graphClone
 						.getNodes(GraphNodeMicrostepRemoveMethod.class)
 						.stream()
 						.findAny()
 						.get();
-				removeMethodNode.removes(selectedMethodNode);
+				removeMethodNode.removes(operationNodeSelected);
 				
 				// Validate and fix risk
 				final var validationEngine = new GraphValidationEngine();
@@ -118,6 +143,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 					}
 				}
 				
+				// Emit Graph Changed event.
 				this.onGraphChanged(new GraphChangedEvent(graphClone));
 			} catch (Exception ex) {
 				ex.printStackTrace();

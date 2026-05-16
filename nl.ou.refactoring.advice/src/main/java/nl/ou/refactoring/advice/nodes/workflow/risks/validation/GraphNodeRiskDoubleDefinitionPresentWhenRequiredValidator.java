@@ -90,7 +90,7 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 						graph,
 						classNodes,
 						classNodeAdded,
-						// Double Definition found, validation now only succeeds if the risk is associated.
+						// Double Definition detected, validation now only succeeds if the risk is associated.
 						classNodeAdded
 							.getRisks()
 							.stream()
@@ -135,9 +135,9 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 						graph,
 						memberNodes,
 						methodNodeAdded,
-						// No members with identical identifier, so no Double Definition found.
+						// No members with identical identifier, so no Double Definition detected.
 						memberNodes.isEmpty() ||
-						// Double Definition found, validation now only succeeds if the risk is associated.
+						// Double Definition detected, validation now only succeeds if the risk is associated.
 						methodNodeAdded
 							.getRisks()
 							.stream()
@@ -177,7 +177,9 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 						graph,
 						memberNodes,
 						attributeNodeAdded,
-						// Double Definition found, validation now only succeeds if the risk is associated.
+						// No members with identical identifier, so no Double Definition detected.
+						memberNodes.isEmpty() ||
+						// Double Definition detected, validation now only succeeds if the risk is associated.
 						attributeNodeAdded
 							.getRisks()
 							.stream()

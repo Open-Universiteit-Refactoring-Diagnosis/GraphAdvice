@@ -70,24 +70,23 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationRes
 			graph = graph.clone(graph.getRefactoringName());
 		}
 		
+		final var riskNode = new GraphNodeRiskDoubleDefinition(graph);
+		
 		switch (this.nodeAdded) {
 			case GraphNodeAttribute attributeNode: {
 				final var microstep = getMicrostep(attributeNode, GraphNodeMicrostepAddField.class);
-				final var riskNode = new GraphNodeRiskDoubleDefinition(graph);
 				microstep.causes(riskNode);
 				riskNode.affects(attributeNode);
 				break;
 			}
 			case GraphNodeOperation operationNode: {
 				final var microstep = getMicrostep(operationNode, GraphNodeMicrostepAddMethod.class);
-				final var riskNode = new GraphNodeRiskDoubleDefinition(graph);
-				riskNode.affects(operationNode);
 				microstep.causes(riskNode);
+				riskNode.affects(operationNode);
 				break;
 			}
 			case GraphNodeClass classNode: {
 				final var microstep = getMicrostep(classNode, GraphNodeMicrostepAddClass.class);
-				final var riskNode = new GraphNodeRiskDoubleDefinition(graph);
 				microstep.causes(riskNode);
 				riskNode.affects(classNode);
 				break;
