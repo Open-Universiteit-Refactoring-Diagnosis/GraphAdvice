@@ -23,6 +23,7 @@ import org.xml.sax.InputSource;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.eclipse.RefactoringGraphBuilder;
 import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
 import nl.ou.refactoring.advice.io.html.text.GraphHtmlTextWriter;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlSvgGenerator;
@@ -58,42 +59,52 @@ public final class RefactoringAdviceView {
 	 * Composes and shows the Refactoring Advice view.
 	 */
 	public void show() {
-        // Create a new shell for the web view.
-        final var shell = new Shell(parentShell, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-        shell.setText(this.refactoring.getGraph().getRefactoringName());
-        shell.setSize(800, 600);
-        shell.setLayout(new FillLayout());
-        
-        // A SashForm enables vertical stacking of UI components.
-        final var sashForm = new SashForm(shell, SWT.VERTICAL);
-        sashForm.setLayout(new FillLayout());
-        
-        // Create a browser widget.
-        final var browser = new Browser(sashForm, SWT.NONE);
-        
-        // Set the initial HTML content.
-        browser.setText(renderRefactoringAdviceHtml(this.refactoring.getGraph()));
-        browser.setSize(800, 400);
-        
-        // This composite will contain input controls for refactoring parameters.
-        final var inputsComposite = this.refactoring.createComposite(sashForm);
-        inputsComposite.addGraphChangedListener(event -> {
-        	browser.setText(renderRefactoringAdviceHtml(event.getGraph()));
-        });
-
-        // Centre the shell on the parent.
-        centerShell(shell, parentShell);
-
-        // Open the shell.
-        shell.open();
-
-        // Event loop.
-        final var display = parentShell.getDisplay();
-        while (!shell.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
-            }
-        }
+		try {
+			RefactoringGraphBuilder
+				.append(
+					this.refactoring.getGraph(),
+					this.refactoring.getSelectedElement()
+				);
+			
+	        // Create a new shell for the web view.
+	        final var shell = new Shell(parentShell, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
+	        shell.setText(this.refactoring.getGraph().getRefactoringName());
+	        shell.setSize(800, 600);
+	        shell.setLayout(new FillLayout());
+	        
+	        // A SashForm enables vertical stacking of UI components.
+	        final var sashForm = new SashForm(shell, SWT.VERTICAL);
+	        sashForm.setLayout(new FillLayout());
+	        
+	        // Create a browser widget.
+	        final var browser = new Browser(sashForm, SWT.NONE);
+	        
+	        // Set the initial HTML content.
+	        browser.setText(renderRefactoringAdviceHtml(this.refactoring.getGraph()));
+	        browser.setSize(800, 400);
+	        
+	        // This composite will contain input controls for refactoring parameters.
+	        final var inputsComposite = this.refactoring.createComposite(sashForm);
+	        inputsComposite.addGraphChangedListener(event -> {
+	        	browser.setText(renderRefactoringAdviceHtml(event.getGraph()));
+	        });
+	
+	        // Centre the shell on the parent.
+	        centerShell(shell, parentShell);
+	
+	        // Open the shell.
+	        shell.open();
+	
+	        // Event loop.
+	        final var display = parentShell.getDisplay();
+	        while (!shell.isDisposed()) {
+	            if (!display.readAndDispatch()) {
+	                display.sleep();
+	            }
+	        }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
     /**

@@ -207,7 +207,12 @@ public final class RefactoringsSubmenuContribution extends CompoundContributionI
 		} else if (element instanceof IField) {
 			items.add(this.createItem("Rename Field", null));
 		} else if (element instanceof ILocalVariable) {
-			items.add(this.createItem("Rename Local Variable", null));
+			final var localVariable = (ILocalVariable)element;
+			if (localVariable.isParameter()) {
+				items.add(this.createItem("Rename Parameter", null));
+			} else {
+				items.add(this.createItem("Rename Local Variable", null));
+			}
 		} else if (element instanceof ICompilationUnit) {
 			items.add(this.createItem("Compilation Unit", null));
 		} else if (element instanceof IPackageFragment) {
