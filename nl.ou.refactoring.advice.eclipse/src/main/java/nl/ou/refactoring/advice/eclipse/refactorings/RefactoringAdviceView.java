@@ -60,15 +60,16 @@ public final class RefactoringAdviceView {
 	 */
 	public void show() {
 		try {
+			final var graphClone = this.refactoring.getGraph();
 			RefactoringGraphBuilder
 				.append(
-					this.refactoring.getGraph(),
+					graphClone,
 					this.refactoring.getSelectedElement()
 				);
 			
 	        // Create a new shell for the web view.
 	        final var shell = new Shell(parentShell, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-	        shell.setText(this.refactoring.getGraph().getRefactoringName());
+	        shell.setText(graphClone.getRefactoringName());
 	        shell.setSize(800, 600);
 	        shell.setLayout(new FillLayout());
 	        
@@ -80,7 +81,7 @@ public final class RefactoringAdviceView {
 	        final var browser = new Browser(sashForm, SWT.NONE);
 	        
 	        // Set the initial HTML content.
-	        browser.setText(renderRefactoringAdviceHtml(this.refactoring.getGraph()));
+	        browser.setText(renderRefactoringAdviceHtml(graphClone));
 	        browser.setSize(800, 400);
 	        
 	        // This composite will contain input controls for refactoring parameters.
@@ -166,10 +167,10 @@ public final class RefactoringAdviceView {
 	    	final var bodyElement = htmlDocument.createElement("body");
 	    	
 	    	// PlantUML Class Diagram » SVG Class Diagram » <section>
-	    	appendClassDiagram(graph, htmlDocument, bodyElement);
+	    	appendClassDiagram(graph, bodyElement);
 	    	
 	    	// Advice Text
-	    	appendAdviceText(graph, htmlDocument, bodyElement);
+	    	appendAdviceText(graph, bodyElement);
 	    	
 	    	htmlElement.appendChild(bodyElement);
     	} catch (Exception ex) {
@@ -191,9 +192,10 @@ public final class RefactoringAdviceView {
         return htmlWriter.toString();
     }
 
-	private static void appendClassDiagram(Graph graph, Document htmlDocument, final Element bodyElement) {
+	private static void appendClassDiagram(Graph graph, final Element bodyElement) {
 		try {
 			// Generate Class Diagram.
+			final var htmlDocument = bodyElement.getOwnerDocument();
 			final var classDiagramSection = htmlDocument.createElement("section");
 			final var classDiagramPlantUmlStringWriter = new StringWriter();
 			final var classDiagramPlantUmlWriter =
@@ -215,9 +217,10 @@ public final class RefactoringAdviceView {
 		}
 	}
 	
-	private static void appendAdviceText(Graph graph, Document htmlDocument, final Element bodyElement) {
+	private static void appendAdviceText(Graph graph, final Element bodyElement) {
 		try {
 			// Generate advice text.
+			final var htmlDocument = bodyElement.getOwnerDocument();
 			final var adviceTextSection = htmlDocument.createElement("section");
 			
 			final var nlpLanguage = NLPLanguageEnglishGreatBritain.INSTANCE;

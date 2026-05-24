@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.eclipse;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +13,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchMatch;
 import org.eclipse.jdt.core.search.SearchParticipant;
@@ -23,6 +25,8 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
+import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 
 /**
  * Builds Refactoring Advice Graphs (RAGs) from Eclipse contexts.
@@ -54,18 +58,28 @@ public final class RefactoringGraphBuilder {
 		LOGGER.info(
 			"Reading Java code from Java element {} to Refactoring Advice Graph code nodes",
 			element.getElementName()
-		);
-		graph = readElementToGraph(graph, element);		
+		);	
         if (element instanceof IType) {
         	LOGGER.info(
         		"Java element {} is a Class, so also including generalizations and specializations",
         		element.getElementName()
         	);
+        	graph = readElementToGraph(graph, (IType)element);
         	graph = readHierarchy(graph, (IType)element);
         }
         if (element instanceof IMethod) {
+        	LOGGER.info(
+        		"Java element {} is a Method, so also including Class hierarchy and caller methods",
+        		element.getElementName()
+        	);
         	final var method = (IMethod)element;
-        	graph = readHierarchy(graph, method.getDeclaringType());
+        	final var methodClass = method.getDeclaringType();
+        	final var methodClassFullyQualifiedName = methodClass.getFullyQualifiedName();
+        	var methodClassNodeOptional = graph.getNode(methodClassFullyQualifiedName, GraphNodeClass.class);
+        	if (methodClassNodeOptional.isEmpty()) {
+        		graph = readElementToGraph(graph, methodClass);
+        	}
+        	graph = readHierarchy(graph, methodClass);
         	graph = readCallers(graph, method);
         }
         
@@ -76,9 +90,14 @@ public final class RefactoringGraphBuilder {
 		final var countDownLatch = new CountDownLatch(1);
 		
 		try {
-			final var searchPattern = SearchPattern.createPattern(method, IJavaSearchConstants.REFERENCES);
-			final var project = method.getJavaProject();
-			final var searchScope = SearchEngine.createJavaSearchScope(new IJavaProject[] { project });
+			LOGGER.info("Searching callers of method {}", method.getElementName());
+			final var searchPattern = SearchPattern.createPattern(method, IJavaSearchConstants.QUALIFIED_REFERENCE);
+			final var methodProject = method.getJavaProject();
+			final var searchScope =
+				SearchEngine.createJavaSearchScope(
+					new IJavaProject[] { methodProject },
+					IJavaSearchScope.SOURCES
+				);
 			final var searchEngine = new SearchEngine();
 			searchEngine.search(
 				searchPattern,
@@ -87,22 +106,78 @@ public final class RefactoringGraphBuilder {
 				new SearchRequestor() {
 					@Override
 					public void acceptSearchMatch(SearchMatch match) {
-						try {
+						try {							
 							final var callerElement = match.getElement();
-							if (callerElement instanceof IJavaElement) {
-								append(graph, (IJavaElement)callerElement);
-								switch (callerElement) {
-									case IMethod callerMethod: {
-										
-										break;
+							if (!(callerElement instanceof IJavaElement)) {
+								return;
+							}
+							
+							final var callerJavaElement = (IJavaElement)callerElement;
+							final var callerJavaElementProject = callerJavaElement.getJavaProject();
+							if (callerJavaElementProject == null || !methodProject.equals(callerJavaElementProject)) {
+								return;
+							}
+							
+							final var callerJavaElementProjectResource = callerJavaElementProject.getResource();
+							if (callerJavaElementProjectResource == null) {
+								return;
+							}
+							
+							final var callerJavaElementProjectRelativePath =
+								callerJavaElementProjectResource
+									.getProjectRelativePath()
+									.toString();
+							if (callerJavaElementProjectRelativePath == null) {
+								return;
+							}
+							
+							final var methodProjectRelativePath =
+								methodProject
+									.getResource()
+									.getProjectRelativePath()
+									.toString();
+							if (!methodProjectRelativePath.equals(callerJavaElementProjectRelativePath)) {
+								return;
+							}
+							
+							switch (callerJavaElement) {
+								case IMethod callerMethod: {
+									final var callerMethodClassName = callerMethod.getDeclaringType().getFullyQualifiedName();
+									final var callerMethodClassNodeOptional = graph.getNode(callerMethodClassName, GraphNodeClass.class);
+									GraphNodeClass callerMethodClassNode;
+									if (callerMethodClassNodeOptional.isEmpty()) {
+										append(graph, callerJavaElement);
+										callerMethodClassNode = graph.getNode(callerMethodClassName, GraphNodeClass.class).get();
+									} else {
+										callerMethodClassNode = callerMethodClassNodeOptional.get();
 									}
-									default: {
-										break;
+									final var callerMethodNode =
+										callerMethodClassNode
+											.getOperationNode(
+												callerMethod.getElementName(),
+												new ArrayList<>() // TODO parameters
+											)
+											.get();
+									final var callerMethodStatements = callerMethodNode.getBody().getStatements();
+									for (final var callerMethodStatement : callerMethodStatements) {
+										if (callerMethodStatement instanceof GraphNodeExpressionStatement) {
+											final var expressionStatement = (GraphNodeExpressionStatement)callerMethodStatement;
+											final var statementExpression = expressionStatement.getExpression();
+											if (statementExpression instanceof GraphNodeMethodInvocationExpression) {
+												final var methodInvocationExpression = (GraphNodeMethodInvocationExpression)statementExpression;
+												final var invokedOperationNode = methodInvocationExpression.getInvokedOperationNode();
+											}
+										}
 									}
+									break;
+								}
+								default: {
+									break;
 								}
 							}
 						} catch (Exception ex) {
 							ex.printStackTrace();
+							LOGGER.error("Accepting caller method failed", ex);
 						}
 					}
 					
@@ -117,6 +192,7 @@ public final class RefactoringGraphBuilder {
 			countDownLatch.await(10, TimeUnit.SECONDS);
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			LOGGER.error("Failed to read method callers for method " + method.getElementName(), ex);
 		}
 		
 		return graph;
@@ -139,17 +215,33 @@ public final class RefactoringGraphBuilder {
 		return graph;
 	}
 	
-	private static Graph readHierarchy(Graph graph, IType type) throws JavaModelException {
-		final GraphNodeClass classNodeBase =
-			graph
-				.getNode(type.getFullyQualifiedName(), GraphNodeClass.class)
-				.get();
+	private static Graph readHierarchy(final Graph graph, IType type)
+			throws
+				JavaModelException,
+				FileNotFoundException {
+		final var classNodeBaseOptional =
+			graph.getNode(type.getFullyQualifiedName(), GraphNodeClass.class);
+		final var classNodeBase =
+			classNodeBaseOptional
+				.orElseGet(() -> {
+					try {
+						readElementToGraph(graph, type);
+						return graph.getNode(type.getFullyQualifiedName(), GraphNodeClass.class).get();
+					} catch (Exception ex) {
+						throw new RuntimeException(ex);
+					}
+				});
 		final var typeHierarchy = type.newTypeHierarchy(null);
 		
 		final var typeSupertypes = typeHierarchy.getAllSupertypes(type);
 		for (final var typeSupertype : typeSupertypes) {
+			if (typeSupertype.getResource() == null) {
+				// External Class.
+				continue;
+			}
+			
 			try {
-				graph = readElementToGraph(graph, typeSupertype);
+				readElementToGraph(graph, typeSupertype);
 				if (typeSupertype.isClass()) {
 					final var classNode =
 						graph
@@ -159,13 +251,14 @@ public final class RefactoringGraphBuilder {
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
+				LOGGER.error("Failed to read supertype to graph", ex);
 			}
 		}
 		
 		final var typeSubtypes = typeHierarchy.getAllSubtypes(type);
 		for (final var typeSubtype : typeSubtypes) {
 			try {
-				graph = readElementToGraph(graph, typeSubtype);
+				readElementToGraph(graph, typeSubtype);
 				if (typeSubtype.isClass()) {
 					final var classNode =
 						graph

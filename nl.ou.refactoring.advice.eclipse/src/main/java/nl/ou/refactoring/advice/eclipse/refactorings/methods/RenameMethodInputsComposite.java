@@ -3,8 +3,11 @@ package nl.ou.refactoring.advice.eclipse.refactorings.methods;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -12,6 +15,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentPatternException;
 import nl.ou.refactoring.advice.eclipse.TypeSignatureResolver;
 import nl.ou.refactoring.advice.eclipse.refactorings.GraphChangedEvent;
 import nl.ou.refactoring.advice.eclipse.refactorings.RefactoringInputsComposite;
@@ -31,6 +35,7 @@ import nl.ou.refactoring.advice.validation.GraphValidationFixableResult;
  * A composite for inputs of a Rename Method refactoring.
  */
 public final class RenameMethodInputsComposite extends RefactoringInputsComposite {
+	private static final Logger LOGGER = LogManager.getLogger(RenameMethodInputsComposite.class);
 	private Label originalNameLabelWidget;
 	private Label originalNameValueLabelWidget;
 	private Label newNameLabelWidget;
@@ -69,8 +74,16 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 		this.newNameTextWidget.setText(selectedMethod.getElementName());
 		this.newNameTextWidget.addModifyListener(_ -> {
 			try {
-				final var newName = this.newNameTextWidget.getText();
+				final var newName = this.newNameTextWidget.getText();				
 				final var graphClone = graph.clone(graph.getRefactoringName());
+				GraphNodeIdentifier newNameIdentifier;
+				try {
+					newNameIdentifier = new GraphNodeIdentifier(graphClone, newName);
+				} catch (ArgumentPatternException patternException) {
+					this.newNameTextWidget.setBackground(new Color(255, 123, 123));
+					return;
+				}
+				this.newNameTextWidget.setBackground(new Color(255, 255, 255));
 				
 				// Get parent Class.
 				final var className = selectedMethod.getDeclaringType().getFullyQualifiedName();
@@ -79,7 +92,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 						.getNode(className, GraphNodeClass.class)
 						.get();
 				
-				// Find OperationNode that matches Selected Method
+				// Find OperationNode that matches Selected Method.
 				final var operationParameterSignatures = new ArrayList<GraphNodeOperationParameterSignature>();
 				final var methodParameters = selectedMethod.getParameters();
 				for (final var methodParameter : methodParameters) {
@@ -107,7 +120,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 				final var operationNodeRenamed =
 					new GraphNodeOperation(
 						graphClone,
-						new GraphNodeIdentifier(graphClone, newName),
+						newNameIdentifier,
 						operationNodeRenamedParameters
 					);
 				if (operationNodeSelectedReturnTypeOptional.isPresent()) {
@@ -117,7 +130,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 				}
 				classNode.has(operationNodeRenamed);
 				
-				// Get relevant microsteps.
+				// Get relevant Microsteps.
 				final var addMethodNode =
 					graphClone
 						.getNodes(GraphNodeMicrostepAddMethod.class)
@@ -133,7 +146,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 						.get();
 				removeMethodNode.removes(operationNodeSelected);
 				
-				// Validate and fix risk
+				// Validate and fix risk.
 				final var validationEngine = new GraphValidationEngine();
 				validationEngine.addValidator(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
 				final var validationResults = validationEngine.validate(graphClone);
@@ -147,6 +160,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 				this.onGraphChanged(new GraphChangedEvent(graphClone));
 			} catch (Exception ex) {
 				ex.printStackTrace();
+				LOGGER.error("Failed to update Refactoring Advice Graph", ex);
 			}
 		});
 	}

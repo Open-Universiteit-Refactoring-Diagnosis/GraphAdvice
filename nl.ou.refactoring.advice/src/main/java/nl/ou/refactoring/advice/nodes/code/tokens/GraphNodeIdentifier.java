@@ -22,7 +22,7 @@ public final class GraphNodeIdentifier
 	/**
 	 * The pattern for a valid Java identifier.
 	 */
-	private final static Pattern IDENTIFIER_PATTERN = Pattern.compile("^[a-zA-Z_$][a-zA-Z\\d_$]*$");
+	private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("^[a-zA-Z_$][a-zA-Z\\d_$]*$");
 	
 	/**
 	 * The identifier value.

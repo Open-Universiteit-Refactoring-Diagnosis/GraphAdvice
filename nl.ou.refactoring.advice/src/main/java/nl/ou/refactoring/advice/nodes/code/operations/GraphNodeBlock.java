@@ -22,8 +22,7 @@ public class GraphNodeBlock extends GraphNodeCode {
 	 * @param graph {@link Graph} The graph that contains the node.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	public GraphNodeBlock(Graph graph)
-			throws ArgumentNullException {
+	public GraphNodeBlock(Graph graph) throws ArgumentNullException {
 		super(graph);
 	}
 	

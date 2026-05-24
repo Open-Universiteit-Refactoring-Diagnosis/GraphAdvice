@@ -233,9 +233,9 @@ public final class GraphNodePackage extends GraphNodeCode {
 	
 	/**
 	 * Gets all class nodes that are included in the package.
-	 * @return All class nodes that are included in the package.
+	 * @return All class nodes that are included in the package in an unmodifiable list.
 	 */
-	public Set<GraphNodeClass> getClassNodes() {
+	public List<GraphNodeClass> getClassNodes() {
 		return
 			this
 				.getEdges(GraphEdgeHas.class)
@@ -243,7 +243,7 @@ public final class GraphNodePackage extends GraphNodeCode {
 				.map(edge -> edge.getDestinationNode())
 				.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
 				.map(GraphNodeClass.class::cast)
-				.collect(Collectors.toUnmodifiableSet());
+				.collect(Collectors.toUnmodifiableList());
 	}
 	
 	/**
