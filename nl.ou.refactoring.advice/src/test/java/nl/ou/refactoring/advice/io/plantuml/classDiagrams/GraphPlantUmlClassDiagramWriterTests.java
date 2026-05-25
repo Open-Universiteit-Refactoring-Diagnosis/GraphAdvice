@@ -57,8 +57,8 @@ public final class GraphPlantUmlClassDiagramWriterTests {
 		
 		// Arrange graph code
 		final var packageNodeRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
-		final var typeNodeInt = new GraphNodeType(graph, "int");
-		final var typeNodeString = new GraphNodeType(graph, "String");
+		final var typeNodeInt = GraphNodeType.computeType(graph, "int");
+		final var typeNodeString = GraphNodeType.computeType(graph, "String");
 		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
 		final var classNodeAlpha = new GraphNodeClass(graph, identifierNodeAlpha);
 		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "foo"));

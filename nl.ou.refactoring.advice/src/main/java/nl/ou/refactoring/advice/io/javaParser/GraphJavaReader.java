@@ -2,7 +2,6 @@ package nl.ou.refactoring.advice.io.javaParser;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -122,8 +121,6 @@ public final class GraphJavaReader implements GraphReader {
 			throw new GraphJavaReaderParseFailedException(exception);
 		}
 		
-		final var typeMap = new HashMap<String, GraphNodeType>();
-		
 		// Package
 		final var packageDeclaration = compilationUnit.getPackageDeclaration();
 		final var packageNameString =
@@ -148,7 +145,7 @@ public final class GraphJavaReader implements GraphReader {
 			if (classOrInterfaceDeclaration.isInterface()) {
 				// TODO implement
 			} else {
-				readClassDeclaration(typeMap, packageNode, classOrInterfaceDeclaration);
+				readClassDeclaration(packageNode, classOrInterfaceDeclaration);
 			}
 		}
 		
@@ -156,7 +153,6 @@ public final class GraphJavaReader implements GraphReader {
 	}
 
 	private void readClassDeclaration(
-		final HashMap<String, GraphNodeType> typeMap,
 		final GraphNodePackage packageNode,
 		final ClassOrInterfaceDeclaration classOrInterfaceDeclaration
 	) {
@@ -179,17 +175,16 @@ public final class GraphJavaReader implements GraphReader {
 		for (final var member : classOrInterfaceDeclaration.getMembers()) {
 			if (member.isFieldDeclaration()) {
 				final var fieldDeclaration = member.asFieldDeclaration();
-				readFieldDeclaration(typeMap, classNode, fieldDeclaration);
+				readFieldDeclaration(classNode, fieldDeclaration);
 			}
 			if (member.isMethodDeclaration()) {
 				final var methodDeclaration = member.asMethodDeclaration();
-				readMethodDeclaration(typeMap, classNode, methodDeclaration);
+				readMethodDeclaration(classNode, methodDeclaration);
 			}
 		}
 	}
 	
 	private void readFieldDeclaration(
-		final HashMap<String, GraphNodeType> typeMap,
 		final GraphNodeClass classNode,
 		final FieldDeclaration fieldDeclaration
 	) {
@@ -200,12 +195,7 @@ public final class GraphJavaReader implements GraphReader {
 					new GraphNodeIdentifier(this.graph, variableDeclaration.getNameAsString())
 				);
 			final var attributeTypeName = variableDeclaration.getTypeAsString();
-			final var attributeType =
-				typeMap
-					.computeIfAbsent(
-						attributeTypeName,
-						_ -> new GraphNodeType(this.graph, attributeTypeName)
-					);
+			final var attributeType = GraphNodeType.computeType(this.graph, attributeTypeName);
 			attributeNode.is(attributeType);
 			final var attributePositionBegin = variableDeclaration.getBegin().get();
 			final var attributePositionEnd = variableDeclaration.getEnd().get();
@@ -225,29 +215,18 @@ public final class GraphJavaReader implements GraphReader {
 	}
 
 	private void readMethodDeclaration(
-		final HashMap<String, GraphNodeType> typeMap,
 		final GraphNodeClass classNode,
 		final MethodDeclaration methodDeclaration
 	) {
 		final var operationIdentifier = new GraphNodeIdentifier(this.graph, methodDeclaration.getNameAsString());
 		final var operationReturnTypeName = methodDeclaration.getTypeAsString();
-		final var operationReturnType =
-			typeMap
-				.computeIfAbsent(
-					operationReturnTypeName,
-					_ -> new GraphNodeType(this.graph, operationReturnTypeName)
-				);
+		final var operationReturnType = GraphNodeType.computeType(this.graph, operationReturnTypeName);
 		
 		final var operationParameters = new ArrayList<GraphNodeOperationParameter>();
 		for (final var methodParameter : methodDeclaration.getParameters()) {
 			final var operationParameterName = methodParameter.getNameAsString();
 			final var operationParameterTypeName = methodParameter.getTypeAsString();
-			final var operationParameterType =
-				typeMap
-					.computeIfAbsent(
-							operationParameterTypeName,
-						_ -> new GraphNodeType(this.graph, operationParameterTypeName)
-					);
+			final var operationParameterType = GraphNodeType.computeType(this.graph, operationParameterTypeName);
 			final var operationParameter = new GraphNodeOperationParameter(this.graph, operationParameterName);
 			operationParameter.is(operationParameterType);
 			operationParameters.add(operationParameter);
@@ -277,7 +256,7 @@ public final class GraphJavaReader implements GraphReader {
 					bodyStatement.ifExpressionStmt((bodyExpressionStatement) -> {
 						final var expression = bodyExpressionStatement.getExpression();
 						expression.ifMethodCallExpr(
-							(methodCallExpression) -> this.readMethodCallExpression(typeMap, operationBodyNode, methodCallExpression)
+							(methodCallExpression) -> this.readMethodCallExpression(operationBodyNode, methodCallExpression)
 						);
 					});
 				}
@@ -290,7 +269,6 @@ public final class GraphJavaReader implements GraphReader {
 	}
 	
 	private void readMethodCallExpression(
-		HashMap<String, GraphNodeType> typeMap,
 		GraphNodeBlock blockNode,
 		MethodCallExpr methodCallExpression
 	) {

@@ -168,8 +168,8 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("AM-4 Preceding Overload");
 		
 		// Code
-		final var intType = new GraphNodeType(graph, "int");
-		final var doubleType = new GraphNodeType(graph, "double");
+		final var intType = GraphNodeType.computeType(graph, "int");
+		final var doubleType = GraphNodeType.computeType(graph, "double");
 		final var packageNode = GraphNodePackage.parse(graph, "nl.ou.refactoring.dangers.precedingOverload");
 		final var alphaIdentifier = new GraphNodeIdentifier(graph, "Alpha");
 		final var alphaClassNode =

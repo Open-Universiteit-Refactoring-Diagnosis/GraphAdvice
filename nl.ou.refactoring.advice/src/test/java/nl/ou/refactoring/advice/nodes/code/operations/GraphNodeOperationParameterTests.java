@@ -26,7 +26,7 @@ public final class GraphNodeOperationParameterTests {
 		
 		final var operationParameterWithoutType = new GraphNodeOperationParameter(graph, "parameterWithoutType");
 		final var operationParameterWithString = new GraphNodeOperationParameter(graph, "parameterWithString");
-		final var stringType = new GraphNodeType(graph, "String");
+		final var stringType = GraphNodeType.computeType(graph, "String");
 		operationParameterWithString.is(stringType);
 		
 		return
