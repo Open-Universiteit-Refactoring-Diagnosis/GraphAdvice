@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,6 +10,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
@@ -23,6 +28,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
@@ -383,6 +389,20 @@ public final class Graph implements Cloneable {
 	}
 	
 	/**
+	 * Adds an edge to the {@link Graph}.
+	 * @param <T> The type of edge to add.
+	 * @param edge The edge to add.
+	 * @return The added edge.
+	 */
+	public <T extends GraphEdge> T addEdge(T edge) {
+		matrix
+			.computeIfAbsent(edge.getSourceNode(), _ -> new HashMap<>())
+			.computeIfAbsent(edge.getDestinationNode(), _ -> new HashSet<>())
+			.add(edge);
+		return edge;
+	}
+	
+	/**
 	 * Adds an edge to the graph, if it does not already exist.
 	 * If it already exists, it returns the existing instance.
 	 * @param <TEdge> The type of edge.
@@ -417,7 +437,7 @@ public final class Graph implements Cloneable {
 				.stream()
 				.filter(knownEdge -> knownEdge.getClass().equals(edgeClass))
 				.map(edgeClass::cast)
-				.findFirst()
+				.findAny()
 				.orElse(null);
 		if (edge == null) {
 			edge = edgeFactory.create(sourceNode, destinationNode);
@@ -461,29 +481,7 @@ public final class Graph implements Cloneable {
 	
 	@Override
 	protected Object clone() {
-		final var graph = new Graph(this.refactoringName);
-		Map<GraphNode, GraphNode> nodeClones = new HashMap<GraphNode, GraphNode>();
-		for (final var node : this.matrix.keySet()) {
-			nodeClones.put(node, node.clone(graph));
-		}
-		for (final var entry : this.matrix.entrySet()) {
-			final var nodeSourceOriginal = entry.getKey();
-			final var nodeSourceClone = nodeClones.get(nodeSourceOriginal);
-			final var nodeEdgesOriginal = entry.getValue();
-			for (final var edgeOriginalEntry : nodeEdgesOriginal.entrySet()) {
-				final var nodeDestinationClone = nodeClones.get(edgeOriginalEntry.getKey());
-				final var edgesOriginal = edgeOriginalEntry.getValue();
-				for (final var edgeOriginal : edgesOriginal) {
-					graph.computeEdge(
-						nodeSourceClone,
-						nodeDestinationClone,
-						(source, destination) -> edgeOriginal.clone(source, destination),
-						GraphEdge.class
-					);
-				}
-			}
-		}
-		return graph;
+		return this.clone(this.getRefactoringName());
 	}
 	
 	/**
@@ -493,12 +491,43 @@ public final class Graph implements Cloneable {
 	 * @throws ArgumentNullException Thrown if refactoringName is null.
 	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains only white spaces.
 	 */
-	public Graph clone(String refactoringName)
-			throws ArgumentNullException, ArgumentEmptyException {
+	public Graph clone(String refactoringName) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
-		final var graph = (Graph)this.clone();
-		graph.refactoringName = refactoringName;
-		return graph;
+		
+		final var graphCloned = new Graph(refactoringName);
+		
+		final Map<GraphNodeBase, Future<GraphNodeBase>> tasks = new HashMap<>(); 
+		final var executor = Executors.newWorkStealingPool();
+		final var nodes = this.matrix.keySet();
+		
+		final var futures = new ArrayList<Future<GraphNodeBase>>();
+		for (final var node : nodes) {
+			if (node instanceof GraphNodeBase && !(node instanceof GraphNodeIdentifier)) {
+				((GraphNodeBase)node).deepClone(graphCloned, executor, tasks);
+				final var task = tasks.get(node);
+				if (task == null) {
+					System.err.println("Task is null");
+				}
+				futures.add(task);
+			}
+		}
+		
+		for (final var future : futures) {
+			try {
+				future.get();
+			} catch (InterruptedException | ExecutionException ex) {
+				Thread.currentThread().interrupt();
+				throw new RuntimeException("Cloning failed", ex);
+			}
+		}
+		
+		executor.shutdown();
+		try {
+			executor.awaitTermination(60L, TimeUnit.SECONDS);
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
+		return graphCloned;
 	}
 	
 	/**

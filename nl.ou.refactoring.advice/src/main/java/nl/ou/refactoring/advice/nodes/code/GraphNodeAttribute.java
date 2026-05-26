@@ -1,6 +1,10 @@
 package nl.ou.refactoring.advice.nodes.code;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -120,6 +124,30 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 				graph,
 				(GraphNodeIdentifier)this.attributeNameEdge.getDestinationNode().clone(graph)
 			);
+	}
+	
+	@Override
+	public Future<GraphNodeBase> deepClone(
+		Graph graph,
+		Executor executor,
+		Map<GraphNodeBase,
+		Future<GraphNodeBase>> tasks
+	) throws ArgumentNullException {
+		return tasks.putIfAbsent(
+			this,
+			CompletableFuture.supplyAsync(() -> {
+				final var thisCloned = this.clone(graph);
+				final var incomingEdges = this.getEdgesIncoming();
+				for (final var incomingEdge : incomingEdges) {
+					final var sourceNode = incomingEdge.getSourceNode();
+					if (sourceNode instanceof GraphNodeBase) {
+						((GraphNodeBase)sourceNode).deepClone(graph, executor, tasks);
+					}
+				}
+				return thisCloned;
+			},
+			executor)
+		);
 	}
 	
 	@Override

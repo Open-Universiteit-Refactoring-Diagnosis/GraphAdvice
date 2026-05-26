@@ -90,7 +90,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 				final var classNode =
 					graphClone
 						.getNode(className, GraphNodeClass.class)
-						.get();
+						.orElseThrow(() -> new RuntimeException("Could not find class node '" + className + "'"));
 				
 				// Find OperationNode that matches Selected Method.
 				final var operationParameterSignatures = new ArrayList<GraphNodeOperationParameterSignature>();

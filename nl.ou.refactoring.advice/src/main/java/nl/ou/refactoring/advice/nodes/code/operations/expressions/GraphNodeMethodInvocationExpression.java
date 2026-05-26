@@ -26,15 +26,17 @@ public final class GraphNodeMethodInvocationExpression
 	/**
 	 * Gets the node that represents the operation that is invoked by the Method Invocation Expression.
 	 * @return {@link GraphNodeOperation} The node that represents the operation that is invoked by the method invocation expression.
+	 * @throws GraphNodeMethodInvocationExpressionOperationNodeMissingException Thrown if the Method Invocation Expression is missing an associated invoked Operation Node.
 	 */
-	public GraphNodeOperation getInvokedOperationNode() {
+	public GraphNodeOperation getInvokedOperationNode()
+			throws GraphNodeMethodInvocationExpressionOperationNodeMissingException {
 		return
 			this
 				.getEdges(GraphEdgeInvokes.class)
 				.stream()
 				.map(edge -> edge.getOperationNode())
 				.findAny()
-				.orElse(null);
+				.orElseThrow(() -> new GraphNodeMethodInvocationExpressionOperationNodeMissingException(this));
 	}
 	
 	/**

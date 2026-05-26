@@ -53,7 +53,7 @@ public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
 				.map(edge -> edge.getDestinationNode())
 				.filter(GraphNodeOperation.class::isInstance)
 				.map(GraphNodeOperation.class::cast)
-				.findAny();			
+				.findAny();
 	}
 
 	@Override
