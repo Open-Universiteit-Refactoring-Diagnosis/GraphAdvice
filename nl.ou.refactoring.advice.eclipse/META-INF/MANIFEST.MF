@@ -4,7 +4,8 @@ Bundle-Name: Open Universiteit Refactoring Advice through Knowledge Graphs Eclip
 Bundle-SymbolicName: nl.ou.refactoring.advice.eclipse;singleton:=true
 Bundle-Version: 0.8.0
 Bundle-Vendor: Open Universiteit
-Require-Bundle:  org.eclipse.core.resources;bundle-version="[3.23.0,4.0.0)",
+Import-Package: org.apache.logging.log4j
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.23.0,4.0.0)",
  org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,

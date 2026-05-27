@@ -2,21 +2,15 @@ package nl.ou.refactoring.advice.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPath;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
@@ -188,77 +182,6 @@ public abstract class GraphNodeBase implements GraphNode {
 	public abstract GraphNodeBase clone(Graph graph) throws ArgumentNullException;
 	
 	/**
-	 * Creates a deep clone of this node with (also) cloned dependent nodes and edges, inserting them in the specified graph.
-	 * @param graph The graph in which to insert the cloned node.
-	 * @param executor The executor responsible for running clone tasks.
-	 * @param tasks The tasks for cloning each node so dependent nodes can wait until other nodes are cloned.
-	 * @return The cloned node.
-	 * @throws ArgumentNullException Thrown if graph, executor or tasks is null.
-	 */
-	public Future<GraphNodeBase> deepClone(
-		Graph graph,
-		Executor executor,
-		Map<GraphNodeBase, Future<GraphNodeBase>> tasks
-	) throws ArgumentNullException {
-		// Already cloned, return directly.
-		if (tasks.containsKey(this)) {
-			return tasks.get(this);
-		}
-		
-		return tasks.computeIfAbsent(
-			this,
-			(_) -> {
-				final var result = new CompletableFuture<GraphNodeBase>();
-				executor.execute(() -> {
-					try {
-						// Shallow clone first.
-						final var thisCloned = this.clone(graph);
-						result.complete(thisCloned);
-						
-						// Clone nodes from outgoing edges.
-						final var outgoingEdges = this
-								.getEdges()
-								.stream()
-								.filter((e) -> !GraphNodeIdentifier.class.isInstance(e.getDestinationNode()))
-								.collect(Collectors.toUnmodifiableSet());
-						final var outgoingEdgeFutures = new ArrayList<CompletableFuture<Void>>();
-						for (final var outgoingEdge : outgoingEdges) {
-							final var destinationNode = outgoingEdge.getDestinationNode();
-							if (destinationNode instanceof GraphNodeBase) {
-								final var destinationNodeBase = (GraphNodeBase)destinationNode;
-								final var destinationNodeFuture =
-									(CompletableFuture<GraphNodeBase>)tasks.computeIfAbsent(
-										destinationNodeBase,
-										(node) -> node.deepClone(graph, executor, tasks)
-									);
-								
-								outgoingEdgeFutures.add(
-									destinationNodeFuture.thenAccept((destinationNodeCloned) -> {
-										graph.addEdge(outgoingEdge.clone(thisCloned, destinationNodeCloned));
-									})
-								);
-							}
-						}
-					
-						// Return the clone.
-						CompletableFuture
-							.allOf(outgoingEdgeFutures.toArray(new CompletableFuture[0]))
-							.thenRun(() -> result.complete(thisCloned))
-							.exceptionally((ex) -> {
-								result.completeExceptionally(ex);
-								return null;
-							});
-					}
-					catch (Exception ex) {
-						result.completeExceptionally(ex);
-					}
-				});
-				return result;
-			}
-		);
-	}
-	
-	/**
 	 * Determines whether the current node and the other object are equal.
 	 * <br />
 	 * Overrides {@link Object#equals(Object)}.
@@ -282,5 +205,10 @@ public abstract class GraphNodeBase implements GraphNode {
 			return false;
 		}
 		return this.id.equals(other.getId());
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
 	}
 }

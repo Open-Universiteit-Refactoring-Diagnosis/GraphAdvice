@@ -8,54 +8,64 @@ import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
- * A node in a Refactoring Advice Graph that represents a method invocation expression.
+ * A node in a Refactoring Advice Graph that represents a method invocation
+ * expression.
  */
-public final class GraphNodeMethodInvocationExpression
-		extends GraphNodeStatementExpression
+public final class GraphNodeMethodInvocationExpression extends GraphNodeStatementExpression
 		implements GraphNodePrimaryNoNewArrayExpression {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMethodInvocationExpression}.
+	 * 
 	 * @param graph The Refactoring Advice Graph that contains the node.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	public GraphNodeMethodInvocationExpression(Graph graph)
-			throws ArgumentNullException {
+	public GraphNodeMethodInvocationExpression(Graph graph) throws ArgumentNullException {
 		super(graph);
 	}
-	
+
 	/**
-	 * Gets the node that represents the operation that is invoked by the Method Invocation Expression.
-	 * @return {@link GraphNodeOperation} The node that represents the operation that is invoked by the method invocation expression.
-	 * @throws GraphNodeMethodInvocationExpressionOperationNodeMissingException Thrown if the Method Invocation Expression is missing an associated invoked Operation Node.
+	 * Gets the node that represents the operation that is invoked by the Method
+	 * Invocation Expression.
+	 * 
+	 * @return {@link GraphNodeOperation} The node that represents the operation
+	 *         that is invoked by the method invocation expression.
+	 * @throws GraphNodeMethodInvocationExpressionOperationNodeMissingException Thrown
+	 *                                                                          if
+	 *                                                                          the
+	 *                                                                          Method
+	 *                                                                          Invocation
+	 *                                                                          Expression
+	 *                                                                          is
+	 *                                                                          missing
+	 *                                                                          an
+	 *                                                                          associated
+	 *                                                                          invoked
+	 *                                                                          Operation
+	 *                                                                          Node.
 	 */
 	public GraphNodeOperation getInvokedOperationNode()
 			throws GraphNodeMethodInvocationExpressionOperationNodeMissingException {
-		return
-			this
-				.getEdges(GraphEdgeInvokes.class)
-				.stream()
-				.map(edge -> edge.getOperationNode())
-				.findAny()
+		return this.getEdges(GraphEdgeInvokes.class).stream().map(edge -> edge.getOperationNode()).findAny()
 				.orElseThrow(() -> new GraphNodeMethodInvocationExpressionOperationNodeMissingException(this));
 	}
-	
+
 	/**
-	 * Indicates that the method invocation expression represented by this node invokes the operation represented by the {@link GraphNodeOperation} operationNode.
-	 * @param operationNode The node that represents the operation that is invoked by the method invocation expression that is represented by this node.
-	 * @return An edge that indicates that the method invocation expression invokes the operation.
+	 * Indicates that the method invocation expression represented by this node
+	 * invokes the operation represented by the {@link GraphNodeOperation}
+	 * operationNode.
+	 * 
+	 * @param operationNode The node that represents the operation that is invoked
+	 *                      by the method invocation expression that is represented
+	 *                      by this node.
+	 * @return An edge that indicates that the method invocation expression invokes
+	 *         the operation.
 	 * @throws ArgumentNullException Thrown if operationNode is null.
 	 */
 	public GraphEdgeInvokes invokes(GraphNodeOperation operationNode) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(operationNode, "operation");
-		return
-			this
-				.graph
-				.computeEdge(
-					this,
-					operationNode,
-					(sourceNode, destinationNode) -> new GraphEdgeInvokes(sourceNode, destinationNode),
-					GraphEdgeInvokes.class
-				);
+		return this.graph.computeEdge(this, operationNode,
+				(sourceNode, destinationNode) -> new GraphEdgeInvokes(sourceNode, destinationNode),
+				GraphEdgeInvokes.class);
 	}
 
 	@Override
