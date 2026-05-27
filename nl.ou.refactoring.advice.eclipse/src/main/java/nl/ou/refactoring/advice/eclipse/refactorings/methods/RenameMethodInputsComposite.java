@@ -28,6 +28,7 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.validation.GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator;
+import nl.ou.refactoring.advice.nodes.workflow.risks.validation.GraphNodeRiskMissingDefinitionPresentWhenRequiredValidator;
 import nl.ou.refactoring.advice.validation.GraphValidationEngine;
 import nl.ou.refactoring.advice.validation.GraphValidationFixableResult;
 
@@ -123,6 +124,7 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 				// Validate and fix risk.
 				final var validationEngine = new GraphValidationEngine();
 				validationEngine.addValidator(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
+				validationEngine.addValidator(GraphNodeRiskMissingDefinitionPresentWhenRequiredValidator.INSTANCE);
 				final var validationResults = validationEngine.validate(graphClone);
 				for (final var validationResult : validationResults) {
 					if (!validationResult.getIsValid() && validationResult instanceof GraphValidationFixableResult) {

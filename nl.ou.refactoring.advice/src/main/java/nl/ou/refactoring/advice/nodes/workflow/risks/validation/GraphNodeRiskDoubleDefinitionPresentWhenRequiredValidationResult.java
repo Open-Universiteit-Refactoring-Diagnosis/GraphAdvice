@@ -28,7 +28,7 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationRes
 	
 	/**
 	 * Initialises a new instance of {@link GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult}.
-	 * @param graph The Refactoring Advice Graph (RAG) {@link Graph}.
+	 * @param graph The Refactoring Advice Graph (RAG) {@link Graph} that is being validated.
 	 * @param nodesExisting The existing nodes that have an identical signature.
 	 * @param nodeAdded The code node that is added and causes a double definition.
 	 * @param isValid A value that indicates whether the {@link Graph} is valid.

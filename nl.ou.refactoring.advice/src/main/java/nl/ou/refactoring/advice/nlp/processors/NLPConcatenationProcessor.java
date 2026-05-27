@@ -103,18 +103,14 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 	
 	private void appendNodeMicrostepRemoveClass(GraphNodeMicrostepRemoveClass removeClassNode, Map<String, GraphNode> references) {
 		final var classNode = removeClassNode.getClassNode();
-		if (classNode.isEmpty()) {
-			this.append(", removes class");
-		} else {
-			final var classNodeId = getId(classNode.get());
-			this.appendFormat(", removes class '%s'", classNodeId);
-			references.computeIfAbsent(classNodeId, (_) -> classNode.get());
-			final var packageNode = classNode.get().getPackageNode();
-			if (packageNode.isPresent()) {
-				final var packageNodeId = getId(packageNode.get());
-				this.appendFormat(" from package '%s'", packageNodeId);
-				references.computeIfAbsent(packageNodeId, (_) -> packageNode.get());
-			}
+		final var classNodeId = getId(classNode);
+		this.appendFormat(", removes class '%s'", classNodeId);
+		references.computeIfAbsent(classNodeId, (_) -> classNode);
+		final var packageNode = classNode.getPackageNode();
+		if (packageNode.isPresent()) {
+			final var packageNodeId = getId(packageNode.get());
+			this.appendFormat(" from package '%s'", packageNodeId);
+			references.computeIfAbsent(packageNodeId, (_) -> packageNode.get());
 		}
 	}
 	
@@ -138,18 +134,14 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 	
 	private void appendNodeMicrostepRemoveMethod(GraphNodeMicrostepRemoveMethod removeMethodNode, Map<String, GraphNode> references) {
 		final var operationNode = removeMethodNode.getOperationNode();
-		if (operationNode.isEmpty()) {
-			this.append(", removes method");
-		} else {
-			final var operationNodeId = getId(operationNode.get());
-			this.appendFormat(", removes method '%s'", operationNodeId);
-			references.computeIfAbsent(operationNodeId, (_) -> operationNode.get());
-			final var classNode = operationNode.get().getClassNode();
-			if (classNode.isPresent()) {
-				final var classNodeId = getId(classNode.get());
-				this.appendFormat(" from class '%s'", classNodeId);
-				references.computeIfAbsent(classNodeId, (_) -> classNode.get());
-			}
+		final var operationNodeId = getId(operationNode);
+		this.appendFormat(", removes method '%s'", operationNodeId);
+		references.computeIfAbsent(operationNodeId, (_) -> operationNode);
+		final var classNode = operationNode.getClassNode();
+		if (classNode.isPresent()) {
+			final var classNodeId = getId(classNode.get());
+			this.appendFormat(" from class '%s'", classNodeId);
+			references.computeIfAbsent(classNodeId, (_) -> classNode.get());
 		}
 	}
 	

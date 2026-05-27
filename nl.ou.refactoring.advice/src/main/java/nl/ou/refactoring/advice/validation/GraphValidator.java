@@ -15,5 +15,5 @@ public interface GraphValidator {
 	 * @return An unmodifiable list of validation results {@link GraphValidationResult}.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	List<GraphValidationResult> validate(Graph graph) throws ArgumentNullException;
+	List<GraphValidationResult> validate(final Graph graph) throws ArgumentNullException;
 }

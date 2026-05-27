@@ -6,6 +6,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 
 /**
@@ -50,6 +51,22 @@ public final class GraphNodeRiskMissingDefinition extends GraphNodeRisk {
 		return this.graph.computeEdge(
 			this,
 			operationNode,
+			(source, destination) -> new GraphEdgeAffects(source, destination),
+			GraphEdgeAffects.class
+		);
+	}
+	
+	/**
+	 * Indicates that the "Missing Definition" affects a Class.
+	 * @param classNode The affected Class.
+	 * @return The edge that connects the "Missing Definition" risk and the affected Class.
+	 * @throws ArgumentNullException Thrown if classNode is null.
+	 */
+	public GraphEdgeAffects affects(GraphNodeClass classNode)
+			throws ArgumentNullException {
+		return this.graph.computeEdge(
+			this,
+			classNode,
 			(source, destination) -> new GraphEdgeAffects(source, destination),
 			GraphEdgeAffects.class
 		);

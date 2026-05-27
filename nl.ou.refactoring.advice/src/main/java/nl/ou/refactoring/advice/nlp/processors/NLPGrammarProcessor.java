@@ -289,10 +289,7 @@ public class NLPGrammarProcessor extends NLPProcessor {
 	
 	private static Sentence createMicrostepRemoveMethodSentence(GraphNodeMicrostepRemoveMethod microstepRemoveMethodNode, Map<String, GraphNode> references) {
 		final var microstepSentence = new Sentence();
-		final var operationNode =
-			microstepRemoveMethodNode
-				.getOperationNode()
-				.orElseThrow(() -> new GraphNodeMicrostepOperationMissingException(microstepRemoveMethodNode));
+		final var operationNode = microstepRemoveMethodNode.getOperationNode();
 		final var operationNodeReferenceString = String.format("{%s}", operationNode.getId());
 		references.putIfAbsent(operationNodeReferenceString, operationNode);
 		
