@@ -4,7 +4,8 @@ Bundle-Name: Open Universiteit Refactoring Advice through Knowledge Graphs
 Bundle-SymbolicName: nl.ou.refactoring.advice;singleton:=true
 Bundle-Version: 0.8.0
 Bundle-Vendor: Open Universiteit
-Export-Package: nl.ou.refactoring.advice,
+Export-Package: .,
+ nl.ou.refactoring.advice,
  nl.ou.refactoring.advice.contracts,
  nl.ou.refactoring.advice.edges,
  nl.ou.refactoring.advice.edges.code,
