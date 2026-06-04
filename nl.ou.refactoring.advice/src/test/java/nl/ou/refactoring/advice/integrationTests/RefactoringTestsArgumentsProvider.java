@@ -2,6 +2,7 @@ package nl.ou.refactoring.advice.integrationTests;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -14,11 +15,13 @@ import nl.ou.refactoring.advice.GraphTemplates;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
+import nl.ou.refactoring.advice.io.javaParser.GraphJavaReaderResolutionProvider;
 import nl.ou.refactoring.advice.nlp.languages.dutchNetherlands.NLPLanguageDutchNetherlands;
 import nl.ou.refactoring.advice.nlp.languages.englishGreatBritain.NLPLanguageEnglishGreatBritain;
 import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
 import nl.ou.refactoring.advice.nlp.processors.NLPGrammarProcessor;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
@@ -72,9 +75,18 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		final var betaFileNameFull = "refactorings/moveField/Beta.java";
 		final var betaFileName = "Beta.java";
 		final var betaReader = ResourceProvider.getReader(classLoader, betaFileNameFull);
-		var graphJavaReader = new GraphJavaReader(graph, alphaReader, alphaFileNameFull, alphaFileName);
+		final var resolutionProvider = new GraphJavaReaderResolutionProvider() {
+			@Override
+			public <T extends GraphNodeCode> Optional<T> resolveByFullyQualifiedName(
+					Graph graph,
+					String fullyQualifiedName,
+					Class<T> resultType) {
+				return Optional.empty();
+			}
+		};
+		var graphJavaReader = new GraphJavaReader(graph, resolutionProvider, alphaReader, alphaFileNameFull, alphaFileName);
 		graphJavaReader.read();
-		graphJavaReader = new GraphJavaReader(graph, betaReader, betaFileNameFull, betaFileName);
+		graphJavaReader = new GraphJavaReader(graph, resolutionProvider, betaReader, betaFileNameFull, betaFileName);
 		graphJavaReader.read();
 
 		final var alphaClassNode = graph

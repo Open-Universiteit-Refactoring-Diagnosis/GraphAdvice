@@ -51,6 +51,12 @@ public final class GraphJavaReader implements GraphReader {
 	private Graph graph;
 
 	/**
+	 * Resolves additional Graph nodes if they may have not been loaded into the
+	 * Refactoring Advice Graph (RAG) yet.
+	 */
+	private final GraphJavaReaderResolutionProvider resolutionProvider;
+
+	/**
 	 * Reads the Java source code.
 	 */
 	private final Reader reader;
@@ -68,23 +74,32 @@ public final class GraphJavaReader implements GraphReader {
 	/**
 	 * Initialises a new instance of {@link GraphJavaReader}.
 	 * 
-	 * @param refactoringName The name of the refactoring.
-	 * @param reader          Reads the Java source code.
-	 * @param fileNameFull    The full file name of the Java source code, including
-	 *                        its path.
-	 * @param fileName        The short file name of the Java source code.
+	 * @param refactoringName    The name of the refactoring.
+	 * @param resolutionProvider Resolves additional Graph nodes if they may have
+	 *                           not been loaded into the Refactoring Advice Graph
+	 *                           (RAG) yet.
+	 * @param reader             Reads the Java source code.
+	 * @param fileNameFull       The full file name of the Java source code,
+	 *                           including its path.
+	 * @param fileName           The short file name of the Java source code.
 	 * @throws ArgumentNullException  Thrown if refactoringName or reader is null.
-	 * @throws ArgumentEmptyException Thrown if refactoringName, fileNameFull or
-	 *                                fileName is empty or contains only white
-	 *                                spaces.
+	 * @throws ArgumentEmptyException Thrown if refactoringName, resolutionProvider,
+	 *                                fileNameFull or fileName is empty or contains
+	 *                                only white spaces.
 	 */
-	public GraphJavaReader(String refactoringName, Reader reader, String fileNameFull, String fileName)
-			throws ArgumentNullException, ArgumentEmptyException {
+	public GraphJavaReader(
+			String refactoringName,
+			GraphJavaReaderResolutionProvider resolutionProvider,
+			Reader reader,
+			String fileNameFull,
+			String fileName) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
+		ArgumentGuard.requireNotNull(resolutionProvider, "resolutionProvider");
 		ArgumentGuard.requireNotNull(reader, "reader");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");
 		this.graph = new Graph(refactoringName);
+		this.resolutionProvider = resolutionProvider;
 		this.reader = reader;
 		this.fileNameFull = fileNameFull;
 		this.fileName = fileName;
@@ -93,23 +108,33 @@ public final class GraphJavaReader implements GraphReader {
 	/**
 	 * Initialises a new instance of {@link GraphJavaReader}.
 	 * 
-	 * @param graph        The graph to which to add the code nodes from the Java
-	 *                     source code.
-	 * @param reader       Reads the Java source code.
-	 * @param fileNameFull The full file name of the Java source code, including its
-	 *                     path.s
-	 * @param fileName     The short file name of the Java source code.
-	 * @throws ArgumentNullException  Thrown if graph or reader is null.
+	 * @param graph              The graph to which to add the code nodes from the
+	 *                           Java source code.
+	 * @param resolutionProvider Resolves additional Graph nodes if they may have
+	 *                           not been loaded into the Refactoring Advice Graph
+	 *                           (RAG) yet.
+	 * @param reader             Reads the Java source code.
+	 * @param fileNameFull       The full file name of the Java source code,
+	 *                           including its path.s
+	 * @param fileName           The short file name of the Java source code.
+	 * @throws ArgumentNullException  Thrown if graph, resolutionProvider, reader,
+	 *                                fileNameFull or fileName is null.
 	 * @throws ArgumentEmptyException Thrown if fileNameFull or fileName is empty or
 	 *                                contains only white spaces.
 	 */
-	public GraphJavaReader(Graph graph, Reader reader, String fileNameFull, String fileName)
-			throws ArgumentNullException, ArgumentEmptyException {
+	public GraphJavaReader(
+			Graph graph,
+			GraphJavaReaderResolutionProvider resolutionProvider,
+			Reader reader,
+			String fileNameFull,
+			String fileName) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(graph, "graph");
+		ArgumentGuard.requireNotNull(resolutionProvider, "resolutionProvider");
 		ArgumentGuard.requireNotNull(reader, "reader");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");
 		this.graph = graph;
+		this.resolutionProvider = resolutionProvider;
 		this.reader = reader;
 		this.fileNameFull = fileNameFull;
 		this.fileName = fileName;
@@ -118,7 +143,7 @@ public final class GraphJavaReader implements GraphReader {
 	@Override
 	public Graph read() throws GraphReaderException {
 		final var javaParserConfiguration = new ParserConfiguration();
-		final var javaParserSymbolResolver = new GraphJavaReaderSymbolResolver(this.graph);
+		final var javaParserSymbolResolver = new GraphJavaReaderSymbolResolver(this.graph, this.resolutionProvider);
 		javaParserConfiguration.setSymbolResolver(javaParserSymbolResolver);
 		final var javaParser = new JavaParser(javaParserConfiguration);
 
@@ -131,7 +156,8 @@ public final class GraphJavaReader implements GraphReader {
 
 		// Package
 		final var packageDeclaration = compilationUnit.getPackageDeclaration();
-		final var packageNameString = packageDeclaration.isPresent() ? packageDeclaration.get().getNameAsString()
+		final var packageNameString = packageDeclaration.isPresent()
+				? packageDeclaration.get().getNameAsString()
 				: "default";
 		GraphNodePackage.parse(graph, packageNameString);
 		final var packageNode = graph.getNode(packageNameString, GraphNodePackage.class).get();
@@ -152,7 +178,8 @@ public final class GraphJavaReader implements GraphReader {
 		return this.graph;
 	}
 
-	private void readClassDeclaration(final GraphNodePackage packageNode,
+	private void readClassDeclaration(
+			final GraphNodePackage packageNode,
 			final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
 		final var classNodeIdentifier = new GraphNodeIdentifier(this.graph,
 				classOrInterfaceDeclaration.getNameAsString());

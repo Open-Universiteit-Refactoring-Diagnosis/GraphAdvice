@@ -36,16 +36,20 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParamete
 public final class GraphJavaReaderSymbolResolver implements SymbolResolver {
 	private static final Logger LOGGER = LogManager.getLogger(GraphJavaReaderSymbolResolver.class);
 	private final Graph graph;
+	private final GraphJavaReaderResolutionProvider resolutionProvider;
 
 	/**
 	 * Initialises a new instance of {@link GraphJavaReaderSymbolResolver}.
 	 * @param graph The Refactoring Advice Graph (RAG) that contains relevant Abstract Syntax Tree (AST) symbols.
+	 * @param resolutionProvider Resolves additional Graph nodes that may not have been loaded in the Refactoring Advice Graph (RAG) yet.
 	 * @exception ArgumentNullException Thrown if graph is null.
 	 */
-	public GraphJavaReaderSymbolResolver(Graph graph)
+	public GraphJavaReaderSymbolResolver(Graph graph, GraphJavaReaderResolutionProvider resolutionProvider)
 			throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
+		ArgumentGuard.requireNotNull(resolutionProvider, "resolutionProvider");
 		this.graph = graph;
+		this.resolutionProvider = resolutionProvider;
 	}
 	
 	/**
@@ -93,9 +97,20 @@ public final class GraphJavaReaderSymbolResolver implements SymbolResolver {
 			
 			// Resolve receiver Class
 			final var receiverClassFullyQualifiedName = this.resolveReceiverClassFullyQualifiedName(methodCallExpression);
-			final var receiverClassNodeOptional = this.graph.getNode(receiverClassFullyQualifiedName, GraphNodeClass.class);
+			var receiverClassNodeOptional = this.graph.getNode(receiverClassFullyQualifiedName, GraphNodeClass.class);
 			if (receiverClassNodeOptional.isEmpty()) {
-				throw new UnsolvedSymbolException(methodName);
+				LOGGER.info("Attempting to resolve Class Node by Fully Qualified Name '{}'", receiverClassFullyQualifiedName);
+				receiverClassNodeOptional =
+					this
+						.resolutionProvider
+						.resolveByFullyQualifiedName(
+							this.graph,
+							receiverClassFullyQualifiedName,
+							GraphNodeClass.class
+						);
+				if (receiverClassNodeOptional.isEmpty()) {
+					throw new UnsolvedSymbolException(methodName);
+				}
 			}
 			final var receiverClassNode = receiverClassNodeOptional.get();
 			
@@ -232,7 +247,7 @@ public final class GraphJavaReaderSymbolResolver implements SymbolResolver {
 			return this.resolveReceiverClassFullyQualifiedName(methodCallExpression, receiver);
 		}
 		
-		// Implicit receiver (e.g., `this.getName()`)
+		// Implicit receiver (e.g. `this.getName()`)
 		final var enclosingClassOptional = findAncestor(methodCallExpression, ClassOrInterfaceDeclaration.class);
 		if (enclosingClassOptional.isEmpty()) {
 			throw new UnsolvedSymbolException(methodCallExpression.getNameAsString());
