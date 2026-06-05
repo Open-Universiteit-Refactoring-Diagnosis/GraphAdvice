@@ -119,7 +119,7 @@ public final class GraphNodeProgramLocation extends GraphNodeBase {
 	 * @return The line number in the source code file where the symbol ends.
 	 */
 	public int getLineNumberEnd() {
-		return this.lineNumberStart;
+		return this.lineNumberEnd;
 	}
 	
 	/**
@@ -127,7 +127,7 @@ public final class GraphNodeProgramLocation extends GraphNodeBase {
 	 * @return The column index on the line in the source code file where the symbol ends.
 	 */
 	public int getColumnIndexEnd() {
-		return this.columnIndexStart;
+		return this.columnIndexEnd;
 	}
 
 	@Override

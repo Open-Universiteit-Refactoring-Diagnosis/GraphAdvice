@@ -277,12 +277,24 @@ public final class RefactoringAdviceView {
 			if (editor instanceof ITextEditor) {
 				final var textEditor = (ITextEditor) editor;
 				final var document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-				final var lineAndColumn = filePathAndLocation[1].split(":");
-				final var line = Integer.parseInt(lineAndColumn[0]);
-				final var column = Integer.parseInt(lineAndColumn[1]);
-				final var lineRegion = document.getLineInformation(line - 1);
-				final var offset = lineRegion.getOffset() + Math.min(column - 1, lineRegion.getLength());
-				textEditor.selectAndReveal(offset, 0);
+				final var documentRange = filePathAndLocation[1];
+				final var documentRangeStartEnd = documentRange.split("_");
+				final var documentRangeStart = documentRangeStartEnd[0];
+				final var documentRangeStartLineColumn = documentRangeStart.split(":");
+				final var documentRangeEnd = documentRangeStartEnd[1];
+				final var documentRangeEndLineColumn = documentRangeEnd.split(":");
+				
+				final var lineStart = Integer.parseInt(documentRangeStartLineColumn[0]);
+				final var columnStart = Integer.parseInt(documentRangeStartLineColumn[1]);
+				final var lineStartRegion = document.getLineInformation(lineStart - 1);
+				final var startOffset = lineStartRegion.getOffset() + Math.min(columnStart - 1, lineStartRegion.getLength());
+				
+				final var lineEnd = Integer.parseInt(documentRangeEndLineColumn[0]);
+				final var columnEnd = Integer.parseInt(documentRangeEndLineColumn[1]);
+				final var lineEndRegion = document.getLineInformation(lineEnd - 1);
+				final var endOffset = lineEndRegion.getOffset() + Math.min(columnEnd - 1, lineEndRegion.getLength());
+				
+				textEditor.selectAndReveal(startOffset, endOffset - startOffset + 1);
 			}
 		} catch (CoreException e) {
 			e.printStackTrace();

@@ -18,16 +18,19 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
  */
 public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 	/**
-	 * The Natural Language Processor that will provide 
+	 * The Natural Language Processor that will provide
 	 */
 	private final NLPProcessor nlpProvider;
-	
+
 	/**
 	 * Initialises a new instance of {@link GraphHtmlTextWriter}.
-	 * @param settings The settings of the {@link GraphHtmlTextWriter}.
-	 * @param hostElement The host HTML element that will contain the refactoring advice text.
+	 * 
+	 * @param settings    The settings of the {@link GraphHtmlTextWriter}.
+	 * @param hostElement The host HTML element that will contain the refactoring
+	 *                    advice text.
 	 * @param nlpProvider Provides Natural Language Processing features.
-	 * @throws ArgumentNullException Thrown if settings, hostElement or nlpProvider is null.
+	 * @throws ArgumentNullException Thrown if settings, hostElement or nlpProvider
+	 *                               is null.
 	 */
 	public GraphHtmlTextWriter(GraphHtmlWriterSettings settings, Element hostElement, NLPProcessor nlpProvider)
 			throws ArgumentNullException {
@@ -35,33 +38,32 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 		ArgumentGuard.requireNotNull(nlpProvider, "nlpProvider");
 		this.nlpProvider = nlpProvider;
 	}
-	
+
 	/**
-	 * Gets the Natural Language Processing provider that provides natural language processing features.
-	 * @return The Natural Language Processing provider that provides natural language processing features.
+	 * Gets the Natural Language Processing provider that provides natural language
+	 * processing features.
+	 * 
+	 * @return The Natural Language Processing provider that provides natural
+	 *         language processing features.
 	 */
 	public NLPProcessor getNLPProvider() {
 		return this.nlpProvider;
 	}
 
 	@Override
-	public void write(Graph graph)
-		throws
-			ArgumentNullException,
-			GraphValidationException,
-			GraphWriterException {
+	public void write(Graph graph) throws ArgumentNullException, GraphValidationException, GraphWriterException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		
+
 		// Natural Language Processing
 		final var nlpResult = this.nlpProvider.process(graph);
 		final var text = nlpResult.getText();
 		final var references = nlpResult.getReferences();
-		
+
 		// <article> element
 		final var document = this.hostElement.getOwnerDocument();
 		final var articleElement = document.createElement("article");
 		this.hostElement.appendChild(articleElement);
-		
+
 		// Divide text into parts along the references.
 		final var indexWithReferenceMap = new TreeMap<Integer, String>();
 		final var referenceEntries = references.entrySet();
@@ -77,7 +79,7 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 				indexPrevious = indexNext + referenceString.length();
 			}
 		}
-		
+
 		var indexPrevious = 0;
 		final var indexWithReferenceMapEntries = indexWithReferenceMap.entrySet();
 		for (final var indexWithReferenceEntry : indexWithReferenceMapEntries) {
@@ -89,16 +91,23 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 			final var reference = indexWithReferenceEntry.getValue();
 			final var referenceNode = references.get(reference);
 			if (referenceNode instanceof GraphNodeCode) {
-				final var referenceNodeCode = (GraphNodeCode)referenceNode;
+				final var referenceNodeCode = (GraphNodeCode) referenceNode;
 				final var programLocationNodeOptional = referenceNodeCode.getProgramLocationNode();
 				if (programLocationNodeOptional.isPresent()) {
 					final var programLocationNode = programLocationNodeOptional.get();
 					final var referenceFileNameFull = programLocationNode.getFileNameFull();
 					final var anchorElement = document.createElement("a");
 					final var link =
-						this.settings.getResourceUrlPrefix().toString() +
-							referenceFileNameFull +
-							String.format("#%d:%d", programLocationNode.getLineNumberStart(), programLocationNode.getColumnIndexStart());
+							this.settings.getResourceUrlPrefix().toString() + referenceFileNameFull
+									+ String.format(
+											"#%d:%d",
+											programLocationNode.getLineNumberStart(),
+											programLocationNode.getColumnIndexStart())
+									+ "_"
+									+ String.format(
+											"%d:%d",
+											programLocationNode.getLineNumberEnd(),
+											programLocationNode.getColumnIndexEnd());
 					anchorElement.setAttribute("href", link);
 					anchorElement.setTextContent(referenceNode.getCaption());
 					articleElement.appendChild(anchorElement);
@@ -110,8 +119,9 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 			}
 			indexPrevious = indexPrevious + textBefore.length() + reference.length();
 		}
-		
-		// Append last bit of plain text if the last reference occurrence wasn't at the end of the text.
+
+		// Append last bit of plain text if the last reference occurrence wasn't at the
+		// end of the text.
 		if (indexWithReferenceMapEntries.size() > 0 && indexPrevious < text.length()) {
 			articleElement.appendChild(document.createTextNode(text.substring(indexPrevious, text.length())));
 		}
