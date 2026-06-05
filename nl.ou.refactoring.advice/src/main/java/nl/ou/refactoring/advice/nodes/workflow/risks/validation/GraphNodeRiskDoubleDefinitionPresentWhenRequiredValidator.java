@@ -27,7 +27,8 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 	 * The singleton instance of
 	 * {@link GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator}.
 	 */
-	public static final GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator INSTANCE = new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator();
+	public static final GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator INSTANCE =
+			new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator();
 
 	/**
 	 * Initialises a new instance of
@@ -55,25 +56,42 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 			final var classNodeAdded = addClassNode.getClassNode();
 			final var packageNodeOptional = classNodeAdded.getPackageNode();
 			if (packageNodeOptional.isEmpty()) {
-				results.add(new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(graph,
-						new HashSet<GraphNodeCode>(), classNodeAdded, true // Depends on whether we allow classes
-																			// without packages.
-				));
+				results.add(
+						new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(
+								graph,
+								new HashSet<GraphNodeCode>(),
+								classNodeAdded,
+								true // Depends on whether we allow classes without packages.
+						));
 			} else {
 				final var packageNode = packageNodeOptional.get();
-				final var classNodes = packageNode.getClassNodes().stream().filter(
-						(node) -> node != classNodeAdded && node.getClassName().equals(classNodeAdded.getClassName()))
-						.map(GraphNodeCode.class::cast).collect(Collectors.toUnmodifiableSet());
+				final var classNodes =
+						packageNode.getClassNodes()
+								.stream()
+								.filter(
+										(node) -> node != classNodeAdded
+												&& node.getClassName().equals(classNodeAdded.getClassName()))
+								.map(GraphNodeCode.class::cast)
+								.collect(Collectors.toUnmodifiableSet());
 				if (classNodes.isEmpty()) {
-					results.add(new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(graph, classNodes,
-							classNodeAdded, true));
+					results.add(
+							new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(
+									graph,
+									classNodes,
+									classNodeAdded,
+									true));
 				}
 
-				results.add(new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(graph, classNodes,
-						classNodeAdded,
-						// Double Definition detected, validation now only succeeds if the risk is
-						// associated.
-						classNodeAdded.getRisks().stream().anyMatch(GraphNodeRiskDoubleDefinition.class::isInstance)));
+				results.add(
+						new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(
+								graph,
+								classNodes,
+								classNodeAdded,
+								// Double Definition detected, validation now only succeeds if the risk is
+								// associated.
+								classNodeAdded.getRisks()
+										.stream()
+										.anyMatch(GraphNodeRiskDoubleDefinition.class::isInstance)));
 			}
 		}
 	}
@@ -84,26 +102,38 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 			final var methodNodeAdded = addMethodNode.getOperationNode().get();
 			final var classNodeOptional = methodNodeAdded.getClassNode();
 			if (classNodeOptional.isEmpty()) {
-				results.add(new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(graph,
-						new HashSet<GraphNodeCode>(), methodNodeAdded, false // We can't allow free floating operations;
-																				// this is a different type of
-																				// validation though.
-				));
+				results.add(
+						new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(
+								graph,
+								new HashSet<GraphNodeCode>(),
+								methodNodeAdded,
+								false // We can't allow free floating operations;
+										// this is a different type of
+										// validation though.
+						));
 			} else {
 				final var classNode = classNodeOptional.get();
-				final var memberNodes = classNode.getEdges(GraphEdgeHas.class).stream()
-						.map((edge) -> edge.getDestinationNode())
-						.filter((node) -> node != methodNodeAdded && node instanceof GraphNodeCode
-								&& GraphNodeSignature.equals((GraphNodeCode) node, methodNodeAdded))
-						.map(GraphNodeCode.class::cast).collect(Collectors.toUnmodifiableSet());
-				results.add(new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(graph, memberNodes,
-						methodNodeAdded,
-						// No members with identical identifier, so no Double Definition detected.
-						memberNodes.isEmpty() ||
-						// Double Definition detected, validation now only succeeds if the risk is
-						// associated.
-								methodNodeAdded.getRisks().stream()
-										.anyMatch(GraphNodeRiskDoubleDefinition.class::isInstance)));
+				final var memberNodes =
+						classNode.getEdges(GraphEdgeHas.class)
+								.stream()
+								.map((edge) -> edge.getDestinationNode())
+								.filter(
+										(node) -> node != methodNodeAdded && node instanceof GraphNodeCode
+												&& GraphNodeSignature.equals((GraphNodeCode) node, methodNodeAdded))
+								.map(GraphNodeCode.class::cast)
+								.collect(Collectors.toUnmodifiableSet());
+				results.add(
+						new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(
+								graph,
+								memberNodes,
+								methodNodeAdded,
+								// No members with identical identifier, so no Double Definition detected.
+								memberNodes.isEmpty() ||
+								// Double Definition detected, validation now only succeeds if the risk is
+								// associated.
+										methodNodeAdded.getRisks()
+												.stream()
+												.anyMatch(GraphNodeRiskDoubleDefinition.class::isInstance)));
 			}
 		}
 	}
@@ -114,26 +144,38 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator imp
 			final var attributeNodeAdded = addFieldNode.getAttributeNode().get();
 			final var classNodeOptional = attributeNodeAdded.getClassNode();
 			if (classNodeOptional.isEmpty()) {
-				results.add(new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(graph,
-						new HashSet<GraphNodeCode>(), attributeNodeAdded, false // We can't allow free floating
-																				// attributes; this is a different type
-																				// of validation, though.
-				));
+				results.add(
+						new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(
+								graph,
+								new HashSet<GraphNodeCode>(),
+								attributeNodeAdded,
+								false // We can't allow free floating
+										// attributes; this is a different type
+										// of validation, though.
+						));
 			} else {
 				final var classNode = classNodeOptional.get();
-				final var memberNodes = classNode.getEdges(GraphEdgeHas.class).stream()
-						.map((edge) -> (GraphNodeCode) edge.getDestinationNode())
-						.filter((node) -> node != attributeNodeAdded
-								&& GraphNodeSignature.equals(node, attributeNodeAdded))
-						.map(GraphNodeCode.class::cast).collect(Collectors.toUnmodifiableSet());
-				results.add(new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(graph, memberNodes,
-						attributeNodeAdded,
-						// No members with identical identifier, so no Double Definition detected.
-						memberNodes.isEmpty() ||
-						// Double Definition detected, validation now only succeeds if the risk is
-						// associated.
-								attributeNodeAdded.getRisks().stream()
-										.anyMatch(GraphNodeRiskDoubleDefinition.class::isInstance)));
+				final var memberNodes =
+						classNode.getEdges(GraphEdgeHas.class)
+								.stream()
+								.map((edge) -> (GraphNodeCode) edge.getDestinationNode())
+								.filter(
+										(node) -> node != attributeNodeAdded
+												&& GraphNodeSignature.equals(node, attributeNodeAdded))
+								.map(GraphNodeCode.class::cast)
+								.collect(Collectors.toUnmodifiableSet());
+				results.add(
+						new GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult(
+								graph,
+								memberNodes,
+								attributeNodeAdded,
+								// No members with identical identifier, so no Double Definition detected.
+								memberNodes.isEmpty() ||
+								// Double Definition detected, validation now only succeeds if the risk is
+								// associated.
+										attributeNodeAdded.getRisks()
+												.stream()
+												.anyMatch(GraphNodeRiskDoubleDefinition.class::isInstance)));
 			}
 		}
 	}
