@@ -12,7 +12,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 /**
  * Represents a Microstep in a Refactoring Advice Graph that adds a Field.
  */
-public final class GraphNodeMicrostepAddField extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepAddField extends GraphNodeMicrostepAdd {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepAddField}.
 	 * @param graph The graph that contains the microstep. Cannot be null.

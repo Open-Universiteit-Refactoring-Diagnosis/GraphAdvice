@@ -223,6 +223,19 @@ public final class GraphEdgeAffects extends GraphEdge {
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeAffects}.
+	 * @param missingDefinition A Missing Definition risk.
+	 * @param classNode The Class that may become missing.
+	 * @throws ArgumentNullException Thrown if missingDefinition of classNode is null.
+	 */
+	public GraphEdgeAffects(
+		GraphNodeRiskMissingDefinition missingDefinition,
+		GraphNodeClass classNode
+	) throws ArgumentNullException {
+		super(missingDefinition, classNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeAffects}.
 	 * @param missingSuperImplementation A Missing Super Implementation risk.
 	 * @param operationNode The Operation that may contain an overriding implementation.
 	 * @throws ArgumentNullException Thrown if missingSuperImplementation or operationNode is null.

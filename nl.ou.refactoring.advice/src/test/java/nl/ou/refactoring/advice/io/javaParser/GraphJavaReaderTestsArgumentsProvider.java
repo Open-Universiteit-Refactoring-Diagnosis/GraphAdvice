@@ -24,4 +24,6 @@ public final class GraphJavaReaderTestsArgumentsProvider implements ArgumentsPro
 	private static String javaHelloWorld() {
 		return "package nl.ou.refactoring; public class HelloWorld { private final String hello; public String getHello(int index) { return this.hello; } }";
 	}
+	
+
 }

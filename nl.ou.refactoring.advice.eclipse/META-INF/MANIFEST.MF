@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Open Universiteit Refactoring Advice through Knowledge Graphs Eclipse Plug-in
 Bundle-SymbolicName: nl.ou.refactoring.advice.eclipse;singleton:=true
-Bundle-Version: 0.7.0
+Bundle-Version: 0.8.0
 Bundle-Vendor: Open Universiteit
-Require-Bundle:  org.eclipse.core.resources;bundle-version="[3.23.0,4.0.0)",
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.23.0,4.0.0)",
  org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
@@ -12,7 +12,10 @@ Require-Bundle:  org.eclipse.core.resources;bundle-version="[3.23.0,4.0.0)",
  org.eclipse.jface.text,
  org.eclipse.swt,
  org.eclipse.ui,
+ org.eclipse.ui.ide,
  nl.ou.refactoring.advice
+Import-Package: org.apache.logging.log4j,
+ org.eclipse.ui.texteditor
 Bundle-ClassPath: .,
  lib/javaparser-symbol-solver-core-3.28.0.jar,
  lib/javaparser-core-3.28.0.jar

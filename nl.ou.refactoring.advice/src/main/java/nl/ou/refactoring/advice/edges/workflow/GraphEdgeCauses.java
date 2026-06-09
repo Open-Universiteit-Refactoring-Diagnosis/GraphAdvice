@@ -11,12 +11,22 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 public final class GraphEdgeCauses extends GraphEdge {
 	/**
 	 * Initialises a new instance of {@link GraphEdgeCauses}.
+	 * 
 	 * @param microstep The microstep that causes a risk.
-	 * @param risk The risk that is caused by a microstep.
+	 * @param risk      The risk that is caused by a microstep.
 	 * @throws ArgumentNullException Thrown if microstep or risk is null.
 	 */
-	public GraphEdgeCauses(GraphNodeMicrostep microstep, GraphNodeRisk risk)
-			throws ArgumentNullException {
+	public GraphEdgeCauses(GraphNodeMicrostep microstep, GraphNodeRisk risk) throws ArgumentNullException {
 		super(microstep, risk);
+	}
+
+	@Override
+	public GraphNodeRisk getDestinationNode() {
+		return (GraphNodeRisk) super.getDestinationNode();
+	}
+
+	@Override
+	public GraphNodeMicrostep getSourceNode() {
+		return (GraphNodeMicrostep) super.getSourceNode();
 	}
 }

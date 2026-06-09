@@ -11,7 +11,6 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.eclipse.ElementResourceLocationNotFoundException;
 import nl.ou.refactoring.advice.eclipse.ElementResourceNotFoundException;
-import nl.ou.refactoring.advice.eclipse.RefactoringGraphBuilder;
 import nl.ou.refactoring.advice.eclipse.refactorings.Refactoring;
 import nl.ou.refactoring.advice.eclipse.refactorings.RefactoringInputsComposite;
 import nl.ou.refactoring.advice.io.GraphReaderException;
@@ -38,7 +37,7 @@ public final class RenameMethodRefactoring extends Refactoring {
 				FileNotFoundException,
 				JavaModelException,
 				GraphReaderException {
-		super(RefactoringGraphBuilder.append(GraphTemplates.renameMethod(), method), method);
+		super(GraphTemplates.renameMethod(), method);
 	}
 
 	@Override

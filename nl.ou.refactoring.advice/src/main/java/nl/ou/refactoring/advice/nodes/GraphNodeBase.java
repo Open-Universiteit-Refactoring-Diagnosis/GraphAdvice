@@ -206,4 +206,9 @@ public abstract class GraphNodeBase implements GraphNode {
 		}
 		return this.id.equals(other.getId());
 	}
+	
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
 }

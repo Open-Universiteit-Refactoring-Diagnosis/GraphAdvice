@@ -64,9 +64,9 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 				.getEdges(GraphEdgeIs.class)
 				.stream()
 				.map(edge -> edge.getDestinationNode())
-				.filter(node -> node instanceof GraphNodeType)
+				.filter(GraphNodeType.class::isInstance)
 				.map(GraphNodeType.class::cast)
-				.findFirst()
+				.findAny()
 				.orElse(null);
 	}
 	
@@ -100,10 +100,23 @@ public final class GraphNodeOperationParameter extends GraphNodeCode {
 		);
 	}
 	
+	/**
+	 * Gets the signature of the operation parameter.
+	 * @return The signature of the operation parameter.
+	 */
+	public GraphNodeOperationParameterSignature getSignature() {
+		return new GraphNodeOperationParameterSignature(this.getParameterName(), this.getParameterType().getTypeName());
+	}
+	
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		return new GraphNodeOperationParameter(graph, this.parameterName);
+		final var operationParameterCloned = new GraphNodeOperationParameter(graph, this.parameterName);
+		final var operationParameterType = this.getParameterType();
+		if (operationParameterType != null) {
+			operationParameterCloned.is((GraphNodeType)operationParameterType.clone(graph));
+		}
+		return operationParameterCloned;
 	}
 	
 	@Override

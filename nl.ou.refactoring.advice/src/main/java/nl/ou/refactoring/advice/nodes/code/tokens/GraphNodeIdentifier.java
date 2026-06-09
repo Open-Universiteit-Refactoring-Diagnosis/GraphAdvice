@@ -22,7 +22,7 @@ public final class GraphNodeIdentifier
 	/**
 	 * The pattern for a valid Java identifier.
 	 */
-	private final static Pattern IDENTIFIER_PATTERN = Pattern.compile("^[a-zA-Z_$][a-zA-Z\\d_$]*$");
+	private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("^[a-zA-Z_$][a-zA-Z\\d_$]*$");
 	
 	/**
 	 * The identifier value.
@@ -55,7 +55,15 @@ public final class GraphNodeIdentifier
 	@Override
 	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		return new GraphNodeIdentifier(graph, this.identifier);
+		return
+			graph
+				.getNodes()
+				.stream()
+				.filter(GraphNodeIdentifier.class::isInstance)
+				.map(GraphNodeIdentifier.class::cast)
+				.filter((node) -> node.getIdentifier().equals(this.identifier))
+				.findAny()
+				.orElse(new GraphNodeIdentifier(graph, this.identifier));
 	}
 	
 	@Override

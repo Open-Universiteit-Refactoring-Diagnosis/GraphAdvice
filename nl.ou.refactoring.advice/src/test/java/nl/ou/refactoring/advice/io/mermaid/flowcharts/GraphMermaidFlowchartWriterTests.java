@@ -54,8 +54,8 @@ public final class GraphMermaidFlowchartWriterTests {
 		final var classNodeAlpha = new GraphNodeClass(graph, identifierNodeAlpha);
 		final var identifierNodeAbc = new GraphNodeIdentifier(graph, "abc");
 		final var operationNodeAlphaAbc = new GraphNodeOperation(graph, identifierNodeAbc);
-		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, "foo");
-		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, "bar");
+		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "foo"));
+		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "bar"));
 		packageNodeRefactoring.has(classNodeAlpha);
 		classNodeAlpha.has(operationNodeAlphaAbc);
 		classNodeAlpha.has(attributeNodeAlphaFoo);
@@ -64,7 +64,7 @@ public final class GraphMermaidFlowchartWriterTests {
 		final var classNodeBeta = new GraphNodeClass(graph, identifierNodeBeta);
 		final var identifierNodeAbc2 = new GraphNodeIdentifier(graph, "abc2");
 		final var operationNodeBetaAbc2 = new GraphNodeOperation(graph, identifierNodeAbc2);
-		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, "myField");
+		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "myField"));
 		packageNodeRefactoring.has(classNodeBeta);
 		classNodeBeta.has(operationNodeBetaAbc2);
 		classNodeBeta.has(attributeNodeBetaMyField);

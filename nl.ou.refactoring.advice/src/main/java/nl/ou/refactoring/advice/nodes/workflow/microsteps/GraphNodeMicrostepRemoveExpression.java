@@ -10,7 +10,7 @@ import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeState
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes an Expression.
  */
-public final class GraphNodeMicrostepRemoveExpression extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepRemoveExpression extends GraphNodeMicrostepRemove {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepRemoveExpression}.
 	 * @param graph The graph that contains the microstep. Cannot be null.

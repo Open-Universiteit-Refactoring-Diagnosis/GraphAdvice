@@ -3,7 +3,6 @@ package nl.ou.refactoring.advice.nlp.grammar.adjectives;
 import java.util.function.Supplier;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.nlp.grammar.adjectives.Adjective;
 import nl.ou.refactoring.advice.nlp.LookupStemTree;
 import nl.ou.refactoring.advice.nlp.LookupStemTreeNode;
 

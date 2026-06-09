@@ -182,6 +182,17 @@ public final class GraphEdgeHas extends GraphEdge {
 	
 	/**
 	 * Initialises a new instance of {@link GraphEdgeHas}.
+	 * @param attributeNode The node that represents the Attribute.
+	 * @param identifierNode The Identifier node that represents the attribute name.
+	 * @throws ArgumentNullException Thrown if attributeNode or identifierNode is null.
+	 */
+	public GraphEdgeHas(GraphNodeAttribute attributeNode, GraphNodeIdentifier identifierNode)
+			throws ArgumentNullException {
+		super(attributeNode, identifierNode);
+	}
+	
+	/**
+	 * Initialises a new instance of {@link GraphEdgeHas}.
 	 * @param blockNode A Block node that contains the Statement node.
 	 * @param statementNode A Statement node that is contained by the Block node.
 	 * @throws ArgumentNullException Thrown if blockNode or statementNode is null.

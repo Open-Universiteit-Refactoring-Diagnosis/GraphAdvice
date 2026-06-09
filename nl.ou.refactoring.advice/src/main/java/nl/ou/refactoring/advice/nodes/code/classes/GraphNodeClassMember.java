@@ -31,7 +31,7 @@ public abstract class GraphNodeClassMember extends GraphNodeCode {
 				.getEdgesIncoming(GraphEdgeHas.class)
 				.stream()
 				.map(edge -> edge.getSourceNode())
-				.filter(node -> GraphNodeClass.class.isAssignableFrom(node.getClass()))
+				.filter(GraphNodeClass.class::isInstance)
 				.map(GraphNodeClass.class::cast)
 				.findFirst();
 	}

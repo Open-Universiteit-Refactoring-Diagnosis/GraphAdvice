@@ -68,7 +68,7 @@ public abstract class GraphNodeCode extends GraphNodeBase {
 					.getEdgesIncoming(GraphEdgeAffects.class)
 					.stream()
 					.map(edge -> edge.getSourceNode())
-					.filter(node -> node instanceof GraphNodeRisk)
+					.filter(GraphNodeRisk.class::isInstance)
 					.map(GraphNodeRisk.class::cast)
 					.collect(Collectors.toUnmodifiableSet());
 	}

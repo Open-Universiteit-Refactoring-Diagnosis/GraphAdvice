@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 
 public final class GraphJavaReaderTests {
 	private static Path OUTPUT_DIR;
@@ -31,7 +33,7 @@ public final class GraphJavaReaderTests {
 		OUTPUT_DIR = Paths.get("target", "test-output", "javaReader");
 		Files.createDirectories(OUTPUT_DIR);
 	}
-	
+
 	@DisplayName("Should read Java code and convert it to code nodes")
 	@ParameterizedTest
 	@ArgumentsSource(GraphJavaReaderTestsArgumentsProvider.class)
@@ -40,7 +42,16 @@ public final class GraphJavaReaderTests {
 		final var reader = new StringReader(javaCode);
 		final var fileNameFull = "$/tests/javaReader/Test.java";
 		final var fileName = "Test.java";
-		final var javaReader = new GraphJavaReader(graph, reader, fileNameFull, fileName);
+		final var resolutionProvider = new GraphJavaReaderResolutionProvider() {
+			@Override
+			public <T extends GraphNodeCode> Optional<T> resolveByFullyQualifiedName(
+					Graph graph,
+					String fullyQualifiedName,
+					Class<T> resultType) {
+				return Optional.empty();
+			}
+		};
+		final var javaReader = new GraphJavaReader(graph, resolutionProvider, reader, fileNameFull, fileName);
 		javaReader.read();
 		
 	    final var refactoringName = graph.getRefactoringName();

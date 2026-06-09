@@ -123,7 +123,7 @@ public class GraphHtmlTextWriterTestsWriteArgumentsProvider implements Arguments
 			+ "    </head>\r\n"
 			+ "    <body>\r\n"
 			+ "        <article>\r\n"
-			+ "            HTML Text Writer test, adds method '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/OtherClass.java#1:2\">foo</a>' to class '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/OtherClass.java#1:1\">OtherClass</a>', removes method '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/MyClass.java#2:3\">foo</a>' from class '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/MyClass.java#1:2\">MyClass</a>' which will cause a Missing definition on <a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/MyClass.java#2:3\">foo</a>\r\n"
+			+ "            HTML Text Writer test, adds method '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/OtherClass.java#1:2_3:4\">foo</a>' to class '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/OtherClass.java#1:1_10:1\">OtherClass</a>', removes method '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/MyClass.java#2:3_4:5\">foo</a>' from class '<a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/MyClass.java#1:2_10:2\">MyClass</a>' which will cause a Missing definition on <a href=\"eclipse-resource://nl.ou.refactoring.advice.eclipse/nl/ou/refactoring/MyClass.java#2:3_4:5\">foo</a>\r\n"
 			+ "        </article>\r\n"
 			+ "    </body>\r\n"
 			+ "</html>\r\n";

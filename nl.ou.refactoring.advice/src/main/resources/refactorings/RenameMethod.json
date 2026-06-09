@@ -17,7 +17,11 @@
                 {
                     "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes",
                     "to": 2
-                }
+                },
+				{
+					"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeRelatesTo",
+					"to": 2
+				}
             ]
         },
 		{
@@ -26,7 +30,11 @@
 		        {
 		            "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises",
 		            "to": 0
-		        }
+		        },
+				{
+					"type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeRelatesTo",
+					"to": 1
+				}
 		    ]
 		}
     ]

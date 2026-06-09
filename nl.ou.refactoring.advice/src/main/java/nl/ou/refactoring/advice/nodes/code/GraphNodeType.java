@@ -30,6 +30,27 @@ public final class GraphNodeType extends GraphNodeCode {
 	}
 	
 	/**
+	 * Computes the type node, creating and returning a new type node if it is not yet present in the Refactoring Advice Graph (RAG), otherwise, the existing type node.
+	 * @param graph The Refactoring Advice Graph (RAG).
+	 * @param typeName The name of the type.
+	 * @return The existing type node if already present in the graph, otherwise a newly created type node.
+	 * @throws ArgumentNullException Thrown if graph or typeName is null.
+	 * @throws ArgumentEmptyException Thrown if typeName is empty or contains only white spaces.
+	 */
+	public static GraphNodeType computeType(Graph graph, String typeName)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(typeName, "typeName");
+		final var existingType =
+			graph
+				.getNodes(GraphNodeType.class)
+				.stream()
+				.filter((typeNode) -> typeNode.getTypeName().equals(typeName))
+				.findAny();
+		return existingType.orElseGet(() -> new GraphNodeType(graph, typeName));
+	}
+	
+	/**
 	 * Gets the name of the data type of code affected by a refactoring.
 	 * @return The name of the data type of code affected by a refactoring.
 	 */

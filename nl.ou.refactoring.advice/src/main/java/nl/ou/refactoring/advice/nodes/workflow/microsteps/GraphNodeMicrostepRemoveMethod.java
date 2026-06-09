@@ -1,7 +1,5 @@
 package nl.ou.refactoring.advice.nodes.workflow.microsteps;
 
-import java.util.Optional;
-
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
@@ -12,7 +10,7 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes a Method.
  */
-public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostepRemove {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepRemoveMethod}.
 	 * @param graph The graph that contains the node. Cannot be null.
@@ -44,8 +42,9 @@ public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
 	/**
 	 * Returns the node that represents the method/operation that is being removed by this microstep.
 	 * @return The node that represents the method/operation that is being removed by this microstep.
+	 * @throws GraphNodeMicrostepOperationMissingException Thrown if no operation node is associated with the microstep.
 	 */
-	public Optional<GraphNodeOperation> getOperationNode() {
+	public GraphNodeOperation getOperationNode() throws GraphNodeMicrostepOperationMissingException {
 		return
 			this
 				.getEdges(GraphEdgeRemoves.class)
@@ -53,7 +52,8 @@ public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
 				.map(edge -> edge.getDestinationNode())
 				.filter(GraphNodeOperation.class::isInstance)
 				.map(GraphNodeOperation.class::cast)
-				.findAny();			
+				.findAny()
+				.orElseThrow(() -> new GraphNodeMicrostepOperationMissingException(this));
 	}
 
 	@Override

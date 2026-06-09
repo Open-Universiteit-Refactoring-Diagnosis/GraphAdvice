@@ -51,12 +51,12 @@ public final class GraphMermaidClassDiagramWriterTests {
 		
 		// Arrange graph code
 		final var packageNodeRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
-		final var typeNodeInt = new GraphNodeType(graph, "int");
-		final var typeNodeString = new GraphNodeType(graph, "String");
+		final var typeNodeInt = GraphNodeType.computeType(graph, "int");
+		final var typeNodeString = GraphNodeType.computeType(graph, "String");
 		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
 		final var classNodeAlpha = new GraphNodeClass(graph, identifierNodeAlpha);
-		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, "foo");
-		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, "bar");
+		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "foo"));
+		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "bar"));
 		final var identifierNodeAbc = new GraphNodeIdentifier(graph, "abc");
 		final var operationNodeAlphaAbc = new GraphNodeOperation(graph, identifierNodeAbc);
 		packageNodeRefactoring.has(classNodeAlpha);
@@ -68,7 +68,7 @@ public final class GraphMermaidClassDiagramWriterTests {
 		operationNodeAlphaAbc.hasReturnType(typeNodeString);
 		final var identifierNodeBeta = new GraphNodeIdentifier(graph, "Beta");
 		final var classNodeBeta = new GraphNodeClass(graph, identifierNodeBeta);
-		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, "myField");
+		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "myField"));
 		final var identifierAbc2 = new GraphNodeIdentifier(graph, "abc2");
 		final var operationNodeBetaAbc2 = new GraphNodeOperation(graph, identifierAbc2);
 		packageNodeRefactoring.has(classNodeBeta);
