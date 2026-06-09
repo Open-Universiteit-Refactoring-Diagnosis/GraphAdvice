@@ -1,16 +1,19 @@
 package nl.ou.refactoring.advice.nodes.workflow.risks;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflowAction;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 
 /**
  * Represents a risk in a Refactoring Advice Graph.
@@ -18,49 +21,61 @@ import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflowAction;
 public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 	/**
 	 * Initialises a new instance of {@link GraphNodeRisk}.
+	 * 
 	 * @param graph The graph that contains the node.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	public GraphNodeRisk(Graph graph)
-			throws ArgumentNullException {
+	public GraphNodeRisk(Graph graph) throws ArgumentNullException {
 		super(graph);
 	}
-	
+
 	/**
 	 * Gets the nodes that are affected by the risk.
+	 * 
 	 * @return The nodes that are affected by the risk.
 	 */
 	public Set<GraphNode> getAffected() {
-		return
-			this
-				.getEdges(GraphEdgeAffects.class)
+		return this.getEdges(GraphEdgeAffects.class)
 				.stream()
 				.map(edge -> edge.getDestinationNode())
 				.collect(Collectors.toSet());
 	}
-	
+
+	/**
+	 * Gets the node that causes the risk.
+	 * 
+	 * @return The node that causes the risk, wrapped in {@link Optional}, or an
+	 *         empty {@link Optional} if not found.
+	 */
+	public Optional<GraphNodeMicrostep> getCause() {
+		return this.getEdgesIncoming(GraphEdgeCauses.class)
+				.stream()
+				.map(edge -> edge.getSourceNode())
+				.filter(GraphNodeMicrostep.class::isInstance)
+				.map(GraphNodeMicrostep.class::cast)
+				.findAny();
+	}
+
 	/**
 	 * Gets the nodes that neutralise the risk.
+	 * 
 	 * @return The nodes that neutralise the risk.
 	 */
 	public Set<GraphNodeWorkflowAction> getNeutralisers() {
 		final var neutralisers =
-			this
-				.graph
-				.getEdgesTo(this, GraphEdgeObsolesces.class)
-				.stream()
-				.map(edge -> edge.getSourceNode())
-				.collect(Collectors.toSet());
+				this.graph.getEdgesTo(this, GraphEdgeObsolesces.class)
+						.stream()
+						.map(edge -> edge.getSourceNode())
+						.collect(Collectors.toSet());
 		if (neutralisers.size() <= 1) {
 			return Collections.unmodifiableSet(neutralisers);
 		}
-		
+
 		// Ensure a chain of workflow steps in the correct order.
 		final var neutraliserWorkflowSteps =
-				neutralisers
-					.stream()
-					.sorted((one, other) -> one.getPrecedingLength(other))
-					.collect(Collectors.toList());
+				neutralisers.stream()
+						.sorted((one, other) -> one.getPrecedingLength(other))
+						.collect(Collectors.toList());
 		if (neutraliserWorkflowSteps.size() <= 1) {
 			return Collections.unmodifiableSet(neutralisers);
 		}
@@ -74,7 +89,7 @@ public abstract class GraphNodeRisk extends GraphNodeWorkflow {
 		}
 		return Collections.unmodifiableSet(neutralisers);
 	}
-	
+
 	@Override
 	public String getLabel() {
 		return this.getNeutralisers().size() > 0 ? "Risk" : "Danger";

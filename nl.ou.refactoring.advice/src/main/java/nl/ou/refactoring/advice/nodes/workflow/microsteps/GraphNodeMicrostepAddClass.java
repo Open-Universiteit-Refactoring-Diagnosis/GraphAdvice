@@ -12,7 +12,7 @@ import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 /**
  * Represents a Microstep in a Refactoring Advice Graph that adds a Class.
  */
-public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostepAdd {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepAddClass}.
 	 * 
@@ -33,7 +33,11 @@ public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
 	 */
 	public GraphEdgeAdds adds(GraphNodeClass classNode) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(classNode, "classNode");
-		return new GraphEdgeAdds(this, classNode);
+		return this.graph.computeEdge(
+				this,
+				classNode,
+				(sourceNode, destinationNode) -> new GraphEdgeAdds(sourceNode, destinationNode),
+				GraphEdgeAdds.class);
 	}
 
 	/**
@@ -46,8 +50,13 @@ public final class GraphNodeMicrostepAddClass extends GraphNodeMicrostep {
 	 *                                this microstep.
 	 */
 	public GraphNodeClass getClassNode() throws NoSuchElementException {
-		return this.getEdges(GraphEdgeAdds.class).stream().map(edge -> edge.getDestinationNode())
-				.filter(node -> node instanceof GraphNodeClass).map(GraphNodeClass.class::cast).findAny().orElseThrow();
+		return this.getEdges(GraphEdgeAdds.class)
+				.stream()
+				.map(edge -> edge.getDestinationNode())
+				.filter(node -> node instanceof GraphNodeClass)
+				.map(GraphNodeClass.class::cast)
+				.findAny()
+				.orElseThrow();
 	}
 
 	@Override

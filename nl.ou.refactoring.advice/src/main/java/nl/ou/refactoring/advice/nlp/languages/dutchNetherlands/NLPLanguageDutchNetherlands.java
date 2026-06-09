@@ -25,52 +25,63 @@ import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 
 /**
- * The Dutch language in the Netherlands (ISO designation "nl-NL") for Natural Language Processing.
+ * The Dutch language in the Netherlands (ISO designation "nl-NL") for Natural
+ * Language Processing.
  */
 public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 	/**
-	 * The default lookup tree for the declension of nouns in the Dutch (Netherlands) language.
+	 * The default lookup tree for the declension of nouns in the Dutch
+	 * (Netherlands) language.
 	 */
 	public static final Function<String, NounDeclensionLookupTree<GrammaticalNumber>> NOUN_DECLENSION_DEFAULT =
-		(stem) -> new NounDeclensionLookupTree<GrammaticalNumber>(() -> stem, Nouns.declensionDefaultTree());
-		
+			(stem) -> new NounDeclensionLookupTree<GrammaticalNumber>(() -> stem, Nouns.declensionDefaultTree());
+
 	/**
-	 * The default lookup tree for Verb conjugation in the Dutch (Netherlands) language.
+	 * The default lookup tree for Verb conjugation in the Dutch (Netherlands)
+	 * language.
 	 */
 	public static final Function<String, VerbConjugationLookupTree<GrammaticalNumber>> VERB_CONJUGATION_DEFAULT =
-		(stem) -> new VerbConjugationLookupTree<GrammaticalNumber>(() -> stem, Verbs.conjugationDefaultTree());
-	
+			(stem) -> new VerbConjugationLookupTree<GrammaticalNumber>(() -> stem, Verbs.conjugationDefaultTree());
+
 	/**
 	 * The singleton instance of {@link NLPLanguageDutchNetherlands}.
 	 */
 	public static final NLPLanguageDutchNetherlands INSTANCE = new NLPLanguageDutchNetherlands();
-	
+
 	private final Map<Long, NounDeclensionLookupTree<GrammaticalNumber>> nounDeclensions =
-		new HashMap<Long, NounDeclensionLookupTree<GrammaticalNumber>>();
-	private final Map<Long, GrammaticalGender> nounGenders =
-		new HashMap<Long, GrammaticalGender>();
-	private final Map<Long, String> prepositions =
-		new HashMap<Long, String>();
+			new HashMap<Long, NounDeclensionLookupTree<GrammaticalNumber>>();
+	private final Map<Long, GrammaticalGender> nounGenders = new HashMap<Long, GrammaticalGender>();
+	private final Map<Long, String> prepositions = new HashMap<Long, String>();
 	private final Map<Long, VerbConjugationLookupTree<GrammaticalNumber>> verbConjugations =
-		new HashMap<Long, VerbConjugationLookupTree<GrammaticalNumber>>();
+			new HashMap<Long, VerbConjugationLookupTree<GrammaticalNumber>>();
 
 	private NLPLanguageDutchNetherlands() {
-		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("klasse"));
+		this.nounDeclensions
+				.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("klasse"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.CLASS_OO_PROGRAMMING, GrammaticalGender.FEMININE);
-		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.FIELD_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("veld"));
+		this.nounDeclensions
+				.putIfAbsent(Tokens.Nouns.Common.CONFLICT_INCOMPATIBILITY, NOUN_DECLENSION_DEFAULT.apply("conflict"));
+		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.CONFLICT_INCOMPATIBILITY, GrammaticalGender.NEUTER);
+		this.nounDeclensions
+				.putIfAbsent(Tokens.Nouns.Common.FIELD_OO_PROGRAMMING, NOUN_DECLENSION_DEFAULT.apply("veld"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.FIELD_OO_PROGRAMMING, GrammaticalGender.NEUTER);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.METHOD, NOUN_DECLENSION_DEFAULT.apply("methode"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.METHOD, GrammaticalGender.FEMININE);
 		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.MICROSTEP, NOUN_DECLENSION_DEFAULT.apply("microstap"));
 		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.MICROSTEP, GrammaticalGender.MASCULINE);
-		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Common.REFACTORING, NOUN_DECLENSION_DEFAULT.apply("refactoring"));
-		this.nounGenders.putIfAbsent(Tokens.Nouns.Common.REFACTORING, GrammaticalGender.MASCULINE);
+		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Verbal.REFACTORING, NOUN_DECLENSION_DEFAULT.apply("refactoring"));
+		this.nounGenders.putIfAbsent(Tokens.Nouns.Verbal.REFACTORING, GrammaticalGender.MASCULINE);
+		this.nounDeclensions.putIfAbsent(Tokens.Nouns.Verbal.RENAMING, NOUN_DECLENSION_DEFAULT.apply("hernoemen"));
+		this.nounGenders.putIfAbsent(Tokens.Nouns.Verbal.RENAMING, GrammaticalGender.MASCULINE);
 		prepositions.putIfAbsent(Tokens.Prepositions.FROM_REMOVAL_SEPARATION, "uit");
 		prepositions.putIfAbsent(Tokens.Prepositions.IN, "in");
+		prepositions.putIfAbsent(Tokens.Prepositions.OF_AGENCY_SUBJECTIVE_GENITIVE, "van");
 		prepositions.putIfAbsent(Tokens.Prepositions.TO_TARGET_RECIPIENT, "toe");
+		prepositions.putIfAbsent(Tokens.Prepositions.WITH_AGAINST, "met");
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Auxiliary.BECOME, VERB_CONJUGATION_DEFAULT.apply("word"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.ADD, VERB_CONJUGATION_DEFAULT.apply("voeg"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.CAUSE, VERB_CONJUGATION_DEFAULT.apply("veroorzaak"));
+		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.CONFLICT, VERB_CONJUGATION_DEFAULT.apply("conflicteer"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.REFACTOR, VERB_CONJUGATION_DEFAULT.apply("refactor"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Lexical.REMOVE, VERB_CONJUGATION_DEFAULT.apply("verwijder"));
 		this.verbConjugations.putIfAbsent(Tokens.Verbs.Linking.BECOME, VERB_CONJUGATION_DEFAULT.apply("word"));
@@ -80,7 +91,7 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 	public Supplier<GrammaticalGender> getGenderSupplier(Noun noun) {
 		return () -> this.nounGenders.get(noun.getToken());
 	}
-	
+
 	@Override
 	public String toString() {
 		return "nl-NL";
@@ -97,47 +108,39 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 		if (verbPhrase.isPresent()) {
 			result = result.merge(this.visit(verbPhrase.get()), nounPhrase.isPresent() ? " " : "");
 		}
-		return
-			result
-				.capitaliseFirstLetter()
-				.appendPeriod();
+		return result.capitaliseFirstLetter().appendPeriod();
 	}
-	
+
 	private NLPResult visit(NounPhrase nounPhrase) {
 		final var noun = nounPhrase.getNoun();
 		final var nounDeclensionKey = nounPhrase.getDeclension();
-		
+
 		final var references = new HashMap<String, GraphNode>();
-		final var nounString = switch(noun) {
-		case ReferenceNoun<?> referenceNoun -> {
-			final var reference = referenceNoun.getReference();
-			if (!GraphNode.class.isInstance(reference)) {
-				yield reference.toString();
+		final var nounString = switch (noun) {
+			case ReferenceNoun<?> referenceNoun -> {
+				final var reference = referenceNoun.getReference();
+				if (!GraphNode.class.isInstance(reference)) {
+					yield reference.toString();
+				}
+				final var referenceKey = NLPResult.extractReferenceString((GraphNode) referenceNoun.getReference());
+				references.putIfAbsent(referenceKey, (GraphNode) referenceNoun.getReference());
+				yield referenceKey;
 			}
-			final var referenceKey = String.format("{%s}", ((GraphNode)referenceNoun.getReference()).getId().toString());
-			references.putIfAbsent(referenceKey, (GraphNode)referenceNoun.getReference());
-			yield referenceKey;
-		}
-		default ->
-			this
-				.nounDeclensions
-				.get(noun.getToken())
-				.lookup(nounDeclensionKey)
-				.get();
+			default -> this.nounDeclensions.get(noun.getToken()).lookup(nounDeclensionKey).get();
 		};
-	
+
 		return new NLPResult(nounString, references);
 	}
-	
+
 	private NLPResult visit(PrepositionalPhrase prepositionalPhrase) {
 		final var preposition = prepositionalPhrase.getPreposition();
 		final var prepositionText = prepositions.get(preposition.getToken());
-		
+
 		var result = new NLPResult(prepositionText, new HashMap<String, GraphNode>());
 		result = result.merge(this.visit(prepositionalPhrase.getNounPhrase()), " ");
 		return result;
 	}
-	
+
 	private NLPResult visit(VerbPhrase verbPhrase) {
 		// TODO Check necessity of auxiliary verb if main verb requires it.
 		final var resultTextBuilder = new StringBuilder();
@@ -149,32 +152,26 @@ public final class NLPLanguageDutchNetherlands implements NLPLanguage {
 		for (final var auxiliaryVerb : verbAuxiliaryVerbs) {
 			final var auxiliaryVerbConjugationKey = auxiliaryVerb.getConjugation();
 			resultTextBuilder.append(
-				this
-					.verbConjugations
-					.get(auxiliaryVerb.getToken())
-					.lookup(auxiliaryVerbConjugationKey)
-					.get()
-			);
+					this.verbConjugations.get(auxiliaryVerb.getToken()).lookup(auxiliaryVerbConjugationKey).get());
 			resultTextBuilder.append(" ");
 		}
-		resultTextBuilder.append(
-			this
-				.verbConjugations
-				.get(verb.getToken())
-				.lookup(verbConjugationKey)
-				.get()
-		);
-		
+		resultTextBuilder.append(this.verbConjugations.get(verb.getToken()).lookup(verbConjugationKey).get());
+
 		var result = new NLPResult(resultTextBuilder.toString(), new HashMap<String, GraphNode>());
 		
+		final var nounPhrase = verbPhrase.getNounPhrase();
+		if (nounPhrase.isPresent()) {
+			result = result.merge(this.visit(nounPhrase.get()), " ");
+		}
+
 		final var prepositionalPhrase = verbPhrase.getPrepositionalPhrase();
 		if (prepositionalPhrase.isPresent()) {
 			result = result.merge(this.visit(prepositionalPhrase.get()), " ");
 		}
-		
+
 		return result;
 	}
-	
+
 	private VerbPhrase visit(VerbPhrase verbPhrase, Verb mainVerb) {
 		final var mainVerbConjugation = verbPhrase.getConjugation();
 		switch (mainVerbConjugation) {

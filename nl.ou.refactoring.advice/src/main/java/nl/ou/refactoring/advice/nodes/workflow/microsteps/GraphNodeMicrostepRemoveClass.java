@@ -12,7 +12,7 @@ import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes a Class.
  */
-public final class GraphNodeMicrostepRemoveClass extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepRemoveClass extends GraphNodeMicrostepRemove {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepRemoveClass}.
 	 * 

@@ -91,19 +91,30 @@ public final class Graph implements Cloneable {
 		ArgumentGuard.requireNotNull(classType, "classType");
 		final var pathComponents = new ArrayDeque<String>(List.of(path.split("\\.")));
 		String pathComponentName = pathComponents.pop();
-		GraphNodeCode nodeCurrent = this.matrix.keySet().stream()
-				.filter(node -> node instanceof GraphNodePackage
-						&& ((GraphNodePackage) node).getPackageName().equals(pathComponentName))
-				.map(node -> (GraphNodeCode) node).findAny().orElse(null);
+		GraphNodeCode nodeCurrent =
+				this.matrix.keySet()
+						.stream()
+						.filter(
+								node -> node instanceof GraphNodePackage
+										&& ((GraphNodePackage) node).getPackageName().equals(pathComponentName))
+						.map(node -> (GraphNodeCode) node)
+						.findAny()
+						.orElse(null);
 		while (!pathComponents.isEmpty() && nodeCurrent != null) {
 			final var pathComponent = pathComponents.pop();
-			nodeCurrent = (GraphNodeCode) nodeCurrent.getEdges(GraphEdgeHas.class).stream()
-					.map(edge -> edge.getDestinationNode()).filter(node -> switch (node) {
-					case GraphNodePackage packageNode -> packageNode.getPackageName().equals(pathComponent);
-					case GraphNodeClass classNode -> classNode.getClassName().equals(pathComponent);
-					case GraphNodeInterface interfaceNode -> interfaceNode.getInterfaceName().equals(pathComponent);
-					default -> false;
-					}).findAny().orElse(null);
+			nodeCurrent =
+					(GraphNodeCode) nodeCurrent.getEdges(GraphEdgeHas.class)
+							.stream()
+							.map(edge -> edge.getDestinationNode())
+							.filter(node -> switch (node) {
+								case GraphNodePackage packageNode -> packageNode.getPackageName().equals(pathComponent);
+								case GraphNodeClass classNode -> classNode.getClassName().equals(pathComponent);
+								case GraphNodeInterface interfaceNode ->
+									interfaceNode.getInterfaceName().equals(pathComponent);
+								default -> false;
+							})
+							.findAny()
+							.orElse(null);
 			if (pathComponents.isEmpty() && nodeCurrent != null) {
 				if (classType.isInstance(nodeCurrent)) {
 					return Optional.of(classType.cast(nodeCurrent));
@@ -157,8 +168,12 @@ public final class Graph implements Cloneable {
 	 */
 	public <TNode extends GraphNode> Set<TNode> getNodesExact(Class<TNode> nodeType) {
 		ArgumentGuard.requireNotNull(nodeType, "nodeType");
-		return Collections.unmodifiableSet(this.getNodes().stream().filter(node -> node.getClass() == nodeType)
-				.map(nodeType::cast).collect(Collectors.toSet()));
+		return Collections.unmodifiableSet(
+				this.getNodes()
+						.stream()
+						.filter(node -> node.getClass() == nodeType)
+						.map(nodeType::cast)
+						.collect(Collectors.toSet()));
 	}
 
 	/**
@@ -215,8 +230,12 @@ public final class Graph implements Cloneable {
 	 */
 	public Optional<GraphEdge> getEdge(UUID edgeIdentifier) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(edgeIdentifier, "edgeIdentifier");
-		return this.matrix.values().stream().flatMap(column -> column.values().stream())
-				.flatMap(edges -> edges.stream()).filter(edge -> edge.getId().equals(edgeIdentifier)).findFirst();
+		return this.matrix.values()
+				.stream()
+				.flatMap(column -> column.values().stream())
+				.flatMap(edges -> edges.stream())
+				.filter(edge -> edge.getId().equals(edgeIdentifier))
+				.findFirst();
 	}
 
 	/**
@@ -227,11 +246,14 @@ public final class Graph implements Cloneable {
 	 * @return The edges in the Refactoring Advice Graph.
 	 */
 	public Set<GraphEdge> getEdges() {
-		return Collections.unmodifiableSet(this.matrix.values().stream().flatMap(row -> row.values().stream())
-				.reduce(new HashSet<>(), (aggregate, next) -> {
-					aggregate.addAll(next);
-					return aggregate;
-				}));
+		return Collections.unmodifiableSet(
+				this.matrix.values()
+						.stream()
+						.flatMap(row -> row.values().stream())
+						.reduce(new HashSet<>(), (aggregate, next) -> {
+							aggregate.addAll(next);
+							return aggregate;
+						}));
 	}
 
 	/**
@@ -246,8 +268,12 @@ public final class Graph implements Cloneable {
 		if (sourceNode == null) {
 			return Collections.unmodifiableSet(Set.of());
 		}
-		return Collections.unmodifiableSet(this.matrix.getOrDefault(sourceNode, new HashMap<>()).values().stream()
-				.flatMap(columns -> columns.stream()).collect(Collectors.toSet()));
+		return Collections.unmodifiableSet(
+				this.matrix.getOrDefault(sourceNode, new HashMap<>())
+						.values()
+						.stream()
+						.flatMap(columns -> columns.stream())
+						.collect(Collectors.toSet()));
 	}
 
 	/**
@@ -266,9 +292,12 @@ public final class Graph implements Cloneable {
 		if (sourceNode == null) {
 			return Collections.unmodifiableSet(Set.of());
 		}
-		return Collections.unmodifiableSet(this.matrix.getOrDefault(sourceNode, new HashMap<>()).values().stream()
-				.flatMap(columns -> columns.stream().filter(edgeType::isInstance).map(edgeType::cast))
-				.collect(Collectors.toSet()));
+		return Collections.unmodifiableSet(
+				this.matrix.getOrDefault(sourceNode, new HashMap<>())
+						.values()
+						.stream()
+						.flatMap(columns -> columns.stream().filter(edgeType::isInstance).map(edgeType::cast))
+						.collect(Collectors.toSet()));
 	}
 
 	/**
@@ -302,9 +331,11 @@ public final class Graph implements Cloneable {
 		if (destinationNode == null) {
 			return Collections.unmodifiableSet(Set.of());
 		}
-		return Collections.unmodifiableSet(this.matrix.values().stream()
-				.flatMap(columns -> columns.getOrDefault(destinationNode, new HashSet<>()).stream())
-				.collect(Collectors.toSet()));
+		return Collections.unmodifiableSet(
+				this.matrix.values()
+						.stream()
+						.flatMap(columns -> columns.getOrDefault(destinationNode, new HashSet<>()).stream())
+						.collect(Collectors.toSet()));
 	}
 
 	/**
@@ -323,10 +354,14 @@ public final class Graph implements Cloneable {
 		if (destinationNode == null) {
 			return Collections.unmodifiableSet(Set.of());
 		}
-		return Collections
-				.unmodifiableSet(this.matrix
-						.values().stream().flatMap(columns -> columns.getOrDefault(destinationNode, new HashSet<>())
-								.stream().filter(edgeType::isInstance).map(edgeType::cast))
+		return Collections.unmodifiableSet(
+				this.matrix.values()
+						.stream()
+						.flatMap(
+								columns -> columns.getOrDefault(destinationNode, new HashSet<>())
+										.stream()
+										.filter(edgeType::isInstance)
+										.map(edgeType::cast))
 						.collect(Collectors.toSet()));
 	}
 
@@ -342,10 +377,15 @@ public final class Graph implements Cloneable {
 		ArgumentGuard.requireNotNull(edge, "edge");
 		final var sourceNode = edge.getSourceNode();
 		final var destinationNode = edge.getDestinationNode();
-		LOGGER.debug("Adding edge {} from {} to {} to graph {}", edge.getId(), sourceNode.getId(),
-				destinationNode.getId(), this.getId());
+		LOGGER.debug(
+				"Adding edge {} from {} to {} to graph {}",
+				edge.getId(),
+				sourceNode.getId(),
+				destinationNode.getId(),
+				this.getId());
 		matrix.computeIfAbsent(edge.getSourceNode(), _ -> new HashMap<>())
-				.computeIfAbsent(edge.getDestinationNode(), _ -> new HashSet<>()).add(edge);
+				.computeIfAbsent(edge.getDestinationNode(), _ -> new HashSet<>())
+				.add(edge);
 		LOGGER.debug("Edge {} now in graph {}: {}", edge.getId(), this.getId(), this.getEdgesFrom(sourceNode).size());
 		return edge;
 	}
@@ -368,18 +408,24 @@ public final class Graph implements Cloneable {
 	 *                               edgeFactory or edgeClass is null.
 	 */
 	public <TEdge extends GraphEdge, TNodeSource extends GraphNode, TNodeDestination extends GraphNode> TEdge computeEdge(
-			TNodeSource sourceNode, TNodeDestination destinationNode,
-			GraphEdgeFactoryFunction<TEdge, TNodeSource, TNodeDestination> edgeFactory, Class<TEdge> edgeClass)
-			throws ArgumentNullException {
+			TNodeSource sourceNode,
+			TNodeDestination destinationNode,
+			GraphEdgeFactoryFunction<TEdge, TNodeSource, TNodeDestination> edgeFactory,
+			Class<TEdge> edgeClass) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(sourceNode, "sourceNode");
 		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
 		ArgumentGuard.requireNotNull(edgeFactory, "edgeFactory");
 		ArgumentGuard.requireNotNull(edgeClass, "edgeClass");
 
-		final var edges = this.matrix.computeIfAbsent(sourceNode, _ -> new HashMap<>()).computeIfAbsent(destinationNode,
-				_ -> new HashSet<>());
-		var edge = edges.stream().filter(knownEdge -> knownEdge.getClass().equals(edgeClass)).map(edgeClass::cast)
-				.findAny().orElse(null);
+		final var edges =
+				this.matrix.computeIfAbsent(sourceNode, _ -> new HashMap<>())
+						.computeIfAbsent(destinationNode, _ -> new HashSet<>());
+		var edge =
+				edges.stream()
+						.filter(knownEdge -> knownEdge.getClass().equals(edgeClass))
+						.map(edgeClass::cast)
+						.findAny()
+						.orElse(null);
 		if (edge == null) {
 			edge = edgeFactory.create(sourceNode, destinationNode);
 			edges.add(edge);
@@ -407,8 +453,11 @@ public final class Graph implements Cloneable {
 	 *         empty {@link Optional<GraphNodeRefactoringStart>}.
 	 */
 	public Optional<GraphNodeRefactoringStart> getStart() {
-		return this.matrix.keySet().stream().filter(GraphNodeRefactoringStart.class::isInstance)
-				.map(GraphNodeRefactoringStart.class::cast).findFirst();
+		return this.matrix.keySet()
+				.stream()
+				.filter(GraphNodeRefactoringStart.class::isInstance)
+				.map(GraphNodeRefactoringStart.class::cast)
+				.findFirst();
 	}
 
 	/**
@@ -454,8 +503,12 @@ public final class Graph implements Cloneable {
 		}
 
 		// Clone all edges.
-		final var edges = this.matrix.values().stream().flatMap((entry) -> entry.values().stream())
-				.flatMap((edgeSet) -> edgeSet.stream()).collect(Collectors.toSet());
+		final var edges =
+				this.matrix.values()
+						.stream()
+						.flatMap((entry) -> entry.values().stream())
+						.flatMap((edgeSet) -> edgeSet.stream())
+						.collect(Collectors.toSet());
 
 		for (final var edge : edges) {
 			final var sourceNodeFromEdge = edge.getSourceNode();
@@ -472,9 +525,12 @@ public final class Graph implements Cloneable {
 				continue;
 			}
 
-			LOGGER.debug("Cloning edge with source node {} ({}) and destination node {} ({})",
-					sourceNodeFromEdge.getId(), sourceNodeFromEdge.getClass().getName(),
-					destinationNodeFromEdge.getId(), destinationNodeFromEdge.getClass().getName());
+			LOGGER.debug(
+					"Cloning edge with source node {} ({}) and destination node {} ({})",
+					sourceNodeFromEdge.getId(),
+					sourceNodeFromEdge.getClass().getName(),
+					destinationNodeFromEdge.getId(),
+					destinationNodeFromEdge.getClass().getName());
 			final var edgeCloned = edge.clone(sourceNodeCloned, destinationNodeCloned);
 			graphCloned.addEdge(edgeCloned);
 		}

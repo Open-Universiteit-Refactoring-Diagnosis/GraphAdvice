@@ -93,25 +93,43 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationRes
 				LOGGER.debug("The double node is an attribute '{}'", attributeNode.getAttributeName());
 				final var microstep = getMicrostep(attributeNode, GraphNodeMicrostepAddField.class);
 				microstep.causes(riskNode);
-				riskNode.affects(attributeNode);
 				break;
 			}
 			case GraphNodeOperation operationNode: {
 				LOGGER.debug("The double node is an operation '{}'", operationNode.getOperationName());
 				final var microstep = getMicrostep(operationNode, GraphNodeMicrostepAddMethod.class);
 				microstep.causes(riskNode);
-				riskNode.affects(operationNode);
 				break;
 			}
 			case GraphNodeClass classNode: {
 				LOGGER.debug("The double node is a class '{}'", classNode.getClassName());
 				final var microstep = getMicrostep(classNode, GraphNodeMicrostepAddClass.class);
 				microstep.causes(riskNode);
-				riskNode.affects(classNode);
 				break;
 			}
 			default: {
 				throw new GraphNodeCodeRiskFixNotSupportedException(this.nodeAdded);
+			}
+		}
+		
+		final var nodesConflicting = this.getNodesConflicting();
+		for (final var nodeConflicting : nodesConflicting) {
+			switch (nodeConflicting) {
+				case GraphNodeAttribute attributeNode: {
+					riskNode.affects(attributeNode);
+					break;
+				}
+				case GraphNodeOperation operationNode: {
+					riskNode.affects(operationNode);
+					break;
+				}
+				case GraphNodeClass classNode: {
+					riskNode.affects(classNode);
+					break;
+				}
+				default: {
+					break;
+				}
 			}
 		}
 

@@ -10,7 +10,7 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes a Method.
  */
-public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepRemoveMethod extends GraphNodeMicrostepRemove {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepRemoveMethod}.
 	 * @param graph The graph that contains the node. Cannot be null.

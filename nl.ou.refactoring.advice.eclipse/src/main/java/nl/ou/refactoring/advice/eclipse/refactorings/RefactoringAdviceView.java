@@ -40,8 +40,8 @@ import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
 import nl.ou.refactoring.advice.io.html.text.GraphHtmlTextWriter;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlSvgGenerator;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
+import nl.ou.refactoring.advice.nlp.grammar.NLPGrammarProcessor;
 import nl.ou.refactoring.advice.nlp.languages.englishGreatBritain.NLPLanguageEnglishGreatBritain;
-import nl.ou.refactoring.advice.nlp.processors.NLPGrammarProcessor;
 
 /**
  * Web view for displaying refactoring advice in HTML format.

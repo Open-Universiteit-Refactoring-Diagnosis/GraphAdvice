@@ -92,6 +92,15 @@ public final class NLPResult {
 	}
 	
 	/**
+	 * Extracts a unique reference {@link String} from a {@link GraphNode}.
+	 * @param node The node from which to extract a unique reference {@link String}.
+	 * @return A unique reference to a {@link GraphNode}.
+	 */
+	public static String extractReferenceString(GraphNode node) {
+		return String.format("{%s}", node.getId());
+	}
+	
+	/**
 	 * Merges two {@link NLPResult} into one {@link NLPResult}.
 	 * @param firstResult The first {@link NLPResult}.
 	 * @param secondResult The second {@link NLPResult}.

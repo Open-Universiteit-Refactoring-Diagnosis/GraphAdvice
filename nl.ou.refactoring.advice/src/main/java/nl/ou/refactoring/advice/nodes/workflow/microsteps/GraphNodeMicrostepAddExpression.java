@@ -10,35 +10,33 @@ import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeState
 /**
  * Represents a Microstep in a Refactoring Advice Graph that adds an Expression.
  */
-public final class GraphNodeMicrostepAddExpression extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepAddExpression extends GraphNodeMicrostepAdd {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepAddExpression}.
+	 * 
 	 * @param graph The graph that contains the microstep. Cannot be null.
 	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	public GraphNodeMicrostepAddExpression(Graph graph)
-			throws ArgumentNullException {
+	public GraphNodeMicrostepAddExpression(Graph graph) throws ArgumentNullException {
 		super(graph);
 	}
-	
+
 	/**
 	 * Indicates that the microstep adds the specified statement expression.
-	 * @param statementExpressionNode The node that represents the statement expression that is added.
-	 * @return The edge that indicates that the microstep adds the specified statement expression.
+	 * 
+	 * @param statementExpressionNode The node that represents the statement
+	 *                                expression that is added.
+	 * @return The edge that indicates that the microstep adds the specified
+	 *         statement expression.
 	 * @throws ArgumentNullException Thrown if statementExpressionNode is null.
 	 */
-	public GraphEdgeAdds adds(GraphNodeStatementExpression statementExpressionNode)
-			throws ArgumentNullException {
+	public GraphEdgeAdds adds(GraphNodeStatementExpression statementExpressionNode) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(statementExpressionNode, "statementExpressionNode");
-		return
-			this
-				.graph
-				.computeEdge(
-					this,
-					statementExpressionNode,
-					(sourceNode, destinationNode) -> new GraphEdgeAdds(sourceNode, destinationNode),
-					GraphEdgeAdds.class
-				);
+		return this.graph.computeEdge(
+				this,
+				statementExpressionNode,
+				(sourceNode, destinationNode) -> new GraphEdgeAdds(sourceNode, destinationNode),
+				GraphEdgeAdds.class);
 	}
 
 	@Override

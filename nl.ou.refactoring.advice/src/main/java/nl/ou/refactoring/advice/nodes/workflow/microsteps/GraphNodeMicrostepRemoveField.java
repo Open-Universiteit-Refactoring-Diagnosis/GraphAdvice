@@ -12,7 +12,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes a Field.
  */
-public final class GraphNodeMicrostepRemoveField extends GraphNodeMicrostep {
+public final class GraphNodeMicrostepRemoveField extends GraphNodeMicrostepRemove {
 	/**
 	 * Initialises a new instance of {@link GraphNodeMicrostepRemoveField}.
 	 * @param graph The graph that contains the microstep. Cannot be null.

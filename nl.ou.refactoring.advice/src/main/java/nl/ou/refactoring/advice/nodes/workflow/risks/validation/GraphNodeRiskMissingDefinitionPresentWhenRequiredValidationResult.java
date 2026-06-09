@@ -29,10 +29,10 @@ public final class GraphNodeRiskMissingDefinitionPresentWhenRequiredValidationRe
 	/**
 	 * Initialises a new instance of {@link GraphNodeRiskMissingDefinitionPresentWhenRequiredValidationResult}.
 	 * @param graph The Refactoring Advice Graph (RAG) {@link Graph} that is being validated.
-	 * @param referringNodes
-	 * @param referredNode
-	 * @param isValid
-	 * @throws ArgumentNullException
+	 * @param referringNodes The nodes that refer to the referred node.
+	 * @param referredNode The node that is being referred to.
+	 * @param isValid Indicates whether the validation had a positive result.
+	 * @throws ArgumentNullException Thrown if referringNodes or referredNode is null.
 	 */
 	public GraphNodeRiskMissingDefinitionPresentWhenRequiredValidationResult(
 		Graph graph,
