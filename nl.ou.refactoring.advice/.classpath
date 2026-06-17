@@ -1,10 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
-	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
-	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/javaparser-core-3.28.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javaparser-symbol-solver-core-3.28.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-26">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/ai/djl/api/0.36.0/api-0.36.0.jar" sourcepath="M2_REPO/ai/djl/api/0.36.0/api-0.36.0-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/google/code/gson/gson/2.13.1/gson-2.13.1.jar" sourcepath="M2_REPO/com/google/code/gson/gson/2.13.1/gson-2.13.1-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/google/errorprone/error_prone_annotations/2.38.0/error_prone_annotations-2.38.0.jar" sourcepath="M2_REPO/com/google/errorprone/error_prone_annotations/2.38.0/error_prone_annotations-2.38.0-sources.jar"/>
@@ -45,5 +74,41 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="lib/api-0.36.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/batik-all-1.19.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/checker-qual-3.55.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/classgraph-4.8.184.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.17.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-compress-1.27.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.16.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/error_prone_annotations-2.38.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/failureaccess-1.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gson-2.13.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-33.6.0-jre.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/j2objc-annotations-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jakarta.json-2.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javatuples-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jna-5.17.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspecify-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-api-2.26.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-core-2.26.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-slf4j2-impl-2.26.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/plantuml-mit-1.2026.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-2.0.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlgraphics-commons-2.11.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
