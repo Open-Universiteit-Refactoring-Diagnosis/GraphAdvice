@@ -34,7 +34,7 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinit
 
 public final class GraphMermaidFlowchartWriterTests {
 	private static Path OUTPUT_DIR;
-	
+
 	@BeforeAll
 	static void setUp() throws IOException {
 		OUTPUT_DIR = Paths.get("target", "test-output", "Mermaid", "flowcharts");
@@ -43,32 +43,35 @@ public final class GraphMermaidFlowchartWriterTests {
 
 	@Test
 	@DisplayName("Should write a Mermaid flowchart from a graph")
-	public void writeTests()
-			throws ArgumentNullException, GraphPathSegmentInvalidException, RefactoringMayContainOnlyOneStartNodeException {
+	public void writeTests() throws ArgumentNullException, GraphPathSegmentInvalidException,
+			RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange graph
 		final var graph = new Graph("Move Method");
-		
+
 		// Arrange graph code
 		final var packageNodeRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
-		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
+		final var identifierNodeAlpha = GraphNodeIdentifier.computeIdentifier(graph, "Alpha");
 		final var classNodeAlpha = new GraphNodeClass(graph, identifierNodeAlpha);
-		final var identifierNodeAbc = new GraphNodeIdentifier(graph, "abc");
+		final var identifierNodeAbc = GraphNodeIdentifier.computeIdentifier(graph, "abc");
 		final var operationNodeAlphaAbc = new GraphNodeOperation(graph, identifierNodeAbc);
-		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "foo"));
-		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "bar"));
+		final var attributeNodeAlphaFoo =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
+		final var attributeNodeAlphaBar =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "bar"));
 		packageNodeRefactoring.has(classNodeAlpha);
 		classNodeAlpha.has(operationNodeAlphaAbc);
 		classNodeAlpha.has(attributeNodeAlphaFoo);
 		classNodeAlpha.has(attributeNodeAlphaBar);
-		final var identifierNodeBeta = new GraphNodeIdentifier(graph, "Beta");
+		final var identifierNodeBeta = GraphNodeIdentifier.computeIdentifier(graph, "Beta");
 		final var classNodeBeta = new GraphNodeClass(graph, identifierNodeBeta);
-		final var identifierNodeAbc2 = new GraphNodeIdentifier(graph, "abc2");
+		final var identifierNodeAbc2 = GraphNodeIdentifier.computeIdentifier(graph, "abc2");
 		final var operationNodeBetaAbc2 = new GraphNodeOperation(graph, identifierNodeAbc2);
-		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "myField"));
+		final var attributeNodeBetaMyField =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "myField"));
 		packageNodeRefactoring.has(classNodeBeta);
 		classNodeBeta.has(operationNodeBetaAbc2);
 		classNodeBeta.has(attributeNodeBetaMyField);
-		
+
 		// Arrange graph workflow
 		final var startNode = graph.start();
 		final var microstepNodeAddMethod = new GraphNodeMicrostepAddMethod(graph);
@@ -92,17 +95,15 @@ public final class GraphMermaidFlowchartWriterTests {
 		remedyNodeChooseDifferentName.mitigates(riskNodeDoubleDefinition);
 		riskNodeDoubleDefinition.affects(operationNodeAlphaAbc);
 		riskNodeDoubleDefinition.affects(operationNodeBetaAbc2);
-		
+
 		// Arrange writer
 		final var stringWriter = new StringWriter();
 		final var writer = new GraphMermaidFlowchartWriter(stringWriter, GraphMermaidFlowchartDirection.LeftToRight);
-		
+
 		// Act / Assert
 		writer.write(graph);
-		final var mermaidFlowchartFilePath =
-				OUTPUT_DIR.resolve("Graph_MermaidFlowchart.mermaid");
-		try (final var bufferedWriter =
-				new BufferedWriter(new FileWriter(mermaidFlowchartFilePath.toFile()))) {
+		final var mermaidFlowchartFilePath = OUTPUT_DIR.resolve("Graph_MermaidFlowchart.mermaid");
+		try (final var bufferedWriter = new BufferedWriter(new FileWriter(mermaidFlowchartFilePath.toFile()))) {
 			bufferedWriter.write(stringWriter.toString());
 			bufferedWriter.close();
 		} catch (IOException exception) {

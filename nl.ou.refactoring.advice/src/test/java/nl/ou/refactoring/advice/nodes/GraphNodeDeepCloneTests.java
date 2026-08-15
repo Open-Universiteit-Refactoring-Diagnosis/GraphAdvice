@@ -25,22 +25,27 @@ public final class GraphNodeDeepCloneTests {
 	@Test
 	public void deepCloneTest() {
 		final var graph = new Graph("Clone test");
-		
+
 		// AST
 		GraphNodePackage.parse(graph, "nl.ou.refactoring.test");
 		final var packageNodeLeaf = graph.getNode("nl.ou.refactoring.test", GraphNodePackage.class).get();
-		final var classNodeLegacyEmployee = new GraphNodeClass(graph, new GraphNodeIdentifier(graph, "LegacyEmployee"));
-		
+		final var classNodeLegacyEmployee =
+				new GraphNodeClass(graph, GraphNodeIdentifier.computeIdentifier(graph, "LegacyEmployee"));
+
 		// AST: Employee
-		final var classNodeEmployee = new GraphNodeClass(graph, new GraphNodeIdentifier(graph, "Employee"));
-		final var operationNodeEmployeeGetName = new GraphNodeOperation(graph, new GraphNodeIdentifier(graph, "getName"));
+		final var classNodeEmployee =
+				new GraphNodeClass(graph, GraphNodeIdentifier.computeIdentifier(graph, "Employee"));
+		final var operationNodeEmployeeGetName =
+				new GraphNodeOperation(graph, GraphNodeIdentifier.computeIdentifier(graph, "getName"));
 		classNodeEmployee.has(operationNodeEmployeeGetName);
-		
+
 		// AST: Company
-		final var classNodeCompany = new GraphNodeClass(graph, new GraphNodeIdentifier(graph, "Company"));
-		final var attributeNodeCompanyDirector = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "director"));
+		final var classNodeCompany = new GraphNodeClass(graph, GraphNodeIdentifier.computeIdentifier(graph, "Company"));
+		final var attributeNodeCompanyDirector =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "director"));
 		classNodeCompany.has(attributeNodeCompanyDirector);
-		final var operationNodeCompanyGetDirectorName = new GraphNodeOperation(graph, new GraphNodeIdentifier(graph, "getDirectorName"));
+		final var operationNodeCompanyGetDirectorName =
+				new GraphNodeOperation(graph, GraphNodeIdentifier.computeIdentifier(graph, "getDirectorName"));
 		final var blockNodeCompanyGetDirectorName = new GraphNodeBlock(graph);
 		operationNodeCompanyGetDirectorName.hasBody(blockNodeCompanyGetDirectorName);
 		final var methodInvocationExpression = new GraphNodeMethodInvocationExpression(graph);
@@ -49,12 +54,12 @@ public final class GraphNodeDeepCloneTests {
 		statementExpression.has(methodInvocationExpression);
 		blockNodeCompanyGetDirectorName.has(statementExpression);
 		classNodeCompany.has(operationNodeCompanyGetDirectorName);
-		
+
 		packageNodeLeaf.has(classNodeLegacyEmployee);
 		packageNodeLeaf.has(classNodeEmployee);
 		classNodeEmployee.is(classNodeLegacyEmployee);
 		packageNodeLeaf.has(classNodeCompany);
-		
+
 		// Workflow
 		final var startNode = graph.start();
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
@@ -62,8 +67,8 @@ public final class GraphNodeDeepCloneTests {
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		addMethod.precedes(removeMethod);
 		removeMethod.finalises();
-		
-		final var graphClone = (Graph)graph.clone(graph.getRefactoringName() + " (Cloned)");
+
+		final var graphClone = (Graph) graph.clone(graph.getRefactoringName() + " (Cloned)");
 		assertEquals("Clone test (Cloned)", graphClone.getRefactoringName());
 		final var graphNodesCloned = graphClone.getNodes();
 		// assertEquals(graph.getNodes().size(), graphNodesCloned.size());

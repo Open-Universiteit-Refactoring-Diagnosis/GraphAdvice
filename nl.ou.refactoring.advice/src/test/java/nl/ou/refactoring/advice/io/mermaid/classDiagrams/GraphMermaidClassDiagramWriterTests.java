@@ -35,7 +35,7 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinit
 
 public final class GraphMermaidClassDiagramWriterTests {
 	private static Path OUTPUT_DIR;
-	
+
 	@BeforeAll
 	static void setUp() throws IOException {
 		OUTPUT_DIR = Paths.get("target", "test-output", "Mermaid", "classDiagrams");
@@ -44,20 +44,22 @@ public final class GraphMermaidClassDiagramWriterTests {
 
 	@Test
 	@DisplayName("Should write a Mermaid class diagram from a graph")
-	public void writeTests()
-			throws ArgumentNullException, GraphPathSegmentInvalidException, RefactoringMayContainOnlyOneStartNodeException {
+	public void writeTests() throws ArgumentNullException, GraphPathSegmentInvalidException,
+			RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange graph
 		final var graph = new Graph("Move Method");
-		
+
 		// Arrange graph code
 		final var packageNodeRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
 		final var typeNodeInt = GraphNodeType.computeType(graph, "int");
 		final var typeNodeString = GraphNodeType.computeType(graph, "String");
-		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
+		final var identifierNodeAlpha = GraphNodeIdentifier.computeIdentifier(graph, "Alpha");
 		final var classNodeAlpha = new GraphNodeClass(graph, identifierNodeAlpha);
-		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "foo"));
-		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "bar"));
-		final var identifierNodeAbc = new GraphNodeIdentifier(graph, "abc");
+		final var attributeNodeAlphaFoo =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
+		final var attributeNodeAlphaBar =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "bar"));
+		final var identifierNodeAbc = GraphNodeIdentifier.computeIdentifier(graph, "abc");
 		final var operationNodeAlphaAbc = new GraphNodeOperation(graph, identifierNodeAbc);
 		packageNodeRefactoring.has(classNodeAlpha);
 		classNodeAlpha.has(operationNodeAlphaAbc);
@@ -66,17 +68,18 @@ public final class GraphMermaidClassDiagramWriterTests {
 		attributeNodeAlphaFoo.is(typeNodeString);
 		attributeNodeAlphaBar.is(typeNodeInt);
 		operationNodeAlphaAbc.hasReturnType(typeNodeString);
-		final var identifierNodeBeta = new GraphNodeIdentifier(graph, "Beta");
+		final var identifierNodeBeta = GraphNodeIdentifier.computeIdentifier(graph, "Beta");
 		final var classNodeBeta = new GraphNodeClass(graph, identifierNodeBeta);
-		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "myField"));
-		final var identifierAbc2 = new GraphNodeIdentifier(graph, "abc2");
+		final var attributeNodeBetaMyField =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "myField"));
+		final var identifierAbc2 = GraphNodeIdentifier.computeIdentifier(graph, "abc2");
 		final var operationNodeBetaAbc2 = new GraphNodeOperation(graph, identifierAbc2);
 		packageNodeRefactoring.has(classNodeBeta);
 		classNodeBeta.has(operationNodeBetaAbc2);
 		classNodeBeta.has(attributeNodeBetaMyField);
 		attributeNodeBetaMyField.is(typeNodeString);
 		operationNodeBetaAbc2.hasReturnType(typeNodeInt);
-		
+
 		// Arrange graph workflow
 		final var startNode = graph.start();
 		final var microstepNodeAddMethod = new GraphNodeMicrostepAddMethod(graph);
@@ -100,18 +103,16 @@ public final class GraphMermaidClassDiagramWriterTests {
 		remedyChooseDifferentName.mitigates(riskNodeDoubleDefinition);
 		riskNodeDoubleDefinition.affects(operationNodeAlphaAbc);
 		riskNodeDoubleDefinition.affects(operationNodeBetaAbc2);
-		
+
 		// Arrange writer
 		final var stringWriter = new StringWriter();
 		final var classDiagramWriterSettings = new GraphMermaidClassDiagramWriterSettings();
 		final var classDiagramWriter = new GraphMermaidClassDiagramWriter(stringWriter, classDiagramWriterSettings);
-		
+
 		// Act / Assert
 		classDiagramWriter.write(graph);
-		final var mermaidClassDiagramFilePath =
-				OUTPUT_DIR.resolve("Graph_MermaidClassDiagram.mermaid");
-		try (final var bufferedWriter =
-				new BufferedWriter(new FileWriter(mermaidClassDiagramFilePath.toFile()))) {
+		final var mermaidClassDiagramFilePath = OUTPUT_DIR.resolve("Graph_MermaidClassDiagram.mermaid");
+		try (final var bufferedWriter = new BufferedWriter(new FileWriter(mermaidClassDiagramFilePath.toFile()))) {
 			bufferedWriter.write(stringWriter.toString());
 			bufferedWriter.close();
 		} catch (IOException exception) {

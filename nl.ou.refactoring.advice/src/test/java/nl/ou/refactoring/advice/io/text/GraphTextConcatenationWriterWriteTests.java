@@ -30,16 +30,15 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddM
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
 public class GraphTextConcatenationWriterWriteTests {
-	private static final Logger LOGGER =
-			LogManager.getLogger(GraphTextConcatenationWriterWriteTests.class);
+	private static final Logger LOGGER = LogManager.getLogger(GraphTextConcatenationWriterWriteTests.class);
 	private static Path OUTPUT_DIR;
-	
+
 	@BeforeAll
 	static void setUp() throws IOException {
 		OUTPUT_DIR = Paths.get("target", "test-output");
 		Files.createDirectories(OUTPUT_DIR);
 	}
-	
+
 	@ParameterizedTest
 	@MethodSource("writeTestCases")
 	@DisplayName("Should generate a refactoring advice text from a Refactoring Advice Graph")
@@ -49,77 +48,50 @@ public class GraphTextConcatenationWriterWriteTests {
 		concatenationWriter.write(graph);
 		assertEquals(expected, stringWriter.toString());
 	}
-	
+
 	private static Stream<Arguments> writeTestCases() {
 		final List<Arguments> arguments = new ArrayList<Arguments>();
-		
+
 		final var graphStartOnly = createGraphStartOnly();
 		LOGGER.info("Testing graph '{}'", graphStartOnly.getRefactoringName());
 		final var textStartOnly = "";
 		arguments.add(Arguments.of(graphStartOnly, textStartOnly));
-		
+
 		final var graphMoveMethod = createGraphMoveMethod();
 		LOGGER.info("Testing graph '{}'", graphMoveMethod.getRefactoringName());
 		final var textMoveMethod = "";
 		arguments.add(Arguments.of(graphMoveMethod, textMoveMethod));
-		
+
 		return arguments.stream();
 	}
-	
+
 	private static Graph createGraphStartOnly() {
 		final var graph = new Graph("Start only");
 		graph.start();
 		return graph;
 	}
-	
+
 	private static Graph createGraphMoveMethod() {
 		final var graph = new Graph("Move method");
-		
+
 		final var packageNodeTest = GraphNodePackage.parse(graph, "nl.ou.refactoring.test");
-		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
+		final var identifierNodeAlpha = GraphNodeIdentifier.computeIdentifier(graph, "Alpha");
 		final var classNodeAlphaBefore =
-			new GraphNodeClass(
-				graph,
-				identifierNodeAlpha,
-				GraphNodeClassStereotype.BEFORE
-			);
+				new GraphNodeClass(graph, identifierNodeAlpha, GraphNodeClassStereotype.BEFORE);
 		packageNodeTest.has(classNodeAlphaBefore);
-		final var helloWorldIdentifier = new GraphNodeIdentifier(graph, "helloWorld");
-		final var operationBefore =
-			new GraphNodeOperation(
-				graph,
-				helloWorldIdentifier
-			);
+		final var helloWorldIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "helloWorld");
+		final var operationBefore = new GraphNodeOperation(graph, helloWorldIdentifier);
 		classNodeAlphaBefore.has(operationBefore);
-		final var identifierNodeBeta = new GraphNodeIdentifier(graph, "Beta");
-		final var classBetaBefore =
-			new GraphNodeClass(
-				graph,
-				identifierNodeBeta,
-				GraphNodeClassStereotype.BEFORE
-			);
+		final var identifierNodeBeta = GraphNodeIdentifier.computeIdentifier(graph, "Beta");
+		final var classBetaBefore = new GraphNodeClass(graph, identifierNodeBeta, GraphNodeClassStereotype.BEFORE);
 		packageNodeTest.has(classBetaBefore);
-		final var classAlphaAfter =
-			new GraphNodeClass(
-				graph,
-				identifierNodeAlpha,
-				GraphNodeClassStereotype.AFTER
-			);
+		final var classAlphaAfter = new GraphNodeClass(graph, identifierNodeAlpha, GraphNodeClassStereotype.AFTER);
 		packageNodeTest.has(classAlphaAfter);
-		final var classBetaAfter =
-			new GraphNodeClass(
-				graph,
-				identifierNodeBeta,
-				GraphNodeClassStereotype.AFTER
-			);
+		final var classBetaAfter = new GraphNodeClass(graph, identifierNodeBeta, GraphNodeClassStereotype.AFTER);
 		packageNodeTest.has(classBetaAfter);
-		final var operationAfter =
-			new GraphNodeOperation(
-				graph,
-				helloWorldIdentifier
-			);
+		final var operationAfter = new GraphNodeOperation(graph, helloWorldIdentifier);
 		classBetaAfter.has(operationAfter);
-		
+
 		final var startNode = graph.start();
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		startNode.initiates(addMethod);
@@ -128,7 +100,7 @@ public class GraphTextConcatenationWriterWriteTests {
 		addMethod.precedes(removeMethod);
 		removeMethod.removes(operationBefore);
 		removeMethod.finalises();
-		
+
 		return graph;
 	}
 }

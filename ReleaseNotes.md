@@ -2,6 +2,19 @@
 
 [Back to README](/README.md)
 
+## 0.9.0
+
+- Breaking Change: "getType" method in GraphNodeAttribute now returns the type node wrapped in an "Optional" instead of a nullable instance.
+- Breaking Change: constructor of GraphNodeOperationParameter now accepts GraphNodeIdentifier instead of a primitive String for its name parameter.
+- Breaking Change: constructor of GraphNodeIdentifier is now private, use the static method "computeIdentifier" instead. This ensures each RAG only has unique identifier nodes.
+- API for external software components enabling other applications or plug-ins.
+
+## 0.8.0
+
+- Improved text generation.
+- Links to code source files.
+- Display Class Diagram and generated text in Refactoring Advice view of the Eclipse plug-in.
+
 ## 0.7.0
 
 - An Eclipse Plug-in for demonstrating the capabilities of the Refactoring Advice Graph concept.

@@ -75,10 +75,10 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 			try {
 				final var newName = this.newNameTextWidget.getText();
 				final var graphClone = graph.clone(graph.getRefactoringName());
-				
+
 				GraphNodeIdentifier newNameIdentifier;
 				try {
-					newNameIdentifier = new GraphNodeIdentifier(graphClone, newName);
+					newNameIdentifier = GraphNodeIdentifier.computeIdentifier(graphClone, newName);
 				} catch (ArgumentPatternException patternException) {
 					this.newNameTextWidget.setBackground(new Color(255, 123, 123));
 					return;
@@ -87,26 +87,32 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 
 				// Get parent Class.
 				final var className = selectedMethod.getDeclaringType().getFullyQualifiedName();
-				final var classNode = graphClone.getNode(className, GraphNodeClass.class)
-						.orElseThrow(() -> new RuntimeException("Could not find class node '" + className + "'"));
+				final var classNode =
+						graphClone.getNode(className, GraphNodeClass.class)
+								.orElseThrow(
+										() -> new RuntimeException("Could not find class node '" + className + "'"));
 
 				// Find OperationNode that matches Selected Method.
 				final var operationParameterSignatures = new ArrayList<GraphNodeOperationParameterSignature>();
 				final var methodParameters = selectedMethod.getParameters();
 				for (final var methodParameter : methodParameters) {
-					operationParameterSignatures.add(new GraphNodeOperationParameterSignature(
-							methodParameter.getElementName(), TypeSignatureResolver.resolveName(methodParameter)));
+					operationParameterSignatures.add(
+							new GraphNodeOperationParameterSignature(
+									methodParameter.getElementName(),
+									TypeSignatureResolver.resolveName(methodParameter)));
 				}
-				final var operationNodeSelected = classNode
-						.getOperationNode(selectedMethod.getElementName(), operationParameterSignatures).get();
+				final var operationNodeSelected =
+						classNode.getOperationNode(selectedMethod.getElementName(), operationParameterSignatures).get();
 
 				// Create new Method.
 				final var operationNodeSelectedReturnTypeOptional = operationNodeSelected.getReturnType();
-				final var operationNodeRenamedParameters = operationNodeSelected.getOperationParameters().stream()
-						.map((node) -> (GraphNodeOperationParameter) node.clone(graphClone))
-						.collect(Collectors.toUnmodifiableList());
-				final var operationNodeRenamed = new GraphNodeOperation(graphClone, newNameIdentifier,
-						operationNodeRenamedParameters);
+				final var operationNodeRenamedParameters =
+						operationNodeSelected.getOperationParameters()
+								.stream()
+								.map((node) -> (GraphNodeOperationParameter) node.clone(graphClone))
+								.collect(Collectors.toUnmodifiableList());
+				final var operationNodeRenamed =
+						new GraphNodeOperation(graphClone, newNameIdentifier, operationNodeRenamedParameters);
 				if (operationNodeSelectedReturnTypeOptional.isPresent()) {
 					operationNodeRenamed.hasReturnType(
 							(GraphNodeType) operationNodeSelectedReturnTypeOptional.get().clone(graphClone));
@@ -114,11 +120,11 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 				classNode.has(operationNodeRenamed);
 
 				// Get relevant Microsteps.
-				final var addMethodNode = graphClone.getNodes(GraphNodeMicrostepAddMethod.class).stream().findAny()
-						.get();
+				final var addMethodNode =
+						graphClone.getNodes(GraphNodeMicrostepAddMethod.class).stream().findAny().get();
 				addMethodNode.adds(operationNodeRenamed);
-				final var removeMethodNode = graphClone.getNodes(GraphNodeMicrostepRemoveMethod.class).stream()
-						.findAny().get();
+				final var removeMethodNode =
+						graphClone.getNodes(GraphNodeMicrostepRemoveMethod.class).stream().findAny().get();
 				removeMethodNode.removes(operationNodeSelected);
 
 				// Validate and fix risk.

@@ -47,18 +47,18 @@ public final class GraphNodeAttribute extends GraphNodeClassMember {
 	}
 
 	/**
-	 * Gets the Type of the Attribute, if defined. If not, returns null.
+	 * Gets the Type of the Attribute wrapped in {@link Optional}, if defined. If not, returns an empty {@link Optional}.
 	 * 
-	 * @return The Type of the Attribute, if defined. If not, returns null.
+	 * @return The Type of the Attribute wrapped in {@link Optional}, if defined. If not, returns an empty {@link Optional}.
 	 */
-	public GraphNodeType getType() {
-		final var edgeIs = this.getEdges().stream().filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
-				.findFirst().orElse(null);
-		if (edgeIs == null) {
-			return null;
-		}
-
-		return (GraphNodeType) edgeIs.getDestinationNode();
+	public Optional<GraphNodeType> getType() {
+		return
+			this
+				.getEdges()
+				.stream()
+				.filter(edge -> GraphEdgeIs.class.isAssignableFrom(edge.getClass()))
+				.map(edge -> (GraphNodeType) edge.getDestinationNode())
+				.findFirst();
 	}
 
 	/**

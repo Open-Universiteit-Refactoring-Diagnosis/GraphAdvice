@@ -7,11 +7,9 @@ import java.util.stream.Stream;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRelatesTo;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflowAction;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
@@ -29,6 +27,11 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 		super(graph);
 	}
 
+	@Override
+	public String getLabel() {
+		return ResourceProvider.GraphNodeLabels.getLabel(GraphNodeMicrostep.class);
+	}
+
 	/**
 	 * Indicates that a microstep causes a risk.
 	 * 
@@ -43,23 +46,6 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 				risk,
 				(source, destination) -> new GraphEdgeCauses(source, destination),
 				GraphEdgeCauses.class);
-	}
-
-	/**
-	 * Finalises the refactoring.
-	 * 
-	 * @return An edge {@link GraphEdgeFinalises} that finalises the refactoring.
-	 */
-	public GraphEdgeFinalises finalises() throws RefactoringMustContainStartNodeException {
-		final var startNodeOptional = this.graph.getStart();
-		if (startNodeOptional.isEmpty()) {
-			throw new RefactoringMustContainStartNodeException();
-		}
-		return this.graph.computeEdge(
-				this,
-				startNodeOptional.get(),
-				(source, destination) -> new GraphEdgeFinalises(source, destination),
-				GraphEdgeFinalises.class);
 	}
 
 	/**
@@ -133,10 +119,5 @@ public abstract class GraphNodeMicrostep extends GraphNodeWorkflowAction {
 						this.getEdges(GraphEdgeRelatesTo.class).stream().map(GraphEdgeRelatesTo::getDestinationNode),
 						this.getEdgesIncoming(GraphEdgeRelatesTo.class).stream().map(GraphEdgeRelatesTo::getSourceNode))
 				.collect(Collectors.toUnmodifiableSet());
-	}
-
-	@Override
-	public String getLabel() {
-		return ResourceProvider.GraphNodeLabels.getLabel(GraphNodeMicrostep.class);
 	}
 }

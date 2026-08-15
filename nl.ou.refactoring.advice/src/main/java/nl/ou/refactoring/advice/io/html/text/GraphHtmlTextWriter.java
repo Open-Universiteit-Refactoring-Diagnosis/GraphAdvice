@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.io.html.text;
 
 import java.util.TreeMap;
+
 import org.w3c.dom.Element;
 
 import nl.ou.refactoring.advice.Graph;
@@ -25,16 +26,16 @@ public final class GraphHtmlTextWriter extends GraphHtmlWriter {
 	/**
 	 * Initialises a new instance of {@link GraphHtmlTextWriter}.
 	 * 
-	 * @param settings    The settings of the {@link GraphHtmlTextWriter}.
-	 * @param hostElement The host HTML element that will contain the refactoring
-	 *                    advice text.
-	 * @param nlpProvider Provides Natural Language Processing features.
+	 * @param settings         The settings of the {@link GraphHtmlTextWriter}.
+	 * @param containerElement The host HTML element that will contain the
+	 *                         refactoring advice text.
+	 * @param nlpProvider      Provides Natural Language Processing features.
 	 * @throws ArgumentNullException Thrown if settings, hostElement or nlpProvider
 	 *                               is null.
 	 */
-	public GraphHtmlTextWriter(GraphHtmlWriterSettings settings, Element hostElement, NLPProcessor nlpProvider)
+	public GraphHtmlTextWriter(GraphHtmlWriterSettings settings, Element containerElement, NLPProcessor nlpProvider)
 			throws ArgumentNullException {
-		super(settings, hostElement);
+		super(settings, containerElement);
 		ArgumentGuard.requireNotNull(nlpProvider, "nlpProvider");
 		this.nlpProvider = nlpProvider;
 	}

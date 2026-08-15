@@ -156,17 +156,18 @@ public final class GraphJavaReader implements GraphReader {
 
 		// Package
 		final var packageDeclaration = compilationUnit.getPackageDeclaration();
-		final var packageNameString = packageDeclaration.isPresent()
-				? packageDeclaration.get().getNameAsString()
-				: "default";
+		final var packageNameString =
+				packageDeclaration.isPresent() ? packageDeclaration.get().getNameAsString() : "default";
 		GraphNodePackage.parse(graph, packageNameString);
 		final var packageNode = graph.getNode(packageNameString, GraphNodePackage.class).get();
 
 		// Classes and interfaces
-		final var classesAndInterfaces = compilationUnit.getTypes().stream()
-				.filter(typeDeclaration -> typeDeclaration.isClassOrInterfaceDeclaration())
-				.map(typeDeclaration -> typeDeclaration.asClassOrInterfaceDeclaration())
-				.collect(Collectors.toUnmodifiableList());
+		final var classesAndInterfaces =
+				compilationUnit.getTypes()
+						.stream()
+						.filter(typeDeclaration -> typeDeclaration.isClassOrInterfaceDeclaration())
+						.map(typeDeclaration -> typeDeclaration.asClassOrInterfaceDeclaration())
+						.collect(Collectors.toUnmodifiableList());
 		for (final var classOrInterfaceDeclaration : classesAndInterfaces) {
 			if (classOrInterfaceDeclaration.isInterface()) {
 				// TODO implement
@@ -181,14 +182,21 @@ public final class GraphJavaReader implements GraphReader {
 	private void readClassDeclaration(
 			final GraphNodePackage packageNode,
 			final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
-		final var classNodeIdentifier = new GraphNodeIdentifier(this.graph,
-				classOrInterfaceDeclaration.getNameAsString());
+		final var classNodeIdentifier =
+				GraphNodeIdentifier.computeIdentifier(this.graph, classOrInterfaceDeclaration.getNameAsString());
 		final var classNode = new GraphNodeClass(this.graph, classNodeIdentifier);
 		packageNode.has(classNode);
 		final var classPositionBegin = classOrInterfaceDeclaration.getBegin().get();
 		final var classPositionEnd = classOrInterfaceDeclaration.getEnd().get();
-		final var classProgramLocationNode = new GraphNodeProgramLocation(this.graph, this.fileNameFull, this.fileName,
-				classPositionBegin.line, classPositionBegin.column, classPositionEnd.line, classPositionEnd.column);
+		final var classProgramLocationNode =
+				new GraphNodeProgramLocation(
+						this.graph,
+						this.fileNameFull,
+						this.fileName,
+						classPositionBegin.line,
+						classPositionBegin.column,
+						classPositionEnd.line,
+						classPositionEnd.column);
 		classNode.has(classProgramLocationNode);
 		for (final var member : classOrInterfaceDeclaration.getMembers()) {
 			if (member.isFieldDeclaration()) {
@@ -204,32 +212,43 @@ public final class GraphJavaReader implements GraphReader {
 
 	private void readFieldDeclaration(final GraphNodeClass classNode, final FieldDeclaration fieldDeclaration) {
 		for (final var variableDeclaration : fieldDeclaration.getVariables()) {
-			final var attributeNode = new GraphNodeAttribute(this.graph,
-					new GraphNodeIdentifier(this.graph, variableDeclaration.getNameAsString()));
+			final var attributeNode =
+					new GraphNodeAttribute(
+							this.graph,
+							GraphNodeIdentifier.computeIdentifier(this.graph, variableDeclaration.getNameAsString()));
 			final var attributeTypeName = variableDeclaration.getTypeAsString();
 			final var attributeType = GraphNodeType.computeType(this.graph, attributeTypeName);
 			attributeNode.is(attributeType);
 			final var attributePositionBegin = variableDeclaration.getBegin().get();
 			final var attributePositionEnd = variableDeclaration.getEnd().get();
-			final var attributeProgramLocationNode = new GraphNodeProgramLocation(this.graph, this.fileNameFull,
-					this.fileName, attributePositionBegin.line, attributePositionBegin.column,
-					attributePositionEnd.line, attributePositionEnd.column);
+			final var attributeProgramLocationNode =
+					new GraphNodeProgramLocation(
+							this.graph,
+							this.fileNameFull,
+							this.fileName,
+							attributePositionBegin.line,
+							attributePositionBegin.column,
+							attributePositionEnd.line,
+							attributePositionEnd.column);
 			attributeNode.has(attributeProgramLocationNode);
 			classNode.has(attributeNode);
 		}
 	}
 
 	private void readMethodDeclaration(final GraphNodeClass classNode, final MethodDeclaration methodDeclaration) {
-		final var operationIdentifier = new GraphNodeIdentifier(this.graph, methodDeclaration.getNameAsString());
+		final var operationIdentifier =
+				GraphNodeIdentifier.computeIdentifier(this.graph, methodDeclaration.getNameAsString());
 		final var operationReturnTypeName = methodDeclaration.getTypeAsString();
 		final var operationReturnType = GraphNodeType.computeType(this.graph, operationReturnTypeName);
 
 		final var operationParameters = new ArrayList<GraphNodeOperationParameter>();
 		for (final var methodParameter : methodDeclaration.getParameters()) {
-			final var operationParameterName = methodParameter.getNameAsString();
 			final var operationParameterTypeName = methodParameter.getTypeAsString();
 			final var operationParameterType = GraphNodeType.computeType(this.graph, operationParameterTypeName);
-			final var operationParameter = new GraphNodeOperationParameter(this.graph, operationParameterName);
+			final var operationParameter =
+					new GraphNodeOperationParameter(
+							this.graph,
+							GraphNodeIdentifier.computeIdentifier(this.graph, operationReturnTypeName));
 			operationParameter.is(operationParameterType);
 			operationParameters.add(operationParameter);
 		}
@@ -238,9 +257,15 @@ public final class GraphJavaReader implements GraphReader {
 		operationNode.hasReturnType(operationReturnType);
 		final var operationPositionBegin = methodDeclaration.getBegin().get();
 		final var operationPositionEnd = methodDeclaration.getEnd().get();
-		final var operationProgramLocationNode = new GraphNodeProgramLocation(this.graph, this.fileNameFull,
-				this.fileName, operationPositionBegin.line, operationPositionBegin.column, operationPositionEnd.line,
-				operationPositionEnd.column);
+		final var operationProgramLocationNode =
+				new GraphNodeProgramLocation(
+						this.graph,
+						this.fileNameFull,
+						this.fileName,
+						operationPositionBegin.line,
+						operationPositionBegin.column,
+						operationPositionEnd.line,
+						operationPositionEnd.column);
 		operationNode.has(operationProgramLocationNode);
 		classNode.has(operationNode);
 
@@ -250,8 +275,9 @@ public final class GraphJavaReader implements GraphReader {
 				for (final var bodyStatement : bodyBlock.getStatements()) {
 					bodyStatement.ifExpressionStmt((bodyExpressionStatement) -> {
 						final var expression = bodyExpressionStatement.getExpression();
-						expression.ifMethodCallExpr((methodCallExpression) -> this
-								.readMethodCallExpression(operationBodyNode, methodCallExpression));
+						expression.ifMethodCallExpr(
+								(methodCallExpression) -> this
+										.readMethodCallExpression(operationBodyNode, methodCallExpression));
 					});
 				}
 				operationNode.hasBody(operationBodyNode);
@@ -281,8 +307,15 @@ public final class GraphJavaReader implements GraphReader {
 		if (beginOptional.isPresent() && endOptional.isPresent()) {
 			final var begin = beginOptional.get();
 			final var end = endOptional.get();
-			final var programLocationNode = new GraphNodeProgramLocation(this.graph, this.fileNameFull, this.fileName,
-					begin.line, begin.column, end.line, end.column);
+			final var programLocationNode =
+					new GraphNodeProgramLocation(
+							this.graph,
+							this.fileNameFull,
+							this.fileName,
+							begin.line,
+							begin.column,
+							end.line,
+							end.column);
 			methodInvocationExpression.has(programLocationNode);
 		}
 	}

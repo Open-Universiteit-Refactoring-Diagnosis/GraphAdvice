@@ -32,38 +32,24 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemo
 
 public final class GraphNodeRiskTests {
 	private static final Logger LOGGER = LogManager.getLogger(GraphNodeRiskTests.class);
-	private static final Locale[] SUPPORTED_LOCALES = {
-		Locale.of("nl", "NL"),
-		Locale.of("en", "GB")
-	};
-	
+	private static final Locale[] SUPPORTED_LOCALES = { Locale.of("nl", "NL"), Locale.of("en", "GB") };
+
 	@ParameterizedTest
 	@MethodSource("getAffectedTestCases")
 	@DisplayName("Should get nodes affected by a risk")
-	public void getAffectedTest(
-			GraphNodeRisk risk,
-			Set<GraphNodeBase> expected
-	) {
+	public void getAffectedTest(GraphNodeRisk risk, Set<GraphNodeBase> expected) {
 		final var actual = risk.getAffected();
 		assertEquals(expected, actual);
 	}
- 
+
 	@ParameterizedTest
 	@MethodSource("getCaptionsTestCases")
 	@DisplayName("Should get localised captions for nodes")
-	public void getCaptionsTest(
-			Class<? extends GraphNodeRisk> riskNodeClass
-	)
-			throws
-				InstantiationException,
-				IllegalAccessException,
-				IllegalArgumentException,
-				InvocationTargetException,
-				NoSuchMethodException
-	{
+	public void getCaptionsTest(Class<? extends GraphNodeRisk> riskNodeClass) throws InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
 		final var graph = new Graph("Test");
-		final var riskNode = (GraphNodeRisk)riskNodeClass.getConstructors()[0].newInstance(graph);
-		
+		final var riskNode = (GraphNodeRisk) riskNodeClass.getConstructors()[0].newInstance(graph);
+
 		for (final var locale : SUPPORTED_LOCALES) {
 			Locale.setDefault(locale);
 			final var result = riskNode.getCaption();
@@ -72,50 +58,50 @@ public final class GraphNodeRiskTests {
 					"getCaption (remedy: {}, locale: {}): {}",
 					riskNode.getClass().getSimpleName(),
 					locale.toLanguageTag(),
-					result
-			);
+					result);
 		}
 	}
-	
+
 	private static Stream<Arguments> getAffectedTestCases() {
 		final var argumentsList = new ArrayList<Arguments>();
-		
+
 		final var graphTest = new Graph("Affected Test");
 		final var graphTestNodeRisk = new GraphNodeRiskDoubleDefinition(graphTest);
-		final var test1Identifier = new GraphNodeIdentifier(graphTest, "test1");
+		final var test1Identifier = GraphNodeIdentifier.computeIdentifier(graphTest, "test1");
 		final var graphTestNodeOperation1 = new GraphNodeOperation(graphTest, test1Identifier);
-		final var test2Identifier = new GraphNodeIdentifier(graphTest, "test2");
+		final var test2Identifier = GraphNodeIdentifier.computeIdentifier(graphTest, "test2");
 		final var graphTestNodeOperation2 = new GraphNodeOperation(graphTest, test2Identifier);
 		graphTestNodeRisk.affects(graphTestNodeOperation1);
 		graphTestNodeRisk.affects(graphTestNodeOperation2);
 		argumentsList.add(Arguments.of(graphTestNodeRisk, Set.of(graphTestNodeOperation1, graphTestNodeOperation2)));
-		
+
 		return argumentsList.stream();
 	}
-	
+
 	private static Stream<Arguments> getCaptionsTestCases() {
-	    final String packageName = "nl.ou.refactoring.advice.nodes.workflow.risks";
-	    try (final var scanResult = new ClassGraph()
-	            //.verbose()
-	            .enableAllInfo()
-	            .acceptPackages(packageName)
-	            .scan()) {
-	        // Collect results into a list while ScanResult is open
-	        List<Arguments> resultList = new ArrayList<>();
-	        for (ClassInfo classInfo : scanResult.getSubclasses(GraphNodeRisk.class)) {
-	            try {
-	                resultList.add(Arguments.of(classInfo.loadClass()));
-	            } catch (Exception e) {
-	                // Add null for classes that could not be loaded.
-	            	LOGGER.catching(e);
-	            	LOGGER.warn("Could not load class '{}'", classInfo.getName());
-	                resultList.add(Arguments.of((Class<?>) null));
-	            }
-	        }
-	        return resultList.stream();
-	    }
+		final String packageName = "nl.ou.refactoring.advice.nodes.workflow.risks";
+		try (final var scanResult =
+				new ClassGraph()
+						// .verbose()
+						.enableAllInfo()
+						.acceptPackages(packageName)
+						.scan()) {
+			// Collect results into a list while ScanResult is open
+			List<Arguments> resultList = new ArrayList<>();
+			for (ClassInfo classInfo : scanResult.getSubclasses(GraphNodeRisk.class)) {
+				try {
+					resultList.add(Arguments.of(classInfo.loadClass()));
+				} catch (Exception e) {
+					// Add null for classes that could not be loaded.
+					LOGGER.catching(e);
+					LOGGER.warn("Could not load class '{}'", classInfo.getName());
+					resultList.add(Arguments.of((Class<?>) null));
+				}
+			}
+			return resultList.stream();
+		}
 	}
-	
+
 	@Test
 	@DisplayName("Should get microsteps that neutralise the risk")
 	public void getNeutralisersTest() {
@@ -132,15 +118,15 @@ public final class GraphNodeRiskTests {
 		addExpression.precedes(removeExpression);
 		removeExpression.precedes(removeMethod);
 		removeMethod.causes(missingDefinition);
-		
+
 		// Act
 		final var neutralisers = missingDefinition.getNeutralisers();
-		
+
 		// Assert
 		assertTrue(neutralisers.contains(addMethod));
 		assertTrue(neutralisers.contains(addExpression));
 	}
-	
+
 	@Test
 	@DisplayName("Should get microsteps that neutralise the risk, but omit microsteps that are not in a chain")
 	public void getNeutralisersInvalidChainOfMicrostepsTest() {
@@ -156,10 +142,10 @@ public final class GraphNodeRiskTests {
 		addExpression.precedes(removeExpression);
 		removeExpression.precedes(removeMethod);
 		removeMethod.causes(missingDefinition);
-		
+
 		// Act
 		final var neutralisers = missingDefinition.getNeutralisers();
-		
+
 		// Assert
 		assertEquals(0, neutralisers.size());
 	}

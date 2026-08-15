@@ -13,10 +13,10 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddM
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
-public final class GraphNodeWorkflowActionTests {
+final class GraphNodeWorkflowActionTests {
 	@Test
 	@DisplayName("Should get the directly preceding microstep")
-	public void getPreceding() {
+	void getPreceding() {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
@@ -34,15 +34,18 @@ public final class GraphNodeWorkflowActionTests {
 		final var precedingEnd = removeMethod.getPreceding();
 		
 		// Assert
-		assertEquals(null, precedingStart);
-		assertEquals(addMethod, precedingSecond);
-		assertEquals(addExpression, precedingThird);
-		assertEquals(removeExpression, precedingEnd);
+		assertTrue(precedingStart.isEmpty());
+		assertTrue(precedingSecond.isPresent());
+		assertEquals(addMethod, precedingSecond.get());
+		assertTrue(precedingThird.isPresent());
+		assertEquals(addExpression, precedingThird.get());
+		assertTrue(precedingEnd.isPresent());
+		assertEquals(removeExpression, precedingEnd.get());
 	}
 	
 	@Test
 	@DisplayName("Should get the length of a chain of microsteps")
-	public void getPrecedingLengthTest() {
+	void getPrecedingLengthTest() {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
@@ -74,7 +77,7 @@ public final class GraphNodeWorkflowActionTests {
 	
 	@Test
 	@DisplayName("Should correctly determine whether a microstep is preceded by another microstep")
-	public void isPrecededByTest() {
+	void isPrecededByTest() {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);

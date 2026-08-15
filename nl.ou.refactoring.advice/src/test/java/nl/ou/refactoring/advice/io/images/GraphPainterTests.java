@@ -43,44 +43,44 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinit
 
 public final class GraphPainterTests {
 	private static Path OUTPUT_DIR;
-	
+
 	@BeforeAll
 	static void setUp() throws IOException {
 		OUTPUT_DIR = Paths.get("target", "test-output", "images");
 		Files.createDirectories(OUTPUT_DIR);
 	}
-	
+
 	@Test
 	@DisplayName("Should draw a Refactoring Advice Graph on an image using Force-Directed Layout")
-	public void drawForceDirectedLayoutTest()
-			throws
-				ArgumentNullException,
-				GraphPathSegmentInvalidException,
-				RefactoringMayContainOnlyOneStartNodeException {
+	public void drawForceDirectedLayoutTest() throws ArgumentNullException, GraphPathSegmentInvalidException,
+			RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange graph
 		final var graph = new Graph("Move Method");
-		
+
 		// Arrange graph code
 		final var packageNodeRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
-		final var identifierNodeAlpha = new GraphNodeIdentifier(graph, "Alpha");
+		final var identifierNodeAlpha = GraphNodeIdentifier.computeIdentifier(graph, "Alpha");
 		final var classNodeAlpha = new GraphNodeClass(graph, identifierNodeAlpha);
-		final var identifierAbc = new GraphNodeIdentifier(graph, "abc");
+		final var identifierAbc = GraphNodeIdentifier.computeIdentifier(graph, "abc");
 		final var operationNodeAlphaAbc = new GraphNodeOperation(graph, identifierAbc);
-		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "foo"));
-		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "bar"));
+		final var attributeNodeAlphaFoo =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
+		final var attributeNodeAlphaBar =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "bar"));
 		packageNodeRefactoring.has(classNodeAlpha);
 		classNodeAlpha.has(operationNodeAlphaAbc);
 		classNodeAlpha.has(attributeNodeAlphaFoo);
 		classNodeAlpha.has(attributeNodeAlphaBar);
-		final var betaIdentifierNode = new GraphNodeIdentifier(graph, "Beta");
+		final var betaIdentifierNode = GraphNodeIdentifier.computeIdentifier(graph, "Beta");
 		final var classNodeBeta = new GraphNodeClass(graph, betaIdentifierNode);
-		final var identifierNodeAbc2 = new GraphNodeIdentifier(graph, "abc2");
+		final var identifierNodeAbc2 = GraphNodeIdentifier.computeIdentifier(graph, "abc2");
 		final var operationNodeBetaAbc2 = new GraphNodeOperation(graph, identifierNodeAbc2);
-		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "myField"));
+		final var attributeNodeBetaMyField =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "myField"));
 		packageNodeRefactoring.has(classNodeBeta);
 		classNodeBeta.has(operationNodeBetaAbc2);
 		classNodeBeta.has(attributeNodeBetaMyField);
-		
+
 		// Arrange graph workflow
 		final var startNode = graph.start();
 		final var microstepNodeAddMethod = new GraphNodeMicrostepAddMethod(graph);
@@ -103,7 +103,7 @@ public final class GraphPainterTests {
 		remedyNodeChooseDifferentName.mitigates(riskNodeDoubleDefinition);
 		riskNodeDoubleDefinition.affects(operationNodeAlphaAbc);
 		riskNodeDoubleDefinition.affects(operationNodeBetaAbc2);
-		
+
 		// Arrange graphics
 		final var width = 2048;
 		final var height = 1536;
@@ -111,60 +111,59 @@ public final class GraphPainterTests {
 		final var graphImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		final var graphics = graphImage.createGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
+
 		// Arrange layout
 		final var layoutSettings = new GraphLayoutForceDirectedSettings();
 		layoutSettings.setIterations(500000);
 		layoutSettings.setSpringLength(250.0);
-		
+
 		// Act
 		graphPainter.draw(graph, graphics, layoutSettings);
-		
+
 		// Assert
 		assertEquals(width, graphImage.getWidth());
 		assertEquals(height, graphImage.getHeight());
 		// compare to reference image
-		
-		final var forceDirectedLayoutImageFilePath =
-				OUTPUT_DIR.resolve("Graph_ForceDirectedLayout.png");
+
+		final var forceDirectedLayoutImageFilePath = OUTPUT_DIR.resolve("Graph_ForceDirectedLayout.png");
 		try {
 			ImageIO.write(graphImage, "png", forceDirectedLayoutImageFilePath.toFile());
 		} catch (IOException exception) {
 			fail("Failed to write test image");
 		}
 	}
-	
+
 	// @Test
 	@DisplayName("Should draw a Refactoring Advice Graph on an image using Global Ranking Layout")
-	public void drawGlobalRankingLayoutTest()
-			throws
-				ArgumentNullException,
-				GraphPathSegmentInvalidException,
-				RefactoringMayContainOnlyOneStartNodeException {
+	public void drawGlobalRankingLayoutTest() throws ArgumentNullException, GraphPathSegmentInvalidException,
+			RefactoringMayContainOnlyOneStartNodeException {
 		// Arrange graph
 		final var graph = new Graph("Move Method");
-		
+
 		// Arrange graph code
 		final var packageNodeRefactoring = GraphNodePackage.parse(graph, "ou.refactoring");
-		final var alphaNodeIdentifierNode = new GraphNodeIdentifier(graph, "Alpha");
+		final var alphaNodeIdentifierNode = GraphNodeIdentifier.computeIdentifier(graph, "Alpha");
 		final var classNodeAlpha = new GraphNodeClass(graph, alphaNodeIdentifierNode);
-		final var identifierNodeAbc = new GraphNodeIdentifier(graph, "abc");
+		final var identifierNodeAbc = GraphNodeIdentifier.computeIdentifier(graph, "abc");
 		final var operationNodeAlphaAbc = new GraphNodeOperation(graph, identifierNodeAbc);
-		final var attributeNodeAlphaFoo = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "foo"));
-		final var attributeNodeAlphaBar = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "bar"));
+		final var attributeNodeAlphaFoo =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
+		final var attributeNodeAlphaBar =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "bar"));
 		packageNodeRefactoring.has(classNodeAlpha);
 		classNodeAlpha.has(operationNodeAlphaAbc);
 		classNodeAlpha.has(attributeNodeAlphaFoo);
 		classNodeAlpha.has(attributeNodeAlphaBar);
-		final var betaIdentifierNode = new GraphNodeIdentifier(graph, "Beta");
+		final var betaIdentifierNode = GraphNodeIdentifier.computeIdentifier(graph, "Beta");
 		final var classNodeBeta = new GraphNodeClass(graph, betaIdentifierNode);
-		final var identifierNodeAbc2 = new GraphNodeIdentifier(graph, "abc2");
+		final var identifierNodeAbc2 = GraphNodeIdentifier.computeIdentifier(graph, "abc2");
 		final var operationNodeBetaAbc2 = new GraphNodeOperation(graph, identifierNodeAbc2);
-		final var attributeNodeBetaMyField = new GraphNodeAttribute(graph, new GraphNodeIdentifier(graph, "myField"));
+		final var attributeNodeBetaMyField =
+				new GraphNodeAttribute(graph, GraphNodeIdentifier.computeIdentifier(graph, "myField"));
 		packageNodeRefactoring.has(classNodeBeta);
 		classNodeBeta.has(operationNodeBetaAbc2);
 		classNodeBeta.has(attributeNodeBetaMyField);
-		
+
 		// Arrange graph workflow
 		final var startNode = graph.start();
 		final var microstepNodeAddMethod = new GraphNodeMicrostepAddMethod(graph);
@@ -188,7 +187,7 @@ public final class GraphPainterTests {
 		remedyNodeChooseDifferentName.mitigates(riskNodeDoubleDefinition);
 		riskNodeDoubleDefinition.affects(operationNodeAlphaAbc);
 		riskNodeDoubleDefinition.affects(operationNodeBetaAbc2);
-		
+
 		// Arrange graphics
 		final var width = 2048;
 		final var height = 1536;
@@ -196,7 +195,7 @@ public final class GraphPainterTests {
 		final var graphImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		final var graphics = graphImage.createGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
+
 		// Arrange layout
 		final var layoutSettings = new GraphLayoutGlobalRankingSettings();
 		Map<Class<? extends GraphEdge>, Double> edgeWeights = new HashMap<>();
@@ -204,17 +203,16 @@ public final class GraphPainterTests {
 		edgeWeights.put(GraphEdgePrecedes.class, 10.0);
 		layoutSettings.setEdgeWeights(edgeWeights);
 		layoutSettings.setVariationMaximumDepth(10);
-		
+
 		// Act
 		graphPainter.draw(graph, graphics, layoutSettings);
-		
+
 		// Assert
 		assertEquals(width, graphImage.getWidth());
 		assertEquals(height, graphImage.getHeight());
 		// compare to reference image
-		
-		final var globalRankingLayoutImageFilePath =
-				OUTPUT_DIR.resolve("Graph_GlobalRankingLayout.png");
+
+		final var globalRankingLayoutImageFilePath = OUTPUT_DIR.resolve("Graph_GlobalRankingLayout.png");
 		try {
 			ImageIO.write(graphImage, "png", globalRankingLayoutImageFilePath.toFile());
 		} catch (IOException exception) {

@@ -1,0 +1,84 @@
+@startuml AdviceApi
+set separator none
+namespace nl.ou.refactoring.advice.api {
+    class AdviceApi {
+        +Code
+        +Diagrams
+        +Text
+        +createRefactoringGraph(String): Graph
+        +createRefactoringGraphByTemplate(RefactoringTemplateIdentifier): Graph
+    }
+    
+    class Code {
+        +computeClassSpecification(Graph, String, String): GraphNodeClass
+        +computeFieldSpecification(Graph, String, String, String): GraphNodeAttribute
+        +computeMethodSpecification(Graph, String, String, List<GraphNodeOperationParameterSignature>): GraphNodeOperation
+        +computePackageSpecification(Graph, String): GraphNodePackage
+        +read(Graph, GraphJavaReaderResolutionProvider, Path): void
+        -computeIdentifier(Graph, String): GraphNodeIdentifier
+        -computeType(Graph, String): GraphNodeType
+    }
+    AdviceApi "1" *-- "1" Code : contains >
+
+    class Diagrams {
+        +exportClassDiagram(Graph, Path): Document
+        +exportWorkflow(Graph, Path): Document
+    }
+    AdviceApi "1" *-- "1" Diagrams : contains >
+
+    class Text {
+        +generateHtml(Graph): Document
+    }
+    AdviceApi "1" *-- "1" Text : contains >
+
+    enum RefactoringTemplateIdentifier {
+        MOVE_FIELD
+        MOVE_METHOD
+        RENAME_FIELD
+        RENAME_METHOD
+    }
+
+    namespace builders {
+        class GraphBuilder {
+            -graph: Graph
+            -workflowLastNode: Optional<GraphNodeWorkflow>
+            +GraphBuilder(String)
+            +GraphBuilder(RefactoringTemplateIdentifier)
+            +GraphBuilder(Graph)
+            +addClassWithMicrostep(String, String): GraphBuilderClassBuilder
+            +computeClass(String, String): GraphBuilderClassBuilder
+            +getGraph(): Graph
+        }
+
+        class GraphBuilderClassBuilder {
+            -builder: GraphBuilder
+            -classNode: GraphNodeClass
+            ~GraphBuilderClassBuilder(GraphBuilder, GraphNodeClass)
+        }
+        GraphBuilder <|-- GraphBuilderClassBuilder
+
+        class GraphBuilderAttributeBuilder {
+            -builder: GraphBuilderClassBuilder
+            -attributeNode: GraphNodeAttribute
+            ~GraphBuilderAttributeBuilder(GraphBuilder, GraphNodeAttribute)
+        }
+        GraphBuilder <|-- GraphBuilderAttributeBuilder
+
+        class GraphBuilderOperationBuilder {
+            -builder: GraphBuilderClassBuilder
+            -operationNode: GraphNodeOperation
+            ~GraphBuilderOperationBuilder(GraphBuilder, GraphNodeOperation)
+        }
+        GraphBuilder <|-- GraphBuilderOperationBuilder
+    }
+}
+
+namespace nl.ou.refactoring.advice.nodes.workflow {
+    class GraphWorkflowExplorer {
+        +getMicrosteps(Graph): Set<GraphNodeMicrostep>
+        +getWorkflow(Graph, int): GraphPath
+        +getRisks(Graph): Set<GraphNodeRisk>
+        +getDangers(Graph): Set<GraphNodeRisk>
+    }
+}
+@enduml

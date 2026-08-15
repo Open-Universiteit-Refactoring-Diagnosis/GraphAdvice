@@ -120,7 +120,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		// Attributes
 		final var attributeNodes = classNode.getAttributeNodes(SortOrder.ASCENDING);
 		for (final var attributeNode : attributeNodes) {
-			final var attributeTypeNode = attributeNode.getType();
+			final var attributeTypeNodeOptional = attributeNode.getType();
 			final var stringBuilder = new StringBuilder();
 
 			final var attributeIsNew = attributeNode.getAddedBy().isPresent();
@@ -139,8 +139,8 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 						.append(String.format("<color:%s><%s></color> ", toHexadecimal(Color.red), SPRITE_NAME_DANGER));
 			}
 
-			if (attributeTypeNode != null) {
-				stringBuilder.append(attributeTypeNode.getCaption() + " ");
+			if (attributeTypeNodeOptional.isPresent()) {
+				stringBuilder.append(attributeTypeNodeOptional.get().getCaption() + " ");
 			}
 			stringBuilder.append(attributeNode.getCaption());
 			this.printLine(stringBuilder.toString());

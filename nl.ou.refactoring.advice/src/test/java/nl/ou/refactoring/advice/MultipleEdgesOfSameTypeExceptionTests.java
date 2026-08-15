@@ -18,19 +18,23 @@ public final class MultipleEdgesOfSameTypeExceptionTests {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
 		final var doubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
-		final var testMethodIdentifier = new GraphNodeIdentifier(graph, "testMethod");
+		final var testMethodIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "testMethod");
 		final var method = new GraphNodeOperation(graph, testMethodIdentifier);
 		final var affects = doubleDefinition.affects(method);
 		final var exception = new MultipleEdgesOfSameTypeException(affects);
-		
+
 		// Act
 		Locale.setDefault(Locale.of("nl", "NL"));
 		final var exceptionMessageDutch = exception.getLocalizedMessage();
 		Locale.setDefault(Locale.of("en", "GB"));
 		final var exceptionMessageEnglish = exception.getLocalizedMessage();
-		
+
 		// Assert
-		assertTrue(exceptionMessageDutch.startsWith("Meerdere Zijden van hetzelfde type `nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects`"));
-		assertTrue(exceptionMessageEnglish.startsWith("Multiple Edges of the same type `nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects`"));
+		assertTrue(
+				exceptionMessageDutch.startsWith(
+						"Meerdere Zijden van hetzelfde type `nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects`"));
+		assertTrue(
+				exceptionMessageEnglish.startsWith(
+						"Multiple Edges of the same type `nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects`"));
 	}
 }

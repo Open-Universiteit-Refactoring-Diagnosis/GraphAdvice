@@ -90,8 +90,8 @@ public final class GraphMermaidClassDiagramWriter extends GraphMermaidWriter {
 		for (final var attributeNode : attributeNodes) {
 			final var attributeTypeNode = attributeNode.getType();
 			final var stringBuilder = new StringBuilder();
-			if (attributeTypeNode != null) {
-				stringBuilder.append(attributeTypeNode.getCaption() + " ");
+			if (attributeTypeNode.isPresent()) {
+				stringBuilder.append(attributeTypeNode.get().getCaption() + " ");
 			}
 			stringBuilder.append(attributeNode.getCaption());
 			this.printLine(stringBuilder.toString());

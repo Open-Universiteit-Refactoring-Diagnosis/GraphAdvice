@@ -75,7 +75,7 @@ public final class NLPConcatenationProviderTestArgumentsProvider implements Argu
 		graphJavaReader.read();
 
 		// Dangers
-		final var fooIdentifier = new GraphNodeIdentifier(graph, "foo");
+		final var fooIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "foo");
 		final var classBeta =
 				graph.getNode("nl.ou.refactoring.moveMethod.doubleDefinition.Beta", GraphNodeClass.class).get();
 		final var classBetaFoo1OperationNode = classBeta.getOperationNode("foo", List.of()).get();

@@ -17,43 +17,34 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 
 public final class GraphEdgeTestsArgumentsProvider implements ArgumentsProvider {
 	@Override
-	public Stream<? extends Arguments> provideArguments
-	(
-		ParameterDeclarations parameters,
-		ExtensionContext context
-	) {
+	public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
 		final var argumentsList = new ArrayList<Arguments>();
-		
+
 		final var graphOriginal = new Graph("Graph Original");
 		final var graphCloned = new Graph("Graph Cloned");
-		
+
 		final var graphNodePackageOriginal = GraphNodePackage.parse(graphOriginal, "nl.ou.refactoring");
-		final var alphaIdentifierOriginal = new GraphNodeIdentifier(graphOriginal, "Alpha");
-		final var alphaIdentifierCloned = new GraphNodeIdentifier(graphCloned, "Alpha");
+		final var alphaIdentifierOriginal = GraphNodeIdentifier.computeIdentifier(graphOriginal, "Alpha");
+		final var alphaIdentifierCloned = GraphNodeIdentifier.computeIdentifier(graphCloned, "Alpha");
 		final var graphNodeClassOriginal = new GraphNodeClass(graphOriginal, alphaIdentifierOriginal);
 		final var graphEdgePackageHasClass = new GraphEdgeHas(graphNodePackageOriginal, graphNodeClassOriginal);
 		argumentsList.add(
-			Arguments.of(
-				graphEdgePackageHasClass,
-				GraphNodePackage.parse(graphCloned, "nl.ou.refactoring"),
-				new GraphNodeClass(graphCloned, alphaIdentifierCloned)
-			)
-		);
-		
+				Arguments.of(
+						graphEdgePackageHasClass,
+						GraphNodePackage.parse(graphCloned, "nl.ou.refactoring"),
+						new GraphNodeClass(graphCloned, alphaIdentifierCloned)));
+
 		final var graphNodeAttributeOriginal =
-			new GraphNodeAttribute(
-				graphOriginal,
-				new GraphNodeIdentifier(graphOriginal, "foo")
-			);
+				new GraphNodeAttribute(graphOriginal, GraphNodeIdentifier.computeIdentifier(graphOriginal, "foo"));
 		final var graphEdgeClassHasAttribute = new GraphEdgeHas(graphNodeClassOriginal, graphNodeAttributeOriginal);
 		argumentsList.add(
-			Arguments.of(
-				graphEdgeClassHasAttribute,
-				new GraphNodeClass(graphCloned, alphaIdentifierCloned),
-				new GraphNodeAttribute(graphCloned, new GraphNodeIdentifier(graphCloned, "foo"))
-			)
-		);
-		
+				Arguments.of(
+						graphEdgeClassHasAttribute,
+						new GraphNodeClass(graphCloned, alphaIdentifierCloned),
+						new GraphNodeAttribute(
+								graphCloned,
+								GraphNodeIdentifier.computeIdentifier(graphCloned, "foo"))));
+
 		return argumentsList.stream();
 	}
 }

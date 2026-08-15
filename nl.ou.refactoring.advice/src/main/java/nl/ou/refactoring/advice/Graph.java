@@ -20,6 +20,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
@@ -458,6 +459,17 @@ public final class Graph implements Cloneable {
 				.filter(GraphNodeRefactoringStart.class::isInstance)
 				.map(GraphNodeRefactoringStart.class::cast)
 				.findFirst();
+	}
+
+	/**
+	 * Returns a value that indicates whether the Refactoring Advice Graph (RAG) is
+	 * finalised.
+	 * 
+	 * @return A value that indicates whether the Refactoring Advice Graph (RAG) is
+	 *         finalised. True if finalised, false if not.
+	 */
+	public boolean isFinalised() {
+		return this.getStart().map((node) -> !node.getEdgesIncoming(GraphEdgeFinalises.class).isEmpty()).orElse(false);
 	}
 
 	/**

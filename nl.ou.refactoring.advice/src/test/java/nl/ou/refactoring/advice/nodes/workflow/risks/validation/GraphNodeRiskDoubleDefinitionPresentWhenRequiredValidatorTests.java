@@ -35,15 +35,13 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidatorTest
 		assertInstanceOf(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult.class, result);
 		assertEquals(isValidExpected, result.getIsValid());
 	}
-	
+
 	public static Stream<Arguments> validateTestParameters() {
-		return
-			Stream.of(
+		return Stream.of(
 				Arguments.of(createGraphMissingRiskDoubleDefinitionMethod(), false),
-				Arguments.of(createGraphNotMissingRiskDoubleDefinitionMethod(), true)
-			);
+				Arguments.of(createGraphNotMissingRiskDoubleDefinitionMethod(), true));
 	}
-	
+
 	@DisplayName("Graph Double Definition present when required validation fix")
 	@ParameterizedTest
 	@MethodSource("fixTestParameters")
@@ -55,60 +53,53 @@ public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidatorTest
 		assertEquals(results.size(), 1);
 		final var result = results.stream().findAny().get();
 		assertInstanceOf(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult.class, result);
-		
+
 		// Validate risk is actually absent.
 		assertTrue(graph.getNodes(GraphNodeRiskDoubleDefinition.class).isEmpty());
-		
+
 		final var doubleDefinitionValidationResult =
-			(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult)result;
+				(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidationResult) result;
 		doubleDefinitionValidationResult.fix(false);
-		
+
 		// Validate risk is not absent anymore.
 		final var risks = graph.getNodes(GraphNodeRiskDoubleDefinition.class);
 		assertFalse(risks.isEmpty());
-		
+
 	}
-	
+
 	public static Stream<Arguments> fixTestParameters() {
-		return
-			Stream.of(
-				Arguments.of(createGraphMissingRiskDoubleDefinitionMethod())	
-			);
+		return Stream.of(Arguments.of(createGraphMissingRiskDoubleDefinitionMethod()));
 	}
-	
+
 	private static Graph createGraphMissingRiskDoubleDefinitionMethod() {
 		final var graph = new Graph("Graph missing risk Double Definition with operation/method");
 		final var graphStart = graph.start();
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
 		graphStart.initiates(addMethodNode);
 		addMethodNode.finalises();
-		
-		final var packageNode = new GraphNodePackage(graph, new GraphNodeIdentifier(graph, "test"));
-		final var classNode = new GraphNodeClass(graph, new GraphNodeIdentifier(graph, "ClassA"));
-		final var operationNodeExisting = new GraphNodeOperation(graph, new GraphNodeIdentifier(graph, "foo"));
-		final var operationNodeNew = new GraphNodeOperation(graph, new GraphNodeIdentifier(graph, "foo"));
+
+		final var packageNode = new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "test"));
+		final var classNode = new GraphNodeClass(graph, GraphNodeIdentifier.computeIdentifier(graph, "ClassA"));
+		final var operationNodeExisting =
+				new GraphNodeOperation(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
+		final var operationNodeNew = new GraphNodeOperation(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
 		packageNode.has(classNode);
 		classNode.has(operationNodeExisting);
 		classNode.has(operationNodeNew);
 		addMethodNode.adds(operationNodeNew);
-		
+
 		return graph;
 	}
-	
+
 	private static Graph createGraphNotMissingRiskDoubleDefinitionMethod() {
 		final var graph = createGraphMissingRiskDoubleDefinitionMethod();
-		
+
 		final var riskDoubleDefinitionNode = new GraphNodeRiskDoubleDefinition(graph);
-		final var addMethodNode =
-			graph
-				.getNodes(GraphNodeMicrostepAddMethod.class)
-				.stream()
-				.findAny()
-				.get();
+		final var addMethodNode = graph.getNodes(GraphNodeMicrostepAddMethod.class).stream().findAny().get();
 		final var operationNodeNew = addMethodNode.getOperationNode().get();
 		addMethodNode.causes(riskDoubleDefinitionNode);
 		riskDoubleDefinitionNode.affects(operationNodeNew);
-		
+
 		return graph;
 	}
 }
