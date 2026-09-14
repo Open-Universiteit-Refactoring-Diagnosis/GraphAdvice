@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.validation.GraphValidationResult;
 import nl.ou.refactoring.advice.validation.GraphValidator;
@@ -34,7 +33,7 @@ public final class GraphIsFinalisedValidator implements GraphValidator {
 			graph
 				.getNodes(GraphNodeMicrostep.class)
 				.stream()
-				.filter((node) -> node.getEdges(GraphEdgeFinalises.class).size() == 1)
+				.filter((node) -> node.isFinalising())
 				.collect(Collectors.toUnmodifiableSet());
 		return
 			Collections.unmodifiableList(

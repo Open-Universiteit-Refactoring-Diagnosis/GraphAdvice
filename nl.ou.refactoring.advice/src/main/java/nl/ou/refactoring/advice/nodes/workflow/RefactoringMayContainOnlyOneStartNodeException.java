@@ -1,11 +1,12 @@
 package nl.ou.refactoring.advice.nodes.workflow;
 
+import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**
  * An exception that is thrown if a graph contains more than one start node.
  */
-public final class RefactoringMayContainOnlyOneStartNodeException extends RuntimeException {
+public final class RefactoringMayContainOnlyOneStartNodeException extends GraphValidationException {
 	/**
 	 * Generated serial version UID.
 	 */

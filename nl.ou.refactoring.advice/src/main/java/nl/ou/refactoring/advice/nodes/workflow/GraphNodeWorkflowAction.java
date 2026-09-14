@@ -1,10 +1,7 @@
 package nl.ou.refactoring.advice.nodes.workflow;
 
-import java.util.Optional;
-
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 
 /**
@@ -19,77 +16,6 @@ public abstract class GraphNodeWorkflowAction extends GraphNodeWorkflow {
 	 */
 	public GraphNodeWorkflowAction(Graph graph) throws ArgumentNullException {
 		super(graph);
-	}
-
-	/**
-	 * Gets the directly preceding workflow action.
-	 * 
-	 * @return The directly preceding workflow action wrapped in an {@link Optional}
-	 *         or if not present, an empty {@link Optional}.
-	 */
-	public Optional<GraphNodeWorkflowAction> getPreceding() {
-		return this.getEdgesIncoming(GraphEdgePrecedes.class).stream().map((edge) -> edge.getSourceNode()).findAny();
-	}
-
-	/**
-	 * Gets the length of a chain of workflow actions in preceding direction.
-	 * 
-	 * @param workflowAction The preceding workflow action.
-	 * @return The length of the chain of workflow actions, if there is any. If
-	 *         there is no chain, -1 is returned.
-	 */
-	public int getPrecedingLength(GraphNodeWorkflowAction workflowAction) {
-		return this.getPreceding().map((precedingNode) -> {
-			if (precedingNode.equals(workflowAction)) {
-				return 1;
-			}
-
-			final var nextLength = precedingNode.getPrecedingLength(workflowAction);
-			if (nextLength < 0) {
-				return nextLength;
-			}
-			return nextLength + 1;
-		}).orElse(-1);
-	}
-
-	/**
-	 * Gets the directly succeeding workflow action.
-	 * 
-	 * @return The directly succeeding workflow action wrapped in an
-	 *         {@link Optional} or if not present, an empty {@link Optional}.
-	 */
-	public Optional<GraphNodeWorkflowAction> getSucceeding() {
-		return this.getEdges(GraphEdgePrecedes.class).stream().map((edge) -> edge.getDestinationNode()).findAny();
-	}
-
-	/**
-	 * Gets the length of a chain of workflow actions in succeeding direction.
-	 * 
-	 * @param workflowAction The succeeding workflow action.
-	 * @return The length of the chain of workflow actions, if there is any. If
-	 *         there is no chain, -1 is returned.
-	 */
-	public int getSucceedingLength(GraphNodeWorkflowAction workflowAction) {
-		return this.getSucceeding().map((succeedingNode) -> {
-			if (succeedingNode.equals(workflowAction)) {
-				return 1;
-			}
-
-			final var nextLength = succeedingNode.getSucceedingLength(workflowAction);
-			if (nextLength < 0) {
-				return nextLength;
-			}
-			return nextLength + 1;
-		}).orElse(-1);
-	}
-
-	/**
-	 * Indicates whether the workflow action finalises the refactoring.
-	 * 
-	 * @return True if the workflow action finalises the refactoring, false if not.
-	 */
-	public boolean isFinalising() {
-		return this.getEdges(GraphEdgeFinalises.class).size() == 1;
 	}
 
 	/**
@@ -116,20 +42,6 @@ public abstract class GraphNodeWorkflowAction extends GraphNodeWorkflow {
 	 */
 	public boolean isSucceededBy(GraphNodeWorkflowAction workflowAction) {
 		return this.getSucceedingLength(workflowAction) > 0;
-	}
-
-	/**
-	 * Finalises the refactoring.
-	 * 
-	 * @return An edge {@link GraphEdgeFinalises} that finalises the refactoring.
-	 */
-	public GraphEdgeFinalises finalises() throws RefactoringMustContainStartNodeException {
-		final var startNode = this.graph.getStart().orElseThrow(() -> new RefactoringMustContainStartNodeException());
-		return this.graph.computeEdge(
-				this,
-				startNode,
-				(source, destination) -> new GraphEdgeFinalises(source, destination),
-				GraphEdgeFinalises.class);
 	}
 
 	/**

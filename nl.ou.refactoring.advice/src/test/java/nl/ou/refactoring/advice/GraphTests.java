@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
@@ -132,16 +131,16 @@ public final class GraphTests {
 		graph.computeEdge(
 				start,
 				createMethod,
-				(source, destination) -> new GraphEdgeInitiates(source, destination),
-				GraphEdgeInitiates.class);
+				(source, destination) -> new GraphEdgePrecedes(source, destination),
+				GraphEdgePrecedes.class);
 		final var edgesAfter = graph.getEdges().toArray(new GraphEdge[0]);
 
 		// Assert
 		assertFalse(Arrays.equals(edgesBefore, edgesAfter));
 		assertEquals(0, edgesBefore.length);
 		assertEquals(1, edgesAfter.length);
-		assertTrue(GraphEdgeInitiates.class.isInstance(edgesAfter[0]));
-		final var initiates = (GraphEdgeInitiates) edgesAfter[0];
+		assertTrue(GraphEdgePrecedes.class.isInstance(edgesAfter[0]));
+		final var initiates = (GraphEdgePrecedes) edgesAfter[0];
 		assertTrue(initiates.getSourceNode().equals(start));
 		assertTrue(initiates.getDestinationNode().equals(createMethod));
 	}

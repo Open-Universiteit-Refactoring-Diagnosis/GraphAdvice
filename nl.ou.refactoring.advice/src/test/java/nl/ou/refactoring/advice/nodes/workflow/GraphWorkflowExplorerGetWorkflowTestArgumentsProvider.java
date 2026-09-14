@@ -14,7 +14,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddM
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 
-public class GraphWorkflowExplorerGetWorkflowTestArgumentsProvider implements ArgumentsProvider {
+public final class GraphWorkflowExplorerGetWorkflowTestArgumentsProvider implements ArgumentsProvider {
 	@Override
 	public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context)
 			throws Exception {
@@ -28,12 +28,14 @@ public class GraphWorkflowExplorerGetWorkflowTestArgumentsProvider implements Ar
 		final var removeField = new GraphNodeMicrostepRemoveField(graph);
 		final var startInitiates = startNode.initiates(addField);
 		final var addFieldPrecedes = addField.precedes(removeField);
-		removeField.finalises();
-		
+		final var removeFieldPrecedes = removeField.finalises();
+		final var endNode = (GraphNodeRefactoringEnd) removeFieldPrecedes.getDestinationNode();
+
 		final var expected = new GraphPath(startNode);
 		expected.append(startInitiates, addField);
 		expected.append(addFieldPrecedes, removeField);
-		
+		expected.append(removeFieldPrecedes, endNode);
+
 		return Arguments.of(graph, expected);
 	}
 
@@ -43,12 +45,15 @@ public class GraphWorkflowExplorerGetWorkflowTestArgumentsProvider implements Ar
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
 		final var startInitiates = startNode.initiates(addMethod);
-		final var addFieldPrecedes = addMethod.precedes(removeMethod);
-		
+		final var addMethodPrecedes = addMethod.precedes(removeMethod);
+		final var removeMethodPrecedes = removeMethod.finalises();
+		final var endNode = (GraphNodeRefactoringEnd) removeMethodPrecedes.getDestinationNode();
+
 		final var expected = new GraphPath(startNode);
 		expected.append(startInitiates, addMethod);
-		expected.append(addFieldPrecedes, removeMethod);
-		
+		expected.append(addMethodPrecedes, removeMethod);
+		expected.append(removeMethodPrecedes, endNode);
+
 		return Arguments.of(graph, expected);
 	}
 }

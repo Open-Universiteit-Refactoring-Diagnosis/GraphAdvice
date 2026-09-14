@@ -13,8 +13,20 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="[3.23.0,4.0.0)",
  org.eclipse.swt,
  org.eclipse.ui,
  org.eclipse.ui.ide,
- nl.ou.refactoring.advice
-Import-Package: org.apache.logging.log4j,
+ nl.ou.refactoring.advice,
+ nl.ou.refra;bundle-version="1.0.0"
+Import-Package: nl.ou.refd.analysis,
+ nl.ou.refd.analysis.detectors,
+ nl.ou.refd.analysis.microsteps,
+ nl.ou.refd.analysis.refactorings,
+ nl.ou.refd.analysis.subdetectors,
+ nl.ou.refd.exceptions,
+ nl.ou.refd.locations.collections,
+ nl.ou.refd.locations.generators,
+ nl.ou.refd.locations.graph,
+ nl.ou.refd.locations.specifications,
+ nl.ou.refd.locations.streams,
+ org.apache.logging.log4j,
  org.eclipse.ui.texteditor
 Embed-Dependency: javaparser-symbol-solver-core-3.28.0,
  javaparser-core-3.28.0

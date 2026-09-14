@@ -22,7 +22,6 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.io.layouts.forceDirected.GraphLayoutForceDirectedSettings;
 import nl.ou.refactoring.advice.io.layouts.globalRanking.GraphLayoutGlobalRankingSettings;
@@ -199,7 +198,6 @@ public final class GraphPainterTests {
 		// Arrange layout
 		final var layoutSettings = new GraphLayoutGlobalRankingSettings();
 		Map<Class<? extends GraphEdge>, Double> edgeWeights = new HashMap<>();
-		edgeWeights.put(GraphEdgeInitiates.class, 10.0);
 		edgeWeights.put(GraphEdgePrecedes.class, 10.0);
 		layoutSettings.setEdgeWeights(edgeWeights);
 		layoutSettings.setVariationMaximumDepth(10);

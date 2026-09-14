@@ -19,37 +19,28 @@ public final class GraphPathSegmentInvalidException extends GraphValidationExcep
 	private static final long serialVersionUID = -5763936417696992897L;
 
 	/**
-	 * The node that is invalid within the segment.
-	 */
-	private final GraphNode node;
-
-	/**
 	 * The edge that is invalid within the segment.
 	 */
 	private final GraphEdge edge;
 
 	/**
-	 * Initialises a new instance of {@link GraphPathSegmentInvalidException}.
-	 * 
-	 * @param node The node in the path that should contain the edge.
-	 * @param edge The edge that is invalid with the node.
-	 * @throws ArgumentNullException Thrown if node or edge is null.
+	 * The node that is invalid within the segment.
 	 */
-	public GraphPathSegmentInvalidException(GraphNode node, GraphEdge edge) throws ArgumentNullException {
-		super();
-		ArgumentGuard.requireNotNull(node, "node");
-		ArgumentGuard.requireNotNull(edge, "edge");
-		this.node = node;
-		this.edge = edge;
-	}
+	private final GraphNode node;
 
 	/**
-	 * Gets the node in the path that should contain the edge.
+	 * Initialises a new instance of {@link GraphPathSegmentInvalidException}.
 	 * 
-	 * @return The node in the path that should contain the edge.
+	 * @param edge The edge that is invalid with the node.
+	 * @param node The node in the path that should contain the edge.
+	 * @throws ArgumentNullException Thrown if node or edge is null.
 	 */
-	public GraphNode getNode() {
-		return this.node;
+	public GraphPathSegmentInvalidException(GraphEdge edge, GraphNode node) throws ArgumentNullException {
+		super();
+		ArgumentGuard.requireNotNull(edge, "edge");
+		ArgumentGuard.requireNotNull(node, "node");
+		this.edge = edge;
+		this.node = node;
 	}
 
 	/**
@@ -61,17 +52,26 @@ public final class GraphPathSegmentInvalidException extends GraphValidationExcep
 		return this.edge;
 	}
 
+	/**
+	 * Gets the node in the path that should contain the edge.
+	 * 
+	 * @return The node in the path that should contain the edge.
+	 */
+	public GraphNode getNode() {
+		return this.node;
+	}
+
 	@Override
 	public String getLocalizedMessage() {
-		final var nodeIdentifier = this.node.getId().toString();
-		final var nodeClassName = this.node.getClass().getSimpleName();
 		final var edgeIdentifier = this.edge.getId().toString();
 		final var edgeClassName = this.edge.getClass().getSimpleName();
+		final var nodeIdentifier = this.node.getId().toString();
+		final var nodeClassName = this.node.getClass().getSimpleName();
 		return MessageFormat.format(
-				"Node \"{0}\" ({1}) and edge \"{2}\" ({3}) are invalid in the path.",
-				nodeIdentifier,
-				nodeClassName,
+				"Edge \"{0}\" ({1}) and node \"{2}\" ({3}) are invalid in the path.",
 				edgeIdentifier,
-				edgeClassName);
+				edgeClassName,
+				nodeIdentifier,
+				nodeClassName);
 	}
 }

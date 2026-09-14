@@ -20,13 +20,13 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringEnd;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
@@ -449,9 +449,8 @@ public final class Graph implements Cloneable {
 	/**
 	 * Gets the start node of the refactoring.
 	 * 
-	 * @return The start node of the refactoring wrapped in
-	 *         {@link Optional<GraphNodeRefactoringStart>}, if present, otherwise an
-	 *         empty {@link Optional<GraphNodeRefactoringStart>}.
+	 * @return The start node of the refactoring wrapped in {@link Optional}, if
+	 *         present, otherwise an empty {@link Optional}.
 	 */
 	public Optional<GraphNodeRefactoringStart> getStart() {
 		return this.matrix.keySet()
@@ -462,6 +461,20 @@ public final class Graph implements Cloneable {
 	}
 
 	/**
+	 * Gets the end node of the refactoring.
+	 * 
+	 * @return The end node of the refactoring wrapped in {@link Optional}, if
+	 *         present, otherwise an empty {@link Optional}.
+	 */
+	public Optional<GraphNodeRefactoringEnd> getEnd() {
+		return this.matrix.keySet()
+				.stream()
+				.filter(GraphNodeRefactoringEnd.class::isInstance)
+				.map(GraphNodeRefactoringEnd.class::cast)
+				.findAny();
+	}
+
+	/**
 	 * Returns a value that indicates whether the Refactoring Advice Graph (RAG) is
 	 * finalised.
 	 * 
@@ -469,7 +482,7 @@ public final class Graph implements Cloneable {
 	 *         finalised. True if finalised, false if not.
 	 */
 	public boolean isFinalised() {
-		return this.getStart().map((node) -> !node.getEdgesIncoming(GraphEdgeFinalises.class).isEmpty()).orElse(false);
+		return this.getEnd().map((node) -> node.getPreceding().isPresent()).orElse(false);
 	}
 
 	/**

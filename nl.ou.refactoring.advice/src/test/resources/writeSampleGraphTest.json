@@ -2,11 +2,14 @@
     "refactoringName": "Sample graph",
     "nodes": [
         {
+            "type": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringEnd"
+        },
+        {
             "type": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart",
             "edges": [
                 {
-                    "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates",
-                    "to": 2
+                    "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes",
+                    "to": 3
                 }
             ]
         },
@@ -14,7 +17,7 @@
             "type": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression",
             "edges": [
                 {
-                    "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises",
+                    "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes",
                     "to": 0
                 }
             ]
@@ -24,7 +27,7 @@
             "edges": [
                 {
                     "type": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes",
-                    "to": 1
+                    "to": 2
                 }
             ]
         }

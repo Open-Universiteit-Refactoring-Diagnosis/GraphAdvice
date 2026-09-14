@@ -8,7 +8,7 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPath;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeWorkflow;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
@@ -57,16 +57,16 @@ public final class GraphWorkflowExplorer {
 
 		final var startNode = graph.getStart().orElseThrow(() -> new RefactoringMustContainStartNodeException());
 		final var path = new GraphPath(startNode);
-		Optional<GraphNodeWorkflowAction> currentNode = startNode.getInitiates();
+		Optional<GraphNodeWorkflow> currentNode = Optional.of(startNode);
 		while (currentNode.isPresent()) {
 			switch (currentNode.get()) {
-				case GraphNodeWorkflowAction workflowActionNode: {
-					final Optional<GraphEdgePrecedes> precedesEdgeOptional =
-							workflowActionNode.getEdges(GraphEdgePrecedes.class).stream().findAny();
-					if (precedesEdgeOptional.isPresent()) {
-						final var precedesEdge = precedesEdgeOptional.get();
-						final var nextNode = precedesEdge.getDestinationNode();
-						path.append(precedesEdge, nextNode);
+				case GraphNodeWorkflow workflowNode: {
+					final Optional<GraphEdgeWorkflow> workflowEdgeOptional =
+							workflowNode.getEdges(GraphEdgeWorkflow.class).stream().findAny();
+					if (workflowEdgeOptional.isPresent()) {
+						final var workflowEdge = workflowEdgeOptional.get();
+						final var nextNode = workflowEdge.getDestinationNode();
+						path.append(workflowEdge, nextNode);
 						currentNode = Optional.of(nextNode);
 						break;
 					}
