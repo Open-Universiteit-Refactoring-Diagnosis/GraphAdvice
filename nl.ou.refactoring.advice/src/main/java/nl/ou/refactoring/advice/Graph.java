@@ -20,6 +20,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
+import nl.ou.refactoring.advice.edges.workflow.GraphEdgeWorkflow;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
@@ -28,7 +29,11 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringEnd;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
 /**
  * Represents a Refactoring Advice Graph.
@@ -55,126 +60,28 @@ public final class Graph implements Cloneable {
 	}
 
 	/**
-	 * Gets the unique identifier of the Refactoring Advice Graph.
+	 * Adds an edge to the {@link Graph}.
 	 * 
-	 * @return The unique identifier of the Refactoring Advice Graph.
+	 * @param <T>  The type of edge to add.
+	 * @param edge The edge to add.
+	 * @return The added edge.
+	 * @throws ArgumentNullException Thrown if edge is null.
 	 */
-	public UUID getId() {
-		return this.id;
-	}
-
-	/**
-	 * Gets a {@link GraphNodeBase} by its unique identifier.
-	 * 
-	 * @param nodeIdentifier The unique identifier of the node.
-	 * @return The node with the specified identifier, or if not found, null.
-	 * @throws ArgumentNullException Thrown if nodeIdentifier is null.
-	 */
-	public GraphNode getNode(UUID nodeIdentifier) throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(nodeIdentifier, "identifier");
-		return this.matrix.keySet().stream().filter(node -> node.getId() == nodeIdentifier).findFirst().orElse(null);
-	}
-
-	/**
-	 * Gets a code node based on its code path.
-	 * 
-	 * @param <TNode>   The type of node to retrieve.
-	 * @param path      The path to the code node.
-	 * @param classType The type of Class of the node.
-	 * @return The node at the specified path, otherwise an empty {@link Optional}.
-	 * @throws ArgumentNullException  Thrown if path or classType is null.
-	 * @throws ArgumentEmptyException Thrown if path is empty or contains only white
-	 *                                spaces.
-	 */
-	public <TNode extends GraphNodeCode> Optional<TNode> getNode(String path, Class<TNode> classType)
-			throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(path, "path");
-		ArgumentGuard.requireNotNull(classType, "classType");
-		final var pathComponents = new ArrayDeque<String>(List.of(path.split("\\.")));
-		String pathComponentName = pathComponents.pop();
-		GraphNodeCode nodeCurrent =
-				this.matrix.keySet()
-						.stream()
-						.filter(
-								node -> node instanceof GraphNodePackage
-										&& ((GraphNodePackage) node).getPackageName().equals(pathComponentName))
-						.map(node -> (GraphNodeCode) node)
-						.findAny()
-						.orElse(null);
-		while (!pathComponents.isEmpty() && nodeCurrent != null) {
-			final var pathComponent = pathComponents.pop();
-			nodeCurrent =
-					(GraphNodeCode) nodeCurrent.getEdges(GraphEdgeHas.class)
-							.stream()
-							.map(edge -> edge.getDestinationNode())
-							.filter(node -> switch (node) {
-								case GraphNodePackage packageNode -> packageNode.getPackageName().equals(pathComponent);
-								case GraphNodeClass classNode -> classNode.getClassName().equals(pathComponent);
-								case GraphNodeInterface interfaceNode ->
-									interfaceNode.getInterfaceName().equals(pathComponent);
-								default -> false;
-							})
-							.findAny()
-							.orElse(null);
-			if (pathComponents.isEmpty() && nodeCurrent != null) {
-				if (classType.isInstance(nodeCurrent)) {
-					return Optional.of(classType.cast(nodeCurrent));
-				}
-				return Optional.empty();
-			}
-		}
-		if (nodeCurrent != null && classType.isInstance(nodeCurrent)) {
-			return Optional.of(classType.cast(nodeCurrent));
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * Gets the nodes in the Refactoring Advice Graph.<br />
-	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphNode&gt;} is not
-	 * modifiable.
-	 * 
-	 * @return The nodes in the Refactoring Advice Graph.
-	 */
-	public Set<GraphNode> getNodes() {
-		return Collections.unmodifiableSet(this.matrix.keySet());
-	}
-
-	/**
-	 * Gets the nodes in this graph that are assignable to a particular type.<br />
-	 * <strong>Note:</strong> The returned {@link Set Set&lt;TNode&gt;} is not
-	 * modifiable.
-	 * 
-	 * @param <TNode>  The type of node to retrieve.
-	 * @param nodeType The type of node to retrieve.
-	 * @return A read-only set of nodes that are assignable to the requested type in
-	 *         this graph.
-	 * @throws ArgumentNullException Thrown if nodeType is null.
-	 */
-	public <TNode extends GraphNode> Set<TNode> getNodes(Class<TNode> nodeType) throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(nodeType, "nodeType");
-		return Collections.unmodifiableSet(
-				this.getNodes().stream().filter(nodeType::isInstance).map(nodeType::cast).collect(Collectors.toSet()));
-	}
-
-	/**
-	 * Gets the nodes in this graph that are exactly of a particular type.<br />
-	 * <strong>Note:</strong> The returned {@link Set Set&lt;TNode&gt;} is not
-	 * modifiable.
-	 * 
-	 * @param <TNode>  The type of node to retrieve.
-	 * @param nodeType The type of node to retrieve.
-	 * @return A read-only set of nodes of the requested type in this graph.
-	 * @throws ArgumentNullException Thrown if nodeType is null.
-	 */
-	public <TNode extends GraphNode> Set<TNode> getNodesExact(Class<TNode> nodeType) {
-		ArgumentGuard.requireNotNull(nodeType, "nodeType");
-		return Collections.unmodifiableSet(
-				this.getNodes()
-						.stream()
-						.filter(node -> node.getClass() == nodeType)
-						.map(nodeType::cast)
-						.collect(Collectors.toSet()));
+	public <T extends GraphEdge> T addEdge(T edge) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(edge, "edge");
+		final var sourceNode = edge.getSourceNode();
+		final var destinationNode = edge.getDestinationNode();
+		LOGGER.debug(
+				"Adding edge {} from {} to {} to graph {}",
+				edge.getId(),
+				sourceNode.getId(),
+				destinationNode.getId(),
+				this.getId());
+		matrix.computeIfAbsent(edge.getSourceNode(), _ -> new HashMap<>())
+				.computeIfAbsent(edge.getDestinationNode(), _ -> new HashSet<>())
+				.add(edge);
+		LOGGER.debug("Edge {} now in graph {}: {}", edge.getId(), this.getId(), this.getEdgesFrom(sourceNode).size());
+		return edge;
 	}
 
 	/**
@@ -187,6 +94,118 @@ public final class Graph implements Cloneable {
 	public void addNode(GraphNode node) {
 		ArgumentGuard.requireNotNull(node, "node");
 		this.matrix.putIfAbsent(node, new HashMap<>());
+	}
+
+	@Override
+	protected Object clone() {
+		return this.clone(this.getRefactoringName());
+	}
+
+	/**
+	 * Creates a clone of this {@link Graph}, including its nodes and edges.
+	 * 
+	 * @param refactoringName The new name of the cloned {@link Graph}.
+	 * @return The cloned {@link Graph}, which bears the new name.
+	 * @throws ArgumentNullException  Thrown if refactoringName is null.
+	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains
+	 *                                only white spaces.
+	 */
+	public Graph clone(String refactoringName) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
+		LOGGER.info("Cloning from graph {} to graph {}", this.refactoringName, refactoringName);
+
+		final var graphCloned = new Graph(refactoringName);
+		final var nodesCloned = new HashMap<GraphNode, GraphNode>();
+
+		// Clone all nodes.
+		final var nodes = this.matrix.keySet();
+		for (final var node : nodes) {
+			if (node instanceof GraphNodeBase) {
+				final var nodeCloned = ((GraphNodeBase) node).clone(graphCloned);
+				if (nodeCloned.getGraph() != graphCloned) {
+					throw new IllegalStateException("Cloned node not in cloned graph");
+				}
+				nodesCloned.put(node, nodeCloned);
+			}
+		}
+
+		// Clone all edges.
+		final var edges =
+				this.matrix.values()
+						.stream()
+						.flatMap((entry) -> entry.values().stream())
+						.flatMap((edgeSet) -> edgeSet.stream())
+						.collect(Collectors.toSet());
+
+		for (final var edge : edges) {
+			final var sourceNodeFromEdge = edge.getSourceNode();
+			final var sourceNodeCloned = nodesCloned.get(sourceNodeFromEdge);
+			if (sourceNodeCloned == null) {
+				LOGGER.warn("Edge source node {} not cloned", sourceNodeFromEdge.getId());
+				continue;
+			}
+
+			final var destinationNodeFromEdge = edge.getDestinationNode();
+			final var destinationNodeCloned = nodesCloned.get(destinationNodeFromEdge);
+			if (destinationNodeCloned == null) {
+				LOGGER.info("Edge destination node {} not cloned yet", destinationNodeFromEdge.getId());
+				continue;
+			}
+
+			LOGGER.debug(
+					"Cloning edge with source node {} ({}) and destination node {} ({})",
+					sourceNodeFromEdge.getId(),
+					sourceNodeFromEdge.getClass().getName(),
+					destinationNodeFromEdge.getId(),
+					destinationNodeFromEdge.getClass().getName());
+			final var edgeCloned = edge.clone(sourceNodeCloned, destinationNodeCloned);
+			graphCloned.addEdge(edgeCloned);
+		}
+
+		return graphCloned;
+	}
+
+	/**
+	 * Adds an edge to the graph, if it does not already exist. If it already
+	 * exists, it returns the existing instance.
+	 * 
+	 * @param <TEdge>            The type of edge.
+	 * @param <TNodeSource>      The type of source node.
+	 * @param <TNodeDestination> The type of destination node.
+	 * @param sourceNode         The source node of the edge.
+	 * @param destinationNode    The destination node of the edge.
+	 * @param edgeFactory        The factory method for creating a new instance of
+	 *                           the desired edge, if it does not already exist.
+	 * @param edgeClass          The type of edge.
+	 * @return If the edge is new, the newly created edge. If the edge already
+	 *         exists, the existing edge.
+	 * @throws ArgumentNullException Thrown if sourceNode, destinationNode,
+	 *                               edgeFactory or edgeClass is null.
+	 */
+	public <TEdge extends GraphEdge, TNodeSource extends GraphNode, TNodeDestination extends GraphNode> TEdge computeEdge(
+			TNodeSource sourceNode,
+			TNodeDestination destinationNode,
+			GraphEdgeFactoryFunction<TEdge, TNodeSource, TNodeDestination> edgeFactory,
+			Class<TEdge> edgeClass) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(sourceNode, "sourceNode");
+		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
+		ArgumentGuard.requireNotNull(edgeFactory, "edgeFactory");
+		ArgumentGuard.requireNotNull(edgeClass, "edgeClass");
+
+		final var edges =
+				this.matrix.computeIfAbsent(sourceNode, _ -> new HashMap<>())
+						.computeIfAbsent(destinationNode, _ -> new HashSet<>());
+		var edge =
+				edges.stream()
+						.filter(knownEdge -> knownEdge.getClass().equals(edgeClass))
+						.map(edgeClass::cast)
+						.findAny()
+						.orElse(null);
+		if (edge == null) {
+			edge = edgeFactory.create(sourceNode, destinationNode);
+			edges.add(edge);
+		}
+		return edge;
 	}
 
 	/**
@@ -203,21 +222,46 @@ public final class Graph implements Cloneable {
 	}
 
 	/**
-	 * Removes nodes of type nodeType and associated edges (both incoming and
-	 * outgoing) from the graph.
+	 * Determines whether Refactoring Advice Graphs are equal.
 	 * 
-	 * @param <TNode>  The type of node to remove.
-	 * @param nodeType The type of node to remove.
-	 * @throws ArgumentNullException Thrown if nodeType is null.
+	 * @param other The other Refactoring Advice Graph.
+	 * @return True if equal, false if not.
 	 */
-	public <TNode extends GraphNode> void removeNodes(Class<TNode> nodeType) throws ArgumentNullException {
-		final var nodes = this.getNodesExact(nodeType);
-		for (var node : nodes) {
-			this.matrix.forEach((_, column) -> {
-				column.remove(node);
-			});
-			this.matrix.remove(node);
+	public boolean equals(Graph other) {
+		if (other == null) {
+			return false;
 		}
+		return this.id == other.id;
+	}
+
+	/**
+	 * Determines whether Refactoring Advice Graphs are equal. <br />
+	 * This method overrides {@link Object#equals(Object)}.
+	 * 
+	 * @param other The other Refactoring Advice Graph.
+	 * @return True if equal, false if not.
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (!(other instanceof Graph)) {
+			return false;
+		}
+		return this.equals((Graph) other);
+	}
+
+	/**
+	 * Finds all dangers in the advice graph.
+	 * 
+	 * @return A set of dangers in the advice graph.
+	 */
+	public Set<GraphNodeRisk> getDangers() {
+		return this.getRisks()
+				.stream()
+				.filter(node -> node.getNeutralisers().size() == 0)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	/**
@@ -302,25 +346,6 @@ public final class Graph implements Cloneable {
 	}
 
 	/**
-	 * Gets the edges that are connected to a specified source node and a specified
-	 * destination node.<br />
-	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not
-	 * modifiable.
-	 * 
-	 * @param sourceNode      The source node.
-	 * @param destinationNode The destination node.
-	 * @return The edges that are connected from the source node to the destination
-	 *         node.
-	 */
-	public Set<GraphEdge> getEdgesWith(GraphNode sourceNode, GraphNode destinationNode) {
-		if (sourceNode == null || destinationNode == null) {
-			return Collections.unmodifiableSet(Set.of());
-		}
-		return Collections.unmodifiableSet(
-				this.matrix.getOrDefault(sourceNode, new HashMap<>()).getOrDefault(destinationNode, new HashSet<>()));
-	}
-
-	/**
 	 * Gets the edges of which its destination is the specified node.<br />
 	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not
 	 * modifiable.
@@ -367,97 +392,22 @@ public final class Graph implements Cloneable {
 	}
 
 	/**
-	 * Adds an edge to the {@link Graph}.
+	 * Gets the edges that are connected to a specified source node and a specified
+	 * destination node.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphEdge&gt;} is not
+	 * modifiable.
 	 * 
-	 * @param <T>  The type of edge to add.
-	 * @param edge The edge to add.
-	 * @return The added edge.
-	 * @throws ArgumentNullException Thrown if edge is null.
+	 * @param sourceNode      The source node.
+	 * @param destinationNode The destination node.
+	 * @return The edges that are connected from the source node to the destination
+	 *         node.
 	 */
-	public <T extends GraphEdge> T addEdge(T edge) throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(edge, "edge");
-		final var sourceNode = edge.getSourceNode();
-		final var destinationNode = edge.getDestinationNode();
-		LOGGER.debug(
-				"Adding edge {} from {} to {} to graph {}",
-				edge.getId(),
-				sourceNode.getId(),
-				destinationNode.getId(),
-				this.getId());
-		matrix.computeIfAbsent(edge.getSourceNode(), _ -> new HashMap<>())
-				.computeIfAbsent(edge.getDestinationNode(), _ -> new HashSet<>())
-				.add(edge);
-		LOGGER.debug("Edge {} now in graph {}: {}", edge.getId(), this.getId(), this.getEdgesFrom(sourceNode).size());
-		return edge;
-	}
-
-	/**
-	 * Adds an edge to the graph, if it does not already exist. If it already
-	 * exists, it returns the existing instance.
-	 * 
-	 * @param <TEdge>            The type of edge.
-	 * @param <TNodeSource>      The type of source node.
-	 * @param <TNodeDestination> The type of destination node.
-	 * @param sourceNode         The source node of the edge.
-	 * @param destinationNode    The destination node of the edge.
-	 * @param edgeFactory        The factory method for creating a new instance of
-	 *                           the desired edge, if it does not already exist.
-	 * @param edgeClass          The type of edge.
-	 * @return If the edge is new, the newly created edge. If the edge already
-	 *         exists, the existing edge.
-	 * @throws ArgumentNullException Thrown if sourceNode, destinationNode,
-	 *                               edgeFactory or edgeClass is null.
-	 */
-	public <TEdge extends GraphEdge, TNodeSource extends GraphNode, TNodeDestination extends GraphNode> TEdge computeEdge(
-			TNodeSource sourceNode,
-			TNodeDestination destinationNode,
-			GraphEdgeFactoryFunction<TEdge, TNodeSource, TNodeDestination> edgeFactory,
-			Class<TEdge> edgeClass) throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(sourceNode, "sourceNode");
-		ArgumentGuard.requireNotNull(destinationNode, "destinationNode");
-		ArgumentGuard.requireNotNull(edgeFactory, "edgeFactory");
-		ArgumentGuard.requireNotNull(edgeClass, "edgeClass");
-
-		final var edges =
-				this.matrix.computeIfAbsent(sourceNode, _ -> new HashMap<>())
-						.computeIfAbsent(destinationNode, _ -> new HashSet<>());
-		var edge =
-				edges.stream()
-						.filter(knownEdge -> knownEdge.getClass().equals(edgeClass))
-						.map(edgeClass::cast)
-						.findAny()
-						.orElse(null);
-		if (edge == null) {
-			edge = edgeFactory.create(sourceNode, destinationNode);
-			edges.add(edge);
+	public Set<GraphEdge> getEdgesWith(GraphNode sourceNode, GraphNode destinationNode) {
+		if (sourceNode == null || destinationNode == null) {
+			return Collections.unmodifiableSet(Set.of());
 		}
-		return edge;
-	}
-
-	/**
-	 * Starts a new refactoring.
-	 * 
-	 * @return The start node of the refactoring.
-	 * @throws RefactoringMayContainOnlyOneStartNodeException Thrown if the
-	 *                                                        refactoring has
-	 *                                                        already started.
-	 */
-	public GraphNodeRefactoringStart start() throws RefactoringMayContainOnlyOneStartNodeException {
-		return new GraphNodeRefactoringStart(this);
-	}
-
-	/**
-	 * Gets the start node of the refactoring.
-	 * 
-	 * @return The start node of the refactoring wrapped in {@link Optional}, if
-	 *         present, otherwise an empty {@link Optional}.
-	 */
-	public Optional<GraphNodeRefactoringStart> getStart() {
-		return this.matrix.keySet()
-				.stream()
-				.filter(GraphNodeRefactoringStart.class::isInstance)
-				.map(GraphNodeRefactoringStart.class::cast)
-				.findFirst();
+		return Collections.unmodifiableSet(
+				this.matrix.getOrDefault(sourceNode, new HashMap<>()).getOrDefault(destinationNode, new HashSet<>()));
 	}
 
 	/**
@@ -475,14 +425,135 @@ public final class Graph implements Cloneable {
 	}
 
 	/**
-	 * Returns a value that indicates whether the Refactoring Advice Graph (RAG) is
-	 * finalised.
+	 * Gets the unique identifier of the Refactoring Advice Graph.
 	 * 
-	 * @return A value that indicates whether the Refactoring Advice Graph (RAG) is
-	 *         finalised. True if finalised, false if not.
+	 * @return The unique identifier of the Refactoring Advice Graph.
 	 */
-	public boolean isFinalised() {
-		return this.getEnd().map((node) -> node.getPreceding().isPresent()).orElse(false);
+	public UUID getId() {
+		return this.id;
+	}
+
+	/**
+	 * Finds all microsteps in the advice graph.
+	 * 
+	 * @return A set of microsteps in the advice graph.
+	 */
+	public Set<GraphNodeMicrostep> getMicrosteps() {
+		return this.getNodes(GraphNodeMicrostep.class);
+	}
+
+	/**
+	 * Gets a code node based on its code path.
+	 * 
+	 * @param <TNode>   The type of node to retrieve.
+	 * @param path      The path to the code node.
+	 * @param classType The type of Class of the node.
+	 * @return The node at the specified path, otherwise an empty {@link Optional}.
+	 * @throws ArgumentNullException  Thrown if path or classType is null.
+	 * @throws ArgumentEmptyException Thrown if path is empty or contains only white
+	 *                                spaces.
+	 */
+	public <TNode extends GraphNodeCode> Optional<TNode> getNode(String path, Class<TNode> classType)
+			throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(path, "path");
+		ArgumentGuard.requireNotNull(classType, "classType");
+		final var pathComponents = new ArrayDeque<String>(List.of(path.split("\\.")));
+		String pathComponentName = pathComponents.pop();
+		GraphNodeCode nodeCurrent =
+				this.matrix.keySet()
+						.stream()
+						.filter(
+								node -> node instanceof GraphNodePackage
+										&& ((GraphNodePackage) node).getPackageName().equals(pathComponentName))
+						.map(node -> (GraphNodeCode) node)
+						.findAny()
+						.orElse(null);
+		while (!pathComponents.isEmpty() && nodeCurrent != null) {
+			final var pathComponent = pathComponents.pop();
+			nodeCurrent =
+					(GraphNodeCode) nodeCurrent.getEdges(GraphEdgeHas.class)
+							.stream()
+							.map(edge -> edge.getDestinationNode())
+							.filter(node -> switch (node) {
+								case GraphNodePackage packageNode -> packageNode.getPackageName().equals(pathComponent);
+								case GraphNodeClass classNode -> classNode.getClassName().equals(pathComponent);
+								case GraphNodeInterface interfaceNode ->
+									interfaceNode.getInterfaceName().equals(pathComponent);
+								default -> false;
+							})
+							.findAny()
+							.orElse(null);
+			if (pathComponents.isEmpty() && nodeCurrent != null) {
+				if (classType.isInstance(nodeCurrent)) {
+					return Optional.of(classType.cast(nodeCurrent));
+				}
+				return Optional.empty();
+			}
+		}
+		if (nodeCurrent != null && classType.isInstance(nodeCurrent)) {
+			return Optional.of(classType.cast(nodeCurrent));
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Gets a {@link GraphNodeBase} by its unique identifier.
+	 * 
+	 * @param nodeIdentifier The unique identifier of the node.
+	 * @return The node with the specified identifier, or if not found, null.
+	 * @throws ArgumentNullException Thrown if nodeIdentifier is null.
+	 */
+	public GraphNode getNode(UUID nodeIdentifier) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(nodeIdentifier, "identifier");
+		return this.matrix.keySet().stream().filter(node -> node.getId() == nodeIdentifier).findFirst().orElse(null);
+	}
+
+	/**
+	 * Gets the nodes in the Refactoring Advice Graph.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;GraphNode&gt;} is not
+	 * modifiable.
+	 * 
+	 * @return The nodes in the Refactoring Advice Graph.
+	 */
+	public Set<GraphNode> getNodes() {
+		return Collections.unmodifiableSet(this.matrix.keySet());
+	}
+
+	/**
+	 * Gets the nodes in this graph that are assignable to a particular type.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;TNode&gt;} is not
+	 * modifiable.
+	 * 
+	 * @param <TNode>  The type of node to retrieve.
+	 * @param nodeType The type of node to retrieve.
+	 * @return A read-only set of nodes that are assignable to the requested type in
+	 *         this graph.
+	 * @throws ArgumentNullException Thrown if nodeType is null.
+	 */
+	public <TNode extends GraphNode> Set<TNode> getNodes(Class<TNode> nodeType) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(nodeType, "nodeType");
+		return Collections.unmodifiableSet(
+				this.getNodes().stream().filter(nodeType::isInstance).map(nodeType::cast).collect(Collectors.toSet()));
+	}
+
+	/**
+	 * Gets the nodes in this graph that are exactly of a particular type.<br />
+	 * <strong>Note:</strong> The returned {@link Set Set&lt;TNode&gt;} is not
+	 * modifiable.
+	 * 
+	 * @param <TNode>  The type of node to retrieve.
+	 * @param nodeType The type of node to retrieve.
+	 * @return A read-only set of nodes of the requested type in this graph.
+	 * @throws ArgumentNullException Thrown if nodeType is null.
+	 */
+	public <TNode extends GraphNode> Set<TNode> getNodesExact(Class<TNode> nodeType) {
+		ArgumentGuard.requireNotNull(nodeType, "nodeType");
+		return Collections.unmodifiableSet(
+				this.getNodes()
+						.stream()
+						.filter(node -> node.getClass() == nodeType)
+						.map(nodeType::cast)
+						.collect(Collectors.toSet()));
 	}
 
 	/**
@@ -494,103 +565,108 @@ public final class Graph implements Cloneable {
 		return this.refactoringName;
 	}
 
-	@Override
-	protected Object clone() {
-		return this.clone(this.getRefactoringName());
+	/**
+	 * Finds all risks in the advice graph.
+	 * 
+	 * @return A set of risks in the advice graph.
+	 */
+	public Set<GraphNodeRisk> getRisks() {
+		return this.getNodes(GraphNodeRisk.class);
 	}
 
 	/**
-	 * Creates a clone of this {@link Graph}, including its nodes and edges.
+	 * Gets the start node of the refactoring.
 	 * 
-	 * @param refactoringName The new name of the cloned {@link Graph}.
-	 * @return The cloned {@link Graph}, which bears the new name.
-	 * @throws ArgumentNullException  Thrown if refactoringName is null.
-	 * @throws ArgumentEmptyException Thrown if refactoringName is empty or contains
-	 *                                only white spaces.
+	 * @return The start node of the refactoring wrapped in {@link Optional}, if
+	 *         present, otherwise an empty {@link Optional}.
 	 */
-	public Graph clone(String refactoringName) throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
-		LOGGER.info("Cloning from graph {} to graph {}", this.refactoringName, refactoringName);
+	public Optional<GraphNodeRefactoringStart> getStart() {
+		return this.matrix.keySet()
+				.stream()
+				.filter(GraphNodeRefactoringStart.class::isInstance)
+				.map(GraphNodeRefactoringStart.class::cast)
+				.findFirst();
+	}
 
-		final var graphCloned = new Graph(refactoringName);
-		final var nodesCloned = new HashMap<GraphNode, GraphNode>();
+	/**
+	 * Gets the path from the start of the specified Refactoring Advice Graph's
+	 * (RAG) workflow subgraph.
+	 * 
+	 * @param maximumDepth The maximum depth of the path. This is to avoid an
+	 *                     infinitely long workflow.
+	 * @return The path from the start of the specified Refactoring Advice Graph's
+	 *         (RAG) workflow subgraph.
+	 * @throws IllegalArgumentException                 Thrown if maximumDepth is
+	 *                                                  less than 0.
+	 * @throws RefactoringMustContainStartNodeException Thrown if the graph does not
+	 *                                                  contain a start node.
+	 */
+	public GraphPath getWorkflow(int maximumDepth)
+			throws IllegalArgumentException, RefactoringMustContainStartNodeException {
+		ArgumentGuard.requireGreaterThanOrEqual(0, maximumDepth, "maximumDepth");
 
-		// Clone all nodes.
-		final var nodes = this.matrix.keySet();
-		for (final var node : nodes) {
-			if (node instanceof GraphNodeBase) {
-				final var nodeCloned = ((GraphNodeBase) node).clone(graphCloned);
-				if (nodeCloned.getGraph() != graphCloned) {
-					throw new IllegalStateException("Cloned node not in cloned graph");
+		final var startNode = this.getStart().orElseThrow(() -> new RefactoringMustContainStartNodeException());
+		final var path = new GraphPath(startNode);
+		Optional<GraphNodeWorkflow> currentNode = Optional.of(startNode);
+		while (currentNode.isPresent()) {
+			switch (currentNode.get()) {
+				case GraphNodeWorkflow workflowNode: {
+					final Optional<GraphEdgeWorkflow> workflowEdgeOptional =
+							workflowNode.getEdges(GraphEdgeWorkflow.class).stream().findAny();
+					if (workflowEdgeOptional.isPresent()) {
+						final var workflowEdge = workflowEdgeOptional.get();
+						final var nextNode = workflowEdge.getDestinationNode();
+						path.append(workflowEdge, nextNode);
+						currentNode = Optional.of(nextNode);
+						break;
+					}
+
+					currentNode = Optional.empty();
+					break;
 				}
-				nodesCloned.put(node, nodeCloned);
 			}
 		}
-
-		// Clone all edges.
-		final var edges =
-				this.matrix.values()
-						.stream()
-						.flatMap((entry) -> entry.values().stream())
-						.flatMap((edgeSet) -> edgeSet.stream())
-						.collect(Collectors.toSet());
-
-		for (final var edge : edges) {
-			final var sourceNodeFromEdge = edge.getSourceNode();
-			final var sourceNodeCloned = nodesCloned.get(sourceNodeFromEdge);
-			if (sourceNodeCloned == null) {
-				LOGGER.warn("Edge source node {} not cloned", sourceNodeFromEdge.getId());
-				continue;
-			}
-
-			final var destinationNodeFromEdge = edge.getDestinationNode();
-			final var destinationNodeCloned = nodesCloned.get(destinationNodeFromEdge);
-			if (destinationNodeCloned == null) {
-				LOGGER.info("Edge destination node {} not cloned yet", destinationNodeFromEdge.getId());
-				continue;
-			}
-
-			LOGGER.debug(
-					"Cloning edge with source node {} ({}) and destination node {} ({})",
-					sourceNodeFromEdge.getId(),
-					sourceNodeFromEdge.getClass().getName(),
-					destinationNodeFromEdge.getId(),
-					destinationNodeFromEdge.getClass().getName());
-			final var edgeCloned = edge.clone(sourceNodeCloned, destinationNodeCloned);
-			graphCloned.addEdge(edgeCloned);
-		}
-
-		return graphCloned;
+		return path;
 	}
 
 	/**
-	 * Determines whether Refactoring Advice Graphs are equal. <br />
-	 * This method overrides {@link Object#equals(Object)}.
+	 * Returns a value that indicates whether the Refactoring Advice Graph (RAG) is
+	 * finalised.
 	 * 
-	 * @param other The other Refactoring Advice Graph.
-	 * @return True if equal, false if not.
+	 * @return A value that indicates whether the Refactoring Advice Graph (RAG) is
+	 *         finalised. True if finalised, false if not.
 	 */
-	@Override
-	public boolean equals(Object other) {
-		if (other == null) {
-			return false;
-		}
-		if (!(other instanceof Graph)) {
-			return false;
-		}
-		return this.equals((Graph) other);
+	public boolean isFinalised() {
+		return this.getEnd().map((node) -> node.getPreceding().isPresent()).orElse(false);
 	}
 
 	/**
-	 * Determines whether Refactoring Advice Graphs are equal.
+	 * Removes nodes of type nodeType and associated edges (both incoming and
+	 * outgoing) from the graph.
 	 * 
-	 * @param other The other Refactoring Advice Graph.
-	 * @return True if equal, false if not.
+	 * @param <TNode>  The type of node to remove.
+	 * @param nodeType The type of node to remove.
+	 * @throws ArgumentNullException Thrown if nodeType is null.
 	 */
-	public boolean equals(Graph other) {
-		if (other == null) {
-			return false;
+	public <TNode extends GraphNode> void removeNodes(Class<TNode> nodeType) throws ArgumentNullException {
+		final var nodes = this.getNodesExact(nodeType);
+		for (var node : nodes) {
+			this.matrix.forEach((_, column) -> {
+				column.remove(node);
+			});
+			this.matrix.remove(node);
 		}
-		return this.id == other.id;
+	}
+
+	/**
+	 * Starts a new refactoring.
+	 * 
+	 * @return The start node of the refactoring.
+	 * @throws RefactoringMayContainOnlyOneStartNodeException Thrown if the
+	 *                                                        refactoring has
+	 *                                                        already started.
+	 */
+	public GraphNodeRefactoringStart start() throws RefactoringMayContainOnlyOneStartNodeException {
+		return new GraphNodeRefactoringStart(this);
 	}
 }

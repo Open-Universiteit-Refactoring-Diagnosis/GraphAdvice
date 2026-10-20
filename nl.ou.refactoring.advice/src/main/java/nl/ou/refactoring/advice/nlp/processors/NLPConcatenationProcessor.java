@@ -14,7 +14,6 @@ import nl.ou.refactoring.advice.nlp.NLPProcessor;
 import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.workflow.GraphWorkflowExplorer;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
@@ -232,7 +231,7 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 
 		final var startNode = graph.getStart().orElseThrow(() -> new RefactoringMustContainStartNodeException());
 
-		final var dangerNodes = GraphWorkflowExplorer.getDangers(graph);
+		final var dangerNodes = graph.getDangers();
 		for (final var dangerNode : dangerNodes) {
 			final var dangerPaths = startNode.findPaths(dangerNode, 100);
 			if (dangerPaths.isEmpty()) {

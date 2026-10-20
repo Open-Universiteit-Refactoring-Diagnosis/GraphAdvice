@@ -30,7 +30,6 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
-import nl.ou.refactoring.advice.nodes.workflow.GraphWorkflowExplorer;
 import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -69,7 +68,7 @@ public class NLPGrammarProcessor extends NLPProcessor {
 
 		var result = new NLPResult("", references);
 
-		final var dangerNodes = GraphWorkflowExplorer.getDangers(graph);
+		final var dangerNodes = graph.getDangers();
 		for (final var dangerNode : dangerNodes) {
 			// Dangers
 			final var dangerPaths = startNode.findPaths(dangerNode, 100);

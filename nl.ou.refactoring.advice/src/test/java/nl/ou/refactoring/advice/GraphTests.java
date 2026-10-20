@@ -13,6 +13,8 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
@@ -29,82 +31,33 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddM
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveClass;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 
 public final class GraphTests {
 	@Test
-	@DisplayName("Should construct a graph")
-	public void constructorTest() {
-		final var graph = new Graph("Refactoring test");
-		Assertions.assertNotNull(graph);
-	}
-
-	@Test
-	@DisplayName("Shoud retrieve all nodes")
-	public void getNodesHappyTest() {
+	@DisplayName("Should not add the same edge a second time")
+	public void addEdgeExistingTest() {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
-		new GraphNodeMicrostepAddMethod(graph);
-
-		// Act
-		Set<GraphNode> nodes = graph.getNodes();
-
-		// Assert
-		assertNotEquals(0, nodes.size());
-	}
-
-	@Test
-	@DisplayName("Should retrieve nodes that are assignable to a particular node type")
-	public void getNodesOfTypeHappyTest() {
-		// Arrange
-		final var graph = new Graph("Refactoring test");
-		new GraphNodeMicrostepAddMethod(graph);
-		new GraphNodeMicrostepRemoveMethod(graph);
-		new GraphNodeRemedyChooseDifferentName(graph);
-
-		// Act
-		Set<GraphNodeMicrostep> nodes = graph.getNodes(GraphNodeMicrostep.class);
-
-		// Assert
-		assertEquals(2, nodes.size());
-	}
-
-	@Test
-	@DisplayName("Should correctly find a node by its path")
-	public void getNodeFoundTest() {
-		// Arrange
-		final var graph = new Graph("Find Node Test");
-		final var nlPackage = new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "nl"));
-		final var ouPackage = new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "ou"));
-		final var refactoringPackage =
-				new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "refactoring"));
-		final var mockClass = new GraphNodeClass(graph, GraphNodeIdentifier.computeIdentifier(graph, "Mock"));
-		nlPackage.has(ouPackage);
-		ouPackage.has(refactoringPackage);
-		refactoringPackage.has(mockClass);
-
-		// Act
-		final var packageNode = graph.getNode("nl.ou.refactoring", GraphNodePackage.class).get();
-		final var classNode = graph.getNode("nl.ou.refactoring.Mock", GraphNodeClass.class).get();
-
-		// Assert
-		assertEquals(refactoringPackage, packageNode);
-		assertEquals(mockClass, classNode);
-	}
-
-	@Test
-	@DisplayName("Should correctly determine whether the graph contains a particular node")
-	public void containsNodeHappyTest() {
-		// Arrange
-		final var graph = new Graph("Refactoring test");
-		new GraphNodeMicrostepAddMethod(graph);
+		final var createMethod = new GraphNodeMicrostepAddMethod(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		new GraphNodeRemedyChooseDifferentName(graph);
 
 		// Act
-		final var containsNodeRemoveMethod = graph.containsNode(removeMethod);
+		graph.computeEdge(
+				createMethod,
+				removeMethod,
+				(source, destination) -> new GraphEdgePrecedes(source, destination),
+				GraphEdgePrecedes.class);
+		final var edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
+		graph.computeEdge(
+				createMethod,
+				removeMethod,
+				(source, destination) -> new GraphEdgePrecedes(source, destination),
+				GraphEdgePrecedes.class);
+		final var edgesAfter = graph.getEdges().toArray(new GraphEdge[0]);
 
 		// Assert
-		assertTrue(containsNodeRemoveMethod);
+		assertArrayEquals(edgesBefore, edgesAfter);
 	}
 
 	@Test
@@ -146,32 +99,6 @@ public final class GraphTests {
 	}
 
 	@Test
-	@DisplayName("Should not add the same edge a second time")
-	public void addEdgeExistingTest() {
-		// Arrange
-		final var graph = new Graph("Refactoring test");
-		final var createMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-
-		// Act
-		graph.computeEdge(
-				createMethod,
-				removeMethod,
-				(source, destination) -> new GraphEdgePrecedes(source, destination),
-				GraphEdgePrecedes.class);
-		final var edgesBefore = graph.getEdges().toArray(new GraphEdge[0]);
-		graph.computeEdge(
-				createMethod,
-				removeMethod,
-				(source, destination) -> new GraphEdgePrecedes(source, destination),
-				GraphEdgePrecedes.class);
-		final var edgesAfter = graph.getEdges().toArray(new GraphEdge[0]);
-
-		// Assert
-		assertArrayEquals(edgesBefore, edgesAfter);
-	}
-
-	@Test
 	@DisplayName("Should clone the graph")
 	public void cloneTest() {
 		// Arrange
@@ -188,5 +115,105 @@ public final class GraphTests {
 
 		// Assert
 		assertNotNull(graphClone);
+	}
+
+	@Test
+	@DisplayName("Should construct a graph")
+	public void constructorTest() {
+		final var graph = new Graph("Refactoring test");
+		Assertions.assertNotNull(graph);
+	}
+
+	@Test
+	@DisplayName("Should correctly determine whether the graph contains a particular node")
+	public void containsNodeHappyTest() {
+		// Arrange
+		final var graph = new Graph("Refactoring test");
+		new GraphNodeMicrostepAddMethod(graph);
+		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
+		new GraphNodeRemedyChooseDifferentName(graph);
+
+		// Act
+		final var containsNodeRemoveMethod = graph.containsNode(removeMethod);
+
+		// Assert
+		assertTrue(containsNodeRemoveMethod);
+	}
+
+	@ParameterizedTest
+	@ArgumentsSource(GraphWorkflowGetMicrostepsTestArgumentsProvider.class)
+	@DisplayName("Should provide the microsteps in a Refactoring Advice Graph (RAG)")
+	public void getMicrostepsTest(Graph graph, Set<GraphNodeMicrostep> expected) {
+		final var actual = graph.getMicrosteps();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	@DisplayName("Should correctly find a node by its path")
+	public void getNodeFoundTest() {
+		// Arrange
+		final var graph = new Graph("Find Node Test");
+		final var nlPackage = new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "nl"));
+		final var ouPackage = new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "ou"));
+		final var refactoringPackage =
+				new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "refactoring"));
+		final var mockClass = new GraphNodeClass(graph, GraphNodeIdentifier.computeIdentifier(graph, "Mock"));
+		nlPackage.has(ouPackage);
+		ouPackage.has(refactoringPackage);
+		refactoringPackage.has(mockClass);
+
+		// Act
+		final var packageNode = graph.getNode("nl.ou.refactoring", GraphNodePackage.class).get();
+		final var classNode = graph.getNode("nl.ou.refactoring.Mock", GraphNodeClass.class).get();
+
+		// Assert
+		assertEquals(refactoringPackage, packageNode);
+		assertEquals(mockClass, classNode);
+	}
+
+	@Test
+	@DisplayName("Should retrieve all nodes")
+	public void getNodesHappyTest() {
+		// Arrange
+		final var graph = new Graph("Refactoring test");
+		new GraphNodeMicrostepAddMethod(graph);
+
+		// Act
+		Set<GraphNode> nodes = graph.getNodes();
+
+		// Assert
+		assertNotEquals(0, nodes.size());
+	}
+
+	@Test
+	@DisplayName("Should retrieve nodes that are assignable to a particular node type")
+	public void getNodesOfTypeHappyTest() {
+		// Arrange
+		final var graph = new Graph("Refactoring test");
+		new GraphNodeMicrostepAddMethod(graph);
+		new GraphNodeMicrostepRemoveMethod(graph);
+		new GraphNodeRemedyChooseDifferentName(graph);
+
+		// Act
+		Set<GraphNodeMicrostep> nodes = graph.getNodes(GraphNodeMicrostep.class);
+
+		// Assert
+		assertEquals(2, nodes.size());
+	}
+
+	@ParameterizedTest
+	@ArgumentsSource(GraphWorkflowGetRisksTestArgumentsProvider.class)
+	@DisplayName("Should provide the risks in a Refactoring Advice Graph (RAG)")
+	public void getRisksTest(Graph graph, Set<GraphNodeRisk> expected) {
+		final var actual = graph.getRisks();
+		assertEquals(expected, actual);
+	}
+
+	@ParameterizedTest
+	@ArgumentsSource(GraphWorkflowGetWorkflowTestArgumentsProvider.class)
+	@DisplayName("Should provide the workflow in a Refactoring Advice Graph (RAG)")
+	public void getWorkflowTest(Graph graph, GraphPath expected) {
+		final var actual = graph.getWorkflow(10);
+		assertEquals(expected, actual);
 	}
 }

@@ -7,6 +7,8 @@
 - Breaking Change: "getType" method in GraphNodeAttribute now returns the type node wrapped in an "Optional" instead of a nullable instance.
 - Breaking Change: constructor of GraphNodeOperationParameter now accepts GraphNodeIdentifier instead of a primitive String for its name parameter.
 - Breaking Change: constructor of GraphNodeIdentifier is now private, use the static method "computeIdentifier" instead. This ensures each RAG only has unique identifier nodes.
+- Breaking Change: the workflow (sub)graph now has a GraphNodeRefactoringEnd as the end node. Cycles are now never allowed, including a loop back to the start node, which is replaced by the end node.
+- Breaking Change: GraphWorkflowExplorer methods moved to Graph itself (respect OO-programming).
 - API for external software components enabling other applications or plug-ins.
 
 ## 0.8.0
