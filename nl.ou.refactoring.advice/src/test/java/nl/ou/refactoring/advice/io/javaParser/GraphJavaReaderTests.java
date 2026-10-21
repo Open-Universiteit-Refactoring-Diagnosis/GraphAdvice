@@ -18,12 +18,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirection;
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
+import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
 
 public final class GraphJavaReaderTests {
 	private static Path OUTPUT_DIR;

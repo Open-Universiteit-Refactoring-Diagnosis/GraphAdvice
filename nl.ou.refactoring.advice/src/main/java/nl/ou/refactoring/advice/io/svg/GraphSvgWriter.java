@@ -3,10 +3,10 @@ package nl.ou.refactoring.advice.io.svg;
 import java.io.StringWriter;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphStringWriter;
 import nl.ou.refactoring.advice.io.GraphWriterException;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An abstract implementation of a writer that writes Scalable Vector Graphics (SVG) specifications.

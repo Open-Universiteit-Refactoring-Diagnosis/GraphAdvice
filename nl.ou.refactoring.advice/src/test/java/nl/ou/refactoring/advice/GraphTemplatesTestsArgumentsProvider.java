@@ -9,7 +9,7 @@ import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class GraphTemplatesTestsArgumentsProvider implements ArgumentsProvider {
 	@Override

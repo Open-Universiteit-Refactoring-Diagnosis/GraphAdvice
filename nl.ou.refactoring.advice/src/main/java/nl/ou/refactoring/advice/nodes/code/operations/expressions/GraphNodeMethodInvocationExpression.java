@@ -6,6 +6,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.validation.code.operations.expressions.GraphNodeMethodInvocationExpressionOperationNodeMissingException;
 
 /**
  * A node in a Refactoring Advice Graph that represents a method invocation

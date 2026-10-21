@@ -1,10 +1,10 @@
-package nl.ou.refactoring.advice.edges;
+package nl.ou.refactoring.advice.validation.edges;
 
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An exception that is thrown if an edge is cloned while receiving nodes

@@ -21,6 +21,7 @@ import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWrite
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 import nl.ou.refactoring.advice.io.text.GraphTextWriter;
 import nl.ou.refactoring.advice.nlp.processors.NLPConcatenationProcessor;
+import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
 
 public final class GraphTemplatesTests {
 	private static Path OUTPUT_DIR;

@@ -4,9 +4,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * A base class of a Refactoring Advice Graph (RAG) writer that writes to text.

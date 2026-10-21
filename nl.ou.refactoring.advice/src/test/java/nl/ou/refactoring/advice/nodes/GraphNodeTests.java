@@ -12,10 +12,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPath;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class GraphNodeTests {
 	@ParameterizedTest

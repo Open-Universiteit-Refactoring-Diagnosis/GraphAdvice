@@ -1,9 +1,10 @@
-package nl.ou.refactoring.advice.nodes.code.operations;
+package nl.ou.refactoring.advice.validation.code.operations;
 
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An exception that is thrown if a reference to a node that represents an operation parameter is null.

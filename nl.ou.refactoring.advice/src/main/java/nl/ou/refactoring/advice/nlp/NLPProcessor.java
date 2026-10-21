@@ -1,8 +1,8 @@
 package nl.ou.refactoring.advice.nlp;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * Provides Natural Language Processing results.

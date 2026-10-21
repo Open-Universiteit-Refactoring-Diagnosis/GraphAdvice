@@ -2,7 +2,6 @@ package nl.ou.refactoring.advice.io.mermaid.flowcharts;
 
 import java.io.StringWriter;
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
@@ -22,6 +21,7 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedy;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * Writes a graph to a <a href="https://www.mermaidchart.com/">Mermaid</a> diagram.

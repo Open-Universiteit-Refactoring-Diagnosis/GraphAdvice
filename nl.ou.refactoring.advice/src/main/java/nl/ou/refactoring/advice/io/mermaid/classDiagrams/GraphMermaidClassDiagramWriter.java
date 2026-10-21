@@ -5,7 +5,6 @@ import java.text.MessageFormat;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
@@ -17,6 +16,7 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * Writes Mermaid Class Diagrams from a Refactoring Advice Graph.

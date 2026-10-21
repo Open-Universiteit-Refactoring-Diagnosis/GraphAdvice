@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice;
+package nl.ou.refactoring.advice.validation;
 
 import java.text.MessageFormat;
 import nl.ou.refactoring.advice.edges.GraphEdge;

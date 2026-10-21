@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice;
+package nl.ou.refactoring.advice.validation.paths;
 
 import java.text.MessageFormat;
 
@@ -6,6 +6,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An exception that is thrown if an attempt was made to add a segment to a
@@ -52,15 +53,6 @@ public final class GraphPathSegmentInvalidException extends GraphValidationExcep
 		return this.edge;
 	}
 
-	/**
-	 * Gets the node in the path that should contain the edge.
-	 * 
-	 * @return The node in the path that should contain the edge.
-	 */
-	public GraphNode getNode() {
-		return this.node;
-	}
-
 	@Override
 	public String getLocalizedMessage() {
 		final var edgeIdentifier = this.edge.getId().toString();
@@ -73,5 +65,14 @@ public final class GraphPathSegmentInvalidException extends GraphValidationExcep
 				edgeClassName,
 				nodeIdentifier,
 				nodeClassName);
+	}
+
+	/**
+	 * Gets the node in the path that should contain the edge.
+	 * 
+	 * @return The node in the path that should contain the edge.
+	 */
+	public GraphNode getNode() {
+		return this.node;
 	}
 }

@@ -23,6 +23,7 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameterSignature;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
+import nl.ou.refactoring.advice.validation.code.classes.GraphNodeClassHasMultipleGeneralisationsException;
 
 /**
  * A node in a Refactoring Advice Graph that represents a Class.

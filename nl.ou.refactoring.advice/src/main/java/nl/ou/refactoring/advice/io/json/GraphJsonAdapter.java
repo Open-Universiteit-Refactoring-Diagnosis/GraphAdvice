@@ -4,10 +4,10 @@ import java.io.Reader;
 import java.io.Writer;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphAdapter;
 import nl.ou.refactoring.advice.io.GraphReaderException;
+import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
 
 /**
  * Reads and writes Refactoring Advice Graphs from and to JSON.

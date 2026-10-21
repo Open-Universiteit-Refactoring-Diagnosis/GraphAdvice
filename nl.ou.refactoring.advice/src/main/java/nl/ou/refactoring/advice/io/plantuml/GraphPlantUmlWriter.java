@@ -3,9 +3,9 @@ package nl.ou.refactoring.advice.io.plantuml;
 import java.awt.Color;
 import java.io.StringWriter;
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphStringWriter;
+import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
 
 import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
 

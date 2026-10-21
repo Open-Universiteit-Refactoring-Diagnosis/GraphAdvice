@@ -9,6 +9,7 @@ import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 /**
  * Represents the start node of a refactoring in a Refactoring Advice Graph.

@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice;
+package nl.ou.refactoring.advice.validation;
 
 /**
  * An exception that is thrown during validation of a Refactoring Advice Graph.

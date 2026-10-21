@@ -13,6 +13,9 @@ import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
+import nl.ou.refactoring.advice.validation.workflow.GraphIsFinalisedException;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
 
 /**
  * Creates Refactoring Advice Graphs (RAG) with the builder pattern.
@@ -33,15 +36,19 @@ public class GraphBuilder {
 	/**
 	 * Initialises a new instance of {@link GraphBuilder}.
 	 * 
-	 * @param refactoringName The name of the refactoring.
-	 * @throws ArgumentNullException  Thrown if refactoringName is null.
-	 * @throws ArgumentEmptyException Thrown if refactoringName is an empty string
-	 *                                or contains only white spaces.
+	 * @param graph The Refactoring Advice Graph (RAG) that should be filled or
+	 *              expanded.
+	 * @throws ArgumentNullException Thrown if graph is null.
 	 */
-	public GraphBuilder(String refactoringName) throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
-		this.graph = AdviceApi.createRefactoringGraph(refactoringName);
-		this.workflowLastNode = Optional.of(this.graph.start());
+	public GraphBuilder(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		this.graph = graph;
+		if (this.graph.isFinalised()) {
+			this.workflowLastNode = this.graph.getEnd().map(GraphNodeWorkflow.class::cast);
+		} else {
+			this.workflowLastNode =
+					Optional.of((GraphNodeWorkflow) this.graph.getWorkflow(100).getSegments().getLast().getNode());
+		}
 	}
 
 	/**
@@ -56,36 +63,41 @@ public class GraphBuilder {
 			throws ArgumentNullException, RefactoringTemplateUndefinedException {
 		ArgumentGuard.requireNotNull(template, "template");
 		this.graph = AdviceApi.createRefactoringGraphByTemplate(template);
-		this.workflowLastNode = Optional.empty();
+		this.workflowLastNode = this.graph.getEnd().map(GraphNodeWorkflow.class::cast);
 	}
 
 	/**
 	 * Initialises a new instance of {@link GraphBuilder}.
 	 * 
-	 * @param graph The Refactoring Advice Graph (RAG) that should be filled or
-	 *              expanded.
-	 * @throws ArgumentNullException Thrown if graph is null.
+	 * @param refactoringName The name of the refactoring.
+	 * @throws ArgumentNullException  Thrown if refactoringName is null.
+	 * @throws ArgumentEmptyException Thrown if refactoringName is an empty string
+	 *                                or contains only white spaces.
 	 */
-	public GraphBuilder(Graph graph) throws ArgumentNullException {
-		ArgumentGuard.requireNotNull(graph, "graph");
-		this.graph = graph;
-		if (this.graph.isFinalised()) {
-			this.workflowLastNode = Optional.empty();
-		} else {
-			// TODO determine workflow last node
-			this.workflowLastNode = Optional.empty();
-		}
+	public GraphBuilder(String refactoringName) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
+		this.graph = AdviceApi.createRefactoringGraph(refactoringName);
+		this.workflowLastNode = Optional.of(this.graph.start());
 	}
 
-	public GraphBuilderClassBuilder addClassWithMicrostep(String packageName, String className) {
+	/**
+	 * Adds a Class node to the Refactoring Advice {@link Graph} (RAG) by means of
+	 * (also) adding a microstep to the RAG's workflow subgraph that adds the class
+	 * to the code context.
+	 * 
+	 * @param packageName The name of the package in the code context to which to
+	 *                    add the Class node.
+	 * @param className   The name of the Class to add.
+	 * @return A {@link GraphBuilderClassBuilder} that enables further building the
+	 *         Class node in the RAG's code subgraph.
+	 * @throws GraphValidationException Thrown if the Refactoring Advice
+	 *                                  {@link Graph} may become invalid.
+	 */
+	public GraphBuilderClassBuilder addClassWithMicrostep(String packageName, String className)
+			throws GraphValidationException {
 		GraphNodeMicrostepAddClass microstepAddClass;
 		if (this.graph.isFinalised()) {
-			microstepAddClass =
-					this.graph.getNodes(GraphNodeMicrostepAddClass.class)
-							.stream()
-							.findFirst()
-							.orElseThrow(() -> new RuntimeException("TODO")); // TODO exception
-			// TODO what if multiple "Add Class" microsteps?
+			throw new GraphIsFinalisedException(this.graph);
 		} else {
 			microstepAddClass = new GraphNodeMicrostepAddClass(this.graph);
 			this.workflowLastNode.ifPresentOrElse((lastNode) -> {
@@ -106,7 +118,7 @@ public class GraphBuilder {
 				this.graph.getStart().ifPresentOrElse((startNode) -> {
 					startNode.initiates(microstepAddClass);
 				}, () -> {
-					// TODO if no start node, create or throw exception?
+					throw new RefactoringMustContainStartNodeException();
 				});
 			});
 			this.workflowLastNode = Optional.of(microstepAddClass);

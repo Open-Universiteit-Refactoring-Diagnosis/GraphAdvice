@@ -27,7 +27,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.html.GraphHtmlWriterSettings;
 import nl.ou.refactoring.advice.io.html.text.GraphHtmlTextWriter;
@@ -35,6 +34,7 @@ import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartDirec
 import nl.ou.refactoring.advice.io.mermaid.flowcharts.GraphMermaidFlowchartWriter;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 import nl.ou.refactoring.advice.nlp.NLPProcessor;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 public final class RefactoringTests {
 	private static Path OUTPUT_DIR;

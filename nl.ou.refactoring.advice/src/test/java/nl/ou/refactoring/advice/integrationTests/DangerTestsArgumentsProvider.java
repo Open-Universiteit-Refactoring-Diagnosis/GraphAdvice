@@ -18,13 +18,13 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParamete
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskChangedNestedRelationship;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskImposedSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskPrecedingOverload;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 

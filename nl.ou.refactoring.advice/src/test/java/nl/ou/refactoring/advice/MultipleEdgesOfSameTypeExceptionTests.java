@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.validation.MultipleEdgesOfSameTypeException;
 
 public final class MultipleEdgesOfSameTypeExceptionTests {
 	@Test

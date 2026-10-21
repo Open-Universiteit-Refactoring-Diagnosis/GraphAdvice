@@ -10,6 +10,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
+import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
 
 /**
  * A path in a graph.

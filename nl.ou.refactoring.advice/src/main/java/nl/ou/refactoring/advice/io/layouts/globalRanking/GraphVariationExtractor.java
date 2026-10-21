@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPath;
-import nl.ou.refactoring.advice.GraphPathSegmentInvalidException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
 
 /**
  * Extracts graph variations from a graph.

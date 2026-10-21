@@ -6,7 +6,6 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.SortOrder;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
@@ -19,13 +18,14 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassHasMultipleGeneralisationsException;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
+import nl.ou.refactoring.advice.validation.code.classes.GraphNodeClassHasMultipleGeneralisationsException;
 
 import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
 

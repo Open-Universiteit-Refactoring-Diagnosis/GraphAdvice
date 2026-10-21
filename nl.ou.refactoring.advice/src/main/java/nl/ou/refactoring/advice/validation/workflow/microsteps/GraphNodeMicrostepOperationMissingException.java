@@ -1,7 +1,8 @@
-package nl.ou.refactoring.advice.nodes.workflow.microsteps;
+package nl.ou.refactoring.advice.validation.workflow.microsteps;
 
-import nl.ou.refactoring.advice.GraphValidationException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An exception that is thrown if no operation node is associated with a node that represents a microstep that manipulates an operation.

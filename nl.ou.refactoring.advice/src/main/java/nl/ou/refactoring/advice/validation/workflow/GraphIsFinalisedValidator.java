@@ -1,13 +1,10 @@
-package nl.ou.refactoring.advice.validation.common;
+package nl.ou.refactoring.advice.validation.workflow;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.validation.GraphValidationResult;
 import nl.ou.refactoring.advice.validation.GraphValidator;
 
@@ -29,16 +26,6 @@ public final class GraphIsFinalisedValidator implements GraphValidator {
 	@Override
 	public List<GraphValidationResult> validate(Graph graph) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
-		final var finalisingNodes =
-			graph
-				.getNodes(GraphNodeMicrostep.class)
-				.stream()
-				.filter((node) -> node.isFinalising())
-				.collect(Collectors.toUnmodifiableSet());
-		return
-			Collections.unmodifiableList(
-				List.of(new GraphIsFinalisedValidationResult(graph, finalisingNodes.size() == 1))
-			);
+		return List.of(new GraphIsFinalisedValidationResult(graph, graph.isFinalised()));
 	}
-
 }

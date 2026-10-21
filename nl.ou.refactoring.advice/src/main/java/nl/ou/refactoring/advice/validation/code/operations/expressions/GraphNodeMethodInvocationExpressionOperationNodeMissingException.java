@@ -1,8 +1,9 @@
-package nl.ou.refactoring.advice.nodes.code.operations.expressions;
+package nl.ou.refactoring.advice.validation.code.operations.expressions;
 
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
+import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An exception that is thrown if a {@link GraphNodeMethodInvocationExpression}

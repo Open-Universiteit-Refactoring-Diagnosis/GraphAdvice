@@ -1,7 +1,7 @@
-package nl.ou.refactoring.advice.nodes.workflow;
+package nl.ou.refactoring.advice.validation.workflow;
 
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An exception that is thrown if a graph contains more than one start node.

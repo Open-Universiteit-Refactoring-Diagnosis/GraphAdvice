@@ -30,10 +30,10 @@ import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringEnd;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMayContainOnlyOneStartNodeException;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
 
 /**
  * Represents a Refactoring Advice Graph.

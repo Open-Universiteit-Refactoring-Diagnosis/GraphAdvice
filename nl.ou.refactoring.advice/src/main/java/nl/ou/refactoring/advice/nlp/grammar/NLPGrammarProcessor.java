@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nlp.NLPException;
@@ -30,14 +29,15 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAttributeMissingException;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepOperationMissingException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
+import nl.ou.refactoring.advice.validation.workflow.microsteps.GraphNodeMicrostepAttributeMissingException;
+import nl.ou.refactoring.advice.validation.workflow.microsteps.GraphNodeMicrostepOperationMissingException;
 
 /**
  * A Natural Language Processing provider that arrange text into natural

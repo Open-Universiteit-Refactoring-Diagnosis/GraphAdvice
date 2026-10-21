@@ -6,6 +6,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.validation.workflow.microsteps.GraphNodeMicrostepOperationMissingException;
 
 /**
  * Represents a Microstep in a Refactoring Advice Graph that removes a Method.

@@ -47,7 +47,7 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
  */
 public final class AdviceApi {
 	/**
-	 * Features for managing the Abstract Syntax Tree (AST) subgraph.
+	 * Features for managing the Abstract Syntax Tree (AST) subgraph in a Refactoring Advice Graph (RAG).
 	 */
 	public static final class Code {
 		/**
@@ -395,6 +395,9 @@ public final class AdviceApi {
 		}
 	}
 
+	/**
+	 * Features for generating text from a Refactoring Advice Graph (RAG).
+	 */
 	public static final class Text {
 		public static void appendAdviceTextToHtml(
 				final Graph graph,
@@ -440,6 +443,13 @@ public final class AdviceApi {
 		}
 	}
 
+	/**
+	 * Features for managing the Workflow subgraph in a Refactoring Advice Graph (RAG).
+	 */
+	public static final class Workflow {
+		
+	}
+	
 	/**
 	 * Logs messages for debugging and troubleshooting.
 	 */

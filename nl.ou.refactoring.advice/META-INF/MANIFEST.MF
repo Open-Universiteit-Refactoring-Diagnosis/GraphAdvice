@@ -478,7 +478,6 @@ Export-Package: com.github.javaparser;
  nl.ou.refactoring.advice.nodes.workflow.risks.validation;uses:="nl.ou.refactoring.advice,nl.ou.refactoring.advice.nodes.code,nl.ou.refactoring.advice.validation",
  nl.ou.refactoring.advice.resources;uses:="nl.ou.refactoring.advice.nodes.code.classes",
  nl.ou.refactoring.advice.validation;uses:="nl.ou.refactoring.advice",
- nl.ou.refactoring.advice.validation.common;uses:="nl.ou.refactoring.advice,nl.ou.refactoring.advice.validation",
  org.apache.logging.log4j,
  org.apache.logging.log4j.core,
  org.apache.logging.log4j.message,

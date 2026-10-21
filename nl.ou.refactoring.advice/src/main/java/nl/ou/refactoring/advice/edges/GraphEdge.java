@@ -8,6 +8,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.edges.GraphEdgeNodesNotClonedException;
 
 /**
  * Represents an edge from one node to another in a Refactoring Advice Graph.

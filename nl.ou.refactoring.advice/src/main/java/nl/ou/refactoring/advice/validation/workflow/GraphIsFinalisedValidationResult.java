@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.validation.common;
+package nl.ou.refactoring.advice.validation.workflow;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;

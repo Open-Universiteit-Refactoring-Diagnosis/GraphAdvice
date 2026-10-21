@@ -23,6 +23,7 @@ import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMetho
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.validation.code.operations.GraphNodeOperationParameterNullReferenceException;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Operation of a Class that is affected by a refactoring.

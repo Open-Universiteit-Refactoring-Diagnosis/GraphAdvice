@@ -1,11 +1,12 @@
-package nl.ou.refactoring.advice.nodes.code.classes;
+package nl.ou.refactoring.advice.validation.code.classes;
 
 import java.text.MessageFormat;
 
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
  * An exception that is thrown if a {@link GraphNodeClass} has multiple class nodes as generalisations.

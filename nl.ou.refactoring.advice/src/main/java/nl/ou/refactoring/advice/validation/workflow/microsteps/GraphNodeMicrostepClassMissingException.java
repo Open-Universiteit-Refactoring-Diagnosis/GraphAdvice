@@ -1,16 +1,17 @@
-package nl.ou.refactoring.advice.nodes.workflow.microsteps;
+package nl.ou.refactoring.advice.validation.workflow.microsteps;
 
-import nl.ou.refactoring.advice.GraphValidationException;
+import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
 
 /**
- * An exception that is thrown if no attribute node is associated with a node that represents a microstep that manipulates an attribute.
+ * An exception that is thrown if no Class node is associated with a node that represents a microstep.
  */
-public final class GraphNodeMicrostepAttributeMissingException extends GraphValidationException {
+public final class GraphNodeMicrostepClassMissingException extends GraphValidationException {
 	/**
 	 * A generated serial version unique identifier.
 	 */
-	private static final long serialVersionUID = 1606169629855104377L;
+	private static final long serialVersionUID = -3927082807823439185L;
 	
 	/**
 	 * The delinquent microstep node.
@@ -18,10 +19,10 @@ public final class GraphNodeMicrostepAttributeMissingException extends GraphVali
 	private final GraphNodeMicrostep microstepNode;
 
 	/**
-	 * Initialises a new instance of {@link GraphNodeMicrostepAttributeMissingException}.
+	 * Initialises a new instance of {@link GraphNodeMicrostepClassMissingException}.
 	 * @param microstepNode The delinquent microstep node.
 	 */
-	public GraphNodeMicrostepAttributeMissingException(GraphNodeMicrostep microstepNode) {
+	public GraphNodeMicrostepClassMissingException(GraphNodeMicrostep microstepNode) {
 		this.microstepNode = microstepNode;
 	}
 	
@@ -38,7 +39,8 @@ public final class GraphNodeMicrostepAttributeMissingException extends GraphVali
 		final var messageTemplate =
 			ResourceProvider
 				.ExceptionMessages
-				.getMessageTemplate(GraphNodeMicrostepAttributeMissingException.class);
+				.getMessageTemplate(GraphNodeMicrostepClassMissingException.class);
 		return String.format(messageTemplate, this.microstepNode.getId());
 	}
+
 }

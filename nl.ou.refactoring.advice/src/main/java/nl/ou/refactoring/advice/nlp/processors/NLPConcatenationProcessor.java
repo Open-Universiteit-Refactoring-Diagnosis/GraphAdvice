@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.GraphValidationException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nlp.NLPException;
@@ -14,7 +13,6 @@ import nl.ou.refactoring.advice.nlp.NLPProcessor;
 import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
@@ -24,6 +22,8 @@ import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemo
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
+import nl.ou.refactoring.advice.validation.GraphValidationException;
+import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
 
 /**
  * A Natural Language Processing provider that concatenates pieces of texts
