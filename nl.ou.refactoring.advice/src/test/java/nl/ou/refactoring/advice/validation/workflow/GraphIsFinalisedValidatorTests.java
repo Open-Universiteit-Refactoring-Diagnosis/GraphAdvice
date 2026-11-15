@@ -15,8 +15,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.validation.GraphValidationEngine;
-import nl.ou.refactoring.advice.validation.workflow.GraphIsFinalisedValidationResult;
-import nl.ou.refactoring.advice.validation.workflow.GraphIsFinalisedValidator;
 
 public final class GraphIsFinalisedValidatorTests {
 	@DisplayName("Graph is finalised validation")

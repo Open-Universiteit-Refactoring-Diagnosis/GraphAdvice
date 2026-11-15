@@ -1,14 +1,5 @@
 package nl.ou.refactoring.advice.io.plantuml;
-import static org.junit.jupiter.api.Assertions.assertFalse;import static org.junit.jupiter.api.Assertions.assertNotNull;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
-import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import static org.junit.jupiter.api.Assertions.assertFalse;import static org.junit.jupiter.api.Assertions.assertNotNull;import java.io.BufferedReader;import java.io.IOException;import java.io.InputStreamReader;import java.nio.charset.StandardCharsets;import java.util.Scanner;import org.junit.jupiter.api.DisplayName;import org.junit.jupiter.api.Test;import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 public class GraphPlantUmlSvgGeneratorTests {
 	@DisplayName("Should generate SVG from a PlantUML specification")
 	@Test

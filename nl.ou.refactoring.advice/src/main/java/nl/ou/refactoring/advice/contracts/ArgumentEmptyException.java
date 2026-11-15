@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.contracts;
 
 import java.text.MessageFormat;
+
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 
 /**

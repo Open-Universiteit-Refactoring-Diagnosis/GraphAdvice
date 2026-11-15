@@ -5,150 +5,46 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.ou.refactoring</groupId>
 	<artifactId>nl.ou.refactoring.advice</artifactId>
-	<version>0.9.0</version>
+	<version>${nl.ou.refactoring.advice.version}</version>
 	<name>Open Universiteit Refactoring Advice through Knowledge Graphs</name>
 	<description>A software component for generating refactoring advices by
 		assembling a refactoring in a graph and converting it to a
 		human-readable advice.</description>
+	<properties>
+		<maven.compiler.release>${maven.compiler.version}</maven.compiler.release>
+	</properties>
+
+    <parent>
+        <groupId>nl.ou.refactoring.advice</groupId>
+        <artifactId>solution</artifactId>
+        <version>${nl.ou.refactoring.advice.version}</version>
+    </parent>
+
+	<packaging>eclipse-plugin</packaging>
+
 	<dependencies>
 		<dependency>
-			<groupId>ai.djl</groupId>
-			<artifactId>api</artifactId>
-			<version>0.36.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.javaparser</groupId>
-			<artifactId>javaparser-symbol-solver-core</artifactId>
-			<version>3.28.1</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.classgraph</groupId>
-			<artifactId>classgraph</artifactId>
-			<version>4.8.184</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.plantuml</groupId>
-			<artifactId>plantuml-mit</artifactId>
-			<version>1.2026.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.26.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-bom</artifactId>
-			<version>2.26.0</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.26.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j2-impl</artifactId>
-			<version>2.26.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-all</artifactId>
-			<version>1.19</version>
-			<exclusions>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis-ext</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>jakarta.json</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.javatuples</groupId>
-			<artifactId>javatuples</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
+			<!-- Unit testing -->
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>6.0.3</version>
+			<version>6.1.3</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.10.0</version>
-				<executions>
-					<execution>
-						<id>copy-osgi-libs</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.basedir}/lib</outputDirectory>
-							<includeScope>compile</includeScope>
-							<excludeTypes>pom</excludeTypes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.15.0</version>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
 				<configuration>
-					<compilerArgs>
-						<arg>-parameters</arg>
-					</compilerArgs>
-					<release>25</release>
+					<!-- include the pom dependencies above in the OSGi resolution so testCompile sees JUnit -->
+					<pomDependencies>consider</pomDependencies>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.4</version>
-				<configuration>
-					<altDeploymentRepository>
-						github::default::https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice
-					</altDeploymentRepository>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.5.0</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.12.0</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<phase>package</phase>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
-	<packaging>jar</packaging>
+
 	<profiles>
 		<profile>
 			<id>github</id>

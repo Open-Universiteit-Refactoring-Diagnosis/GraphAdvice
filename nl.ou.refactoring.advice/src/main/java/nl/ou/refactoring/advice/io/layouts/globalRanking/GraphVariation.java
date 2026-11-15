@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.io.layouts.globalRanking;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;

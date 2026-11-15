@@ -1,5 +1,7 @@
 package nl.ou.refactoring.advice.io.plantuml.classDiagrams;
 
+import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
+
 import java.awt.Color;
 import java.io.StringWriter;
 import java.util.Stack;
@@ -26,8 +28,6 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
 import nl.ou.refactoring.advice.validation.code.classes.GraphNodeClassHasMultipleGeneralisationsException;
-
-import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
 
 /**
  * Writes PlantUML Class Diagrams from Refactoring Advice Graphs.

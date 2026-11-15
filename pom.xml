@@ -1,0 +1,81 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Refactoring Advice through Knowledge Graphs solution</name>
+    <groupId>nl.ou.refactoring.advice</groupId>
+    <artifactId>solution</artifactId>
+    <version>${nl.ou.refactoring.advice.version}</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.release>${maven.compiler.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-director-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <release>26</release>
+                    <strictBytecode>false</strictBytecode>
+                </configuration>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <!-- the Java version used for the build -->
+                    <executionEnvironment>JavaSE-26</executionEnvironment>
+                    <target>
+                        <file>
+                            ${maven.multiModuleProjectDirectory}/nl.ou.refactoring.advice.target/refactoring_advice.target
+                        </file>
+                    </target>
+                    <environments>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>aarch64</arch>
+                        </environment>
+                    </environments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>nl.ou.refactoring.advice.target</module>
+        <module>nl.ou.refactoring.advice</module>
+        <module>nl.ou.refactoring.advice.eclipse</module>
+    </modules>
+</project>

@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.io.html;
 
 import org.w3c.dom.Element;
+
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphWriter;

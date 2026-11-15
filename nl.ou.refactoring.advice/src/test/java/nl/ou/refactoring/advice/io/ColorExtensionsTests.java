@@ -1,5 +1,8 @@
 package nl.ou.refactoring.advice.io;
 
+import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static nl.ou.refactoring.advice.io.ColorExtensions.toHexadecimal;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ColorExtensionsTests {
 	@ParameterizedTest

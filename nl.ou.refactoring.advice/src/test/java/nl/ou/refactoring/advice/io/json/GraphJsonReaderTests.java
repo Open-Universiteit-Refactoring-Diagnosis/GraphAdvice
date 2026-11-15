@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.io.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.StringReader;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.validation;
 
 import java.text.MessageFormat;
+
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 

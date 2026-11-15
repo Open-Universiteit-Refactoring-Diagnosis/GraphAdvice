@@ -1,0 +1,9 @@
+<extensions>
+	<!-- Intentionally no core extensions here.
+	     The root pom.xml already loads org.eclipse.tycho:tycho-maven-plugin with <extensions>true</extensions>,
+	     which registers all Tycho packaging handlers (eclipse-plugin, eclipse-target-definition, ...).
+	     Do NOT add org.eclipse.tycho:tycho-build here: it also pulls in tycho-pomless -> takari polyglot,
+	     whose sisu-registered TeslaModelProcessor throws a NullPointerException when m2e's embedded
+	     Maven loads the core extension inside Eclipse (every module has a pom.xml, so pomless is not needed).
+	     Maven 3.9 cannot express <exclusions> in this file, hence the empty extension list. -->
+</extensions>

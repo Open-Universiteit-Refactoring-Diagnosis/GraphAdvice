@@ -13,10 +13,10 @@ import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskCorrespondingS
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskImposedSpecification;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingAbstractImplementation;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingConcreteImplementation;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingSpecification;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingSuperImplementation;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskPrecedingOverload;
 import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskScopeShadowing;

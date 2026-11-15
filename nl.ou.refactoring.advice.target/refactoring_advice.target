@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target name="Refactoring Advice through Knowledge Graphs">
+	<locations>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="http://ensoftupdate.com/download/atlas/current/"/>
+			<unit id="com.ensoftcorp.atlas.feature.feature.group" version="4.2.11.202512130030"/>
+			<unit id="com.ensoftcorp.atlas.java.feature.feature.group" version="4.2.11.202512130030"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<!-- Atlas requires the org.apache.log4j bundle, which is no longer in the Eclipse release train; Orbit provides it -->
+			<repository location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2026-09/"/>
+			<unit id="org.apache.log4j" version="1.2.26"/>
+		</location>
+		<location type="Maven">
+			<dependencies>
+				<dependency>
+					<!-- Required by com.ensoftcorp.open.commons; commons-io >= 2.8 uses BSN org.apache.commons.commons-io, 2.6 still has BSN org.apache.commons.io -->
+					<groupId>commons-io</groupId>
+					<artifactId>commons-io</artifactId>
+					<version>2.6</version>
+				</dependency>
+				<dependency>
+					<!-- Unit testing (OSGi bundles) -->
+					<groupId>org.junit.jupiter</groupId>
+					<artifactId>junit-jupiter-api</artifactId>
+					<version>6.1.3</version>
+				</dependency>
+				<dependency>
+					<groupId>org.junit.jupiter</groupId>
+					<artifactId>junit-jupiter-params</artifactId>
+					<version>6.1.3</version>
+				</dependency>
+			</dependencies>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://ensoftcorp.github.io/toolbox-commons/updates/"/>
+			<unit id="com.ensoftcorp.open.commons.feature.feature.group" version="3.9.2.202305211154"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://ensoftcorp.github.io/java-toolbox-commons/updates/"/>
+			<unit id="com.ensoftcorp.open.java.commons.feature.feature.group" version="3.9.2.202305211206"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://ensoftcorp.github.io/support-plugins/updates/"/>
+			<unit id="org.jgrapht.feature.feature.group" version="1.0.1.201702241556"/>
+			<unit id="org.json.simple.feature.feature.group" version="1.1.0.201706011052"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://open-universiteit-refactoring-diagnosis.github.io/refra-update-site/refra/repository/"/>
+			<unit id="nl.ou.refra.feature.feature.group" version="0.0.0"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/eclipse/updates/4.41/"/>
+			<unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.2200.v20260821-1846"/>
+			<unit id="org.eclipse.sdk.feature.group" version="4.41.0.v20260828-1142"/>
+		</location>
+	</locations>
+	<dependencies>
+		<dependency>
+			<!-- Deep Java Library (DJL) Artificial Intelligence: https://djl.ai/ -->
+			<groupId>ai.djl</groupId>
+			<artifactId>api</artifactId>
+			<version>0.40.0</version>
+		</dependency>
+		<dependency>
+			<!-- Parse Java code to an Abstract Syntax Tree (AST) -->
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-symbol-solver-core</artifactId>
+			<version>3.28.2</version>
+		</dependency>
+		<dependency>
+			<!-- Reflection on compilable Java code and its Abstract Syntax Tree (AST) -->
+			<groupId>io.github.classgraph</groupId>
+			<artifactId>classgraph</artifactId>
+			<version>6.0.2</version>
+		</dependency>
+		<dependency>
+			<!-- PlantUML processing (UML markup language) -->
+			<groupId>net.sourceforge.plantuml</groupId>
+			<artifactId>plantuml-mit</artifactId>
+			<version>1.2026.10</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<!-- Logging -->
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.26.1</version>
+		</dependency>
+		<dependency>
+			<!-- Logging -->
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-bom</artifactId>
+			<version>2.26.1</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<!-- Logging -->
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.26.1</version>
+		</dependency>
+		<dependency>
+			<!-- Logging -->
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j2-impl</artifactId>
+			<version>2.26.1</version>
+		</dependency>
+		<dependency>
+			<!-- Process Scalable Vector Image (SVG) files/data -->
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-all</artifactId>
+			<version>1.20</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis-ext</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<!-- Parse JSON -->
+			<groupId>org.glassfish</groupId>
+			<artifactId>jakarta.json</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<!-- Construct arbitrary tuples of values or references -->
+			<groupId>org.javatuples</groupId>
+			<artifactId>javatuples</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<!-- Unit testing -->
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>6.1.3</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</target>

@@ -3,6 +3,7 @@ package nl.ou.refactoring.advice.io.svg.classDiagrams;
 import java.io.StringWriter;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
