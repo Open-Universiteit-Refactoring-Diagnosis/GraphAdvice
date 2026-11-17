@@ -3,9 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>nl.ou.refactoring.advice</groupId>
-	<artifactId>nl.ou.refactoring.advice.eclipse</artifactId>
-	<version>${nl.ou.refactoring.advice.version}</version>
 	<name>Open Universiteit Refactoring Advice through Knowledge Graphs Eclipse
 		Plug-in</name>
 	<description>An Eclipse plug-in for presenting refactoring advice based on a
@@ -13,6 +10,8 @@
 	<properties>
 		<maven.compiler.release>${maven.compiler.version}</maven.compiler.release>
 	</properties>
+	
+	<artifactId>nl.ou.refactoring.advice.eclipse</artifactId>
 
 	<parent>
 		<groupId>nl.ou.refactoring.advice</groupId>
@@ -110,8 +109,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub Packages</name>
-			<url>
-				https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice</url>
+			<url>https://maven.pkg.github.com/Open-Universiteit-Refactoring-Diagnosis/GraphAdvice</url>
 		</repository>
 	</distributionManagement>
 </project>
