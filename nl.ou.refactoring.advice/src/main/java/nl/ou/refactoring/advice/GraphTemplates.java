@@ -15,7 +15,7 @@ public final class GraphTemplates {
 	/**
 	 * A "Move Field" Refactoring Advice Graph.
 	 * @return The "Move Field" Refactoring Advice Graph as contained in the JSON file.
-	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 * @throws GraphReaderException Thrown if reading and/or interpreting the JSON file failed.
 	 */
 	public static Graph moveField()
 			throws GraphReaderException {
@@ -25,7 +25,7 @@ public final class GraphTemplates {
 	/**
 	 * A "Move Method" Refactoring Advice Graph.
 	 * @return The "Move Method" Refactoring Advice Graph as contained in the JSON file.
-	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 * @throws GraphReaderException Thrown if reading and/or interpreting the JSON file failed.
 	 */
 	public static Graph moveMethod()
 			throws GraphReaderException {
@@ -33,9 +33,19 @@ public final class GraphTemplates {
 	}
 	
 	/**
+	 * A "Push Down Method" Refactoring Advice Graph.
+	 * @return The "Push Down Method" Refactoring Advice Graph as contained in the JSON file.
+	 * @throws GraphReaderException Thrown if reading and/or interpreting the JSON file failed.
+	 */
+	public static Graph pushDownMethod()
+			throws GraphReaderException {
+		return readGraph("/refactorings/PushDownMethod.json");
+	}
+	
+	/**
 	 * A "Rename Field" Refactoring Advice Graph.
 	 * @return The "Rename Field" Refactoring Advice Graph as contained in the JSON file.
-	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 * @throws GraphReaderException Thrown if reading and/or interpreting the JSON file failed.
 	 */
 	public static Graph renameField()
 			throws GraphReaderException {
@@ -45,7 +55,7 @@ public final class GraphTemplates {
 	/**
 	 * A "Rename Method" Refactoring Advice Graph.
 	 * @return The "Rename Method" Refactoring Advice Graph as contained in the JSON file.
-	 * @throws GraphReaderException Thrown if reading the JSON file failed.
+	 * @throws GraphReaderException Thrown if reading and/or interpreting the JSON file failed.
 	 */
 	public static Graph renameMethod()
 			throws GraphReaderException {

@@ -25,6 +25,7 @@ import org.eclipse.ui.actions.CompoundContributionItem;
 
 import nl.ou.refactoring.advice.eclipse.refactorings.Refactoring;
 import nl.ou.refactoring.advice.eclipse.refactorings.RefactoringAdviceView;
+import nl.ou.refactoring.advice.eclipse.refactorings.methods.PushDownMethodRefactoring;
 import nl.ou.refactoring.advice.eclipse.refactorings.methods.RenameMethodRefactoring;
 
 /**
@@ -198,6 +199,11 @@ public final class RefactoringsSubmenuContribution extends CompoundContributionI
 			final var methodIsConstructor = method.isConstructor();
 			if (!methodIsConstructor) {
 				items.add(this.createItem("Move Method", null));
+				try {
+					items.add(this.createItem("Push Down Method", new PushDownMethodRefactoring(method)));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 				try {
 					items.add(this.createItem("Rename Method", new RenameMethodRefactoring(method)));
 				} catch (Exception ex) {

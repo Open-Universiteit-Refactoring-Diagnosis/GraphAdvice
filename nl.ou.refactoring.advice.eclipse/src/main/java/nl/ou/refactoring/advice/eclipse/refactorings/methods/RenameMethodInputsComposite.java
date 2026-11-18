@@ -37,10 +37,10 @@ import nl.ou.refactoring.advice.validation.GraphValidationFixableResult;
  */
 public final class RenameMethodInputsComposite extends RefactoringInputsComposite {
 	private static final Logger LOGGER = LogManager.getLogger(RenameMethodInputsComposite.class);
-	private Label originalNameLabelWidget;
-	private Label originalNameValueLabelWidget;
-	private Label newNameLabelWidget;
-	private Text newNameTextWidget;
+	private final Label originalNameLabelWidget;
+	private final Label originalNameValueLabelWidget;
+	private final Label newNameLabelWidget;
+	private final Text newNameTextWidget;
 
 	/**
 	 * Initialises a new instance of {@link RenameMethodInputsComposite}.
