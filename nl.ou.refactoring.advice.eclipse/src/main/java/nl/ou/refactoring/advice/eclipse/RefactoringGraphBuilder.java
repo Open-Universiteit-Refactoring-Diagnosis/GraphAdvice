@@ -158,44 +158,44 @@ public final class RefactoringGraphBuilder {
 								}
 
 								switch (callerJavaElement) {
-								case IMethod callerMethod: {
-									final var callerMethodClassName =
-											callerMethod.getDeclaringType().getFullyQualifiedName();
-									final var callerMethodClassNodeOptional =
-											graph.getNode(callerMethodClassName, GraphNodeClass.class);
-									GraphNodeClass callerMethodClassNode;
-									if (callerMethodClassNodeOptional.isEmpty()) {
-										append(graph, callerJavaElement);
-										callerMethodClassNode =
-												graph.getNode(callerMethodClassName, GraphNodeClass.class).get();
-									} else {
-										callerMethodClassNode = callerMethodClassNodeOptional.get();
-									}
-									final var callerMethodNode =
-											callerMethodClassNode
-													.getOperationNode(callerMethod.getElementName(), new ArrayList<>() // TODO
-																														// parameters
-									)
-													.get();
-									final var callerMethodStatements = callerMethodNode.getBody().getStatements();
-									for (final var callerMethodStatement : callerMethodStatements) {
-										if (callerMethodStatement instanceof GraphNodeExpressionStatement) {
-											final var expressionStatement =
-													(GraphNodeExpressionStatement) callerMethodStatement;
-											final var statementExpression = expressionStatement.getExpression();
-											if (statementExpression instanceof GraphNodeMethodInvocationExpression) {
-												final var methodInvocationExpression =
-														(GraphNodeMethodInvocationExpression) statementExpression;
-												final var invokedOperationNode =
-														methodInvocationExpression.getInvokedOperationNode();
+									case IMethod callerMethod: {
+										final var callerMethodClassName =
+												callerMethod.getDeclaringType().getFullyQualifiedName();
+										final var callerMethodClassNodeOptional =
+												graph.getNode(callerMethodClassName, GraphNodeClass.class);
+										GraphNodeClass callerMethodClassNode;
+										if (callerMethodClassNodeOptional.isEmpty()) {
+											append(graph, callerJavaElement);
+											callerMethodClassNode =
+													graph.getNode(callerMethodClassName, GraphNodeClass.class).get();
+										} else {
+											callerMethodClassNode = callerMethodClassNodeOptional.get();
+										}
+										final var callerMethodNode =
+												callerMethodClassNode.getOperationNode(
+														callerMethod.getElementName(),
+														new ArrayList<>() // TODO
+																			// parameters
+										).get();
+										final var callerMethodStatements = callerMethodNode.getBody().getStatements();
+										for (final var callerMethodStatement : callerMethodStatements) {
+											if (callerMethodStatement instanceof GraphNodeExpressionStatement) {
+												final var expressionStatement =
+														(GraphNodeExpressionStatement) callerMethodStatement;
+												final var statementExpression = expressionStatement.getExpression();
+												if (statementExpression instanceof GraphNodeMethodInvocationExpression) {
+													final var methodInvocationExpression =
+															(GraphNodeMethodInvocationExpression) statementExpression;
+													final var invokedOperationNode =
+															methodInvocationExpression.getInvokedOperationNode();
+												}
 											}
 										}
+										break;
 									}
-									break;
-								}
-								default: {
-									break;
-								}
+									default: {
+										break;
+									}
 								}
 							} catch (Exception ex) {
 								ex.printStackTrace();

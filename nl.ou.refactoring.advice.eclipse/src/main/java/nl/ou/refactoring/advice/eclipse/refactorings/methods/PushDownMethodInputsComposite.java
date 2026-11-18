@@ -15,7 +15,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.eclipse.refactorings.GraphChangedEvent;
 import nl.ou.refactoring.advice.eclipse.refactorings.RefactoringInputsComposite;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 
 /**
  * A composite for inputs of a Push Down Method refactoring.
@@ -91,13 +93,34 @@ public final class PushDownMethodInputsComposite extends RefactoringInputsCompos
 			 * progressMonitorDialog.run(true, true, runnable);
 			 */
 		} catch (Exception ex) {
+			LOGGER.error("Failed to populate target class combo", ex);
 			ex.printStackTrace();
 		}
+		this.targetClassComboWidget.addModifyListener((_) -> {
+			try {
+				final var targetClassFQName =
+						this.targetClassComboWidget.getItem(this.targetClassComboWidget.getSelectionIndex());
+				final var targetClass = selectedMethod.getJavaProject().findType(targetClassFQName);
+				if (targetClass == null) {
+					LOGGER.warn("Could not resolve class '{}' from project", targetClassFQName);
+				}
+				this.updateGraph(selectedMethod, targetClass, graph);
+			} catch (Exception ex) {
+				LOGGER.error(
+						"Failed to update Refactoring Advice Graph after selecting a new target class to push method down to.",
+						ex);
+				ex.printStackTrace();
+			}
+		});
 	}
 
 	private static IType[] getAllDescendantsOfMethodDeclaringClass(IMethod selectedMethod, IProgressMonitor monitor) {
 		final var result = new ArrayList<IType>();
 		try {
+			LOGGER.debug(
+					"Finding descendants of declaring class '{}' of method '{}' to push down",
+					selectedMethod.getDeclaringType().getFullyQualifiedName(),
+					selectedMethod.getElementName());
 			final var declaringClass = selectedMethod.getDeclaringType();
 			final var hierarchy = declaringClass.newTypeHierarchy(monitor);
 			final var allSubtypes = hierarchy.getAllSubtypes(declaringClass);
@@ -105,8 +128,50 @@ public final class PushDownMethodInputsComposite extends RefactoringInputsCompos
 				result.add(subtype);
 			}
 		} catch (Exception ex) {
+			LOGGER.error("Failed to scan all descendants of declaring class", ex);
 			ex.printStackTrace();
 		}
 		return result.toArray(new IType[] {});
+	}
+
+	private void updateGraph(IMethod selectedMethod, IType targetClass, Graph graph) {
+		try {
+			final var graphClone = graph.clone(graph.getRefactoringName());
+
+			// Get declaring Class
+			final var declaringClass = selectedMethod.getDeclaringType();
+			final var declaringClassFQName = declaringClass.getFullyQualifiedName();
+			final var declaringClassNode =
+					graphClone.getNode(declaringClassFQName, GraphNodeClass.class)
+							.orElseThrow(
+									() -> new RuntimeException(
+											"Could not find class node '" + declaringClassFQName + "'"));
+
+			// Get selected Method
+			final var selectedMethodName = selectedMethod.getElementName();
+			final var selectedOperationNode =
+					declaringClassNode.getOperationNodes()
+							.stream()
+							.filter((on) -> on.getOperationName().equals(selectedMethodName))
+							.findAny()
+							.orElseThrow(
+									() -> new RuntimeException(
+											"Could not find method '" + selectedMethodName + "' associated with class '"
+													+ declaringClassFQName + "'"));
+
+			// Get target Class
+			final var targetClassFQName = targetClass.getFullyQualifiedName();
+			final var targetClassNode =
+					graphClone.getNode(targetClassFQName, GraphNodeClass.class)
+							.orElseThrow(
+									() -> new RuntimeException(
+											"Could not find class node '" + targetClassFQName + "'"));
+
+			// Emit Graph Changed Event
+			this.onGraphChanged(new GraphChangedEvent(graphClone));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			LOGGER.error("Failed to update Refactoring Advice Graph", ex);
+		}
 	}
 }

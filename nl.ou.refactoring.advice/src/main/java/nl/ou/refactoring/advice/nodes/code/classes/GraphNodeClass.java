@@ -420,4 +420,28 @@ public final class GraphNodeClass extends GraphNodeCode {
 	public String getCaption() {
 		return ((GraphNodeIdentifier) this.classNameEdge.getDestinationNode()).getIdentifier();
 	}
+
+	@Override
+	public String toString() {
+		final var stringBuilder = new StringBuilder();
+
+		// Class name
+		stringBuilder.append("Class node: " + this.getClassName() + "\n");
+
+		// Attributes
+		stringBuilder.append("// Attributes\n");
+		final var attributeNodes = this.getAttributeNodes();
+		for (final var attributeNode : attributeNodes) {
+			stringBuilder.append("- " + attributeNode.getAttributeName());
+		}
+
+		// Operations
+		stringBuilder.append("// Operations\n");
+		final var operationNodes = this.getOperationNodes();
+		for (final var operationNode : operationNodes) {
+			stringBuilder.append("- " + operationNode.getOperationName());
+		}
+
+		return stringBuilder.toString();
+	}
 }

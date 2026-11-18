@@ -7,6 +7,9 @@ import java.io.StringWriter;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.SortOrder;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
@@ -33,6 +36,7 @@ import nl.ou.refactoring.advice.validation.code.classes.GraphNodeClassHasMultipl
  * Writes PlantUML Class Diagrams from Refactoring Advice Graphs.
  */
 public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
+	private static final Logger LOGGER = LogManager.getLogger(GraphPlantUmlClassDiagramWriter.class);
 	private static final String SPRITE_NAME_DANGER = "$danger";
 	private static final String SPRITE_NAME_NEW = "$new";
 	private static final String SPRITE_NAME_REMOVED = "$removed";
@@ -57,8 +61,11 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		this.writeSpritePlus(SPRITE_NAME_NEW);
 
 		// Domain model
-		final var packageNodes = graph.getNodes(GraphNodePackage.class).stream()
-				.filter(packageNode -> packageNode.getParent().isEmpty()).collect(Collectors.toUnmodifiableSet());
+		final var packageNodes =
+				graph.getNodes(GraphNodePackage.class)
+						.stream()
+						.filter(packageNode -> packageNode.getParent().isEmpty())
+						.collect(Collectors.toUnmodifiableSet());
 		for (final var packageNode : packageNodes) {
 			this.writePackage(packageNode);
 		}
@@ -102,8 +109,10 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		}
 	}
 
-	private static void pushPackageChildren(GraphNodePackage packageNode,
-			Stack<GraphNodePackagePath> packageNodesPathStack, String packageNodePathCurrent) {
+	private static void pushPackageChildren(
+			GraphNodePackage packageNode,
+			Stack<GraphNodePackagePath> packageNodesPathStack,
+			String packageNodePathCurrent) {
 		for (final var packageNodeChild : packageNode.getPackageNodes()) {
 			final var packageNodeChildPath = packageNodePathCurrent + "." + packageNodeChild.getPackageName();
 			packageNodesPathStack.push(new GraphNodePackagePath(packageNodeChild, packageNodeChildPath));
@@ -113,8 +122,11 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 	private void writeClass(GraphNodeClass classNode) throws GraphNodeClassHasMultipleGeneralisationsException {
 		// Class
 		final var stereotype = classNode.getStereotype();
-		this.printLine(String.format("class %s%s {", getSanitizedName(classNode),
-				stereotype == null ? "" : " <<" + stereotype + ">> " + getStereotypeInlineStyle(stereotype)));
+		this.printLine(
+				String.format(
+						"class %s%s {",
+						getSanitizedName(classNode),
+						stereotype == null ? "" : " <<" + stereotype + ">> " + getStereotypeInlineStyle(stereotype)));
 		this.indentIndex++;
 
 		// Attributes
@@ -203,29 +215,39 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		var noteCounter = 0;
 
 		// Analyse risks
-		final var dangerNodes = graph.getNodes(GraphNodeRisk.class).stream()
-				.filter(node -> node.getNeutralisers().size() == 0).collect(Collectors.toSet());
+		final var dangerNodes =
+				graph.getNodes(GraphNodeRisk.class)
+						.stream()
+						.filter(node -> node.getNeutralisers().size() == 0)
+						.collect(Collectors.toSet());
 		for (final var dangerNode : dangerNodes) {
 			noteCounter++;
-			final var affects = dangerNode.getEdges(GraphEdgeAffects.class).stream()
-					.map(edge -> edge.getDestinationNode()).filter(node -> node instanceof GraphNodeCode)
-					.map(GraphNodeCode.class::cast).collect(Collectors.toUnmodifiableList());
+			final var affects =
+					dangerNode.getEdges(GraphEdgeAffects.class)
+							.stream()
+							.map(edge -> edge.getDestinationNode())
+							.filter(node -> node instanceof GraphNodeCode)
+							.map(GraphNodeCode.class::cast)
+							.collect(Collectors.toUnmodifiableList());
 
 			final var noteIdentifier = String.format("N%d", noteCounter);
 			this.printLine(String.format("note as %s", noteIdentifier));
 			this.indentIndex++;
 
 			// Note text
-			this.printLine(String.format("<b>%s</b> on %s", // TODO use Preposition for 'on' from NLP name space, put
-															// the rest in a Sentence as well
-					dangerNode.getCaption(), String.join(", ", affects.stream().map(node -> {
-						return switch (node) {
-						case GraphNodeAttribute attributeNode -> attributeNode.getCaption();
-						case GraphNodeClass classNode -> classNode.getCaption();
-						case GraphNodeOperation operationNode -> operationNode.getCaption();
-						default -> findSubject(node).getCaption();
-						};
-					}).toList())));
+			this.printLine(
+					String.format(
+							"<b>%s</b> on %s", // TODO use Preposition for 'on' from NLP name space, put
+												// the rest in a Sentence as well
+							dangerNode.getCaption(),
+							String.join(", ", affects.stream().map(node -> {
+								return switch (node) {
+									case GraphNodeAttribute attributeNode -> attributeNode.getCaption();
+									case GraphNodeClass classNode -> classNode.getCaption();
+									case GraphNodeOperation operationNode -> operationNode.getCaption();
+									default -> findSubject(node).getCaption();
+								};
+							}).toList())));
 
 			this.indentIndex--;
 			this.printLine("end note");
@@ -239,64 +261,83 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 
 	private void writeNoteRelationship(GraphNodeCode codeNode, String noteIdentifier) {
 		switch (codeNode) {
-		case GraphNodeAttribute codeNodeAttribute: {
-			final var codeNodeClass = findSubject(codeNodeAttribute);
-			this.printLine(String.format("%s::%s .. %s", getSanitizedName(codeNodeClass),
-					getSanitizedName(codeNodeAttribute), getSanitizedName(noteIdentifier)));
-			break;
-		}
-		case GraphNodeClass codeNodeClass: {
-			this.printLine(
-					String.format("%s .. %s", getSanitizedName(codeNodeClass), getSanitizedName(noteIdentifier)));
-			break;
-		}
-		case GraphNodeOperation codeNodeOperation: {
-			final var codeNodeClass = findSubject(codeNodeOperation);
-			this.printLine(String.format("%s::%s .. %s", getSanitizedName(codeNodeClass),
-					getSanitizedName(codeNodeOperation), getSanitizedName(noteIdentifier)));
-			break;
-		}
-		default: {
-			final var codeNodeSubject = findSubject(codeNode);
-			this.writeNoteRelationship(codeNodeSubject, noteIdentifier);
-			break;
-		}
+			case GraphNodeAttribute codeNodeAttribute: {
+				final var codeNodeClass = findSubject(codeNodeAttribute);
+				this.printLine(
+						String.format(
+								"%s::%s .. %s",
+								getSanitizedName(codeNodeClass),
+								getSanitizedName(codeNodeAttribute),
+								getSanitizedName(noteIdentifier)));
+				break;
+			}
+			case GraphNodeClass codeNodeClass: {
+				this.printLine(
+						String.format("%s .. %s", getSanitizedName(codeNodeClass), getSanitizedName(noteIdentifier)));
+				break;
+			}
+			case GraphNodeOperation codeNodeOperation: {
+				final var codeNodeClass = findSubject(codeNodeOperation);
+				this.printLine(
+						String.format(
+								"%s::%s .. %s",
+								getSanitizedName(codeNodeClass),
+								getSanitizedName(codeNodeOperation),
+								getSanitizedName(noteIdentifier)));
+				break;
+			}
+			default: {
+				final var codeNodeSubject = findSubject(codeNode);
+				this.writeNoteRelationship(codeNodeSubject, noteIdentifier);
+				break;
+			}
 		}
 	}
 
 	private void writeInvocations(Graph graph) {
 		final var methodInvocationExpressions = graph.getNodes(GraphNodeMethodInvocationExpression.class);
 		for (final var methodInvocationExpression : methodInvocationExpressions) {
-			final var invokingMethod = methodInvocationExpression.getOperationNode();
-			final var invokingMethodClass = findSubject(invokingMethod);
-			final var invokedMethod = methodInvocationExpression.getInvokedOperationNode();
-			final var invokedMethodClass = findSubject(invokedMethod);
-			this.printLine(String.format("%s::%s -[dotted]-> %s::%s : %s", getSanitizedName(invokingMethodClass),
-					getSanitizedName(invokingMethod), getSanitizedName(invokedMethodClass),
-					getSanitizedName(invokedMethod),
-					ResourceProvider.GraphEdgeLabels.getLabel(GraphEdgeInvokes.class)));
+			var invokingMethodName = "";
+			try {
+				final var invokingMethod = methodInvocationExpression.getOperationNode();
+				invokingMethodName = invokingMethod.getOperationName();
+				final var invokingMethodClass = findSubject(invokingMethod);
+				final var invokedMethod = methodInvocationExpression.getInvokedOperationNode();
+				final var invokedMethodClass = findSubject(invokedMethod);
+				this.printLine(
+						String.format(
+								"%s::%s -[dotted]-> %s::%s : %s",
+								getSanitizedName(invokingMethodClass),
+								getSanitizedName(invokingMethod),
+								getSanitizedName(invokedMethodClass),
+								getSanitizedName(invokedMethod),
+								ResourceProvider.GraphEdgeLabels.getLabel(GraphEdgeInvokes.class)));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				LOGGER.error("Failed to write invocation of method '{}'", invokingMethodName, ex);
+			}
 		}
 	}
 
 	private GraphNodeCode findSubject(GraphNodeCode codeNode) {
 		return switch (codeNode) {
-		case GraphNodePackage pkg -> pkg;
-		case GraphNodeClass cls -> cls;
-		case GraphNodeClassMember member ->
-			member.getClassNode().orElseThrow(() -> new GraphWriterMemberOwningClassMissingException(member));
-		case GraphNodeMethodInvocationExpression methodInvocationExpression ->
-			methodInvocationExpression.getOperationNode();
-		default -> codeNode;
+			case GraphNodePackage pkg -> pkg;
+			case GraphNodeClass cls -> cls;
+			case GraphNodeClassMember member ->
+				member.getClassNode().orElseThrow(() -> new GraphWriterMemberOwningClassMissingException(member));
+			case GraphNodeMethodInvocationExpression methodInvocationExpression ->
+				methodInvocationExpression.getOperationNode();
+			default -> codeNode;
 		};
 	}
 
 	private static String getSanitizedName(GraphNodeCode codeNode) {
 		final var name = switch (codeNode) {
-		case GraphNodeClass classNode -> {
-			final var className = classNode.getClassName();
-			yield className;
-		}
-		default -> codeNode.getCaption();
+			case GraphNodeClass classNode -> {
+				final var className = classNode.getClassName();
+				yield className;
+			}
+			default -> codeNode.getCaption();
 		};
 
 		return getSanitizedName(name);
@@ -308,10 +349,10 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 
 	private static String getStereotypeInlineStyle(GraphNodeClassStereotype stereotype) {
 		return switch (stereotype) {
-		case GraphNodeClassStereotype.BEFORE -> "#DarkGray";
-		case GraphNodeClassStereotype.AFTER -> "#LightGray";
-		case GraphNodeClassStereotype.MITIGATED -> "#LightGreen";
-		default -> "";
+			case GraphNodeClassStereotype.BEFORE -> "#DarkGray";
+			case GraphNodeClassStereotype.AFTER -> "#LightGray";
+			case GraphNodeClassStereotype.MITIGATED -> "#LightGreen";
+			default -> "";
 		};
 	}
 }
