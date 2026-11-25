@@ -14,8 +14,8 @@ import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphPath;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class GraphNodeTests {
 	@ParameterizedTest

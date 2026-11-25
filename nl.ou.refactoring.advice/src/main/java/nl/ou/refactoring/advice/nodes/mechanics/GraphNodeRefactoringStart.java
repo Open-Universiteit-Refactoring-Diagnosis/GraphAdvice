@@ -9,7 +9,7 @@ import nl.ou.refactoring.advice.edges.mechanics.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
 
 /**
  * Represents the start node of a refactoring in a Refactoring Advice Graph.

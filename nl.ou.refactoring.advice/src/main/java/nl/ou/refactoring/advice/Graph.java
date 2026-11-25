@@ -32,8 +32,8 @@ import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringEnd;
 import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart;
 import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeMechanic;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMustContainStartNodeException;
 
 /**
  * Represents a Refactoring Advice Graph.

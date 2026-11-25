@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.validation.workflow;
+package nl.ou.refactoring.advice.nodes.mechanics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,6 +13,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.validation.GraphValidationEngine;
+import nl.ou.refactoring.advice.validation.mechanics.GraphHasStartNodeValidationResult;
+import nl.ou.refactoring.advice.validation.mechanics.GraphHasStartNodeValidator;
 
 public final class GraphHasStartNodeValidatorTests {
 	@DisplayName("Graph has a start node validation")

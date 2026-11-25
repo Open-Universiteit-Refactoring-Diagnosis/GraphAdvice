@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.validation.workflow;
+package nl.ou.refactoring.advice.validation.mechanics;
 
 import java.util.List;
 

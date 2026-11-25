@@ -37,8 +37,8 @@ import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAdd
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class GraphPainterTests {
 	private static Path OUTPUT_DIR;

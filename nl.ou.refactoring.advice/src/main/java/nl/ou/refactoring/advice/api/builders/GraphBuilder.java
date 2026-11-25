@@ -14,8 +14,8 @@ import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeMechanic;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddClass;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
-import nl.ou.refactoring.advice.validation.workflow.GraphIsFinalisedException;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.GraphIsFinalisedException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMustContainStartNodeException;
 
 /**
  * Creates Refactoring Advice Graphs (RAG) with the builder pattern.

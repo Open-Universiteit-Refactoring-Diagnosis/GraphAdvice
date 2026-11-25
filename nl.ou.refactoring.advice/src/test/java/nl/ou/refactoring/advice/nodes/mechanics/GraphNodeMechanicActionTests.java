@@ -13,7 +13,7 @@ import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAdd
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveExpression;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 
-final class GraphNodeWorkflowActionTests {
+final class GraphNodeMechanicActionTests {
 	@Test
 	@DisplayName("Should get the directly preceding microstep")
 	void getPreceding() {

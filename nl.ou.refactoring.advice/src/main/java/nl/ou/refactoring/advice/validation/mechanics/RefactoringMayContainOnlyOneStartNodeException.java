@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.validation.workflow;
+package nl.ou.refactoring.advice.validation.mechanics;
 
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 import nl.ou.refactoring.advice.validation.GraphValidationException;

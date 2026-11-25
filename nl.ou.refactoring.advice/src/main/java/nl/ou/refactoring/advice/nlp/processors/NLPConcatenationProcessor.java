@@ -23,7 +23,7 @@ import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRem
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveField;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMustContainStartNodeException;
 
 /**
  * A Natural Language Processing provider that concatenates pieces of texts

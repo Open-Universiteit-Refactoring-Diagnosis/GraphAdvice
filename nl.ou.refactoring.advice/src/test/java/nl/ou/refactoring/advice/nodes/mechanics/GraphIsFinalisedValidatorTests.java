@@ -1,4 +1,4 @@
-package nl.ou.refactoring.advice.validation.workflow;
+package nl.ou.refactoring.advice.nodes.mechanics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,6 +15,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.validation.GraphValidationEngine;
+import nl.ou.refactoring.advice.validation.mechanics.GraphIsFinalisedValidationResult;
+import nl.ou.refactoring.advice.validation.mechanics.GraphIsFinalisedValidator;
 
 public final class GraphIsFinalisedValidatorTests {
 	@DisplayName("Graph is finalised validation")
@@ -30,20 +32,20 @@ public final class GraphIsFinalisedValidatorTests {
 		assertInstanceOf(GraphIsFinalisedValidationResult.class, result);
 		assertEquals(isValidExpected, result.getIsValid());
 	}
-	
+
 	public static Stream<Arguments> validateTestParameters() {
 		final var argumentsList = new ArrayList<Arguments>();
-		
+
 		final var graphNotFinalised = new Graph("Graph not finalised");
 		argumentsList.add(Arguments.of(graphNotFinalised, false));
-		
+
 		final var graphFinalised = new Graph("Graph finalised");
 		final var graphFinalisedStartNode = graphFinalised.start();
 		final var graphAddMethodNode = new GraphNodeMicrostepAddMethod(graphFinalised);
 		graphFinalisedStartNode.initiates(graphAddMethodNode);
 		graphAddMethodNode.finalises();
 		argumentsList.add(Arguments.of(graphFinalised, true));
-		
+
 		return argumentsList.stream();
 	}
 }

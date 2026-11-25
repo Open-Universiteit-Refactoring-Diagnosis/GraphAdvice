@@ -35,9 +35,9 @@ import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAdd
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveField;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
-import nl.ou.refactoring.advice.validation.workflow.microsteps.GraphNodeMicrostepAttributeMissingException;
-import nl.ou.refactoring.advice.validation.workflow.microsteps.GraphNodeMicrostepOperationMissingException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMustContainStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.microsteps.GraphNodeMicrostepAttributeMissingException;
+import nl.ou.refactoring.advice.validation.mechanics.microsteps.GraphNodeMicrostepOperationMissingException;
 
 /**
  * A Natural Language Processing provider that arrange text into natural

@@ -31,7 +31,7 @@ import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAdd
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveClass;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class GraphTests {
 	@Test

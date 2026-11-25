@@ -18,7 +18,7 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerMissingDefinition;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
 
 public class GraphHtmlTextWriterTestsWriteArgumentsProvider implements ArgumentsProvider {
 	@Override

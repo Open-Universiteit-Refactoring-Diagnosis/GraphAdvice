@@ -6,7 +6,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneEndNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneEndNodeException;
 
 /**
  * The end node of a refactoring workflow.

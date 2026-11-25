@@ -12,7 +12,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddExpression;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class GraphJsonReaderTests {
 

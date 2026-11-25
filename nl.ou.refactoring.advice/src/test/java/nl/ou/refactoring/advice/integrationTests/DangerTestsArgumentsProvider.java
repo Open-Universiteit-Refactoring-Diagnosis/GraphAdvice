@@ -24,7 +24,7 @@ import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDang
 import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerImposedSpecification;
 import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerPrecedingOverload;
 import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
+import nl.ou.refactoring.advice.validation.mechanics.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 
