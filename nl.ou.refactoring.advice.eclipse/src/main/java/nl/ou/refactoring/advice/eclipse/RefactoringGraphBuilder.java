@@ -12,6 +12,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
@@ -115,10 +117,9 @@ public final class RefactoringGraphBuilder {
 
 		try {
 			LOGGER.info("Searching callers of method {}", method.getElementName());
-			final var searchPattern = SearchPattern.createPattern(method, IJavaSearchConstants.QUALIFIED_REFERENCE);
 			final var methodProject = method.getJavaProject();
-			final var searchScope =
-					SearchEngine.createJavaSearchScope(new IJavaProject[] { methodProject }, IJavaSearchScope.SOURCES);
+			final var searchPattern = SearchPattern.createPattern(method, IJavaSearchConstants.REFERENCES);
+			final var searchScope = SearchEngine.createWorkspaceScope();
 			final var searchEngine = new SearchEngine();
 			searchEngine.search(
 					searchPattern,
@@ -128,6 +129,7 @@ public final class RefactoringGraphBuilder {
 						@Override
 						public void acceptSearchMatch(SearchMatch match) {
 							try {
+								LOGGER.debug("Search match '{}'", match.getElement().toString());
 								final var callerElement = match.getElement();
 								if (!(callerElement instanceof IJavaElement)) {
 									return;
