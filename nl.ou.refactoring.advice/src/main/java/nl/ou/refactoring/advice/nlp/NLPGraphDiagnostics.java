@@ -1,9 +1,9 @@
 package nl.ou.refactoring.advice.nlp;
 
 import nl.ou.refactoring.advice.GraphPath;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAdd;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemove;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAdd;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemove;
 
 /**
  * Diagnostics of a Refactoring Advice Graph (RAG) to determine what kind of

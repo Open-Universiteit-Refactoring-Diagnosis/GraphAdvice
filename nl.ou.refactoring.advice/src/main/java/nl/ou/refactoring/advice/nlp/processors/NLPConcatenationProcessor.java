@@ -12,16 +12,16 @@ import nl.ou.refactoring.advice.nlp.NLPException;
 import nl.ou.refactoring.advice.nlp.NLPProcessor;
 import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveClass;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDanger;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerForcedOverride;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddClass;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveClass;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
 
@@ -156,7 +156,7 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 		}
 	}
 
-	private void appendNodeRisk(GraphNodeRisk riskNode, Map<String, GraphNode> references) {
+	private void appendNodeRisk(GraphNodeDanger riskNode, Map<String, GraphNode> references) {
 		this.appendFormat(" which will cause a %s", riskNode.getCaption());
 		final var affectedNodes = riskNode.getAffected();
 		final var affectedNodesList =
@@ -167,7 +167,7 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 	}
 
 	private void appendNodeRiskDoubleDefinition(
-			GraphNodeRiskDoubleDefinition doubleDefinition,
+			GraphNodeDangerDoubleDefinition doubleDefinition,
 			Map<String, GraphNode> references) {
 		this.append(" which will introduce code symbols with identical signatures");
 		final var affectedNodes = doubleDefinition.getAffected();
@@ -179,7 +179,7 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 	}
 
 	private void appendNodeRiskForcedOverride(
-			GraphNodeRiskForcedOverride forcedOverride,
+			GraphNodeDangerForcedOverride forcedOverride,
 			Map<String, GraphNode> references) {
 		this.append(" which will forcefully cause an override of ");
 		final var affectedNodes = forcedOverride.getAffected();
@@ -252,11 +252,11 @@ public final class NLPConcatenationProcessor extends NLPProcessor {
 						this.appendNodeMicrostepRemoveField(removeField, references);
 					case GraphNodeMicrostepRemoveMethod removeMethod ->
 						this.appendNodeMicrostepRemoveMethod(removeMethod, references);
-					case GraphNodeRiskDoubleDefinition doubleDefinition ->
+					case GraphNodeDangerDoubleDefinition doubleDefinition ->
 						this.appendNodeRiskDoubleDefinition(doubleDefinition, references);
-					case GraphNodeRiskForcedOverride forcedOverride ->
+					case GraphNodeDangerForcedOverride forcedOverride ->
 						this.appendNodeRiskForcedOverride(forcedOverride, references);
-					case GraphNodeRisk risk -> this.appendNodeRisk(risk, references);
+					case GraphNodeDanger risk -> this.appendNodeRisk(risk, references);
 					default -> {
 					}
 				}

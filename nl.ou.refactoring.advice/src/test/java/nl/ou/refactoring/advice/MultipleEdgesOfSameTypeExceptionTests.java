@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
 import nl.ou.refactoring.advice.validation.MultipleEdgesOfSameTypeException;
 
 public final class MultipleEdgesOfSameTypeExceptionTests {
@@ -18,7 +18,7 @@ public final class MultipleEdgesOfSameTypeExceptionTests {
 	public void getLocalizedMessageTest() {
 		// Arrange
 		final var graph = new Graph("Refactoring test");
-		final var doubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
+		final var doubleDefinition = new GraphNodeDangerDoubleDefinition(graph);
 		final var testMethodIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "testMethod");
 		final var method = new GraphNodeOperation(graph, testMethodIdentifier);
 		final var affects = doubleDefinition.affects(method);
@@ -33,9 +33,9 @@ public final class MultipleEdgesOfSameTypeExceptionTests {
 		// Assert
 		assertTrue(
 				exceptionMessageDutch.startsWith(
-						"Meerdere Zijden van hetzelfde type `nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects`"));
+						"Meerdere Zijden van hetzelfde type `nl.ou.refactoring.advice.edges.diagnosisresolutions.GraphEdgeAffects`"));
 		assertTrue(
 				exceptionMessageEnglish.startsWith(
-						"Multiple Edges of the same type `nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects`"));
+						"Multiple Edges of the same type `nl.ou.refactoring.advice.edges.diagnosisresolutions.GraphEdgeAffects`"));
 	}
 }

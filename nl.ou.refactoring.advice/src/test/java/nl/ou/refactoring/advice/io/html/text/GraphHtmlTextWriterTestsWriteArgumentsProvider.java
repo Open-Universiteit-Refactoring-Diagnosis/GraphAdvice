@@ -15,9 +15,9 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeProgramLocation;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerMissingDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public class GraphHtmlTextWriterTestsWriteArgumentsProvider implements ArgumentsProvider {
@@ -75,7 +75,7 @@ public class GraphHtmlTextWriterTestsWriteArgumentsProvider implements Arguments
 		class2Node.has(class2OperationFooNode);
 		microstepAddMethodNode.adds(class2OperationFooNode);
 
-		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
+		final var missingDefinitionRiskNode = new GraphNodeDangerMissingDefinition(graph);
 		microstepRemoveMethodNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(class1OperationFooNode);
 

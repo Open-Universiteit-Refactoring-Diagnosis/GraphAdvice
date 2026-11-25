@@ -20,18 +20,18 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.edges.GraphEdgeFactoryFunction;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeWorkflow;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeMechanic;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringEnd;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDanger;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringEnd;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeMechanic;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
 
@@ -250,18 +250,6 @@ public final class Graph implements Cloneable {
 			return false;
 		}
 		return this.equals((Graph) other);
-	}
-
-	/**
-	 * Finds all dangers in the advice graph.
-	 * 
-	 * @return A set of dangers in the advice graph.
-	 */
-	public Set<GraphNodeRisk> getDangers() {
-		return this.getRisks()
-				.stream()
-				.filter(node -> node.getNeutralisers().size() == 0)
-				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	/**
@@ -570,8 +558,8 @@ public final class Graph implements Cloneable {
 	 * 
 	 * @return A set of risks in the advice graph.
 	 */
-	public Set<GraphNodeRisk> getRisks() {
-		return this.getNodes(GraphNodeRisk.class);
+	public Set<GraphNodeDanger> getDangers() {
+		return this.getNodes(GraphNodeDanger.class);
 	}
 
 	/**
@@ -607,12 +595,12 @@ public final class Graph implements Cloneable {
 
 		final var startNode = this.getStart().orElseThrow(() -> new RefactoringMustContainStartNodeException());
 		final var path = new GraphPath(startNode);
-		Optional<GraphNodeWorkflow> currentNode = Optional.of(startNode);
+		Optional<GraphNodeMechanic> currentNode = Optional.of(startNode);
 		while (currentNode.isPresent()) {
 			switch (currentNode.get()) {
-				case GraphNodeWorkflow workflowNode: {
-					final Optional<GraphEdgeWorkflow> workflowEdgeOptional =
-							workflowNode.getEdges(GraphEdgeWorkflow.class).stream().findAny();
+				case GraphNodeMechanic workflowNode: {
+					final Optional<GraphEdgeMechanic> workflowEdgeOptional =
+							workflowNode.getEdges(GraphEdgeMechanic.class).stream().findAny();
 					if (workflowEdgeOptional.isPresent()) {
 						final var workflowEdge = workflowEdgeOptional.get();
 						final var nextNode = workflowEdge.getDestinationNode();

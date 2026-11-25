@@ -30,11 +30,11 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerMissingDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
@@ -116,7 +116,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		betaClassNode.has(betaTwoAttributeNode);
 		addFieldMicrostepNode.adds(betaTwoAttributeNode);
 
-		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
+		final var missingDefinitionRiskNode = new GraphNodeDangerMissingDefinition(graph);
 		removeFieldMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(alphaBarOperationNode);
 
@@ -172,7 +172,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		betaClassNode.has(betaFooOperationNode);
 		addMethodMicrostepNode.adds(betaFooOperationNode);
 
-		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
+		final var missingDefinitionRiskNode = new GraphNodeDangerMissingDefinition(graph);
 		removeMethodMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(alphaBarOperationNode);
 
@@ -235,7 +235,7 @@ public final class RefactoringTestsArgumentsProvider implements ArgumentsProvide
 		gammaCallerBlock.has(gammaCallerStatement);
 		gammaCallerExpression.invokes(alphaFooOperationNode);
 
-		final var missingDefinitionRiskNode = new GraphNodeRiskMissingDefinition(graph);
+		final var missingDefinitionRiskNode = new GraphNodeDangerMissingDefinition(graph);
 		removeMethodMicrostepNode.causes(missingDefinitionRiskNode);
 		missingDefinitionRiskNode.affects(gammaCallerOperationNode);
 

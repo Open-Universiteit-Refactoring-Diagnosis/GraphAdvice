@@ -1,6 +1,6 @@
 package nl.ou.refactoring.advice.validation.workflow.microsteps;
 
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
 

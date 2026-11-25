@@ -18,12 +18,12 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParamete
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.code.operations.statements.GraphNodeExpressionStatement;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskChangedNestedRelationship;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskForcedOverride;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskImposedSpecification;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskPrecedingOverload;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerChangedNestedRelationship;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerForcedOverride;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerImposedSpecification;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerPrecedingOverload;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
@@ -61,7 +61,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
 		addMethodNode.adds(fooNewOperationNode);
 		startNode.initiates(addMethodNode);
-		final var doubleDefinitionRisk = new GraphNodeRiskDoubleDefinition(graph);
+		final var doubleDefinitionRisk = new GraphNodeDangerDoubleDefinition(graph);
 		doubleDefinitionRisk.affects(fooOperationNode);
 		doubleDefinitionRisk.affects(fooNewOperationNode);
 		addMethodNode.causes(doubleDefinitionRisk);
@@ -94,7 +94,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
 		addMethodNode.adds(operationNodeBetaFoo);
 		startNode.initiates(addMethodNode);
-		final var forcedOverrideRisk = new GraphNodeRiskForcedOverride(graph);
+		final var forcedOverrideRisk = new GraphNodeDangerForcedOverride(graph);
 		forcedOverrideRisk.affects(operationNodeAlphaFoo);
 		forcedOverrideRisk.affects(operationNodeBetaFoo);
 		addMethodNode.causes(forcedOverrideRisk);
@@ -128,7 +128,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
 		addMethodNode.adds(operationNodeAlphaFoo);
 		startNode.initiates(addMethodNode);
-		final var imposedSpecificationRisk = new GraphNodeRiskImposedSpecification(graph);
+		final var imposedSpecificationRisk = new GraphNodeDangerImposedSpecification(graph);
 		imposedSpecificationRisk.affects(operationNodeAlphaFoo);
 		imposedSpecificationRisk.affects(operationNodeBetaFoo);
 		addMethodNode.causes(imposedSpecificationRisk);
@@ -168,7 +168,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
 		startNode.initiates(addMethodNode);
 		addMethodNode.adds(operationNodeFooDouble);
-		final var precedingOverloadRisk = new GraphNodeRiskPrecedingOverload(graph);
+		final var precedingOverloadRisk = new GraphNodeDangerPrecedingOverload(graph);
 		precedingOverloadRisk.affects(operationNodeFooInt);
 		precedingOverloadRisk.affects(operationNodeFooDouble);
 		addMethodNode.causes(precedingOverloadRisk);
@@ -210,7 +210,7 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		addMethodNode.adds(betaFooOperationNode);
 		addMethodNode.finalises();
 
-		final var changedNestedRelationshipRiskNode = new GraphNodeRiskChangedNestedRelationship(graph);
+		final var changedNestedRelationshipRiskNode = new GraphNodeDangerChangedNestedRelationship(graph);
 		changedNestedRelationshipRiskNode.affects(alphaFooOperationNode);
 		changedNestedRelationshipRiskNode.affects(betaFooOperationNode);
 		changedNestedRelationshipRiskNode.affects(betaBarMethodInvocationExpressionNode);

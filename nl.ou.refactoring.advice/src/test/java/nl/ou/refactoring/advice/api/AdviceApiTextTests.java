@@ -25,9 +25,9 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 
 public final class AdviceApiTextTests {
 	private static Element ELEMENT_CONTAINER;
@@ -75,7 +75,7 @@ public final class AdviceApiTextTests {
 		microstepAddMethod.adds(operationAddedTest);
 		final var microstepRemoveMethod = graph.getNodes(GraphNodeMicrostepRemoveMethod.class).stream().findAny().get();
 		microstepRemoveMethod.removes(operationRemovedTest);
-		final var riskDoubleDefinition = new GraphNodeRiskDoubleDefinition(graph);
+		final var riskDoubleDefinition = new GraphNodeDangerDoubleDefinition(graph);
 		microstepAddMethod.causes(riskDoubleDefinition);
 		riskDoubleDefinition.affects(attributeTest);
 		riskDoubleDefinition.affects(operationAddedTest);

@@ -8,12 +8,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.ParameterDeclarations;
 
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerMissingDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 
 class GraphWorkflowGetRisksTestArgumentsProvider implements ArgumentsProvider {
 	@Override
@@ -26,7 +26,7 @@ class GraphWorkflowGetRisksTestArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("Rename Field");
 		final var startNode = graph.start();
 		final var addField = new GraphNodeMicrostepAddField(graph);
-		final var doubleDefinitionRisk = new GraphNodeRiskDoubleDefinition(graph);
+		final var doubleDefinitionRisk = new GraphNodeDangerDoubleDefinition(graph);
 		final var removeField = new GraphNodeMicrostepRemoveField(graph);
 		startNode.initiates(addField);
 		addField.causes(doubleDefinitionRisk);
@@ -39,9 +39,9 @@ class GraphWorkflowGetRisksTestArgumentsProvider implements ArgumentsProvider {
 		final var graph = new Graph("Rename Method");
 		final var startNode = graph.start();
 		final var addMethod = new GraphNodeMicrostepAddMethod(graph);
-		final var doubleDefinitionRisk = new GraphNodeRiskDoubleDefinition(graph);
+		final var doubleDefinitionRisk = new GraphNodeDangerDoubleDefinition(graph);
 		final var removeMethod = new GraphNodeMicrostepRemoveMethod(graph);
-		final var missingDefinitionRisk = new GraphNodeRiskMissingDefinition(graph);
+		final var missingDefinitionRisk = new GraphNodeDangerMissingDefinition(graph);
 		startNode.initiates(addMethod);
 		addMethod.causes(doubleDefinitionRisk);
 		addMethod.precedes(removeMethod);

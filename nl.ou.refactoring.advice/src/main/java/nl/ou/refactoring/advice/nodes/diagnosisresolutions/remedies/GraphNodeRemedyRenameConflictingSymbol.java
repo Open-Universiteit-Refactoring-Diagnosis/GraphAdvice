@@ -1,0 +1,44 @@
+package nl.ou.refactoring.advice.nodes.diagnosisresolutions.remedies;
+
+import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.contracts.ArgumentGuard;
+import nl.ou.refactoring.advice.contracts.ArgumentNullException;
+import nl.ou.refactoring.advice.edges.diagnosisresolutions.GraphEdgeMitigates;
+import nl.ou.refactoring.advice.nodes.GraphNodeBase;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+
+/**
+ * Represents a remedy of renaming a conflicting code symbol to avoid a Double Definition risk.
+ */
+public final class GraphNodeRemedyRenameConflictingSymbol extends GraphNodeRemedy {
+	/**
+	 * Initialises a new instance of {@link GraphNodeRemedyRenameConflictingSymbol}.
+	 * @param graph {@link Graph} The graph that contains the remedy.
+	 * @throws ArgumentNullException Thrown if graph is null.
+	 */
+	public GraphNodeRemedyRenameConflictingSymbol(Graph graph)
+			throws ArgumentNullException {
+		super(graph);
+	}
+	
+	/**
+	 * Indicates that the Rename Conflicting Symbol remedy mitigates the Double Definition risk.
+	 * @param doubleDefinition The Double Definition risk that is mitigated by this remedy.
+	 * @return An edge that connects the remedy and the risk.
+	 * @throws ArgumentNullException Thrown if doubleDefinition is null.
+	 */
+	public GraphEdgeMitigates mitigates(GraphNodeDangerDoubleDefinition doubleDefinition)
+			throws ArgumentNullException {
+		return this.graph.computeEdge(
+				this,
+				doubleDefinition,
+				(source, destination) -> new GraphEdgeMitigates(source, destination),
+				GraphEdgeMitigates.class);
+	}
+
+	@Override
+	public GraphNodeBase clone(Graph graph) throws ArgumentNullException {
+		ArgumentGuard.requireNotNull(graph, "graph");
+		return new GraphNodeRemedyRenameConflictingSymbol(graph);
+	}
+}

@@ -7,14 +7,14 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeAdds;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveField;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes an Attribute

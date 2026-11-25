@@ -18,7 +18,7 @@ import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.io.GraphReader;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart;
 
 /**
  * Reads Refactoring Advice Graphs from JSON.

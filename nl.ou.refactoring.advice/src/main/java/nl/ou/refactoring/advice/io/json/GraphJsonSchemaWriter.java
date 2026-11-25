@@ -21,7 +21,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeMechanic;
 
 /**
  * Writes the JSON Schema for validating JSON representations of Refactoring Advice Graphs.
@@ -64,7 +64,7 @@ public final class GraphJsonSchemaWriter {
 					.acceptPackages("nl.ou.refactoring.advice.nodes")
 					.scan()) {
 			final var classes = scanResult.getSubclasses(GraphNodeCode.class);
-			classes.addAll(scanResult.getSubclasses(GraphNodeWorkflow.class));
+			classes.addAll(scanResult.getSubclasses(GraphNodeMechanic.class));
 			nodeClasses =
 				classes
 					.loadClasses()

@@ -6,8 +6,8 @@ import java.util.Map;
 
 import nl.ou.refactoring.advice.GraphPath;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeAdds;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nlp.NLPGraphDiagnostics;
 import nl.ou.refactoring.advice.nlp.NLPResult;
 import nl.ou.refactoring.advice.nlp.grammar.nouns.CommonNoun;
@@ -28,9 +28,9 @@ import nl.ou.refactoring.advice.nlp.grammar.verbs.VerbVoice;
 import nl.ou.refactoring.advice.nlp.tokens.NLPTokenNotFoundException;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemove;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskMissingDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerMissingDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemove;
 
 /**
  * Builds sentences from Refactoring Advice Graph (RAG) paths.
@@ -57,16 +57,16 @@ public final class NLPGrammarSentenceBuilder {
 		final var dangerPathSegmentLast = dangerPathSegments.getLast();
 		final var dangerNode = dangerPathSegmentLast.getNode();
 		return switch (dangerNode) {
-			case GraphNodeRiskDoubleDefinition doubleDefinitionNode ->
+			case GraphNodeDangerDoubleDefinition doubleDefinitionNode ->
 				buildDoubleDefinitionDescription(doubleDefinitionNode, graphPath, references);
-			case GraphNodeRiskMissingDefinition missingDefinitionNode ->
+			case GraphNodeDangerMissingDefinition missingDefinitionNode ->
 				buildMissingDefinitionDescription(missingDefinitionNode, graphPath, references);
 			default -> new ArrayList<Sentence>();
 		};
 	}
 
 	private static List<Sentence> buildDoubleDefinitionDescription(
-			GraphNodeRiskDoubleDefinition doubleDefinitionNode,
+			GraphNodeDangerDoubleDefinition doubleDefinitionNode,
 			GraphPath graphPath,
 			Map<String, GraphNode> references) {
 		final var sentences = new ArrayList<Sentence>();
@@ -174,10 +174,11 @@ public final class NLPGrammarSentenceBuilder {
 			final var conflictNounPhrase = new NounPhrase(conflictNoun);
 			final var conflictReferenceNounPhrase = new NounPhrase(conflictingNoun);
 			final var conflictWithPreposition = new Preposition(Tokens.Prepositions.WITH_AGAINST);
-			final var conflictWithPrepositionalPhrase = new PrepositionalPhrase(conflictWithPreposition, conflictReferenceNounPhrase);
+			final var conflictWithPrepositionalPhrase =
+					new PrepositionalPhrase(conflictWithPreposition, conflictReferenceNounPhrase);
 			conflictNounPhrase.setPrepositionalPhrase(conflictWithPrepositionalPhrase);
 			causeVerbPhrase.setNounPhrase(conflictNounPhrase);
-			
+
 			renameSentence.setVerbPhrase(causeVerbPhrase);
 
 			sentences.add(renameSentence);
@@ -215,7 +216,7 @@ public final class NLPGrammarSentenceBuilder {
 	}
 
 	private static List<Sentence> buildMissingDefinitionDescription(
-			GraphNodeRiskMissingDefinition missingDefinitionNode,
+			GraphNodeDangerMissingDefinition missingDefinitionNode,
 			GraphPath graphPath,
 			Map<String, GraphNode> references) {
 		final var sentences = new ArrayList<Sentence>();

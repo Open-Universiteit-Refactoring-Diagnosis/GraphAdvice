@@ -9,10 +9,10 @@ import nl.ou.refactoring.advice.api.RefactoringTemplateUndefinedException;
 import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeWorkflow;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeMechanic;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddClass;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
 import nl.ou.refactoring.advice.validation.workflow.GraphIsFinalisedException;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
@@ -31,7 +31,7 @@ public class GraphBuilder {
 	 * The last node in the Refactoring Advice Graph (RAG)'s workflow. Wrapped in
 	 * {@link Optional}, empty if not present.
 	 */
-	private Optional<GraphNodeWorkflow> workflowLastNode;
+	private Optional<GraphNodeMechanic> workflowLastNode;
 
 	/**
 	 * Initialises a new instance of {@link GraphBuilder}.
@@ -44,10 +44,10 @@ public class GraphBuilder {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		this.graph = graph;
 		if (this.graph.isFinalised()) {
-			this.workflowLastNode = this.graph.getEnd().map(GraphNodeWorkflow.class::cast);
+			this.workflowLastNode = this.graph.getEnd().map(GraphNodeMechanic.class::cast);
 		} else {
 			this.workflowLastNode =
-					Optional.of((GraphNodeWorkflow) this.graph.getWorkflow(100).getSegments().getLast().getNode());
+					Optional.of((GraphNodeMechanic) this.graph.getWorkflow(100).getSegments().getLast().getNode());
 		}
 	}
 
@@ -63,7 +63,7 @@ public class GraphBuilder {
 			throws ArgumentNullException, RefactoringTemplateUndefinedException {
 		ArgumentGuard.requireNotNull(template, "template");
 		this.graph = AdviceApi.createRefactoringGraphByTemplate(template);
-		this.workflowLastNode = this.graph.getEnd().map(GraphNodeWorkflow.class::cast);
+		this.workflowLastNode = this.graph.getEnd().map(GraphNodeMechanic.class::cast);
 	}
 
 	/**

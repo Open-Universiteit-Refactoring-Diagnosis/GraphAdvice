@@ -29,11 +29,11 @@ import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveField;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveField;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMustContainStartNodeException;
 import nl.ou.refactoring.advice.validation.workflow.microsteps.GraphNodeMicrostepAttributeMissingException;
@@ -291,7 +291,7 @@ public class NLPGrammarProcessor extends NLPProcessor {
 	}
 
 	private Sentence createRiskDoubleDefinitionSentence(
-			GraphNodeRiskDoubleDefinition riskDoubleDefinitionNode,
+			GraphNodeDangerDoubleDefinition riskDoubleDefinitionNode,
 			HashMap<String, GraphNode> references) {
 		final var dangerSentence = new Sentence();
 

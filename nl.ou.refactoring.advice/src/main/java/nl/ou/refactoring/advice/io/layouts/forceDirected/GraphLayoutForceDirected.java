@@ -12,7 +12,7 @@ import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.io.layouts.GraphLayout;
 import nl.ou.refactoring.advice.io.layouts.GraphLayoutNode;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart;
 
 /**
  * A layout of a Refactoring Advice Graph using the Force-Directed Layout algorithm.

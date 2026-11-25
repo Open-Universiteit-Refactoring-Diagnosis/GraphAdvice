@@ -15,7 +15,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
 import nl.ou.refactoring.advice.validation.paths.GraphPathSegmentInvalidException;
 
 /**

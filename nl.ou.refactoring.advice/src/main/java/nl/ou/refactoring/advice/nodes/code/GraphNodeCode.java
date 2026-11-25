@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.edges.diagnosisresolutions.GraphEdgeAffects;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDanger;
 
 /**
  * Represents a node in a Refactoring Advice Graph that describes the affected programme code.
@@ -59,30 +59,17 @@ public abstract class GraphNodeCode extends GraphNodeBase {
 	}
 	
 	/**
-	 * Gets all {@link GraphNodeRisk} nodes associated with this code element.
-	 * @return The {@link GraphNodeRisk} nodes associated with this code element.
+	 * Gets all {@link GraphNodeDanger} nodes associated with this code element.
+	 * @return The {@link GraphNodeDanger} nodes associated with this code element.
 	 */
-	public Set<GraphNodeRisk> getRisks() {
+	public Set<GraphNodeDanger> getDangers() {
 		return
 				this
 					.getEdgesIncoming(GraphEdgeAffects.class)
 					.stream()
 					.map(edge -> edge.getSourceNode())
-					.filter(GraphNodeRisk.class::isInstance)
-					.map(GraphNodeRisk.class::cast)
-					.collect(Collectors.toUnmodifiableSet());
-	}
-	
-	/**
-	 * Gets all {@link GraphNodeRisk} nodes associated with this code element, which are not neutralised.
-	 * @return The {@link GraphNodeRisk} nodes associated with this code element.
-	 */
-	public Set<GraphNodeRisk> getDangers() {
-		return
-				this
-					.getRisks()
-					.stream()
-					.filter(node -> node.getNeutralisers().isEmpty())
+					.filter(GraphNodeDanger.class::isInstance)
+					.map(GraphNodeDanger.class::cast)
 					.collect(Collectors.toUnmodifiableSet());
 	}
 }

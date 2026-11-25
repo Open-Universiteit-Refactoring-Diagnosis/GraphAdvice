@@ -1,0 +1,105 @@
+package nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.validation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
+import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
+import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.validation.GraphValidationEngine;
+
+public final class GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidatorTests {
+	@DisplayName("Graph Double Definition present when required validation")
+	@ParameterizedTest
+	@MethodSource("validateTestParameters")
+	public void validateTest(Graph graph, boolean isValidExpected) {
+		final var engine = new GraphValidationEngine();
+		engine.addValidator(GraphNodeDangerDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
+		final var results = engine.validate(graph);
+		assertFalse(results.isEmpty());
+		assertEquals(results.size(), 1);
+		final var result = results.stream().findAny().get();
+		assertInstanceOf(GraphNodeDangerDoubleDefinitionPresentWhenRequiredValidationResult.class, result);
+		assertEquals(isValidExpected, result.getIsValid());
+	}
+
+	public static Stream<Arguments> validateTestParameters() {
+		return Stream.of(
+				Arguments.of(createGraphMissingRiskDoubleDefinitionMethod(), false),
+				Arguments.of(createGraphNotMissingRiskDoubleDefinitionMethod(), true));
+	}
+
+	@DisplayName("Graph Double Definition present when required validation fix")
+	@ParameterizedTest
+	@MethodSource("fixTestParameters")
+	public void fixTest(Graph graph) {
+		final var engine = new GraphValidationEngine();
+		engine.addValidator(GraphNodeDangerDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
+		final var results = engine.validate(graph);
+		assertFalse(results.isEmpty());
+		assertEquals(results.size(), 1);
+		final var result = results.stream().findAny().get();
+		assertInstanceOf(GraphNodeDangerDoubleDefinitionPresentWhenRequiredValidationResult.class, result);
+
+		// Validate risk is actually absent.
+		assertTrue(graph.getNodes(GraphNodeDangerDoubleDefinition.class).isEmpty());
+
+		final var doubleDefinitionValidationResult =
+				(GraphNodeDangerDoubleDefinitionPresentWhenRequiredValidationResult) result;
+		doubleDefinitionValidationResult.fix(false);
+
+		// Validate risk is not absent anymore.
+		final var risks = graph.getNodes(GraphNodeDangerDoubleDefinition.class);
+		assertFalse(risks.isEmpty());
+
+	}
+
+	public static Stream<Arguments> fixTestParameters() {
+		return Stream.of(Arguments.of(createGraphMissingRiskDoubleDefinitionMethod()));
+	}
+
+	private static Graph createGraphMissingRiskDoubleDefinitionMethod() {
+		final var graph = new Graph("Graph missing risk Double Definition with operation/method");
+		final var graphStart = graph.start();
+		final var addMethodNode = new GraphNodeMicrostepAddMethod(graph);
+		graphStart.initiates(addMethodNode);
+		addMethodNode.finalises();
+
+		final var packageNode = new GraphNodePackage(graph, GraphNodeIdentifier.computeIdentifier(graph, "test"));
+		final var classNode = new GraphNodeClass(graph, GraphNodeIdentifier.computeIdentifier(graph, "ClassA"));
+		final var operationNodeExisting =
+				new GraphNodeOperation(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
+		final var operationNodeNew = new GraphNodeOperation(graph, GraphNodeIdentifier.computeIdentifier(graph, "foo"));
+		packageNode.has(classNode);
+		classNode.has(operationNodeExisting);
+		classNode.has(operationNodeNew);
+		addMethodNode.adds(operationNodeNew);
+
+		return graph;
+	}
+
+	private static Graph createGraphNotMissingRiskDoubleDefinitionMethod() {
+		final var graph = createGraphMissingRiskDoubleDefinitionMethod();
+
+		final var riskDoubleDefinitionNode = new GraphNodeDangerDoubleDefinition(graph);
+		final var addMethodNode = graph.getNodes(GraphNodeMicrostepAddMethod.class).stream().findAny().get();
+		final var operationNodeNew = addMethodNode.getOperationNode().get();
+		addMethodNode.causes(riskDoubleDefinitionNode);
+		riskDoubleDefinitionNode.affects(operationNodeNew);
+
+		return graph;
+	}
+}

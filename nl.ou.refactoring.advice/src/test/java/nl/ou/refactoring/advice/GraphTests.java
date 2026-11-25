@@ -18,19 +18,19 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.GraphEdge;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgePrecedes;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostep;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveClass;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.remedies.GraphNodeRemedyChooseDifferentName;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDanger;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.remedies.GraphNodeRemedyChooseDifferentName;
+import nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostep;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddClass;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveClass;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.workflow.RefactoringMayContainOnlyOneStartNodeException;
 
 public final class GraphTests {
@@ -204,8 +204,8 @@ public final class GraphTests {
 	@ParameterizedTest
 	@ArgumentsSource(GraphWorkflowGetRisksTestArgumentsProvider.class)
 	@DisplayName("Should provide the risks in a Refactoring Advice Graph (RAG)")
-	public void getRisksTest(Graph graph, Set<GraphNodeRisk> expected) {
-		final var actual = graph.getRisks();
+	public void getRisksTest(Graph graph, Set<GraphNodeDanger> expected) {
+		final var actual = graph.getDangers();
 		assertEquals(expected, actual);
 	}
 

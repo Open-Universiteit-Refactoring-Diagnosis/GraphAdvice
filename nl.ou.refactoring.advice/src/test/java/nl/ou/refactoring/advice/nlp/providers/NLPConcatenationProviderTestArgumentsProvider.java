@@ -21,8 +21,8 @@ import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRiskDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
 
 public final class NLPConcatenationProviderTestArgumentsProvider implements ArgumentsProvider {
 	@Override
@@ -81,7 +81,7 @@ public final class NLPConcatenationProviderTestArgumentsProvider implements Argu
 		final var classBetaFoo1OperationNode = classBeta.getOperationNode("foo", List.of()).get();
 		final var classBetaFoo2OperationNode = new GraphNodeOperation(graph, fooIdentifier, List.of());
 		microstepAddMethod.adds(classBetaFoo2OperationNode);
-		final var doubleDefinitionNode = new GraphNodeRiskDoubleDefinition(graph);
+		final var doubleDefinitionNode = new GraphNodeDangerDoubleDefinition(graph);
 		doubleDefinitionNode.affects(classBetaFoo1OperationNode);
 		doubleDefinitionNode.affects(classBetaFoo2OperationNode);
 		microstepAddMethod.causes(doubleDefinitionNode);

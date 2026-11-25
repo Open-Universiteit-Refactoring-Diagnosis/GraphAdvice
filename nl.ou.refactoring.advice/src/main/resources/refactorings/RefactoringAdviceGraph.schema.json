@@ -474,7 +474,7 @@
                 "type": {
                     "title": "Type",
                     "description": "The Class type of the Refactoring Advice Graph node",
-                    "const": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeIntermediateRefactoring"
+                    "const": "nl.ou.refactoring.advice.nodes.mechanics.GraphNodeIntermediateRefactoring"
                 },
                 "edges": {
                     "title": "Edges",
@@ -489,7 +489,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgePrecedes"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -521,7 +521,7 @@
                 "type": {
                     "title": "Type",
                     "description": "The Class type of the Refactoring Advice Graph node",
-                    "const": "nl.ou.refactoring.advice.nodes.workflow.GraphNodeRefactoringStart"
+                    "const": "nl.ou.refactoring.advice.nodes.mechanics.GraphNodeRefactoringStart"
                 },
                 "edges": {
                     "title": "Edges",
@@ -536,7 +536,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgeInitiates",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeInitiates"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgeInitiates"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -560,7 +560,7 @@
                 "type": {
                     "title": "Type",
                     "description": "The Class type of the Refactoring Advice Graph node",
-                    "const": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddClass"
+                    "const": "nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddClass"
                 },
                 "edges": {
                     "title": "Edges",
@@ -575,7 +575,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgeObsolesces",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgeObsolesces"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -591,7 +591,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgePrecedes"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -607,7 +607,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -623,7 +623,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgeAdds",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgeAdds"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -639,7 +639,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgeCauses",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeCauses"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgeCauses"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -663,7 +663,7 @@
                 "type": {
                     "title": "Type",
                     "description": "The Class type of the Refactoring Advice Graph node",
-                    "const": "nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddExpression"
+                    "const": "nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddExpression"
                 },
                 "edges": {
                     "title": "Edges",
@@ -678,7 +678,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgeObsolesces",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeObsolesces"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgeObsolesces"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -694,7 +694,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgePrecedes",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgePrecedes"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgePrecedes"
                                     },
                                     "to": {
                                         "title": "Relates to",
@@ -710,7 +710,7 @@
                                 "properties": {
                                     "type": {
                                         "title": "GraphEdgeFinalises",
-                                        "const": "nl.ou.refactoring.advice.edges.workflow.GraphEdgeFinalises"
+                                        "const": "nl.ou.refactoring.advice.edges.mechanics.GraphEdgeFinalises"
                                     },
                                     "to": {
                                         "title": "Relates to",

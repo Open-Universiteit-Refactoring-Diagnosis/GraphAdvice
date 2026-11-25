@@ -15,7 +15,7 @@ import nl.ou.refactoring.advice.SortOrder;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAffects;
+import nl.ou.refactoring.advice.edges.diagnosisresolutions.GraphEdgeAffects;
 import nl.ou.refactoring.advice.io.GraphWriterException;
 import nl.ou.refactoring.advice.io.GraphWriterMemberOwningClassMissingException;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlWriter;
@@ -27,7 +27,6 @@ import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
-import nl.ou.refactoring.advice.nodes.workflow.risks.GraphNodeRisk;
 import nl.ou.refactoring.advice.resources.ResourceProvider;
 import nl.ou.refactoring.advice.validation.GraphValidationException;
 import nl.ou.refactoring.advice.validation.code.classes.GraphNodeClassHasMultipleGeneralisationsException;
@@ -215,11 +214,7 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 		var noteCounter = 0;
 
 		// Analyse risks
-		final var dangerNodes =
-				graph.getNodes(GraphNodeRisk.class)
-						.stream()
-						.filter(node -> node.getNeutralisers().size() == 0)
-						.collect(Collectors.toSet());
+		final var dangerNodes = graph.getDangers();
 		for (final var dangerNode : dangerNodes) {
 			noteCounter++;
 			final var affects =

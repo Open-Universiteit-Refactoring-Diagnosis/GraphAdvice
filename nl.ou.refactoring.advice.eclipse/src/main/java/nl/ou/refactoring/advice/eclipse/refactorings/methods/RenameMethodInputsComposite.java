@@ -25,10 +25,10 @@ import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameter;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameterSignature;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
-import nl.ou.refactoring.advice.nodes.workflow.risks.validation.GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator;
-import nl.ou.refactoring.advice.nodes.workflow.risks.validation.GraphNodeRiskMissingDefinitionPresentWhenRequiredValidator;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.validation.GraphNodeDangerDoubleDefinitionPresentWhenRequiredValidator;
+import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.validation.GraphNodeDangerMissingDefinitionPresentWhenRequiredValidator;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.GraphValidationEngine;
 import nl.ou.refactoring.advice.validation.GraphValidationFixableResult;
 
@@ -129,8 +129,8 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 
 				// Validate and fix risk.
 				final var validationEngine = new GraphValidationEngine();
-				validationEngine.addValidator(GraphNodeRiskDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
-				validationEngine.addValidator(GraphNodeRiskMissingDefinitionPresentWhenRequiredValidator.INSTANCE);
+				validationEngine.addValidator(GraphNodeDangerDoubleDefinitionPresentWhenRequiredValidator.INSTANCE);
+				validationEngine.addValidator(GraphNodeDangerMissingDefinitionPresentWhenRequiredValidator.INSTANCE);
 				final var validationResults = validationEngine.validate(graphClone);
 				for (final var validationResult : validationResults) {
 					if (!validationResult.getIsValid() && validationResult instanceof GraphValidationFixableResult) {

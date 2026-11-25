@@ -3,19 +3,22 @@ package nl.ou.refactoring.advice.eclipse;
 import org.eclipse.jdt.core.ILocalVariable;
 
 /**
- * Resolves type signatures from the Eclipse JDT to the Refactoring Advice Graph (RAG) model.
+ * Resolves type signatures from the Eclipse JDT to the Refactoring Advice Graph
+ * (RAG) model.
  */
 public final class TypeSignatureResolver {
-	private TypeSignatureResolver() { }
-	
+	private TypeSignatureResolver() {
+	}
+
 	/**
 	 * Resolves the type name of a local variable.
+	 * 
 	 * @param localVariable The local variable of which to resolve the type name.
 	 * @return The type name of the local variable.
 	 */
 	public static String resolveName(ILocalVariable localVariable) {
 		final var typeSignature = localVariable.getTypeSignature();
-		
+
 		return switch (typeSignature) {
 			case "B" -> "byte";
 			case "C" -> "char";
@@ -49,16 +52,16 @@ public final class TypeSignatureResolver {
 				if (typeSignature.startsWith("Q")) {
 					yield resolveUnresolvedClassTypeSignature(typeSignature);
 				}
-				
+
 				yield "object";
 			}
 		};
 	}
-	
+
 	private static String resolveResolvedClassTypeSignature(String typeSignatureString) {
 		return typeSignatureString.substring(1, typeSignatureString.length() - 1);
 	}
-	
+
 	private static String resolveUnresolvedClassTypeSignature(String typeSignatureString) {
 		return typeSignatureString.substring(1, typeSignatureString.length() - 1);
 	}

@@ -13,16 +13,16 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeInvokes;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeAdds;
-import nl.ou.refactoring.advice.edges.workflow.GraphEdgeRemoves;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeAdds;
+import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepAddMethod;
-import nl.ou.refactoring.advice.nodes.workflow.microsteps.GraphNodeMicrostepRemoveMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepAddMethod;
+import nl.ou.refactoring.advice.nodes.mechanics.microsteps.GraphNodeMicrostepRemoveMethod;
 import nl.ou.refactoring.advice.validation.code.operations.GraphNodeOperationParameterNullReferenceException;
 
 /**
