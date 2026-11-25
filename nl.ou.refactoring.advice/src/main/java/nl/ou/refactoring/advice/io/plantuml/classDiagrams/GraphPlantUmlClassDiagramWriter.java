@@ -19,9 +19,10 @@ import nl.ou.refactoring.advice.edges.diagnosisresolutions.GraphEdgeAffects;
 import nl.ou.refactoring.advice.io.GraphWriterException;
 import nl.ou.refactoring.advice.io.GraphWriterMemberOwningClassMissingException;
 import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlWriter;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassStereotype;
@@ -150,10 +151,18 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 						.append(String.format("<color:%s><%s></color> ", toHexadecimal(Color.red), SPRITE_NAME_DANGER));
 			}
 
-			if (attributeTypeNodeOptional.isPresent()) {
-				stringBuilder.append(attributeTypeNodeOptional.get().getCaption() + " ");
-			}
+			final var attributeAccessModifier = attributeNode.getAccessModifier();
+			stringBuilder.append(switch (attributeAccessModifier) {
+				case GraphNodeCodeAccessModifier.PRIVATE -> "-";
+				case GraphNodeCodeAccessModifier.PACKAGE -> "~";
+				case GraphNodeCodeAccessModifier.PROTECTED -> "#";
+				case GraphNodeCodeAccessModifier.PUBLIC -> "+";
+				default -> "";
+			});
 			stringBuilder.append(attributeNode.getCaption());
+			if (attributeTypeNodeOptional.isPresent()) {
+				stringBuilder.append(" : " + attributeTypeNodeOptional.get().getCaption());
+			}
 			this.printLine(stringBuilder.toString());
 		}
 
@@ -179,6 +188,13 @@ public final class GraphPlantUmlClassDiagramWriter extends GraphPlantUmlWriter {
 						.append(String.format("<color:%s><%s></color> ", toHexadecimal(Color.red), SPRITE_NAME_DANGER));
 			}
 
+			stringBuilder.append(switch (operationNode.getAccessModifier()) {
+				case GraphNodeCodeAccessModifier.PRIVATE -> "-";
+				case GraphNodeCodeAccessModifier.PACKAGE -> "~";
+				case GraphNodeCodeAccessModifier.PROTECTED -> "#";
+				case GraphNodeCodeAccessModifier.PUBLIC -> "+";
+				default -> "";
+			});
 			stringBuilder.append(operationNode.getCaption() + "(");
 			final var parameters = operationNode.getOperationParameters();
 			stringBuilder.append(String.join(", ", parameters.stream().map(param -> {

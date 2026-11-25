@@ -7,7 +7,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeAdds;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 
 /**
  * Represents a Microstep in a Refactoring Advice Graph that adds a Field.

@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
@@ -35,9 +36,14 @@ final class AdviceApiCodeComputeMethodSpecificationTestArgumentsProvider impleme
 			final var classNameFullyQualified = packageName + "." + className;
 			final var methodName = "testMethod";
 			final List<GraphNodeOperationParameterSignature> methodParameters = List.of();
+			final var operationAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
 			final var operationNodeActual =
-					AdviceApi.Code
-							.computeMethodSpecification(graph, classNameFullyQualified, methodName, methodParameters);
+					AdviceApi.Code.computeMethodSpecification(
+							graph,
+							classNameFullyQualified,
+							methodName,
+							methodParameters,
+							operationAccessModifier);
 			assertNotNull(operationNodeActual);
 			final var operationsAfter = classNode.getOperationNodes();
 			assertEquals(1, operationsAfter.size());
@@ -66,9 +72,14 @@ final class AdviceApiCodeComputeMethodSpecificationTestArgumentsProvider impleme
 
 			final var classNameFullyQualified = packageName + "." + className;
 			final List<GraphNodeOperationParameterSignature> methodParameters = List.of();
+			final var operationAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
 			final var operationNodeActual =
-					AdviceApi.Code
-							.computeMethodSpecification(graph, classNameFullyQualified, methodName, methodParameters);
+					AdviceApi.Code.computeMethodSpecification(
+							graph,
+							classNameFullyQualified,
+							methodName,
+							methodParameters,
+							operationAccessModifier);
 			assertNotNull(operationNodeActual);
 			final var operationsAfter = classNode.getOperationNodes();
 			assertEquals(1, operationsAfter.size());
@@ -91,9 +102,11 @@ final class AdviceApiCodeComputeMethodSpecificationTestArgumentsProvider impleme
 
 			final var methodName = "testMethod";
 			final var methodNameIdentifier = AdviceApi.Code.computeIdentifier(graph, methodName);
+			final var operationAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
 
 			// No parameters
-			final var operationWithNoParametersNode = new GraphNodeOperation(graph, methodNameIdentifier, List.of());
+			final var operationWithNoParametersNode =
+					new GraphNodeOperation(graph, methodNameIdentifier, List.of(), operationAccessModifier);
 			classNode.has(operationWithNoParametersNode);
 
 			// Two parameters
@@ -111,7 +124,8 @@ final class AdviceApiCodeComputeMethodSpecificationTestArgumentsProvider impleme
 					new GraphNodeOperation(
 							graph,
 							methodNameIdentifier,
-							List.of(operationParameterOneNode, operationParameterTwoNode));
+							List.of(operationParameterOneNode, operationParameterTwoNode),
+							operationAccessModifier);
 			classNode.has(operationWithTwoParametersNode);
 
 			final var operationsBefore = classNode.getOperationNodes();
@@ -120,8 +134,12 @@ final class AdviceApiCodeComputeMethodSpecificationTestArgumentsProvider impleme
 			final var classNameFullyQualified = packageName + "." + className;
 			final List<GraphNodeOperationParameterSignature> methodParameters = List.of();
 			final var operationNodeActual =
-					AdviceApi.Code
-							.computeMethodSpecification(graph, classNameFullyQualified, methodName, methodParameters);
+					AdviceApi.Code.computeMethodSpecification(
+							graph,
+							classNameFullyQualified,
+							methodName,
+							methodParameters,
+							operationAccessModifier);
 			assertNotNull(operationNodeActual);
 			final var operationsAfter = classNode.getOperationNodes();
 			assertEquals(2, operationsAfter.size()); // should remain the same as before

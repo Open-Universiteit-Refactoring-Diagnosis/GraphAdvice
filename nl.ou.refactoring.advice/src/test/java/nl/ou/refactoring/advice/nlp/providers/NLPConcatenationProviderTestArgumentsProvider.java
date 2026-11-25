@@ -18,6 +18,7 @@ import nl.ou.refactoring.advice.io.javaParser.GraphJavaReader;
 import nl.ou.refactoring.advice.io.javaParser.GraphJavaReaderResolutionProvider;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
@@ -79,7 +80,9 @@ public final class NLPConcatenationProviderTestArgumentsProvider implements Argu
 		final var classBeta =
 				graph.getNode("nl.ou.refactoring.moveMethod.doubleDefinition.Beta", GraphNodeClass.class).get();
 		final var classBetaFoo1OperationNode = classBeta.getOperationNode("foo", List.of()).get();
-		final var classBetaFoo2OperationNode = new GraphNodeOperation(graph, fooIdentifier, List.of());
+		final var classBetaFoo2OperationNodeAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
+		final var classBetaFoo2OperationNode =
+				new GraphNodeOperation(graph, fooIdentifier, List.of(), classBetaFoo2OperationNodeAccessModifier);
 		microstepAddMethod.adds(classBetaFoo2OperationNode);
 		final var doubleDefinitionNode = new GraphNodeDangerDoubleDefinition(graph);
 		doubleDefinitionNode.affects(classBetaFoo1OperationNode);

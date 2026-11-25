@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
@@ -152,15 +153,26 @@ public final class DangerTestsArgumentsProvider implements ArgumentsProvider {
 		operationNodeFooIntParameter.is(intType);
 		operationNodeFooIntParameters.add(operationNodeFooIntParameter);
 		final var fooIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "foo");
-		final var operationNodeFooInt = new GraphNodeOperation(graph, fooIdentifier, operationNodeFooIntParameters);
+		final var operationNodeFooAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
+		final var operationNodeFooInt =
+				new GraphNodeOperation(
+						graph,
+						fooIdentifier,
+						operationNodeFooIntParameters,
+						operationNodeFooAccessModifier);
 		alphaClassNode.has(operationNodeFooInt);
 		final var operationNodeFooDoubleParameters = new ArrayList<GraphNodeOperationParameter>();
 		final var operationNodeFooDoubleParameter =
 				new GraphNodeOperationParameter(graph, GraphNodeIdentifier.computeIdentifier(graph, "number"));
 		operationNodeFooDoubleParameter.is(doubleType);
 		operationNodeFooDoubleParameters.add(operationNodeFooDoubleParameter);
+		final var operationNodeFooDoubleAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
 		final var operationNodeFooDouble =
-				new GraphNodeOperation(graph, fooIdentifier, operationNodeFooDoubleParameters);
+				new GraphNodeOperation(
+						graph,
+						fooIdentifier,
+						operationNodeFooDoubleParameters,
+						operationNodeFooDoubleAccessModifier);
 		alphaClassNode.has(operationNodeFooDouble);
 
 		// Workflow

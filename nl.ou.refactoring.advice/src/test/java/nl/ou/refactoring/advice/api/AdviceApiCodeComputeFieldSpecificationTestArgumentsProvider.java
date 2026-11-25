@@ -12,8 +12,8 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 
 final class AdviceApiCodeComputeFieldSpecificationTestArgumentsProvider implements ArgumentsProvider {

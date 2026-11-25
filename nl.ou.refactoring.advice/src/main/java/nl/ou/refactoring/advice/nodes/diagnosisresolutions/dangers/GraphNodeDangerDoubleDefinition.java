@@ -5,7 +5,7 @@ import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.diagnosisresolutions.GraphEdgeAffects;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 

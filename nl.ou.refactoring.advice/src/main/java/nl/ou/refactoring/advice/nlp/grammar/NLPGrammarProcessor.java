@@ -26,7 +26,7 @@ import nl.ou.refactoring.advice.nlp.tokens.NLPTokenNotFoundException;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens;
 import nl.ou.refactoring.advice.nlp.tokens.Tokens.Verbs;
 import nl.ou.refactoring.advice.nodes.GraphNode;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.diagnosisresolutions.dangers.GraphNodeDangerDoubleDefinition;

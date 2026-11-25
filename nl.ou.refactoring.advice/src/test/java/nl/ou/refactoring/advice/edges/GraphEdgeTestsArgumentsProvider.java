@@ -10,8 +10,8 @@ import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
 

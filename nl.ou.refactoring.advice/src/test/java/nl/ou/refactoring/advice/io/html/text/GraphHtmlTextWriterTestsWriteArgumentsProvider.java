@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import nl.ou.refactoring.advice.GraphTemplates;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeProgramLocation;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
@@ -44,7 +45,13 @@ public class GraphHtmlTextWriterTestsWriteArgumentsProvider implements Arguments
 		class1Node.has(class1ProgramLocationNode);
 		packageNode.has(class1Node);
 		final var class1OperationFooIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "foo");
-		final var class1OperationFooNode = new GraphNodeOperation(graph, class1OperationFooIdentifier, List.of());
+		final var class1OperationFooAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
+		final var class1OperationFooNode =
+				new GraphNodeOperation(
+						graph,
+						class1OperationFooIdentifier,
+						List.of(),
+						class1OperationFooAccessModifier);
 		final var class1OperationFooProgramLocationNode =
 				new GraphNodeProgramLocation(graph, "nl/ou/refactoring/MyClass.java", "MyClass.java", 2, 3, 4, 5);
 		class1OperationFooNode.has(class1OperationFooProgramLocationNode);
@@ -52,7 +59,8 @@ public class GraphHtmlTextWriterTestsWriteArgumentsProvider implements Arguments
 		microstepRemoveMethodNode.removes(class1OperationFooNode);
 
 		final var class1OperationBarIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "bar");
-		new GraphNodeOperation(graph, class1OperationBarIdentifier, List.of());
+		final var class1OperationBarAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
+		new GraphNodeOperation(graph, class1OperationBarIdentifier, List.of(), class1OperationBarAccessModifier);
 
 		final var class2Identifier = GraphNodeIdentifier.computeIdentifier(graph, "OtherClass");
 		final var class2Node = new GraphNodeClass(graph, class2Identifier);
@@ -68,7 +76,13 @@ public class GraphHtmlTextWriterTestsWriteArgumentsProvider implements Arguments
 		class2Node.has(class2ProgramLocationNode);
 		packageNode.has(class2Node);
 		final var class2OperationFooIdentifier = GraphNodeIdentifier.computeIdentifier(graph, "foo");
-		final var class2OperationFooNode = new GraphNodeOperation(graph, class2OperationFooIdentifier, List.of());
+		final var class2OperationFooAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
+		final var class2OperationFooNode =
+				new GraphNodeOperation(
+						graph,
+						class2OperationFooIdentifier,
+						List.of(),
+						class2OperationFooAccessModifier);
 		final var class2OperationFooProgramLocationNode =
 				new GraphNodeProgramLocation(graph, "nl/ou/refactoring/OtherClass.java", "OtherClass.java", 1, 2, 3, 4);
 		class2OperationFooNode.has(class2OperationFooProgramLocationNode);

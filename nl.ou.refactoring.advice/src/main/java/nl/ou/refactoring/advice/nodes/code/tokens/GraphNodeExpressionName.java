@@ -2,7 +2,7 @@ package nl.ou.refactoring.advice.nodes.code.tokens;
 
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.operations.expressions.GraphEdgeReferences;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeLeftHandSide;
 
 /**

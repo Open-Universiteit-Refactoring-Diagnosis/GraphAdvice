@@ -64,8 +64,13 @@ public final class GraphNodeClassTests {
 		final var graph2OperationNodeParametersModel = new ArrayList<GraphNodeOperationParameter>();
 		graph2OperationNodeParametersModel
 				.add(new GraphNodeOperationParameter(graph2, graph2OperationNodeParameterNameIdentifier));
+		final var graph2OperationNodeAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
 		final var graph2OperationNode =
-				new GraphNodeOperation(graph2, graph2OperationNodeName, graph2OperationNodeParametersModel);
+				new GraphNodeOperation(
+						graph2,
+						graph2OperationNodeName,
+						graph2OperationNodeParametersModel,
+						graph2OperationNodeAccessModifier);
 		graph2ClassNode.has(graph2OperationNode);
 		argumentsList.add(
 				Arguments.of(
@@ -96,8 +101,13 @@ public final class GraphNodeClassTests {
 		final var graph4OperationNodeParametersModel = new ArrayList<GraphNodeOperationParameter>();
 		graph4OperationNodeParametersModel
 				.add(new GraphNodeOperationParameter(graph4, GraphNodeIdentifier.computeIdentifier(graph4, "test2")));
+		final var graph4OperationNodeAccessModifier = GraphNodeCodeAccessModifier.PUBLIC;
 		final var graph4OperationNodeModel =
-				new GraphNodeOperation(graph4, graph4OperationNodeName, graph4OperationNodeParametersModel);
+				new GraphNodeOperation(
+						graph4,
+						graph4OperationNodeName,
+						graph4OperationNodeParametersModel,
+						graph4OperationNodeAccessModifier);
 		graph4ClassNode.has(graph4OperationNodeModel);
 		final GraphNodeOperation graph4OperationNodeExpected = null;
 		argumentsList.add(

@@ -20,8 +20,8 @@ import org.w3c.dom.Element;
 
 import nl.ou.refactoring.advice.Graph;
 import nl.ou.refactoring.advice.GraphTemplates;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;

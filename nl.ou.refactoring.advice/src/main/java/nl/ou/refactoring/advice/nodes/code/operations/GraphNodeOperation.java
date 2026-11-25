@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import nl.ou.refactoring.advice.Graph;
-import nl.ou.refactoring.advice.contracts.ArgumentEmptyException;
 import nl.ou.refactoring.advice.contracts.ArgumentGuard;
 import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
@@ -17,6 +16,7 @@ import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeAdds;
 import nl.ou.refactoring.advice.edges.mechanics.GraphEdgeRemoves;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClassMember;
 import nl.ou.refactoring.advice.nodes.code.operations.expressions.GraphNodeMethodInvocationExpression;
@@ -41,20 +41,20 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	 *                            operation.
 	 * @param operationParameters The parameters of the operation. If null, an empty
 	 *                            list will be created.
-	 * @throws ArgumentNullException  Thrown if graph, operationName or
-	 *                                operationParameters are null.
-	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains
-	 *                                only white spaces.
+	 * @param accessModifier      The access modifier of the operation.
+	 * @throws ArgumentNullException Thrown if graph, operationName,
+	 *                               operationParameters or accessModifier are null.
 	 */
 	public GraphNodeOperation(
 			Graph graph,
 			GraphNodeIdentifier operationName,
-			List<GraphNodeOperationParameter> operationParameters)
-			throws ArgumentNullException, ArgumentEmptyException {
+			List<GraphNodeOperationParameter> operationParameters,
+			GraphNodeCodeAccessModifier accessModifier) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameters, "operationParameters");
-		super(graph);
+		ArgumentGuard.requireNotNull(accessModifier, "accessModifier");
+		super(graph, accessModifier);
 		this.operationNameEdge =
 				this.graph.computeEdge(
 						this,
@@ -90,15 +90,27 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	/**
 	 * Initialises a new instance of {@link GraphNodeOperation}.
 	 * 
+	 * @param graph          The graph that contains the node.
+	 * @param operationName  The name of the operation.
+	 * @param accessModifier The access modifier of the operation.
+	 * @throws ArgumentNullException Thrown if graph, operationName, accessModifier.
+	 */
+	public GraphNodeOperation(
+			Graph graph,
+			GraphNodeIdentifier operationName,
+			GraphNodeCodeAccessModifier accessModifier) throws ArgumentNullException {
+		this(graph, operationName, new ArrayList<GraphNodeOperationParameter>(), accessModifier);
+	}
+
+	/**
+	 * Initialises a new instance of {@link GraphNodeOperation}.
+	 * 
 	 * @param graph         The graph that contains the node.
 	 * @param operationName The node that represents the name of the operation.
-	 * @throws ArgumentNullException  Thrown if graph or operationName are null.
-	 * @throws ArgumentEmptyException Thrown if operationName is empty or contains
-	 *                                only white spaces.
+	 * @throws ArgumentNullException Thrown if graph or operationName are null.
 	 */
-	public GraphNodeOperation(Graph graph, GraphNodeIdentifier operationName)
-			throws ArgumentNullException, ArgumentEmptyException {
-		this(graph, operationName, new ArrayList<GraphNodeOperationParameter>());
+	public GraphNodeOperation(Graph graph, GraphNodeIdentifier operationName) throws ArgumentNullException {
+		this(graph, operationName, new ArrayList<GraphNodeOperationParameter>(), GraphNodeCodeAccessModifier.PACKAGE);
 	}
 
 	/**
@@ -295,7 +307,7 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 						.stream()
 						.map(node -> (GraphNodeOperationParameter) node.clone(graph))
 						.collect(Collectors.toUnmodifiableList());
-		return new GraphNodeOperation(graph, operationNameClone, operationParameterClones);
+		return new GraphNodeOperation(graph, operationNameClone, operationParameterClones, this.getAccessModifier());
 	}
 
 	@Override
@@ -341,8 +353,10 @@ public final class GraphNodeOperation extends GraphNodeClassMember {
 	public String toString() {
 		final var stringBuilder = new StringBuilder();
 
-		// Operation name
-		stringBuilder.append("Operation node name: " + this.getOperationName() + "\n");
+		// Operation
+		final var operationName = this.getOperationName();
+		final var operationAccessModifier = this.getAccessModifier().toString();
+		stringBuilder.append("Operation node: " + operationName + " (" + operationAccessModifier + ")\n");
 
 		// Declaring class
 		final var classNode = this.getClassNode();

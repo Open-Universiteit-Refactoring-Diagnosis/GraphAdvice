@@ -33,9 +33,10 @@ import nl.ou.refactoring.advice.io.plantuml.GraphPlantUmlSvgGenerator;
 import nl.ou.refactoring.advice.io.plantuml.classDiagrams.GraphPlantUmlClassDiagramWriter;
 import nl.ou.refactoring.advice.nlp.grammar.NLPGrammarProcessor;
 import nl.ou.refactoring.advice.nlp.languages.englishGreatBritain.NLPLanguageEnglishGreatBritain;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperationParameterSignature;
@@ -47,7 +48,8 @@ import nl.ou.refactoring.advice.nodes.code.tokens.GraphNodeIdentifier;
  */
 public final class AdviceApi {
 	/**
-	 * Features for managing the Abstract Syntax Tree (AST) subgraph in a Refactoring Advice Graph (RAG).
+	 * Features for managing the Abstract Syntax Tree (AST) subgraph in a
+	 * Refactoring Advice Graph (RAG).
 	 */
 	public static final class Code {
 		/**
@@ -210,12 +212,14 @@ public final class AdviceApi {
 				final Graph graph,
 				final String classFullyQualifiedName,
 				final String methodName,
-				final List<GraphNodeOperationParameterSignature> methodParameters)
+				final List<GraphNodeOperationParameterSignature> methodParameters,
+				final GraphNodeCodeAccessModifier accessModifier)
 				throws ArgumentNullException, ArgumentEmptyException, AdviceApiCodeClassSpecificationNotFoundException {
 			ArgumentGuard.requireNotNull(graph, "graph");
 			ArgumentGuard.requireNotNullEmptyOrWhiteSpace(classFullyQualifiedName, "classFullyQualifiedName");
 			ArgumentGuard.requireNotNullEmptyOrWhiteSpace(methodName, "methodName");
 			ArgumentGuard.requireNotNull(methodParameters, "methodParameters");
+			ArgumentGuard.requireNotNull(accessModifier, "accessModifier");
 			LOGGER.debug(
 					"Computing Method specification '{}' in Class '{}' in Refactoring Advice Graph (RAG) for refactoring '{}'",
 					methodName,
@@ -227,7 +231,7 @@ public final class AdviceApi {
 									() -> new AdviceApiCodeClassSpecificationNotFoundException(
 											graph,
 											classFullyQualifiedName));
-			return classNode.computeOperationNode(methodName, methodParameters);
+			return classNode.computeOperationNode(methodName, methodParameters, accessModifier);
 		}
 
 		/**
@@ -444,12 +448,13 @@ public final class AdviceApi {
 	}
 
 	/**
-	 * Features for managing the Workflow subgraph in a Refactoring Advice Graph (RAG).
+	 * Features for managing the Workflow subgraph in a Refactoring Advice Graph
+	 * (RAG).
 	 */
 	public static final class Workflow {
-		
+
 	}
-	
+
 	/**
 	 * Logs messages for debugging and troubleshooting.
 	 */

@@ -112,7 +112,11 @@ public final class RenameMethodInputsComposite extends RefactoringInputsComposit
 								.map((node) -> (GraphNodeOperationParameter) node.clone(graphClone))
 								.collect(Collectors.toUnmodifiableList());
 				final var operationNodeRenamed =
-						new GraphNodeOperation(graphClone, newNameIdentifier, operationNodeRenamedParameters);
+						new GraphNodeOperation(
+								graphClone,
+								newNameIdentifier,
+								operationNodeRenamedParameters,
+								operationNodeSelected.getAccessModifier());
 				if (operationNodeSelectedReturnTypeOptional.isPresent()) {
 					operationNodeRenamed.hasReturnType(
 							(GraphNodeType) operationNodeSelectedReturnTypeOptional.get().clone(graphClone));

@@ -10,11 +10,13 @@ import org.apache.logging.log4j.Logger;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithAccessModifiers;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
 
 import nl.ou.refactoring.advice.Graph;
@@ -24,10 +26,11 @@ import nl.ou.refactoring.advice.contracts.ArgumentNullException;
 import nl.ou.refactoring.advice.io.GraphReader;
 import nl.ou.refactoring.advice.io.GraphReaderException;
 import nl.ou.refactoring.advice.io.javaParser.resolution.GraphResolvedMethodDeclaration;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeProgramLocation;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeType;
+import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.classes.GraphNodeClass;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeBlock;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
@@ -45,26 +48,16 @@ public final class GraphJavaReader implements GraphReader {
 	 */
 	private static Logger LOGGER = LogManager.getLogger(GraphJavaReader.class);
 
-	/**
-	 * The Refactoring Advice Graph that will contain the code nodes.
-	 */
-	private Graph graph;
-
-	/**
-	 * Resolves additional Graph nodes if they may have not been loaded into the
-	 * Refactoring Advice Graph (RAG) yet.
-	 */
-	private final GraphJavaReaderResolutionProvider resolutionProvider;
-
-	/**
-	 * Reads the Java source code.
-	 */
-	private final Reader reader;
-
-	/**
-	 * The full file name of the Java source code, including its path.
-	 */
-	private final String fileNameFull;
+	private static GraphNodeCodeAccessModifier accessModifierFromReader(NodeWithAccessModifiers<?> typeDeclaration) {
+		final var accessSpecifier = typeDeclaration.getAccessSpecifier();
+		return switch (accessSpecifier) {
+			case AccessSpecifier.PRIVATE -> GraphNodeCodeAccessModifier.PRIVATE;
+			case AccessSpecifier.PROTECTED -> GraphNodeCodeAccessModifier.PROTECTED;
+			case AccessSpecifier.PUBLIC -> GraphNodeCodeAccessModifier.PUBLIC;
+			case AccessSpecifier.NONE -> GraphNodeCodeAccessModifier.PACKAGE;
+			default -> throw new GraphJavaReaderInvalidAccessSpecifierException(accessSpecifier, typeDeclaration);
+		};
+	}
 
 	/**
 	 * The short file name of the Java source code.
@@ -72,38 +65,25 @@ public final class GraphJavaReader implements GraphReader {
 	private final String fileName;
 
 	/**
-	 * Initialises a new instance of {@link GraphJavaReader}.
-	 * 
-	 * @param refactoringName    The name of the refactoring.
-	 * @param resolutionProvider Resolves additional Graph nodes if they may have
-	 *                           not been loaded into the Refactoring Advice Graph
-	 *                           (RAG) yet.
-	 * @param reader             Reads the Java source code.
-	 * @param fileNameFull       The full file name of the Java source code,
-	 *                           including its path.
-	 * @param fileName           The short file name of the Java source code.
-	 * @throws ArgumentNullException  Thrown if refactoringName or reader is null.
-	 * @throws ArgumentEmptyException Thrown if refactoringName, resolutionProvider,
-	 *                                fileNameFull or fileName is empty or contains
-	 *                                only white spaces.
+	 * The full file name of the Java source code, including its path.
 	 */
-	public GraphJavaReader(
-			String refactoringName,
-			GraphJavaReaderResolutionProvider resolutionProvider,
-			Reader reader,
-			String fileNameFull,
-			String fileName) throws ArgumentNullException, ArgumentEmptyException {
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
-		ArgumentGuard.requireNotNull(resolutionProvider, "resolutionProvider");
-		ArgumentGuard.requireNotNull(reader, "reader");
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
-		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");
-		this.graph = new Graph(refactoringName);
-		this.resolutionProvider = resolutionProvider;
-		this.reader = reader;
-		this.fileNameFull = fileNameFull;
-		this.fileName = fileName;
-	}
+	private final String fileNameFull;
+
+	/**
+	 * The Refactoring Advice Graph that will contain the code nodes.
+	 */
+	private Graph graph;
+
+	/**
+	 * Reads the Java source code.
+	 */
+	private final Reader reader;
+
+	/**
+	 * Resolves additional Graph nodes if they may have not been loaded into the
+	 * Refactoring Advice Graph (RAG) yet.
+	 */
+	private final GraphJavaReaderResolutionProvider resolutionProvider;
 
 	/**
 	 * Initialises a new instance of {@link GraphJavaReader}.
@@ -134,6 +114,40 @@ public final class GraphJavaReader implements GraphReader {
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
 		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");
 		this.graph = graph;
+		this.resolutionProvider = resolutionProvider;
+		this.reader = reader;
+		this.fileNameFull = fileNameFull;
+		this.fileName = fileName;
+	}
+
+	/**
+	 * Initialises a new instance of {@link GraphJavaReader}.
+	 * 
+	 * @param refactoringName    The name of the refactoring.
+	 * @param resolutionProvider Resolves additional Graph nodes if they may have
+	 *                           not been loaded into the Refactoring Advice Graph
+	 *                           (RAG) yet.
+	 * @param reader             Reads the Java source code.
+	 * @param fileNameFull       The full file name of the Java source code,
+	 *                           including its path.
+	 * @param fileName           The short file name of the Java source code.
+	 * @throws ArgumentNullException  Thrown if refactoringName or reader is null.
+	 * @throws ArgumentEmptyException Thrown if refactoringName, resolutionProvider,
+	 *                                fileNameFull or fileName is empty or contains
+	 *                                only white spaces.
+	 */
+	public GraphJavaReader(
+			String refactoringName,
+			GraphJavaReaderResolutionProvider resolutionProvider,
+			Reader reader,
+			String fileNameFull,
+			String fileName) throws ArgumentNullException, ArgumentEmptyException {
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(refactoringName, "refactoringName");
+		ArgumentGuard.requireNotNull(resolutionProvider, "resolutionProvider");
+		ArgumentGuard.requireNotNull(reader, "reader");
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileNameFull, "fileNameFull");
+		ArgumentGuard.requireNotNullEmptyOrWhiteSpace(fileName, "fileName");
+		this.graph = new Graph(refactoringName);
 		this.resolutionProvider = resolutionProvider;
 		this.reader = reader;
 		this.fileNameFull = fileNameFull;
@@ -184,7 +198,16 @@ public final class GraphJavaReader implements GraphReader {
 			final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
 		final var classNodeIdentifier =
 				GraphNodeIdentifier.computeIdentifier(this.graph, classOrInterfaceDeclaration.getNameAsString());
-		final var classNode = new GraphNodeClass(this.graph, classNodeIdentifier);
+		final var classAccessSpecifier = classOrInterfaceDeclaration.getAccessSpecifier();
+		final var classNodeAccessModifier = switch (classAccessSpecifier) {
+			case AccessSpecifier.NONE -> GraphNodeCodeAccessModifier.PACKAGE;
+			case AccessSpecifier.PUBLIC -> GraphNodeCodeAccessModifier.PUBLIC;
+			default ->
+				throw new GraphJavaReaderInvalidAccessSpecifierException(
+						classAccessSpecifier,
+						classOrInterfaceDeclaration);
+		};
+		final var classNode = new GraphNodeClass(this.graph, classNodeIdentifier, classNodeAccessModifier);
 		packageNode.has(classNode);
 		final var classPositionBegin = classOrInterfaceDeclaration.getBegin().get();
 		final var classPositionEnd = classOrInterfaceDeclaration.getEnd().get();
@@ -212,10 +235,10 @@ public final class GraphJavaReader implements GraphReader {
 
 	private void readFieldDeclaration(final GraphNodeClass classNode, final FieldDeclaration fieldDeclaration) {
 		for (final var variableDeclaration : fieldDeclaration.getVariables()) {
-			final var attributeNode =
-					new GraphNodeAttribute(
-							this.graph,
-							GraphNodeIdentifier.computeIdentifier(this.graph, variableDeclaration.getNameAsString()));
+			final var attributeIdentifier =
+					GraphNodeIdentifier.computeIdentifier(this.graph, variableDeclaration.getNameAsString());
+			final var attributeAccessModifier = accessModifierFromReader(fieldDeclaration);
+			final var attributeNode = new GraphNodeAttribute(this.graph, attributeIdentifier, attributeAccessModifier);
 			final var attributeTypeName = variableDeclaration.getTypeAsString();
 			final var attributeType = GraphNodeType.computeType(this.graph, attributeTypeName);
 			attributeNode.is(attributeType);
@@ -232,59 +255,6 @@ public final class GraphJavaReader implements GraphReader {
 							attributePositionEnd.column);
 			attributeNode.has(attributeProgramLocationNode);
 			classNode.has(attributeNode);
-		}
-	}
-
-	private void readMethodDeclaration(final GraphNodeClass classNode, final MethodDeclaration methodDeclaration) {
-		final var operationIdentifier =
-				GraphNodeIdentifier.computeIdentifier(this.graph, methodDeclaration.getNameAsString());
-		final var operationReturnTypeName = methodDeclaration.getTypeAsString();
-		final var operationReturnType = GraphNodeType.computeType(this.graph, operationReturnTypeName);
-
-		final var operationParameters = new ArrayList<GraphNodeOperationParameter>();
-		for (final var methodParameter : methodDeclaration.getParameters()) {
-			final var operationParameterTypeName = methodParameter.getTypeAsString();
-			final var operationParameterType = GraphNodeType.computeType(this.graph, operationParameterTypeName);
-			final var operationParameter =
-					new GraphNodeOperationParameter(
-							this.graph,
-							GraphNodeIdentifier.computeIdentifier(this.graph, operationReturnTypeName));
-			operationParameter.is(operationParameterType);
-			operationParameters.add(operationParameter);
-		}
-
-		final var operationNode = new GraphNodeOperation(this.graph, operationIdentifier, operationParameters);
-		operationNode.hasReturnType(operationReturnType);
-		final var operationPositionBegin = methodDeclaration.getBegin().get();
-		final var operationPositionEnd = methodDeclaration.getEnd().get();
-		final var operationProgramLocationNode =
-				new GraphNodeProgramLocation(
-						this.graph,
-						this.fileNameFull,
-						this.fileName,
-						operationPositionBegin.line,
-						operationPositionBegin.column,
-						operationPositionEnd.line,
-						operationPositionEnd.column);
-		operationNode.has(operationProgramLocationNode);
-		classNode.has(operationNode);
-
-		try {
-			methodDeclaration.getBody().ifPresent((bodyBlock) -> {
-				final var operationBodyNode = new GraphNodeBlock(this.graph);
-				for (final var bodyStatement : bodyBlock.getStatements()) {
-					bodyStatement.ifExpressionStmt((bodyExpressionStatement) -> {
-						final var expression = bodyExpressionStatement.getExpression();
-						expression.ifMethodCallExpr(
-								(methodCallExpression) -> this
-										.readMethodCallExpression(operationBodyNode, methodCallExpression));
-					});
-				}
-				operationNode.hasBody(operationBodyNode);
-			});
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			LOGGER.error("Failed to read the method body of method '" + operationIdentifier.getIdentifier() + "'", ex);
 		}
 	}
 
@@ -317,6 +287,62 @@ public final class GraphJavaReader implements GraphReader {
 							end.line,
 							end.column);
 			methodInvocationExpression.has(programLocationNode);
+		}
+	}
+
+	private void readMethodDeclaration(final GraphNodeClass classNode, final MethodDeclaration methodDeclaration) {
+		final var operationIdentifier =
+				GraphNodeIdentifier.computeIdentifier(this.graph, methodDeclaration.getNameAsString());
+		final var operationReturnTypeName = methodDeclaration.getTypeAsString();
+		final var operationReturnType = GraphNodeType.computeType(this.graph, operationReturnTypeName);
+
+		final var operationParameters = new ArrayList<GraphNodeOperationParameter>();
+		for (final var methodParameter : methodDeclaration.getParameters()) {
+			final var operationParameterTypeName = methodParameter.getTypeAsString();
+			final var operationParameterType = GraphNodeType.computeType(this.graph, operationParameterTypeName);
+			final var operationParameter =
+					new GraphNodeOperationParameter(
+							this.graph,
+							GraphNodeIdentifier.computeIdentifier(this.graph, operationReturnTypeName));
+			operationParameter.is(operationParameterType);
+			operationParameters.add(operationParameter);
+		}
+
+		final var operationAccessModifier = accessModifierFromReader(methodDeclaration);
+
+		final var operationNode =
+				new GraphNodeOperation(this.graph, operationIdentifier, operationParameters, operationAccessModifier);
+		operationNode.hasReturnType(operationReturnType);
+		final var operationPositionBegin = methodDeclaration.getBegin().get();
+		final var operationPositionEnd = methodDeclaration.getEnd().get();
+		final var operationProgramLocationNode =
+				new GraphNodeProgramLocation(
+						this.graph,
+						this.fileNameFull,
+						this.fileName,
+						operationPositionBegin.line,
+						operationPositionBegin.column,
+						operationPositionEnd.line,
+						operationPositionEnd.column);
+		operationNode.has(operationProgramLocationNode);
+		classNode.has(operationNode);
+
+		try {
+			methodDeclaration.getBody().ifPresent((bodyBlock) -> {
+				final var operationBodyNode = new GraphNodeBlock(this.graph);
+				for (final var bodyStatement : bodyBlock.getStatements()) {
+					bodyStatement.ifExpressionStmt((bodyExpressionStatement) -> {
+						final var expression = bodyExpressionStatement.getExpression();
+						expression.ifMethodCallExpr(
+								(methodCallExpression) -> this
+										.readMethodCallExpression(operationBodyNode, methodCallExpression));
+					});
+				}
+				operationNode.hasBody(operationBodyNode);
+			});
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			LOGGER.error("Failed to read the method body of method '" + operationIdentifier.getIdentifier() + "'", ex);
 		}
 	}
 }

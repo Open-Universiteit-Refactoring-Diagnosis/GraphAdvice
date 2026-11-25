@@ -1,6 +1,7 @@
 package nl.ou.refactoring.advice.nodes.code.classes;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,8 +16,8 @@ import nl.ou.refactoring.advice.edges.code.GraphEdgeHas;
 import nl.ou.refactoring.advice.edges.code.GraphEdgeIs;
 import nl.ou.refactoring.advice.nodes.GraphNode;
 import nl.ou.refactoring.advice.nodes.GraphNodeBase;
-import nl.ou.refactoring.advice.nodes.code.GraphNodeAttribute;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeCode;
+import nl.ou.refactoring.advice.nodes.code.GraphNodeCodeAccessModifier;
 import nl.ou.refactoring.advice.nodes.code.GraphNodeInterface;
 import nl.ou.refactoring.advice.nodes.code.GraphNodePackage;
 import nl.ou.refactoring.advice.nodes.code.operations.GraphNodeOperation;
@@ -29,21 +30,34 @@ import nl.ou.refactoring.advice.validation.code.classes.GraphNodeClassHasMultipl
  * A node in a Refactoring Advice Graph that represents a Class.
  */
 public final class GraphNodeClass extends GraphNodeCode {
+	private static final Collection<Enum<?>> ACCESS_MODIFIERS_PERMITTED =
+			Set.of(new Enum<?>[] { GraphNodeCodeAccessModifier.PACKAGE, GraphNodeCodeAccessModifier.PUBLIC });
+	private final GraphNodeCodeAccessModifier accessModifier;
 	private final GraphEdgeHas classNameEdge;
 	private final GraphNodeClassStereotype stereotype;
 
 	/**
 	 * Initialises a new instance of {@link GraphNodeClass}.
 	 * 
-	 * @param graph      {@link Graph} The graph that contains the node.
-	 * @param className  The name of the affected Class.
-	 * @param stereotype The stereotype of the affected Class.
+	 * @param graph          {@link Graph} The graph that contains the node.
+	 * @param className      The name of the Class.
+	 * @param accessModifier The access modifier of the Class. Only PACKAGE and
+	 *                       PUBLIC are allowed.
+	 * @param stereotype     The stereotype of the Class.
 	 * @throws ArgumentNullException Thrown if graph or className is null.
 	 */
-	public GraphNodeClass(Graph graph, GraphNodeIdentifier className, GraphNodeClassStereotype stereotype)
-			throws ArgumentNullException, ArgumentEmptyException {
+	public GraphNodeClass(
+			Graph graph,
+			GraphNodeIdentifier className,
+			GraphNodeCodeAccessModifier accessModifier,
+			GraphNodeClassStereotype stereotype) throws ArgumentNullException {
 		ArgumentGuard.requireNotNull(graph, "graph");
 		ArgumentGuard.requireNotNull(className, "className");
+		ArgumentGuard.requireItemOf(
+				accessModifier,
+				"accessModifier",
+				ACCESS_MODIFIERS_PERMITTED,
+				"accessModifiersPermitted");
 		super(graph);
 		this.classNameEdge =
 				this.graph.computeEdge(
@@ -51,30 +65,52 @@ public final class GraphNodeClass extends GraphNodeCode {
 						className,
 						(source, destination) -> new GraphEdgeHas(source, destination),
 						GraphEdgeHas.class);
+		this.accessModifier = accessModifier;
 		this.stereotype = stereotype;
 	}
 
 	/**
 	 * Initialises a new instance of {@link GraphNodeClass}.
 	 * 
-	 * @param graph     {@link Graph} The graph that contains the node.
-	 * @param className The name of the affected Class.
-	 * @throws ArgumentNullException  Thrown if graph or className is null.
-	 * @throws ArgumentEmptyException Thrown if className is empty or contains only
-	 *                                white spaces.
+	 * @param graph          {@link Graph} The graph that contains the node.
+	 * @param className      The name of the Class.
+	 * @param accessModifier The access modifier of the Class. Only PACKAGE and
+	 *                       PUBLIC are allowed.
+	 * @throws ArgumentNullException Thrown if graph, className or accessModifier is
+	 *                               null.
 	 */
-	public GraphNodeClass(Graph graph, GraphNodeIdentifier className)
+	public GraphNodeClass(Graph graph, GraphNodeIdentifier className, GraphNodeCodeAccessModifier accessModifier)
 			throws ArgumentNullException, ArgumentEmptyException {
-		this(graph, className, null);
+		this(graph, className, accessModifier, null);
 	}
 
 	/**
-	 * Gets the name of the affected Class.
+	 * Initialises a new instance of {@link GraphNodeClass}.
 	 * 
-	 * @return The name of the affected Class.
+	 * @param graph     {@link Graph} The graph that contains the node.
+	 * @param className The name of the Class.
+	 * @throws ArgumentNullException Thrown if graph or className is null.
+	 */
+	public GraphNodeClass(Graph graph, GraphNodeIdentifier className) throws ArgumentNullException {
+		this(graph, className, GraphNodeCodeAccessModifier.PACKAGE);
+	}
+
+	/**
+	 * Gets the name of the Class.
+	 * 
+	 * @return The name of the Class.
 	 */
 	public String getClassName() {
 		return ((GraphNodeIdentifier) this.classNameEdge.getDestinationNode()).getIdentifier();
+	}
+
+	/**
+	 * Gets the access modifier of the Class.
+	 * 
+	 * @return The access modifier of the Class.
+	 */
+	public GraphNodeCodeAccessModifier getAccessModifier() {
+		return this.accessModifier;
 	}
 
 	/**
@@ -364,18 +400,20 @@ public final class GraphNodeClass extends GraphNodeCode {
 	 * @param operationName                The name of the operation.
 	 * @param operationParameterSignatures The parameter signatures of the
 	 *                                     operation.
+	 * @param accessModifier               The access modifier of the operation.
 	 * @return The operation with operationName and operationParameters, if found,
 	 *         otherwise a newly created operation node with operationName and
 	 *         operationParameters.
-	 * @throws ArgumentNullException Thrown if operationName or operationParameters
-	 *                               is null.
+	 * @throws ArgumentNullException Thrown if operationName, operationParameters or
+	 *                               accessModifier is null.
 	 */
 	public GraphNodeOperation computeOperationNode(
 			String operationName,
-			List<GraphNodeOperationParameterSignature> operationParameterSignatures)
-			throws ArgumentNullException, ArgumentEmptyException {
+			List<GraphNodeOperationParameterSignature> operationParameterSignatures,
+			GraphNodeCodeAccessModifier accessModifier) throws ArgumentNullException, ArgumentEmptyException {
 		ArgumentGuard.requireNotNull(operationName, "operationName");
 		ArgumentGuard.requireNotNull(operationParameterSignatures, "operationParameters");
+		ArgumentGuard.requireNotNull(accessModifier, "accessModifier");
 		return this.getOperationNode(operationName, operationParameterSignatures).or(() -> {
 			final var operationParameterNodes = new ArrayList<GraphNodeOperationParameter>();
 			for (final var operationParameterSignature : operationParameterSignatures) {
@@ -389,7 +427,8 @@ public final class GraphNodeClass extends GraphNodeCode {
 					new GraphNodeOperation(
 							this.graph,
 							GraphNodeIdentifier.computeIdentifier(graph, operationName),
-							operationParameterNodes);
+							operationParameterNodes,
+							accessModifier);
 			this.has(node);
 			return Optional.of(node);
 		}).get();
@@ -426,20 +465,25 @@ public final class GraphNodeClass extends GraphNodeCode {
 		final var stringBuilder = new StringBuilder();
 
 		// Class name
-		stringBuilder.append("Class node: " + this.getClassName() + "\n");
+		final var className = this.getClassName();
+		final var classAccessModifier = this.getAccessModifier().toString();
+		stringBuilder.append("Class node: " + className + " (" + classAccessModifier + ")\n");
 
 		// Attributes
 		stringBuilder.append("// Attributes\n");
 		final var attributeNodes = this.getAttributeNodes();
 		for (final var attributeNode : attributeNodes) {
-			stringBuilder.append("- " + attributeNode.getAttributeName());
+			final var attributeAccessModifier = attributeNode.getAccessModifier().toString();
+			stringBuilder.append("- " + attributeNode.getAttributeName() + " (" + attributeAccessModifier + ")\n");
 		}
+		stringBuilder.append("\n");
 
 		// Operations
 		stringBuilder.append("// Operations\n");
 		final var operationNodes = this.getOperationNodes();
 		for (final var operationNode : operationNodes) {
-			stringBuilder.append("- " + operationNode.getOperationName());
+			final var operationAccessModifier = operationNode.getAccessModifier().toString();
+			stringBuilder.append("- " + operationNode.getOperationName() + " (" + operationAccessModifier + ")\n");
 		}
 
 		return stringBuilder.toString();
